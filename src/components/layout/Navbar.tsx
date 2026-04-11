@@ -4,17 +4,17 @@ export default function Navbar() {
   return (
     <nav className="nav">
       <div className="nav-inner">
-        <Link href="/" className="nav-logo">
+        <a href="/#/home" className="nav-logo">
           DECOLONISING ARCHIVE
-        </Link>
+        </a>
 
         <div className="nav-links">
-          <Link href="/" className="nav-link">
+          <a href="/#/home" className="nav-link">
             Home
-          </Link>
-          <Link href="/library" className="nav-link">
+          </a>
+          <a href="/#/library" className="nav-link">
             Library
-          </Link>
+          </a>
           <Link href="/sources" className="nav-link">
             Sources
           </Link>
@@ -23,9 +23,9 @@ export default function Navbar() {
           </Link>
         </div>
 
-        <Link href="/library" className="nav-cta">
+        <a href="/#/library" className="nav-cta">
           Search archive
-        </Link>
+        </a>
 
         <button
           className="hamburger"
@@ -38,12 +38,12 @@ export default function Navbar() {
       </div>
 
       <div className="nav-mobile" id="navMobile">
-        <Link href="/" className="nav-link">
+        <a href="/#/home" className="nav-link">
           Home
-        </Link>
-        <Link href="/library" className="nav-link">
+        </a>
+        <a href="/#/library" className="nav-link">
           Library
-        </Link>
+        </a>
         <Link href="/sources" className="nav-link">
           Sources
         </Link>
