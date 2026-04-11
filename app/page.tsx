@@ -1,12 +1,9 @@
 import PageShell from "@/src/components/layout/PageShell";
-import SearchBar from "@/src/components/archive/SearchBar";
 import Script from "next/script";
 
 export default function Home() {
   return (
     <PageShell>
-      <SearchBar />
-
       <main id="app"></main>
 
       <noscript>
