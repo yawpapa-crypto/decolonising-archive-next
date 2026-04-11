@@ -1,11 +1,9 @@
-import Navbar from "@/src/components/layout/Navbar";
+import PageShell from "@/src/components/layout/PageShell";
 import Script from "next/script";
 
 export default function Home() {
   return (
-    <>
-      <Navbar />
-
+    <PageShell>
       <main id="app"></main>
 
       <noscript>
@@ -20,6 +18,6 @@ export default function Home() {
         strategy="afterInteractive"
         type="module"
       />
-    </>
+    </PageShell>
   );
 }
