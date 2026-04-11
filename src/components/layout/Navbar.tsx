@@ -1,27 +1,32 @@
+import Link from "next/link";
+
 export default function Navbar() {
   return (
     <nav className="nav">
       <div className="nav-inner">
-        <a href="#/home" className="nav-logo" data-page="home">
+        <Link href="/" className="nav-logo">
           DECOLONISING ARCHIVE
-        </a>
+        </Link>
+
         <div className="nav-links">
-          <a href="#/home" className="nav-link" data-page="home">
+          <Link href="/" className="nav-link">
             Home
-          </a>
-          <a href="#/library" className="nav-link" data-page="library">
+          </Link>
+          <Link href="/library" className="nav-link">
             Library
-          </a>
-          <a href="#/sources" className="nav-link" data-page="sources">
+          </Link>
+          <Link href="/sources" className="nav-link">
             Sources
-          </a>
-          <a href="#/about" className="nav-link" data-page="about">
+          </Link>
+          <Link href="/about" className="nav-link">
             About
-          </a>
+          </Link>
         </div>
-        <button className="nav-cta" data-page="library">
+
+        <Link href="/library" className="nav-cta">
           Search archive
-        </button>
+        </Link>
+
         <button
           className="hamburger"
           id="hamburger"
@@ -33,18 +38,18 @@ export default function Navbar() {
       </div>
 
       <div className="nav-mobile" id="navMobile">
-        <a href="#/home" className="nav-link" data-page="home">
+        <Link href="/" className="nav-link">
           Home
-        </a>
-        <a href="#/library" className="nav-link" data-page="library">
+        </Link>
+        <Link href="/library" className="nav-link">
           Library
-        </a>
-        <a href="#/sources" className="nav-link" data-page="sources">
+        </Link>
+        <Link href="/sources" className="nav-link">
           Sources
-        </a>
-        <a href="#/about" className="nav-link" data-page="about">
+        </Link>
+        <Link href="/about" className="nav-link">
           About
-        </a>
+        </Link>
       </div>
     </nav>
   );
