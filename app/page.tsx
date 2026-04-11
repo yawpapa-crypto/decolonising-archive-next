@@ -15,7 +15,7 @@ export default function Home() {
 
       <Script
         src="/assets/js/app.js"
-        strategy="beforeInteractive"
+        strategy="afterInteractive"
         type="module"
       />
     </PageShell>

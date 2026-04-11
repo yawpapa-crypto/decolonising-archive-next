@@ -2148,10 +2148,16 @@ function syncRouteFromHash() { const route = parseHash(); currentPage = route.pa
 
 window.addEventListener("hashchange", syncRouteFromHash);
 
-document.addEventListener("DOMContentLoaded", () => {
+function initArchiveApp() {
   if (!window.location.hash) {
     navigate("home");
     return;
   }
   syncRouteFromHash();
-});
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initArchiveApp);
+} else {
+  initArchiveApp();
+}
