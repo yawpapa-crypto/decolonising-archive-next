@@ -1,23 +1,13 @@
-import PageShell from "@/src/components/layout/PageShell";
-import Script from "next/script";
+"use client";
+
+import { useEffect } from "react";
 
 export default function Home() {
-  return (
-    <PageShell>
-      <main id="app"></main>
+  useEffect(() => {
+    if (!window.location.hash) {
+      window.location.replace("/#/home");
+    }
+  }, []);
 
-      <noscript>
-        <div className="empty noscript-note">
-          This archive needs JavaScript enabled to render the local index and
-          record pages.
-        </div>
-      </noscript>
-
-      <Script
-        src="/assets/js/app.js"
-        strategy="afterInteractive"
-        type="module"
-      />
-    </PageShell>
-  );
+  return null;
 }
