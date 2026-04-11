@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 export default function Navbar() {
   return (
     <nav className="nav">
@@ -15,12 +13,12 @@ export default function Navbar() {
           <a href="/#/library" className="nav-link">
             Library
           </a>
-          <Link href="/sources" className="nav-link">
+          <a href="/#/sources" className="nav-link">
             Sources
-          </Link>
-          <Link href="/about" className="nav-link">
+          </a>
+          <a href="/#/about" className="nav-link">
             About
-          </Link>
+          </a>
         </div>
 
         <a href="/#/library" className="nav-cta">
@@ -44,12 +42,12 @@ export default function Navbar() {
         <a href="/#/library" className="nav-link">
           Library
         </a>
-        <Link href="/sources" className="nav-link">
+        <a href="/#/sources" className="nav-link">
           Sources
-        </Link>
-        <Link href="/about" className="nav-link">
+        </a>
+        <a href="/#/about" className="nav-link">
           About
-        </Link>
+        </a>
       </div>
     </nav>
   );
