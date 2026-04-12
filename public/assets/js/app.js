@@ -1685,7 +1685,7 @@ function renderAbout() {
 
         <h2>Technical Architecture</h2>
         <div class="info-block">
-          <p>Static HTML/CSS/JS · Local record dataset and search index · Expanded taxonomy architecture with ${COLLECTIONS.length}+ collections, ${THEMES.length}+ themes, ${SOURCES.length}+ source pathways, and ${RELATED_SEARCH_INDEX.length.toLocaleString()} related-search routes · Hash-based routing for shareable detail pages · Responsive bordered editorial grid layout · Optional external source handoffs instead of brittle browser-side aggregation · No backend required for core browsing.</p>
+          <p>Static archive interface · Structured local record index and search layer · Expanded taxonomy architecture spanning collections, themes, source pathways, and related-search routes · Stable internal routing for consistent access and navigation · Responsive editorial layout designed for clarity across devices · External source pathways integrated for broader discovery · Built for resilient public browsing, extensibility, and ongoing archival growth.</p>
         </div>
 
         <h2>Data Model</h2>
