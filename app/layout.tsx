@@ -1,0 +1,61 @@
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+import { Analytics } from "@vercel/analytics/react";
+import HashAnalytics from "@/src/components/analytics/HashAnalytics";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: "Decolonising Archive",
+  description:
+    "A growing archive of decolonising knowledge across Africa, the diaspora, and the Global South.",
+  openGraph: {
+    title: "Decolonising Archive",
+    description:
+      "A growing archive of decolonising knowledge across Africa, the diaspora, and the Global South.",
+    url: "https://ared.design",
+    siteName: "Decolonising Archive",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Decolonising Archive",
+      },
+    ],
+    locale: "en_AU",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Decolonising Archive",
+    description:
+      "A growing archive of decolonising knowledge across Africa, the diaspora, and the Global South.",
+    images: ["/og-image.jpg"],
+  },
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <body className={`${geistSans.variable} ${geistMono.variable} min-h-full flex flex-col`}>
+        {children}
+        <HashAnalytics />
+        <Analytics />
+      </body>
+    </html>
+  );
+}
