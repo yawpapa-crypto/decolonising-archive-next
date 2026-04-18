@@ -28,8 +28,7 @@ function normalizeCoreItem(item, index = 0) {
       ? item.publisher
       : item.publisher?.name || '';
 
-  const journalTitle =
-    asArray(item.journals)[0]?.title || '';
+  const journalTitle = asArray(item.journals)[0]?.title || '';
 
   const externalLinks = [];
   if (downloadUrl) externalLinks.push({ label: 'Download PDF', url: downloadUrl });
@@ -83,11 +82,39 @@ function normalizeCoreItem(item, index = 0) {
   };
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function fetchCore(url, apiKey, attempt = 1) {
+  const response = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      Accept: 'application/json',
+    },
+    cache: 'no-store',
+  });
+
+  if (response.ok) {
+    return response.json();
+  }
+
+  const text = await response.text();
+
+  if (attempt < 4 && response.status >= 500) {
+    const delay = 700 * attempt;
+    await sleep(delay);
+    return fetchCore(url, apiKey, attempt + 1);
+  }
+
+  throw new Error(text || `CORE request failed (${response.status})`);
+}
+
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const q = String(searchParams.get('q') || '').trim();
-    const limit = Number(searchParams.get('limit') || '12');
+    const limit = Math.min(Number(searchParams.get('limit') || '10'), 10);
     const offset = Number(searchParams.get('offset') || '0');
     const apiKey = process.env.CORE_API_KEY;
 
@@ -111,28 +138,7 @@ export async function GET(request) {
       `&limit=${limit}` +
       `&offset=${offset}`;
 
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        Accept: 'application/json',
-      },
-      cache: 'no-store',
-    });
-
-    if (!response.ok) {
-      const text = await response.text();
-      return NextResponse.json(
-        {
-          ok: false,
-          error: 'CORE request failed',
-          status: response.status,
-          detail: text,
-        },
-        { status: response.status }
-      );
-    }
-
-    const data = await response.json();
+    const data = await fetchCore(url, apiKey);
     const results = asArray(data.results).map((item, index) =>
       normalizeCoreItem(item, index)
     );
@@ -143,13 +149,15 @@ export async function GET(request) {
       results,
     });
   } catch (error) {
+    console.error('CORE search failed:', error);
+
     return NextResponse.json(
       {
         ok: false,
-        error: 'CORE search failed',
+        error: 'CORE temporarily busy',
         detail: error instanceof Error ? error.message : String(error),
       },
-      { status: 500 }
+      { status: 503 }
     );
   }
 }

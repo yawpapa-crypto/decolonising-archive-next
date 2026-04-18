@@ -1,3 +1,8 @@
+let coreTotalHits = 0;
+let coreOffset = 10;
+let coreLimit = 10;
+let coreLoadingMore = false;
+let mobileFiltersOpen = false;
 const COLLECTIONS = [
   {id:"c001",title:"West African Oral Traditions",icon:"◎",count:847,region:"West Africa",desc:"Oral histories, praise poetry, and spoken knowledge systems — Ifa corpus, griots, and community testimony."},
   {id:"c002",title:"Decolonial Theory Canon",icon:"◈",count:1203,region:"Global",desc:"Foundational texts by Fanon, Cabral, Nkrumah, Wiredu, Gyekye, Mbembe, Santos, Escobar, and beyond."},
@@ -1367,29 +1372,6 @@ function buildExternalDiscovery(query) {
     .filter(source => source.actionUrl);
 }
 
-
-async function logSearchTerm(rawTerm) {
-  const term = String(rawTerm || "")
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, " ")
-    .slice(0, 120);
-
-  if (!term || term.length < 2) return;
-
-  try {
-    await fetch("/api/search-term", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ term }),
-    });
-  } catch (error) {
-    console.error("Failed to log search term:", error);
-  }
-}
-
 function parseHash() {
   const raw = window.location.hash.replace(/^#\/?/, "");
   if (!raw) return {page:"home", recordId:null};
@@ -1743,10 +1725,6 @@ function render() {
 }
 
 let liveResults = [];
-let coreOffset = 0;
-let coreLimit = 10;
-let coreTotalHits = 0;
-let coreLoadingMore = false;
 let liveStatus = {state:"idle", message:"", sources:[]};
 const LIVE_RESULT_CACHE = new Map();
 const TRANSIENT_RESULTS_BY_ID = new Map();
@@ -1765,24 +1743,18 @@ function createHandoffAdapter(id, label, trust) {
 
 const LIVE_SOURCE_ADAPTERS = [
   {
-    id: "core",
-    label: "CORE",
-    trust: 0.9,
+    id:"core",
+    label:"CORE",
+    trust:0.9,
     async search(query, options = {}) {
       const offset = Number(options.offset || 0);
       const limit = Number(options.limit || coreLimit);
-
-      const response = await fetch(
-        `/api/core-search?q=${encodeURIComponent(query)}&limit=${limit}&offset=${offset}`
-      );
+      const response = await fetch(`/api/core-search?q=${encodeURIComponent(query)}&limit=${limit}&offset=${offset}`);
       const data = await response.json();
-
       if (!response.ok || !data.ok) {
-        throw new Error(data.detail || data.error || "CORE search failed");
+        throw new Error(data.detail || data.error || 'CORE search failed');
       }
-
       coreTotalHits = Number(data.totalHits || 0);
-
       return Array.isArray(data.results) ? data.results : [];
     }
   },
@@ -2165,37 +2137,8 @@ function renderRecord() { const record = getRecordByIdAny(selectedRecordId); if 
 function renderLiveStatus(){ const effectiveQuery = getEffectiveSearchQuery(); if (!effectiveQuery || !sourceMode) return '';  return `<div class="source-status"><div class="live-status-detail"><div>${escapeHtml(liveStatus.message || 'Live fallback is ready when local results are sparse.')}</div>${liveStatus.sources && liveStatus.sources.length ? `<div class="live-status-meta">${liveStatus.sources.map(source => `<span class="live-status-chip ${source.state === 'ok' ? 'ok' : source.state === 'fail' ? 'fail' : ''}">${escapeHtml(source.label)}${typeof source.count === 'number' ? ` · ${source.count}` : ''}</span>`).join('')}</div>` : ''}</div></div>`; }
 function getEffectiveSearchQuery(){ const parts = [libraryQuery, filterType, filterRegion, filterCat, filterTheme, filterCollection, filterLanguage].map(value => (value || '').trim()).filter(Boolean); return uniqueValues(parts).join(' '); }
 function refreshBlendedDiscovery(forceLive = false){ const effectiveQuery = getEffectiveSearchQuery(); externalDiscovery = effectiveQuery ? buildExternalDiscovery(effectiveQuery) : []; if (!sourceMode || !effectiveQuery) { if (!effectiveQuery) { liveResults = []; liveStatus = {state:'idle', message:'', sources:[]}; } return Promise.resolve([]); } if (forceLive || localResults.length < 24 || liveResults.length === 0) { return maybeFetchLiveResults(effectiveQuery); } return Promise.resolve(liveResults); }
-function renderLibrary() { const effectiveQuery = getEffectiveSearchQuery(); const types = uniqueValues(RECORDS.map(record => record.type)).sort(); const regions = uniqueValues(RECORDS.map(record => record.region)).sort(); const cats = uniqueValues(RECORDS.map(record => record.cat)).sort(); const themeOptions = buildFacetOptions(localResults, record => [...record.themes, ...record.concepts], 10); const collectionOptions = buildFacetOptions(localResults, record => [record.collection], 8); const languageOptions = buildFacetOptions(localResults, record => record.language, 8); const displayedLive = sourceMode ? liveResults.filter(item => getResultMode(item) === 'live') : []; const displayedExternal = sourceMode ? liveResults.filter(item => getResultMode(item) === 'external_handoff') : []; const displayedLocal = filterDisplayedRecords(localResults); const canLoadMoreCore = displayedLive.length < coreTotalHits; const relatedSearches = getRelatedSearchSuggestions(effectiveQuery || libraryQuery || filterTheme || filterCollection || filterLanguage, 18); const collectionSuggestions = getCollectionSuggestions(effectiveQuery || libraryQuery || filterTheme || filterCollection, 8); const hasFilter = filterType || filterRegion || filterCat || filterTheme || filterCollection || filterLanguage || libraryQuery; const localOnlyCount = displayedLocal.length; const liveOnlyCount = displayedLive.length; const handoffCount = displayedExternal.length; const totalDisplayed = displayedLive.length + displayedLocal.length + displayedExternal.length; return `<div class="page active"><div class="library-layout"><aside class="sidebar">${hasFilter ? `<button class="clear-btn" id="clearBtn" type="button">Clear all filters</button>` : ''}<div class="sidebar-section"><div class="sidebar-label">Record type</div>${types.map(type => `<label class="filter-opt"><input type="radio" name="type" value="${escapeHtml(type)}" ${filterType === type ? 'checked' : ''}/><span>${escapeHtml(type)}</span></label>`).join('')}</div><div class="sidebar-section"><div class="sidebar-label">Region</div>${regions.map(region => `<label class="filter-opt"><input type="radio" name="region" value="${escapeHtml(region)}" ${filterRegion === region ? 'checked' : ''}/><span>${escapeHtml(region)}</span></label>`).join('')}</div><div class="sidebar-section"><div class="sidebar-label">Category</div>${cats.map(cat => `<label class="filter-opt"><input type="radio" name="cat" value="${escapeHtml(cat)}" ${filterCat === cat ? 'checked' : ''}/><span>${escapeHtml(cat)}</span></label>`).join('')}</div>${collectionOptions.length ? `<div class="sidebar-section"><div class="sidebar-label">Collection</div>${collectionOptions.map(option => `<label class="filter-opt"><input type="radio" name="collection" value="${escapeHtml(option.value)}" ${filterCollection === option.value ? 'checked' : ''}/><span>${escapeHtml(option.value)} (${option.count})</span></label>`).join('')}</div>` : ''}${themeOptions.length ? `<div class="sidebar-section"><div class="sidebar-label">Theme</div>${themeOptions.map(option => `<label class="filter-opt"><input type="radio" name="theme" value="${escapeHtml(option.value)}" ${filterTheme === option.value ? 'checked' : ''}/><span>${escapeHtml(option.value)} (${option.count})</span></label>`).join('')}</div>` : ''}${languageOptions.length ? `<div class="sidebar-section"><div class="sidebar-label">Language</div>${languageOptions.map(option => `<label class="filter-opt"><input type="radio" name="language" value="${escapeHtml(option.value)}" ${filterLanguage === option.value ? 'checked' : ''}/><span>${escapeHtml(option.value)} (${option.count})</span></label>`).join('')}</div>` : ''}</aside><div class="main-results"><div class="search-bar"><input type="text" id="mainSearch" value="${escapeHtml(libraryQuery)}" placeholder="Search the local archive index, live sources, and source handoffs…" autocomplete="off"/><button id="localSearchBtn" type="button">Search</button><button class="secondary ${sourceMode ? 'live-on' : 'live-off'}" id="sourceSearchBtn" type="button">${sourceMode ? 'Live sources on' : 'Live sources off'}</button></div><div class="results-meta"><span>${totalDisplayed} total result${totalDisplayed !== 1 ? 's' : ''}${effectiveQuery ? ` for “${escapeHtml(effectiveQuery)}”` : ''}</span><span class="meta-separator" aria-hidden="true">|</span><span>${liveOnlyCount} live</span><span class="meta-separator" aria-hidden="true">|</span><span>${localOnlyCount} local</span><span class="meta-separator" aria-hidden="true">|</span><span>${handoffCount} external</span><span class="meta-separator" aria-hidden="true">|</span><span>${RELATED_SEARCH_INDEX.length.toLocaleString()} related searches</span></div>${renderLiveStatus()}<div class="results-stack">${displayedLive.length ? `<section class="results-section"><div class="results-section-title"><h3>Live results</h3><span>Results from live APIs including CORE</span></div><div class="card-grid">${displayedLive.map(renderCard).join('')}</div>${canLoadMoreCore ? `<div class="load-more-wrap"><button id="loadMoreCoreBtn" class="load-more-btn" type="button">${coreLoadingMore ? 'Loading…' : 'Load more CORE results'}</button></div>` : ``}</section>` : ``}${displayedLocal.length ? `<section class="results-section"><div class="results-section-title"><h3>Local archive results</h3><span>Records from the local archive index</span></div><div class="card-grid">${displayedLocal.map(renderCard).join('')}</div></section>` : `<div class="empty"><h3>No local match yet</h3><p>No local archive records matched this search.</p></div>`}${displayedExternal.length ? `<section class="results-section"><div class="results-section-title"><h3>External results</h3><span>Source handoffs and external discovery links</span></div><div class="card-grid">${displayedExternal.map(renderCard).join('')}</div></section>` : ``}${relatedSearches.length ? `<section class="results-section"><div class="results-section-title"><h3>Related Searches</h3><span>${RELATED_SEARCH_INDEX.length.toLocaleString()} discovery routes</span></div>${renderRelatedSearchTags(relatedSearches)}</section>` : ''}${collectionSuggestions.length ? `<section class="results-section"><div class="results-section-title"><h3>Collection Pathways</h3><span>${COLLECTIONS.length} editorial browse routes</span></div><div class="coll-grid">${collectionSuggestions.map(renderCollectionCard).join('')}</div></section>` : ''}</div></div></div></div>`; }
-function applyLibraryQuery(value, clearSources = true) { libraryQuery = value.trim(); coreOffset = 0; coreTotalHits = 0; localResults = searchLocalRecords(getEffectiveSearchQuery() || libraryQuery); if (clearSources) { liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message: getEffectiveSearchQuery() ? 'Local-first results loaded. Live fallback is blending API and handoff results.' : '', sources:[]}; } refreshBlendedDiscovery(true); }
-async function loadMoreCoreResults() {
-  const query = getEffectiveSearchQuery();
-  if (!query || coreLoadingMore) return;
-
-  const coreAdapter = LIVE_SOURCE_ADAPTERS.find(source => source.id === 'core');
-  if (!coreAdapter) return;
-
-  coreLoadingMore = true;
-  render();
-
-  try {
-    const nextOffset = coreOffset + coreLimit;
-    const newResults = await coreAdapter.search(query, {
-      offset: nextOffset,
-      limit: coreLimit,
-    });
-
-    coreOffset = nextOffset;
-
-    const merged = dedupeBlendedResults([...liveResults, ...newResults], query);
-    liveResults = merged;
-  } catch (error) {
-    console.error('Failed to load more CORE results:', error);
-  } finally {
-    coreLoadingMore = false;
-    render();
-  }
-}
-
+function renderLibrary() { const effectiveQuery = getEffectiveSearchQuery(); const types = uniqueValues(RECORDS.map(record => record.type)).sort(); const regions = uniqueValues(RECORDS.map(record => record.region)).sort(); const cats = uniqueValues(RECORDS.map(record => record.cat)).sort(); const themeOptions = buildFacetOptions(localResults, record => [...record.themes, ...record.concepts], 10); const collectionOptions = buildFacetOptions(localResults, record => [record.collection], 8); const languageOptions = buildFacetOptions(localResults, record => record.language, 8); const displayedLive = sourceMode ? liveResults.filter(item => getResultMode(item) === 'live') : []; const displayedExternal = sourceMode ? liveResults.filter(item => getResultMode(item) === 'external_handoff') : []; const displayedLocal = filterDisplayedRecords(localResults); const canLoadMoreCore = displayedLive.length < coreTotalHits; const relatedSearches = getRelatedSearchSuggestions(effectiveQuery || libraryQuery || filterTheme || filterCollection || filterLanguage, 18); const collectionSuggestions = getCollectionSuggestions(effectiveQuery || libraryQuery || filterTheme || filterCollection, 8); const topThemes = getFeaturedThemes(12); const topSources = SOURCES.filter(source => source.access === "search").slice(0, 6); const hasFilter = filterType || filterRegion || filterCat || filterTheme || filterCollection || filterLanguage || libraryQuery; const localOnlyCount = displayedLocal.length; const liveOnlyCount = displayedLive.length; const handoffCount = displayedExternal.length; const totalDisplayed = displayedLive.length + displayedLocal.length + displayedExternal.length; return `<div class="page active"><div class="library-layout"><aside class="sidebar ${mobileFiltersOpen ? 'mobile-open' : ''}">${hasFilter ? `<button class="clear-btn" id="clearBtn" type="button">Clear all filters</button>` : ''}<div class="sidebar-section"><div class="sidebar-label">Record type</div>${types.map(type => `<label class="filter-opt"><input type="radio" name="type" value="${escapeHtml(type)}" ${filterType === type ? 'checked' : ''}/><span>${escapeHtml(type)}</span></label>`).join('')}</div><div class="sidebar-section"><div class="sidebar-label">Region</div>${regions.map(region => `<label class="filter-opt"><input type="radio" name="region" value="${escapeHtml(region)}" ${filterRegion === region ? 'checked' : ''}/><span>${escapeHtml(region)}</span></label>`).join('')}</div><div class="sidebar-section"><div class="sidebar-label">Category</div>${cats.map(cat => `<label class="filter-opt"><input type="radio" name="cat" value="${escapeHtml(cat)}" ${filterCat === cat ? 'checked' : ''}/><span>${escapeHtml(cat)}</span></label>`).join('')}</div>${collectionOptions.length ? `<div class="sidebar-section"><div class="sidebar-label">Collection</div>${collectionOptions.map(option => `<label class="filter-opt"><input type="radio" name="collection" value="${escapeHtml(option.value)}" ${filterCollection === option.value ? 'checked' : ''}/><span>${escapeHtml(option.value)} (${option.count})</span></label>`).join('')}</div>` : ''}${themeOptions.length ? `<div class="sidebar-section"><div class="sidebar-label">Theme</div>${themeOptions.map(option => `<label class="filter-opt"><input type="radio" name="theme" value="${escapeHtml(option.value)}" ${filterTheme === option.value ? 'checked' : ''}/><span>${escapeHtml(option.value)} (${option.count})</span></label>`).join('')}</div>` : ''}${languageOptions.length ? `<div class="sidebar-section"><div class="sidebar-label">Language</div>${languageOptions.map(option => `<label class="filter-opt"><input type="radio" name="language" value="${escapeHtml(option.value)}" ${filterLanguage === option.value ? 'checked' : ''}/><span>${escapeHtml(option.value)} (${option.count})</span></label>`).join('')}</div>` : ''}</aside><div class="main-results"><div class="search-bar"><input type="text" id="mainSearch" value="${escapeHtml(libraryQuery)}" placeholder="Search the local archive index, live sources, and source handoffs…" autocomplete="off"/><button id="localSearchBtn" type="button">Search</button><button class="secondary ${sourceMode ? 'live-on' : 'live-off'}" id="sourceSearchBtn" type="button">${sourceMode ? 'Live sources on' : 'Live sources off'}</button></div><div class="mobile-filter-bar"><button id="mobileFilterToggle" class="mobile-filter-btn ${mobileFiltersOpen ? 'active' : ''}" type="button">${mobileFiltersOpen ? 'Hide filters' : 'Show filters'}</button>${hasFilter ? `<button id="mobileClearFilters" class="mobile-clear-btn" type="button">Clear all</button>` : ``}</div><div class="results-meta"><span>${totalDisplayed} total result${totalDisplayed !== 1 ? 's' : ''}${effectiveQuery ? ` for “${escapeHtml(effectiveQuery)}”` : ''}</span><span class="meta-separator" aria-hidden="true">|</span><span>${liveOnlyCount} live</span><span class="meta-separator" aria-hidden="true">|</span><span>${localOnlyCount} local</span><span class="meta-separator" aria-hidden="true">|</span><span>${handoffCount} external</span><span class="meta-separator" aria-hidden="true">|</span><span>${RELATED_SEARCH_INDEX.length.toLocaleString()} related searches</span></div>${renderLiveStatus()}<div class="results-stack">${displayedLive.length ? `<section class="results-section"><div class="results-section-title"><h3>Live results</h3><span>Results from live APIs including CORE</span></div><div class="card-grid">${displayedLive.map(renderCard).join('')}</div>${canLoadMoreCore ? `<div class="load-more-wrap"><button id="loadMoreCoreBtn" class="load-more-btn" type="button">${coreLoadingMore ? 'Loading…' : 'Load more CORE results'}</button></div>` : ``}</section>` : ``}${displayedLocal.length ? `<section class="results-section"><div class="results-section-title"><h3>Local archive results</h3><span>Records from the local archive index</span></div><div class="card-grid">${displayedLocal.map(renderCard).join('')}</div></section>` : `<div class="empty empty-guide"><h3>No local match yet</h3><p>No local archive records matched this search. Try one of these guided paths.</p>${relatedSearches.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Related searches</div>${renderRelatedSearchTags(relatedSearches.slice(0, 8))}</div>` : ``}${topThemes.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Top themes</div>${renderRelatedSearchTags(topThemes.slice(0, 10))}</div>` : ``}${collectionSuggestions.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Collection pathways</div><div class="coll-grid">${collectionSuggestions.slice(0, 4).map(renderCollectionCard).join('')}</div></div>` : ``}${topSources.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Source pathways</div><div class="source-grid">${topSources.map(source => renderSourceCard(source)).join('')}</div></div>` : ``}</div>`}${displayedExternal.length ? `<section class="results-section"><div class="results-section-title"><h3>External results</h3><span>Source handoffs and external discovery links</span></div><div class="card-grid">${displayedExternal.map(renderCard).join('')}</div></section>` : ``}${relatedSearches.length ? `<section class="results-section"><div class="results-section-title"><h3>Related Searches</h3><span>${RELATED_SEARCH_INDEX.length.toLocaleString()} discovery routes</span></div>${renderRelatedSearchTags(relatedSearches)}</section>` : ''}${collectionSuggestions.length ? `<section class="results-section"><div class="results-section-title"><h3>Collection Pathways</h3><span>${COLLECTIONS.length} editorial browse routes</span></div><div class="coll-grid">${collectionSuggestions.map(renderCollectionCard).join('')}</div></section>` : ''}</div></div></div></div>`; }
+function applyLibraryQuery(value, clearSources = true) { libraryQuery = value.trim(); localResults = searchLocalRecords(getEffectiveSearchQuery() || libraryQuery); if (clearSources) { liveResults = []; externalDiscovery = []; coreOffset = coreLimit; coreTotalHits = 0; liveStatus = {state:'idle', message: getEffectiveSearchQuery() ? 'Local-first results loaded. Live fallback is blending API and handoff results.' : '', sources:[]}; } refreshBlendedDiscovery(true); }
 function bindCardEvents() {
   document.querySelectorAll(".card[data-id]").forEach(card => {
     const open = () => {
@@ -2221,13 +2164,41 @@ function bindCardEvents() {
     });
   });
 }
-function bindEvents() { document.querySelectorAll('[data-page]').forEach(element => { element.addEventListener('click', event => { const page = element.dataset.page; if (!page) return; event.preventDefault(); if (element.dataset.collection) { filterType = ''; filterRegion = ''; filterCat = ''; filterTheme = ''; filterLanguage = ''; filterCollection = element.dataset.collection; libraryQuery = ''; localResults = searchLocalRecords(getEffectiveSearchQuery()); liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'', sources:[]}; refreshBlendedDiscovery(true); } navigate(page); }); }); const hamburger = document.getElementById('hamburger'); const navMobile = document.getElementById('navMobile'); if (hamburger && navMobile) hamburger.addEventListener('click', () => navMobile.classList.toggle('open')); document.querySelectorAll('.suggestion[data-q], .related-search[data-related]').forEach(element => { element.addEventListener('click', () => { applyLibraryQuery(element.dataset.q || element.dataset.related || ''); navigate('library'); }); }); const heroInput = document.getElementById('heroSearch'); const heroButton = document.getElementById('heroSearchBtn'); if (heroInput && heroButton) { const submitHero = async () => { const submittedTerm = heroInput.value; await logSearchTerm(submittedTerm); applyLibraryQuery(submittedTerm); currentPage = 'library'; selectedRecordId = null; navigate('library'); requestAnimationFrame(() => { render(); const mainSearchAfter = document.getElementById('mainSearch'); if (mainSearchAfter) mainSearchAfter.value = libraryQuery; }); }; heroButton.addEventListener('click', () => { submitHero(); }); heroInput.addEventListener('keydown', event => { if (event.key === 'Enter') submitHero(); }); } const mainSearch = document.getElementById('mainSearch'); const localSearchBtn = document.getElementById('localSearchBtn'); const sourceSearchBtn = document.getElementById('sourceSearchBtn'); if (mainSearch && localSearchBtn) { const submitSearch = async () => { const submittedTerm = mainSearch.value; await logSearchTerm(submittedTerm); applyLibraryQuery(submittedTerm); render(); }; localSearchBtn.addEventListener('click', () => { submitSearch(); }); mainSearch.addEventListener('keydown', event => { if (event.key === 'Enter') submitSearch(); }); mainSearch.addEventListener('input', () => { clearTimeout(debounceTimer); debounceTimer = window.setTimeout(() => { applyLibraryQuery(mainSearch.value); render(); }, 260); }); } if (sourceSearchBtn) { sourceSearchBtn.addEventListener('click', () => { sourceMode = !sourceMode; if (sourceMode) { refreshBlendedDiscovery(true); } else { liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'Live fallback is off. Showing local archive records only.', sources:[]}; } render(); }); } document.querySelectorAll('input[name="type"], input[name="region"], input[name="cat"], input[name="theme"], input[name="collection"], input[name="language"]').forEach(input => { input.addEventListener('change', () => { const checked = document.querySelector('input[name="type"]:checked'); filterType = checked ? checked.value : ''; const checkedRegion = document.querySelector('input[name="region"]:checked'); filterRegion = checkedRegion ? checkedRegion.value : ''; const checkedCat = document.querySelector('input[name="cat"]:checked'); filterCat = checkedCat ? checkedCat.value : ''; const checkedTheme = document.querySelector('input[name="theme"]:checked'); filterTheme = checkedTheme ? checkedTheme.value : ''; const checkedCollection = document.querySelector('input[name="collection"]:checked'); filterCollection = checkedCollection ? checkedCollection.value : ''; const checkedLanguage = document.querySelector('input[name="language"]:checked'); filterLanguage = checkedLanguage ? checkedLanguage.value : ''; localResults = searchLocalRecords(getEffectiveSearchQuery()); refreshBlendedDiscovery(true); render(); }); }); const clearBtn = document.getElementById('clearBtn'); if (clearBtn) { clearBtn.addEventListener('click', () => { filterType = ''; filterRegion = ''; filterCat = ''; filterTheme = ''; filterCollection = ''; filterLanguage = ''; libraryQuery = ''; localResults = [...RECORDS]; liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'', sources:[]}; render(); }); } const loadMoreCoreBtn = document.getElementById('loadMoreCoreBtn');
-if (loadMoreCoreBtn) {
-  loadMoreCoreBtn.addEventListener('click', () => {
-    loadMoreCoreResults();
-  });
+
+async function loadMoreCoreResults() {
+  if (coreLoadingMore || !sourceMode) return;
+  const effectiveQuery = getEffectiveSearchQuery();
+  if (!effectiveQuery) return;
+  coreLoadingMore = true;
+  render();
+  try {
+    const coreAdapter = LIVE_SOURCE_ADAPTERS.find(adapter => adapter.id === 'core');
+    if (!coreAdapter) throw new Error('CORE adapter missing');
+    const nextBatch = await coreAdapter.search(effectiveQuery, {
+      offset: coreOffset,
+      limit: coreLimit
+    });
+    if (Array.isArray(nextBatch) && nextBatch.length) {
+      const existingIds = new Set(liveResults.map(item => item.id));
+      nextBatch.forEach(item => {
+        if (!existingIds.has(item.id)) liveResults.push(item);
+      });
+      coreOffset += coreLimit;
+    }
+  } catch (error) {
+    console.warn('Failed to load more CORE results:', error);
+    liveStatus = {
+      state:'warning',
+      message:'CORE is temporarily busy. Try loading more again.',
+      sources:['CORE']
+    };
+  } finally {
+    coreLoadingMore = false;
+    render();
+  }
 }
-bindCardEvents(); document.querySelectorAll('[data-media-root] img').forEach(image => { image.addEventListener('error', () => { const mediaRoot = image.closest('[data-media-root]'); if (mediaRoot) mediaRoot.classList.add('hidden'); }, {once:true}); }); }
+
+function bindEvents() { document.querySelectorAll('[data-page]').forEach(element => { element.addEventListener('click', event => { const page = element.dataset.page; if (!page) return; event.preventDefault(); if (element.dataset.collection) { filterType = ''; filterRegion = ''; filterCat = ''; filterTheme = ''; filterLanguage = ''; filterCollection = element.dataset.collection; libraryQuery = ''; localResults = searchLocalRecords(getEffectiveSearchQuery()); liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'', sources:[]}; refreshBlendedDiscovery(true); } navigate(page); }); }); const hamburger = document.getElementById('hamburger'); const navMobile = document.getElementById('navMobile'); if (hamburger && navMobile) hamburger.addEventListener('click', () => navMobile.classList.toggle('open')); document.querySelectorAll('.suggestion[data-q], .related-search[data-related]').forEach(element => { element.addEventListener('click', () => { applyLibraryQuery(element.dataset.q || element.dataset.related || ''); navigate('library'); }); }); const heroInput = document.getElementById('heroSearch'); const heroButton = document.getElementById('heroSearchBtn'); if (heroInput && heroButton) { const submitHero = () => { applyLibraryQuery(heroInput.value); currentPage = 'library'; selectedRecordId = null; navigate('library'); requestAnimationFrame(() => { render(); const mainSearchAfter = document.getElementById('mainSearch'); if (mainSearchAfter) mainSearchAfter.value = libraryQuery; }); }; heroButton.addEventListener('click', submitHero); heroInput.addEventListener('keydown', event => { if (event.key === 'Enter') submitHero(); }); } const mainSearch = document.getElementById('mainSearch'); const localSearchBtn = document.getElementById('localSearchBtn'); const sourceSearchBtn = document.getElementById('sourceSearchBtn'); if (mainSearch && localSearchBtn) { const submitSearch = () => { applyLibraryQuery(mainSearch.value); render(); }; localSearchBtn.addEventListener('click', submitSearch); mainSearch.addEventListener('keydown', event => { if (event.key === 'Enter') submitSearch(); }); mainSearch.addEventListener('input', () => { clearTimeout(debounceTimer); debounceTimer = window.setTimeout(() => { applyLibraryQuery(mainSearch.value); render(); }, 260); }); } const loadMoreCoreBtn = document.getElementById('loadMoreCoreBtn'); if (loadMoreCoreBtn) { loadMoreCoreBtn.addEventListener('click', () => { loadMoreCoreResults(); }); } if (sourceSearchBtn) { sourceSearchBtn.addEventListener('click', () => { sourceMode = !sourceMode; if (sourceMode) { refreshBlendedDiscovery(true); } else { liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'Live fallback is off. Showing local archive records only.', sources:[]}; } render(); }); } document.querySelectorAll('input[name="type"], input[name="region"], input[name="cat"], input[name="theme"], input[name="collection"], input[name="language"]').forEach(input => { input.addEventListener('change', () => { const checked = document.querySelector('input[name="type"]:checked'); filterType = checked ? checked.value : ''; const checkedRegion = document.querySelector('input[name="region"]:checked'); filterRegion = checkedRegion ? checkedRegion.value : ''; const checkedCat = document.querySelector('input[name="cat"]:checked'); filterCat = checkedCat ? checkedCat.value : ''; const checkedTheme = document.querySelector('input[name="theme"]:checked'); filterTheme = checkedTheme ? checkedTheme.value : ''; const checkedCollection = document.querySelector('input[name="collection"]:checked'); filterCollection = checkedCollection ? checkedCollection.value : ''; const checkedLanguage = document.querySelector('input[name="language"]:checked'); filterLanguage = checkedLanguage ? checkedLanguage.value : ''; localResults = searchLocalRecords(getEffectiveSearchQuery()); refreshBlendedDiscovery(true); render(); }); }); const clearBtn = document.getElementById('clearBtn'); if (clearBtn) { clearBtn.addEventListener('click', () => { filterType = ''; filterRegion = ''; filterCat = ''; filterTheme = ''; filterCollection = ''; filterLanguage = ''; libraryQuery = ''; localResults = [...RECORDS]; liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'', sources:[]}; render(); }); } bindCardEvents(); document.querySelectorAll('[data-media-root] img').forEach(image => { image.addEventListener('error', () => { const mediaRoot = image.closest('[data-media-root]'); if (mediaRoot) mediaRoot.classList.add('hidden'); }, {once:true}); }); }
 function syncRouteFromHash() { const route = parseHash(); currentPage = route.page; selectedRecordId = route.recordId; if (currentPage === 'record' && selectedRecordId && !getRecordByIdAny(selectedRecordId)) { currentPage = 'library'; selectedRecordId = null; } document.querySelectorAll('.nav-link').forEach(link => { link.classList.toggle('active', link.dataset.page === currentPage); }); render(); window.scrollTo({top:0, behavior:'auto'}); }
 
 window.addEventListener("hashchange", syncRouteFromHash);
