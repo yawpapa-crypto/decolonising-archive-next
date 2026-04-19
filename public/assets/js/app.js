@@ -1596,11 +1596,6 @@ function renderHome() {
           </div>
         </div>
       </section>
-
-      <footer>
-        <span>Decolonising Archive · Open access · CC0 metadata</span>
-        <span>Yaw Ofosu-Asare · Founding editor</span>
-      </footer>
     </div>
   `;
 }
@@ -1660,11 +1655,6 @@ function renderSources() {
           <div class="protocol-cell"><strong>Rights Handling</strong>Metadata and summaries can remain open while the underlying source retains its own access restrictions, licences, or viewing conditions.</div>
         </div>
       </section>
-
-      <footer>
-        <span>Decolonising Archive · Open access · CC0 metadata</span>
-        <span>Source directory updated for static hosting</span>
-      </footer>
     </div>
   `;
 }
@@ -1706,10 +1696,6 @@ function renderAbout() {
         <h2>Contact &amp; Partnership</h2>
         <p>For institutional partnership, bulk data access, or repatriation documentation enquiries, contact through the archive editor. For archive contribution or source pathway additions, reach out via <a href="https://yofosuasare.com" class="inline-link">yofosuasare.com</a>.</p>
       </div>
-      <footer>
-        <span>Decolonising Archive · Open access · CC0 metadata</span>
-        <span>Yaw Ofosu-Asare · Founding editor</span>
-      </footer>
     </div>
   `;
 }

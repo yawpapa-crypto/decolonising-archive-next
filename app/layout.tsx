@@ -53,6 +53,17 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} min-h-full flex flex-col`}>
         {children}
+
+        <footer className="site-footer">
+          <a href="/terms">Terms of Use</a>
+          <span> · </span>
+          <a href="/copyright">Copyright &amp; Permissions</a>
+          <span> · </span>
+          <a href="/privacy">Privacy Policy</a>
+          <span> · </span>
+          <a href="/takedown">Takedown / Rights Contact</a>
+        </footer>
+
         <HashAnalytics />
         <Analytics />
       </body>
