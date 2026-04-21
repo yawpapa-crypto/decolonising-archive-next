@@ -1,0 +1,115 @@
+[
+  {
+    "id": "l001",
+    "title": "Kente Cloth and the Architecture of Akan Identity",
+    "type": "Textile",
+    "creator": "Asante Weavers, Bonwire",
+    "region": "West Africa",
+    "source": "Local Bank",
+    "summary": "Kente is not merely decorative cloth. Each named pattern encodes cosmology, genealogy, and social ethics.",
+    "tags": [
+      "kente",
+      "Ghana",
+      "visual sovereignty"
+    ],
+    "published": true,
+    "abstract": "Kente functions as a textile archive of Akan political memory and moral philosophy.",
+    "description": [
+      "This entry treats Kente as both material culture and epistemic infrastructure.",
+      "The archive value lies not only in surviving textiles but in the vocabularies and relationships that keep those meanings legible."
+    ],
+    "collection": "African Material Culture",
+    "institution": "Bonwire weaving communities",
+    "sourceUrl": "",
+    "sourceActionLabel": "",
+    "language": [
+      "Twi",
+      "English"
+    ],
+    "keywords": [
+      "pattern names",
+      "Asante court culture",
+      "weaving knowledge"
+    ],
+    "notes": [
+      "Community custodianship takes priority over extractive image capture or reproduction."
+    ],
+    "archiveIdentifier": "DA-TEXTILE-001",
+    "recordIdentifier": "AKAN-KENTE-001"
+  },
+  {
+    "id": "l002",
+    "title": "The Wretched of the Earth",
+    "type": "Book",
+    "creator": "Frantz Fanon",
+    "region": "North Africa / Diaspora",
+    "source": "Open Library",
+    "summary": "A foundational anti-colonial text analysing colonial violence, political subject formation, and liberation.",
+    "tags": [
+      "Fanon",
+      "decolonisation",
+      "political theory"
+    ],
+    "published": true,
+    "abstract": "A foundational anti-colonial text analysing colonial violence, political subject formation, and the difficult psychic work of national liberation.",
+    "description": [
+      "This record centres Fanon's argument that colonialism reorganises both institutions and interior life.",
+      "Within the archive, the text operates as a major theoretical hinge linking liberation movements in Africa to broader decolonial discourse across the Global South and diaspora."
+    ],
+    "collection": "Decolonial Theory Canon",
+    "institution": "Open Library discovery pathway",
+    "sourceUrl": "https://openlibrary.org/search?q=The%20Wretched%20of%20the%20Earth",
+    "sourceActionLabel": "Open discovery page",
+    "language": [
+      "French",
+      "English"
+    ],
+    "keywords": [
+      "colonial violence",
+      "national culture",
+      "liberation struggle"
+    ],
+    "notes": [
+      "Different editions and translations vary in apparatus, forewords, and pagination."
+    ],
+    "archiveIdentifier": "DA-BOOK-002",
+    "recordIdentifier": "FANON-WE-1961"
+  },
+  {
+    "id": "l003",
+    "title": "Decolonising Design in Africa",
+    "type": "Book",
+    "creator": "Yaw Ofosu-Asare",
+    "region": "Africa / Global",
+    "source": "Local Bank",
+    "summary": "Maps the epistemological stakes of design education across the African continent through Sankofa methodology.",
+    "tags": [
+      "design",
+      "Africa",
+      "Sankofa"
+    ],
+    "published": true,
+    "abstract": "A contemporary study of decolonial design education across Africa, using Sankofa as both analytic lens and design method.",
+    "description": [
+      "This record documents a recent intervention in design studies that repositions African knowledge systems as generative rather than supplementary.",
+      "The text is useful as both research source and programmatic framework."
+    ],
+    "collection": "Decolonial Theory Canon",
+    "institution": "Routledge",
+    "sourceUrl": "https://www.routledge.com",
+    "sourceActionLabel": "Visit publisher",
+    "language": [
+      "English"
+    ],
+    "keywords": [
+      "design education",
+      "African methodologies",
+      "curriculum reform"
+    ],
+    "notes": [
+      "Useful companion record for Sankofa-focused entries and related design pedagogy material."
+    ],
+    "archiveIdentifier": "DA-BOOK-003",
+    "recordIdentifier": "YOA-DDA-2024"
+  }
+]

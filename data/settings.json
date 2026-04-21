@@ -1,0 +1,27 @@
+{
+  "siteTitle": "Decolonising Archive",
+  "navPrimaryLabel": "Library",
+  "navSourcesLabel": "Sources",
+  "navAboutLabel": "About",
+  "footerLeftText": "Decolonising Archive, local-first discovery with live pathways.",
+  "footerLinks": [
+    {
+      "label": "Privacy",
+      "href": "/privacy"
+    },
+    {
+      "label": "Terms",
+      "href": "/terms"
+    },
+    {
+      "label": "Copyright",
+      "href": "/copyright"
+    },
+    {
+      "label": "Takedown",
+      "href": "/takedown"
+    }
+  ],
+  "legalEyebrow": "Archive policies",
+  "archiveNote": "A working archive of decolonising knowledge across Africa, the diaspora, and the Global South."
+}

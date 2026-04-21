@@ -1,0 +1,29 @@
+[
+  {
+    "id": "c001",
+    "title": "West African Oral Traditions",
+    "icon": "\u25ce",
+    "count": 847,
+    "region": "West Africa",
+    "description": "Oral histories, praise poetry, and spoken knowledge systems, including Ifa corpus, griots, and community testimony.",
+    "published": true
+  },
+  {
+    "id": "c002",
+    "title": "Decolonial Theory Canon",
+    "icon": "\u25c8",
+    "count": 1203,
+    "region": "Global",
+    "description": "Foundational texts by Fanon, Cabral, Nkrumah, Wiredu, Gyekye, Mbembe, Santos, Escobar, and beyond.",
+    "published": true
+  },
+  {
+    "id": "c003",
+    "title": "African Material Culture",
+    "icon": "\u25a3",
+    "count": 3421,
+    "region": "Pan-Africa",
+    "description": "Textiles, artefacts, ceramics, metals, and objects as knowledge carriers, including documentation of looted and repatriated works.",
+    "published": true
+  }
+]

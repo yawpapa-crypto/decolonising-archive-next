@@ -1,8 +1,8 @@
-import { withPayload } from '@payloadcms/next/withPayload'
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // keep this empty for now unless you already have options here
+  turbopack: {
+    root: "/Users/E127943/Library/CloudStorage/OneDrive-RMITUniversity/Desktop/decolonising-archive-next",
+  },
 }
 
-export default withPayload(nextConfig)
+export default nextConfig

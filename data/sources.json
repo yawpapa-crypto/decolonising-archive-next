@@ -1,0 +1,32 @@
+[
+  {
+    "id": "s001",
+    "name": "PRAAD",
+    "region": "Ghana / West Africa",
+    "type": "African-Priority",
+    "access": "linked",
+    "description": "Public Records and Archives Administration Department. Colonial and postcolonial Ghanaian state records.",
+    "url": "https://praad.gov.gh",
+    "published": true
+  },
+  {
+    "id": "s002",
+    "name": "sourceAFRICA",
+    "region": "Pan-Africa",
+    "type": "African-Priority",
+    "access": "linked",
+    "description": "Open-source investigative documents from African newsrooms and civic archives.",
+    "url": "https://sourceafrica.net",
+    "published": true
+  },
+  {
+    "id": "s003",
+    "name": "OpenAlex",
+    "region": "Global",
+    "type": "Search-Ready",
+    "access": "search",
+    "description": "Open scholarly graph for African and decolonial academic literature.",
+    "url": "https://openalex.org",
+    "published": true
+  }
+]
