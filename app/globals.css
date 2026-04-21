@@ -2000,3 +2000,50 @@ footer a {
     font-size: 10px;
   }
 }
+
+/* ===== Library loading indicator ===== */
+.library-loader{
+  margin:0 0 16px;
+  padding:12px 14px;
+  border:1px solid #000;
+  background:#fff;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.library-loader-bar{
+  width:100%;
+  height:6px;
+  background:#efefef;
+  overflow:hidden;
+  position:relative;
+}
+
+.library-loader-bar span{
+  display:block;
+  width:34%;
+  height:100%;
+  background:#000;
+  animation:libraryLoaderSlide .72s linear infinite;
+  will-change:transform;
+}
+
+.library-loader-text{
+  font-size:12px;
+  line-height:1.5;
+  color:#444;
+}
+
+@keyframes libraryLoaderSlide{
+  0%{transform:translateX(-110%)}
+  100%{transform:translateX(320%)}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .library-loader-bar span{
+    animation:none !important;
+    width:100%;
+    transform:none !important;
+  }
+}
