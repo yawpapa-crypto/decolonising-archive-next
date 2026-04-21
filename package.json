@@ -9,9 +9,13 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@payloadcms/db-mongodb": "^3.83.0",
+    "@payloadcms/db-postgres": "^3.83.0",
+    "@payloadcms/next": "^3.83.0",
     "@vercel/analytics": "^2.0.1",
     "@vercel/postgres": "^0.10.0",
     "next": "16.2.3",
+    "payload": "^3.83.0",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
