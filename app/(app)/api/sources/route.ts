@@ -1,24 +1,41 @@
-
-import { NextResponse } from 'next/server'
-import { readSources, writeSources } from '@/lib/sources'
+import { NextResponse } from "next/server";
+import { supabase } from "@/src/lib/supabase";
 
 export async function GET() {
-  try {
-    const sources = await readSources()
-    return NextResponse.json({ ok: true, sources })
-  } catch (error) {
-    console.error('Failed to read sources:', error)
-    return NextResponse.json({ ok: false, error: 'Failed to read sources' }, { status: 500 })
+  const { data, error } = await supabase
+    .from("sources")
+    .select("id, content")
+    .order("id", { ascending: true });
+
+  if (error) {
+    return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
   }
+
+  const sources = (data || []).map((row) => row.content);
+  return NextResponse.json({ ok: true, sources });
 }
 
 export async function POST(request: Request) {
-  try {
-    const body = await request.json()
-    await writeSources(body.sources ?? [])
-    return NextResponse.json({ ok: true })
-  } catch (error) {
-    console.error('Failed to save sources:', error)
-    return NextResponse.json({ ok: false, error: 'Failed to save sources' }, { status: 500 })
+  const body = await request.json();
+  const sources = body.sources || body;
+
+  if (!Array.isArray(sources)) {
+    return NextResponse.json({ ok: false, error: "Invalid sources payload" }, { status: 400 });
   }
+
+  const payload = sources.map((source: any) => ({
+    id: source.id,
+    content: source,
+    updated_at: new Date().toISOString(),
+  }));
+
+  const { error } = await supabase
+    .from("sources")
+    .upsert(payload);
+
+  if (error) {
+    return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ ok: true });
 }

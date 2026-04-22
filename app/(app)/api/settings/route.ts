@@ -1,24 +1,34 @@
-
-import { NextResponse } from 'next/server'
-import { readSettings, writeSettings } from '@/lib/settings'
+import { NextResponse } from "next/server";
+import { supabase } from "@/src/lib/supabase";
 
 export async function GET() {
-  try {
-    const settings = await readSettings()
-    return NextResponse.json({ ok: true, settings })
-  } catch (error) {
-    console.error('Failed to read settings:', error)
-    return NextResponse.json({ ok: false, error: 'Failed to read settings' }, { status: 500 })
+  const { data, error } = await supabase
+    .from("settings")
+    .select("content")
+    .eq("id", "main")
+    .single();
+
+  if (error) {
+    return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
   }
+
+  return NextResponse.json({ ok: true, settings: data.content });
 }
 
 export async function POST(request: Request) {
-  try {
-    const body = await request.json()
-    await writeSettings(body.settings)
-    return NextResponse.json({ ok: true })
-  } catch (error) {
-    console.error('Failed to save settings:', error)
-    return NextResponse.json({ ok: false, error: 'Failed to save settings' }, { status: 500 })
+  const body = await request.json();
+
+  const { error } = await supabase
+    .from("settings")
+    .upsert({
+      id: "main",
+      content: body,
+      updated_at: new Date().toISOString(),
+    });
+
+  if (error) {
+    return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
   }
+
+  return NextResponse.json({ ok: true });
 }

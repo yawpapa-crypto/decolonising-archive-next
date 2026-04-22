@@ -1,23 +1,41 @@
-import { NextResponse } from 'next/server'
-import { readRecords, writeRecords } from '@/lib/records'
+import { NextResponse } from "next/server";
+import { supabase } from "@/src/lib/supabase";
 
 export async function GET() {
-  try {
-    const records = await readRecords()
-    return NextResponse.json({ ok: true, records })
-  } catch (error) {
-    console.error('Failed to read records:', error)
-    return NextResponse.json({ ok: false, error: 'Failed to read records' }, { status: 500 })
+  const { data, error } = await supabase
+    .from("records")
+    .select("id, content")
+    .order("id", { ascending: true });
+
+  if (error) {
+    return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
   }
+
+  const records = (data || []).map((row) => row.content);
+  return NextResponse.json({ ok: true, records });
 }
 
 export async function POST(request: Request) {
-  try {
-    const body = await request.json()
-    await writeRecords(body.records ?? [])
-    return NextResponse.json({ ok: true })
-  } catch (error) {
-    console.error('Failed to save records:', error)
-    return NextResponse.json({ ok: false, error: 'Failed to save records' }, { status: 500 })
+  const body = await request.json();
+  const records = body.records || body;
+
+  if (!Array.isArray(records)) {
+    return NextResponse.json({ ok: false, error: "Invalid records payload" }, { status: 400 });
   }
+
+  const payload = records.map((record: any) => ({
+    id: record.id,
+    content: record,
+    updated_at: new Date().toISOString(),
+  }));
+
+  const { error } = await supabase
+    .from("records")
+    .upsert(payload);
+
+  if (error) {
+    return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ ok: true });
 }

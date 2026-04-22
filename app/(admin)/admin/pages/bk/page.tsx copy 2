@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import RichTextEditor from '@/src/components/admin/RichTextEditor'
 
 type HomeContent = {
   eyebrow: string
@@ -173,10 +172,7 @@ export default function AdminPagesPage() {
             <div className="admin-panel-label">Page target</div>
             <label className="admin-field">
               <span>Page</span>
-              <select
-  value={page}
-  onChange={(e) => setPage(e.target.value as 'home' | 'about')}
->
+              <select value={page} onChange={(e) => setPage(e.target.value)}>
                 <option value="home">Homepage</option>
                 <option value="about">About</option>
                 <option value="privacy" disabled>Privacy Policy</option>
@@ -286,9 +282,10 @@ export default function AdminPagesPage() {
 
               <label className="admin-field">
                 <span>Main body</span>
-                <RichTextEditor
+                <textarea
+                  rows={6}
                   value={content.about.body}
-                  onChange={(value) => updateAboutField('body', value)}
+                  onChange={(e) => updateAboutField('body', e.target.value)}
                 />
               </label>
 
@@ -303,9 +300,10 @@ export default function AdminPagesPage() {
 
               <label className="admin-field">
                 <span>Mission body</span>
-                <RichTextEditor
+                <textarea
+                  rows={4}
                   value={content.about.missionBody}
-                  onChange={(value) => updateAboutField('missionBody', value)}
+                  onChange={(e) => updateAboutField('missionBody', e.target.value)}
                 />
               </label>
 
@@ -320,9 +318,10 @@ export default function AdminPagesPage() {
 
               <label className="admin-field">
                 <span>Contact body</span>
-                <RichTextEditor
+                <textarea
+                  rows={4}
                   value={content.about.contactBody}
-                  onChange={(value) => updateAboutField('contactBody', value)}
+                  onChange={(e) => updateAboutField('contactBody', e.target.value)}
                 />
               </label>
             </div>

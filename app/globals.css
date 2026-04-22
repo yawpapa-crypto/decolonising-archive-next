@@ -2047,3 +2047,52 @@ footer a {
     transform:none !important;
   }
 }
+.admin-richtext{
+  border:1px solid #000;
+  background:#fff;
+}
+
+.admin-richtext-toolbar{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  padding:10px;
+  border-bottom:1px solid #e5e5e5;
+}
+
+.admin-richtext-toolbar button{
+  padding:6px 10px;
+  border:1px solid #000;
+  background:#fff;
+  color:#000;
+  cursor:pointer;
+  font-size:12px;
+}
+
+.admin-richtext-toolbar button:hover{
+  background:#f3f3f3;
+}
+
+.admin-richtext-editor{
+  padding:14px;
+  min-height:180px;
+}
+
+.admin-richtext-editor .ProseMirror{
+  outline:none;
+  min-height:150px;
+}
+
+.admin-richtext-editor p{
+  margin:0 0 12px;
+}
+
+.admin-richtext-editor h2{
+  font-size:18px;
+  margin:0 0 12px;
+}
+
+.admin-richtext-editor ul{
+  padding-left:20px;
+  margin:0 0 12px;
+}

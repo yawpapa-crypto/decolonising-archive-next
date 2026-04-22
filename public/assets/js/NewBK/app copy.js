@@ -1427,70 +1427,6 @@ function renderRelatedSearchTags(items) {
   `;
 }
 
-function extractCitationYear(period) {
-  if (!period) return "";
-  const match = String(period).match(/\b(1[0-9]{3}|20[0-9]{2}|21[0-9]{2})\b/);
-  return match ? match[1] : "";
-}
-
-function mapRecordTypeToRIS(type) {
-  const value = String(type || "").toLowerCase();
-  if (value.includes("book")) return "BOOK";
-  if (value.includes("journal")) return "JOUR";
-  if (value.includes("article")) return "JOUR";
-  if (value.includes("archival")) return "MANSCPT";
-  if (value.includes("oral")) return "GEN";
-  if (value.includes("poster")) return "ART";
-  if (value.includes("image")) return "ART";
-  if (value.includes("artefact") || value.includes("artifact")) return "ART";
-  if (value.includes("architecture")) return "GEN";
-  return "GEN";
-}
-
-function generateArchiveCitation(record) {
-  const creator = (record.creator || "").trim();
-  const title = (record.title || "").trim();
-  const institution = (record.institution || record.source || "").trim();
-  const year = extractCitationYear(record.period);
-  const url = (record.sourceUrl || "").trim();
-  const id = (record.recordIdentifier || record.archiveIdentifier || "").trim();
-  return [creator, title ? `"${title}."` : "", institution, year, url, id ? `Record ID: ${id}.` : ""].filter(Boolean).join(" ");
-}
-
-function generateRIS(record) {
-  const lines = [];
-  const year = extractCitationYear(record.period);
-  lines.push(`TY  - ${mapRecordTypeToRIS(record.type)}`);
-  if (record.title) lines.push(`TI  - ${record.title}`);
-  if (record.creator) lines.push(`AU  - ${record.creator}`);
-  if (year) lines.push(`PY  - ${year}`);
-  if (record.institution || record.source) lines.push(`PB  - ${record.institution || record.source}`);
-  if (record.collection) lines.push(`T2  - ${record.collection}`);
-  if (record.sourceUrl) lines.push(`UR  - ${record.sourceUrl}`);
-  if (record.recordIdentifier || record.archiveIdentifier) lines.push(`ID  - ${record.recordIdentifier || record.archiveIdentifier}`);
-  lines.push("ER  -");
-  return lines.join("\n");
-}
-
-async function copyCitation(record) {
-  const citation = generateArchiveCitation(record);
-  await navigator.clipboard.writeText(citation);
-}
-
-function downloadRIS(record) {
-  const ris = generateRIS(record);
-  const blob = new Blob([ris], { type: "application/x-research-info-systems" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  const safeName = (record.title || "record").toLowerCase().replace(/[^a-z0-9]+/g, "-");
-  link.href = url;
-  link.download = `${safeName}.ris`;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
-}
-
 function renderTagSection(label, values, extraClass = "") {
   if (!values || !values.length) return "";
   return `
@@ -1531,25 +1467,7 @@ function renderActionList(record) {
     return "";
   }).filter(Boolean);
 
-  items.push(`
-    <a class="action-link" href="javascript:void(0)" id="copyCitationBtn">
-      <div>
-        <span>Copy citation</span>
-        <small id="copyCitationNote">Copy archive citation text</small>
-      </div>
-      <span>⎘</span>
-    </a>
-  `);
-
-  items.push(`
-    <a class="action-link" href="javascript:void(0)" id="downloadRisBtn">
-      <div>
-        <span>Download RIS</span>
-        <small>Export for Zotero, EndNote, or Mendeley</small>
-      </div>
-      <span>↓</span>
-    </a>
-  `);
+  if (!items.length) return "";
 
   return `
     <section class="detail-section">
@@ -2286,9 +2204,7 @@ async function loadMoreCoreResults() {
   }
 }
 
-function bindEvents() { document.querySelectorAll('[data-page]').forEach(element => { element.addEventListener('click', event => { const page = element.dataset.page; if (!page) return; event.preventDefault(); if (element.dataset.collection) { filterType = ''; filterRegion = ''; filterCat = ''; filterTheme = ''; filterLanguage = ''; filterCollection = element.dataset.collection; libraryQuery = ''; localResults = searchLocalRecords(getEffectiveSearchQuery()); liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'', sources:[]}; refreshBlendedDiscovery(true); } navigate(page); }); }); const hamburger = document.getElementById('hamburger'); const navMobile = document.getElementById('navMobile'); if (hamburger && navMobile) hamburger.addEventListener('click', () => navMobile.classList.toggle('open')); document.querySelectorAll('.suggestion[data-q], .related-search[data-related]').forEach(element => { element.addEventListener('click', () => { applyLibraryQuery(element.dataset.q || element.dataset.related || ''); navigate('library'); }); }); const heroInput = document.getElementById('heroSearch'); const heroButton = document.getElementById('heroSearchBtn'); if (heroInput && heroButton) { const submitHero = () => { applyLibraryQuery(heroInput.value); currentPage = 'library'; selectedRecordId = null; navigate('library'); requestAnimationFrame(() => { render(); const mainSearchAfter = document.getElementById('mainSearch'); if (mainSearchAfter) mainSearchAfter.value = libraryQuery; }); }; heroButton.addEventListener('click', submitHero); heroInput.addEventListener('keydown', event => { if (event.key === 'Enter') submitHero(); }); } const mainSearch = document.getElementById('mainSearch'); const localSearchBtn = document.getElementById('localSearchBtn'); const sourceSearchBtn = document.getElementById('sourceSearchBtn'); const mobileFilterToggle = document.getElementById('mobileFilterToggle'); const mobileClearFilters = document.getElementById('mobileClearFilters'); if (mainSearch && localSearchBtn) { const submitSearch = () => { applyLibraryQuery(mainSearch.value); render(); }; localSearchBtn.addEventListener('click', submitSearch); mainSearch.addEventListener('keydown', event => { if (event.key === 'Enter') submitSearch(); }); mainSearch.addEventListener('input', () => { clearTimeout(debounceTimer); debounceTimer = window.setTimeout(() => { applyLibraryQuery(mainSearch.value); render(); }, 260); }); } const loadMoreCoreBtn = document.getElementById('loadMoreCoreBtn'); if (loadMoreCoreBtn) { loadMoreCoreBtn.addEventListener('click', () => { loadMoreCoreResults(); }); }
-const copyCitationBtn = document.getElementById('copyCitationBtn'); if (copyCitationBtn && currentPage === 'record' && selectedRecordId) { copyCitationBtn.addEventListener('click', async () => { try { const record = getRecordByIdAny(selectedRecordId); if (!record) return; await copyCitation(record); const note = document.getElementById('copyCitationNote'); if (note) note.textContent = 'Copied'; window.setTimeout(() => { const resetNote = document.getElementById('copyCitationNote'); if (resetNote) resetNote.textContent = 'Copy archive citation text'; }, 1400); } catch (error) { console.error('Failed to copy citation:', error); } }); }
-const downloadRisBtn = document.getElementById('downloadRisBtn'); if (downloadRisBtn && currentPage === 'record' && selectedRecordId) { downloadRisBtn.addEventListener('click', () => { const record = getRecordByIdAny(selectedRecordId); if (!record) return; downloadRIS(record); }); } if (mobileFilterToggle) { mobileFilterToggle.addEventListener('click', () => { mobileFiltersOpen = !mobileFiltersOpen; render(); }); } if (mobileClearFilters) { mobileClearFilters.addEventListener('click', () => { filterType = ''; filterRegion = ''; filterCat = ''; filterTheme = ''; filterCollection = ''; filterLanguage = ''; libraryQuery = ''; localResults = [...RECORDS]; liveResults = []; externalDiscovery = []; mobileFiltersOpen = false; liveStatus = {state:'idle', message:'', sources:[]}; render(); }); } if (sourceSearchBtn) { sourceSearchBtn.addEventListener('click', () => { sourceMode = !sourceMode; if (sourceMode) { refreshBlendedDiscovery(true); } else { liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'Live fallback is off. Showing local archive records only.', sources:[]}; } render(); }); } document.querySelectorAll('input[name="type"], input[name="region"], input[name="cat"], input[name="theme"], input[name="collection"], input[name="language"]').forEach(input => { input.addEventListener('change', () => { const checked = document.querySelector('input[name="type"]:checked'); filterType = checked ? checked.value : ''; const checkedRegion = document.querySelector('input[name="region"]:checked'); filterRegion = checkedRegion ? checkedRegion.value : ''; const checkedCat = document.querySelector('input[name="cat"]:checked'); filterCat = checkedCat ? checkedCat.value : ''; const checkedTheme = document.querySelector('input[name="theme"]:checked'); filterTheme = checkedTheme ? checkedTheme.value : ''; const checkedCollection = document.querySelector('input[name="collection"]:checked'); filterCollection = checkedCollection ? checkedCollection.value : ''; const checkedLanguage = document.querySelector('input[name="language"]:checked'); filterLanguage = checkedLanguage ? checkedLanguage.value : ''; localResults = searchLocalRecords(getEffectiveSearchQuery()); if (window.innerWidth <= 640) { mobileFiltersOpen = false; } refreshBlendedDiscovery(true); render(); }); }); const clearBtn = document.getElementById('clearBtn'); if (clearBtn) { clearBtn.addEventListener('click', () => { filterType = ''; filterRegion = ''; filterCat = ''; filterTheme = ''; filterCollection = ''; filterLanguage = ''; libraryQuery = ''; localResults = [...RECORDS]; liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'', sources:[]}; render(); }); } bindCardEvents(); document.querySelectorAll('[data-media-root] img').forEach(image => { image.addEventListener('error', () => { const mediaRoot = image.closest('[data-media-root]'); if (mediaRoot) mediaRoot.classList.add('hidden'); }, {once:true}); }); }
+function bindEvents() { document.querySelectorAll('[data-page]').forEach(element => { element.addEventListener('click', event => { const page = element.dataset.page; if (!page) return; event.preventDefault(); if (element.dataset.collection) { filterType = ''; filterRegion = ''; filterCat = ''; filterTheme = ''; filterLanguage = ''; filterCollection = element.dataset.collection; libraryQuery = ''; localResults = searchLocalRecords(getEffectiveSearchQuery()); liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'', sources:[]}; refreshBlendedDiscovery(true); } navigate(page); }); }); const hamburger = document.getElementById('hamburger'); const navMobile = document.getElementById('navMobile'); if (hamburger && navMobile) hamburger.addEventListener('click', () => navMobile.classList.toggle('open')); document.querySelectorAll('.suggestion[data-q], .related-search[data-related]').forEach(element => { element.addEventListener('click', () => { applyLibraryQuery(element.dataset.q || element.dataset.related || ''); navigate('library'); }); }); const heroInput = document.getElementById('heroSearch'); const heroButton = document.getElementById('heroSearchBtn'); if (heroInput && heroButton) { const submitHero = () => { applyLibraryQuery(heroInput.value); currentPage = 'library'; selectedRecordId = null; navigate('library'); requestAnimationFrame(() => { render(); const mainSearchAfter = document.getElementById('mainSearch'); if (mainSearchAfter) mainSearchAfter.value = libraryQuery; }); }; heroButton.addEventListener('click', submitHero); heroInput.addEventListener('keydown', event => { if (event.key === 'Enter') submitHero(); }); } const mainSearch = document.getElementById('mainSearch'); const localSearchBtn = document.getElementById('localSearchBtn'); const sourceSearchBtn = document.getElementById('sourceSearchBtn'); const mobileFilterToggle = document.getElementById('mobileFilterToggle'); const mobileClearFilters = document.getElementById('mobileClearFilters'); if (mainSearch && localSearchBtn) { const submitSearch = () => { applyLibraryQuery(mainSearch.value); render(); }; localSearchBtn.addEventListener('click', submitSearch); mainSearch.addEventListener('keydown', event => { if (event.key === 'Enter') submitSearch(); }); mainSearch.addEventListener('input', () => { clearTimeout(debounceTimer); debounceTimer = window.setTimeout(() => { applyLibraryQuery(mainSearch.value); render(); }, 260); }); } const loadMoreCoreBtn = document.getElementById('loadMoreCoreBtn'); if (loadMoreCoreBtn) { loadMoreCoreBtn.addEventListener('click', () => { loadMoreCoreResults(); }); } if (mobileFilterToggle) { mobileFilterToggle.addEventListener('click', () => { mobileFiltersOpen = !mobileFiltersOpen; render(); }); } if (mobileClearFilters) { mobileClearFilters.addEventListener('click', () => { filterType = ''; filterRegion = ''; filterCat = ''; filterTheme = ''; filterCollection = ''; filterLanguage = ''; libraryQuery = ''; localResults = [...RECORDS]; liveResults = []; externalDiscovery = []; mobileFiltersOpen = false; liveStatus = {state:'idle', message:'', sources:[]}; render(); }); } if (sourceSearchBtn) { sourceSearchBtn.addEventListener('click', () => { sourceMode = !sourceMode; if (sourceMode) { refreshBlendedDiscovery(true); } else { liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'Live fallback is off. Showing local archive records only.', sources:[]}; } render(); }); } document.querySelectorAll('input[name="type"], input[name="region"], input[name="cat"], input[name="theme"], input[name="collection"], input[name="language"]').forEach(input => { input.addEventListener('change', () => { const checked = document.querySelector('input[name="type"]:checked'); filterType = checked ? checked.value : ''; const checkedRegion = document.querySelector('input[name="region"]:checked'); filterRegion = checkedRegion ? checkedRegion.value : ''; const checkedCat = document.querySelector('input[name="cat"]:checked'); filterCat = checkedCat ? checkedCat.value : ''; const checkedTheme = document.querySelector('input[name="theme"]:checked'); filterTheme = checkedTheme ? checkedTheme.value : ''; const checkedCollection = document.querySelector('input[name="collection"]:checked'); filterCollection = checkedCollection ? checkedCollection.value : ''; const checkedLanguage = document.querySelector('input[name="language"]:checked'); filterLanguage = checkedLanguage ? checkedLanguage.value : ''; localResults = searchLocalRecords(getEffectiveSearchQuery()); if (window.innerWidth <= 640) { mobileFiltersOpen = false; } refreshBlendedDiscovery(true); render(); }); }); const clearBtn = document.getElementById('clearBtn'); if (clearBtn) { clearBtn.addEventListener('click', () => { filterType = ''; filterRegion = ''; filterCat = ''; filterTheme = ''; filterCollection = ''; filterLanguage = ''; libraryQuery = ''; localResults = [...RECORDS]; liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'', sources:[]}; render(); }); } bindCardEvents(); document.querySelectorAll('[data-media-root] img').forEach(image => { image.addEventListener('error', () => { const mediaRoot = image.closest('[data-media-root]'); if (mediaRoot) mediaRoot.classList.add('hidden'); }, {once:true}); }); }
 function syncRouteFromHash() { const route = parseHash(); currentPage = route.page; selectedRecordId = route.recordId; if (currentPage === 'record' && selectedRecordId && !getRecordByIdAny(selectedRecordId)) { currentPage = 'library'; selectedRecordId = null; } document.querySelectorAll('.nav-link').forEach(link => { link.classList.toggle('active', link.dataset.page === currentPage); }); render(); window.scrollTo({top:0, behavior:'auto'}); }
 
 window.addEventListener("hashchange", syncRouteFromHash);

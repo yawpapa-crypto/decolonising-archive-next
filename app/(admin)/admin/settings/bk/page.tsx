@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -36,12 +37,7 @@ const blankSettings: SiteSettings = {
 
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<SiteSettings>(blankSettings)
-  const [originalSettings, setOriginalSettings] = useState<SiteSettings | null>(null)
   const [status, setStatus] = useState('')
-
-  const hasChanges =
-    originalSettings !== null &&
-    JSON.stringify(settings) !== JSON.stringify(originalSettings)
 
   useEffect(() => {
     async function loadSettings() {
@@ -49,13 +45,7 @@ export default function AdminSettingsPage() {
         const response = await fetch('/api/settings', { cache: 'no-store' })
         const data = await response.json()
         if (data?.ok && data.settings) {
-          const mergedSettings: SiteSettings = {
-            ...blankSettings,
-            ...data.settings,
-            footerLinks: data.settings.footerLinks || blankSettings.footerLinks,
-          }
-          setSettings(mergedSettings)
-          setOriginalSettings(mergedSettings)
+          setSettings(data.settings)
         }
       } catch (error) {
         console.error('Failed to load settings:', error)
@@ -71,17 +61,10 @@ export default function AdminSettingsPage() {
 
   function updateFooterLink(index: number, key: keyof FooterLink, value: string) {
     setSettings((current) => {
-      const nextLinks = [...(current.footerLinks || [])]
+      const nextLinks = [...current.footerLinks]
       nextLinks[index] = { ...nextLinks[index], [key]: value }
       return { ...current, footerLinks: nextLinks }
     })
-  }
-
-  function handleDiscard() {
-    if (!originalSettings) return
-    setSettings(originalSettings)
-    setStatus('Changes discarded.')
-    window.setTimeout(() => setStatus(''), 1500)
   }
 
   async function handleSave() {
@@ -96,7 +79,6 @@ export default function AdminSettingsPage() {
       const data = await response.json()
       if (!response.ok || !data?.ok) throw new Error('Save failed')
 
-      setOriginalSettings(settings)
       setStatus('Saved')
       window.setTimeout(() => setStatus(''), 2000)
     } catch (error) {
@@ -117,14 +99,6 @@ export default function AdminSettingsPage() {
         </div>
 
         <div className="admin-actions">
-          <button
-            className="admin-button admin-button-secondary"
-            type="button"
-            onClick={handleDiscard}
-            disabled={!hasChanges}
-          >
-            Discard
-          </button>
           <button className="admin-button" type="button" onClick={handleSave}>
             Save changes
           </button>
