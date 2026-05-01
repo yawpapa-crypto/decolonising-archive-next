@@ -486,7 +486,8 @@ const FEATURED_COLLECTION_TITLES = [
   "Liberation Movement Graphics",
   "Manuscripts & Precolonial Texts",
   "Architecture Beyond Colonialism",
-  "African Philosophy Working Library"
+  "African Philosophy Working Library",
+  "West Africa: Political Thought"
 ];
 
 const FEATURED_QUERY_SUGGESTIONS = [
@@ -676,6 +677,7 @@ const DISCOVERY_SOURCE_IDS = ["s021","s039","s043","s041","s040","s044","s045","
 
 let currentPage = "home";
 let selectedRecordId = null;
+let citationStyle = "apa";
 let libraryQuery = "";
 let localResults = [];
 let filterType = "";
@@ -687,8 +689,269 @@ let filterLanguage = "";
 let sourceMode = true;
 let externalDiscovery = [];
 let debounceTimer = null;
+let searchSuggestions = [];
+let activeSuggestionIndex = -1;
+let recentSearches = [];
+let recordWorkspaceState = {};
+let cardListComposerState = {};
+let memberWorkspaceState = {status:"idle", authenticated:null, data:null, message:""};
+let locationSearchHydrated = false;
 
 const SOURCE_MAP = new Map(SOURCES.map(source => [source.name, source]));
+
+function currentArchiveReturnPath() {
+  return `${window.location.pathname}${window.location.search || ""}${window.location.hash || ""}`;
+}
+
+function memberSignInUrl() {
+  return `/auth/sign-in?next=${encodeURIComponent(currentArchiveReturnPath())}`;
+}
+
+function redirectToMemberSignIn() {
+  window.location.href = memberSignInUrl();
+}
+
+async function fetchMemberWorkspaceState(force = false) {
+  if (!force && (memberWorkspaceState.status === "loading" || memberWorkspaceState.status === "ready")) return;
+  const previousMessage = memberWorkspaceState.message || "";
+  memberWorkspaceState = {...memberWorkspaceState, status:"loading", message:""};
+  try {
+    const response = await fetch("/api/workspace/record-tools?mode=session", {
+      headers: {Accept:"application/json"}
+    });
+    const data = await response.json();
+    if (!data.ok) throw new Error(data.error || "Could not load member tools.");
+    memberWorkspaceState = {
+      status:"ready",
+      authenticated:Boolean(data.authenticated),
+      data,
+      message:previousMessage
+    };
+  } catch (error) {
+    memberWorkspaceState = {
+      status:"error",
+      authenticated:false,
+      data:null,
+      message:error.message || "Member tools failed to load."
+    };
+  }
+  render();
+}
+
+function getRecordWorkspaceState(recordId) {
+  return recordWorkspaceState[recordId] || {status:"idle", authenticated:null, data:null, message:""};
+}
+
+function setRecordWorkspaceState(recordId, patch) {
+  recordWorkspaceState[recordId] = {...getRecordWorkspaceState(recordId), ...patch};
+}
+
+function getCardListComposerOpen(recordId) {
+  return Boolean(cardListComposerState[recordId]);
+}
+
+function setCardListComposerOpen(recordId, isOpen) {
+  cardListComposerState[recordId] = Boolean(isOpen);
+}
+
+async function fetchRecordWorkspaceState(record) {
+  if (!record || !record.id) return;
+  const state = getRecordWorkspaceState(record.id);
+  if (state.status === "loading" || state.status === "ready") return;
+  setRecordWorkspaceState(record.id, {status:"loading", message:""});
+  try {
+    const params = new URLSearchParams({
+      recordId: record.id,
+      recordUrl: record.sourceUrl || record.id
+    });
+    const response = await fetch(`/api/workspace/record-tools?${params.toString()}`, {
+      headers: {Accept:"application/json"}
+    });
+    const data = await response.json();
+    if (!data.ok) throw new Error(data.error || "Could not load workspace tools.");
+    setRecordWorkspaceState(record.id, {
+      status:"ready",
+      authenticated: Boolean(data.authenticated),
+      data,
+      message:""
+    });
+  } catch (error) {
+    setRecordWorkspaceState(record.id, {
+      status:"error",
+      authenticated:false,
+      message:error.message || "Workspace tools failed to load."
+    });
+  }
+  if (currentPage === "record" && selectedRecordId === record.id) render();
+}
+
+async function postRecordWorkspaceAction(record, payload) {
+  if (!record || !record.id) return;
+  memberWorkspaceState = {
+    ...memberWorkspaceState,
+    status:"saving",
+    message:"Saving..."
+  };
+  setRecordWorkspaceState(record.id, {
+    ...getRecordWorkspaceState(record.id),
+    status:"saving",
+    message:"Saving..."
+  });
+  render();
+  let shouldRefreshRecordState = true;
+  let shouldRefreshMemberState = true;
+  try {
+    const response = await fetch("/api/workspace/record-tools", {
+      method:"POST",
+      headers: {"Content-Type":"application/json", Accept:"application/json"},
+      body: JSON.stringify({
+        recordId: record.id,
+        recordTitle: record.title,
+        recordUrl: record.sourceUrl || record.id,
+        ...payload
+      })
+    });
+    const data = await response.json();
+    if (response.status === 401) {
+      redirectToMemberSignIn();
+      return;
+    }
+    if (!response.ok || !data.ok) throw new Error(data.error || "Action failed.");
+    const isBookmarkToggle = payload.action === "bookmark" && typeof data.bookmarked === "boolean";
+    if (isBookmarkToggle) {
+      const existingData = memberWorkspaceState.data || {};
+      const bookmarkRecordIds = Array.isArray(existingData.bookmarkRecordIds)
+        ? existingData.bookmarkRecordIds
+        : [];
+      const nextBookmarkRecordIds = data.bookmarked
+        ? Array.from(new Set([...bookmarkRecordIds, record.id]))
+        : bookmarkRecordIds.filter(id => id !== record.id);
+      memberWorkspaceState = {
+        ...memberWorkspaceState,
+        authenticated:true,
+        data:{
+          ...existingData,
+          bookmarkRecordIds:nextBookmarkRecordIds
+        },
+        message:""
+      };
+      const existingRecordState = getRecordWorkspaceState(record.id);
+      const existingRecordData = existingRecordState.data || {};
+      setRecordWorkspaceState(record.id, {
+        ...existingRecordState,
+        authenticated:true,
+        data:{
+          ...existingRecordData,
+          bookmark:data.bookmarked
+            ? {...(existingRecordData.bookmark || {}), note: payload.note || null}
+            : null
+        },
+        message:""
+      });
+      shouldRefreshRecordState = false;
+      shouldRefreshMemberState = false;
+    } else {
+      memberWorkspaceState = {
+        ...memberWorkspaceState,
+        authenticated:true,
+        message:""
+      };
+      setRecordWorkspaceState(record.id, {
+        status:"idle",
+        authenticated:true,
+        data:null,
+        message:""
+      });
+      if (payload.action === "create_reading_list") {
+        setCardListComposerOpen(record.id, false);
+      }
+    }
+    if (shouldRefreshRecordState) await fetchRecordWorkspaceState(record);
+    if (shouldRefreshMemberState) await fetchMemberWorkspaceState(true);
+  } catch (error) {
+    console.error("Record workspace action failed:", error);
+    memberWorkspaceState = {
+      ...memberWorkspaceState,
+      message:error.message || "Action failed."
+    };
+    setRecordWorkspaceState(record.id, {
+      ...getRecordWorkspaceState(record.id),
+      message:error.message || "Action failed."
+    });
+  } finally {
+    memberWorkspaceState = {
+      ...memberWorkspaceState,
+      status:"ready"
+    };
+    setRecordWorkspaceState(record.id, {
+      ...getRecordWorkspaceState(record.id),
+      status:"ready"
+    });
+    render();
+  }
+}
+
+function getCurrentSearchFilters() {
+  return {
+    type: filterType || null,
+    region: filterRegion || null,
+    category: filterCat || null,
+    theme: filterTheme || null,
+    collection: filterCollection || null,
+    language: filterLanguage || null,
+    liveSources: Boolean(sourceMode)
+  };
+}
+
+async function postSearchWorkspaceAction(payload) {
+  memberWorkspaceState = {...memberWorkspaceState, status:"saving", message:"Saving..."};
+  render();
+  try {
+    const response = await fetch("/api/workspace/record-tools", {
+      method:"POST",
+      headers: {"Content-Type":"application/json", Accept:"application/json"},
+      body: JSON.stringify(payload)
+    });
+    const data = await response.json();
+    if (response.status === 401) {
+      redirectToMemberSignIn();
+      return;
+    }
+    if (!response.ok || !data.ok) throw new Error(data.error || "Action failed.");
+    memberWorkspaceState = {
+      ...memberWorkspaceState,
+      status:"ready",
+      authenticated:true,
+      message:data.message || "Search saved."
+    };
+    await fetchMemberWorkspaceState(true);
+  } catch (error) {
+    memberWorkspaceState = {
+      ...memberWorkspaceState,
+      status:"ready",
+      message:error.message || "Action failed."
+    };
+    render();
+  }
+}
+
+function hydrateSearchFromLocation() {
+  if (locationSearchHydrated) return;
+  locationSearchHydrated = true;
+  const params = new URLSearchParams(window.location.search || "");
+  const query = (params.get("q") || "").trim();
+  if (!query) return;
+  libraryQuery = query;
+  localResults = searchLocalRecords(getEffectiveSearchQuery() || libraryQuery);
+  liveResults = [];
+  externalDiscovery = [];
+  liveStatus = {
+    state:"idle",
+    message:"Local-first results loaded. Live fallback is blending API and handoff results.",
+    sources:[]
+  };
+  refreshBlendedDiscovery(true);
+}
 
 function uniqueValues(values) {
   return [...new Set((values || []).filter(Boolean).map(value => String(value).trim()).filter(Boolean))];
@@ -714,6 +977,32 @@ function escapeHtml(value) {
     .replace(/>/g,"&gt;")
     .replace(/"/g,"&quot;")
     .replace(/'/g,"&#39;");
+}
+
+function iconBookmarkOutline() {
+  return `
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+      <path d="M6 3.5h12a1 1 0 0 1 1 1V21l-7-4-7 4V4.5a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+    </svg>
+  `;
+}
+
+function iconBookmarkCheck() {
+  return `
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+      <path d="M6 3.5h12a1 1 0 0 1 1 1V21l-7-4-7 4V4.5a1 1 0 0 1 1-1Z" fill="currentColor" />
+      <path d="m9 12 2.2 2.2L15.5 10" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  `;
+}
+
+function iconListPlus() {
+  return `
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+      <path d="M4 7.5h9M4 12h9M4 16.5h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      <path d="M17 10v8M13 14h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+    </svg>
+  `;
 }
 
 function safeUrl(value) {
@@ -1012,7 +1301,7 @@ const LANGUAGE_DISCOVERY_TERMS = ["archive","philosophy","oral tradition","metad
 const PERIOD_DISCOVERY_TERMS = ["precolonial","colonial era","independence era","postcolonial","contemporary","diasporic"];
 
 function getFeaturedRecords() {
-  return RECORDS.filter(record => !String(record.id).startsWith("wl")).slice(0, 6);
+  return RECORDS.filter(record => !String(record.id).startsWith("wl")).slice(0, 8);
 }
 
 function getFeaturedCollections(limit = 8) {
@@ -1106,6 +1395,313 @@ function buildRelatedSearchIndex() {
 
 const RELATED_SEARCH_INDEX = buildRelatedSearchIndex();
 
+function buildSuggestionIndex() {
+  const suggestions = [];
+  RECORDS.forEach(record => {
+    if (record.title) {
+      suggestions.push({
+        label: record.title,
+        type: "title",
+        value: record.title,
+        meta: record.creator || ""
+      });
+    }
+    if (record.creator) {
+      suggestions.push({
+        label: record.creator,
+        type: "creator",
+        value: record.creator,
+        meta: "Creator"
+      });
+    }
+  });
+  THEMES.forEach(theme => {
+    suggestions.push({
+      label: theme,
+      type: "theme",
+      value: theme,
+      meta: "Theme"
+    });
+  });
+  COLLECTIONS.forEach(collection => {
+    suggestions.push({
+      label: collection.title,
+      type: "collection",
+      value: collection.title,
+      meta: collection.region || "Collection"
+    });
+  });
+  SOURCES.forEach(source => {
+    suggestions.push({
+      label: source.name,
+      type: "source",
+      value: source.name,
+      meta: source.region || "Source"
+    });
+  });
+  const seen = new Set();
+  return suggestions.filter(item => {
+    const key = `${item.type}::${normalizeComparable(item.label)}`;
+    if (!item.label || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+const SUGGESTION_INDEX = buildSuggestionIndex();
+
+// ─── Recent searches ────────────────────────────────────────────────────────
+const RECENT_SEARCHES_KEY = "ared_recent_searches";
+const MAX_RECENT_SEARCHES = 8;
+
+function loadRecentSearches() {
+  try {
+    const raw = localStorage.getItem(RECENT_SEARCHES_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed)
+      ? parsed.map(item => String(item).trim()).filter(Boolean).slice(0, MAX_RECENT_SEARCHES)
+      : [];
+  } catch (error) {
+    console.warn("Could not load recent searches.", error);
+    return [];
+  }
+}
+
+function saveRecentSearches(items) {
+  try {
+    localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(items.slice(0, MAX_RECENT_SEARCHES)));
+  } catch (error) {
+    console.warn("Could not save recent searches.", error);
+  }
+}
+
+function pushRecentSearch(query) {
+  const value = String(query || "").trim();
+  if (!value) return;
+  const normalized = normalizeComparable(value);
+  const next = [
+    value,
+    ...recentSearches.filter(item => normalizeComparable(item) !== normalized)
+  ].slice(0, MAX_RECENT_SEARCHES);
+  recentSearches = next;
+  saveRecentSearches(recentSearches);
+}
+
+function clearRecentSearches() {
+  recentSearches = [];
+  saveRecentSearches([]);
+}
+
+function getSearchSuggestions(query, limit = 12) {
+  const normalized = normalizeComparable(query);
+  if (!normalized || normalized.length < 2) return [];
+  const tokens = normalized.split(/\s+/).filter(Boolean);
+  return SUGGESTION_INDEX
+    .map(item => {
+      const label = normalizeComparable(item.label);
+      const meta = normalizeComparable(item.meta || "");
+      let score = 0;
+      let hasMatch = false;
+      if (label.startsWith(normalized)) { score += 20; hasMatch = true; }
+      else if (label.includes(normalized)) { score += 12; hasMatch = true; }
+      if (meta.includes(normalized)) { score += 4; hasMatch = true; }
+      tokens.forEach(token => {
+        if (label.includes(token)) { score += 3; hasMatch = true; }
+        if (meta.includes(token)) { score += 1; hasMatch = true; }
+      });
+      if (!hasMatch) return { item, score: 0 };
+      if (item.type === "title") score += 3;
+      if (item.type === "theme") score += 2;
+      if (item.type === "collection") score += 2;
+      return { item, score };
+    })
+    .filter(entry => entry.score > 0)
+    .sort((a, b) =>
+      b.score - a.score ||
+      a.item.label.localeCompare(b.item.label)
+    )
+    .slice(0, limit)
+    .map(entry => entry.item);
+}
+
+function renderRecentSearches(variant = "library") {
+  if (!recentSearches.length) return "";
+  // `variant` lets us scope the DOM so hero and library can coexist without
+  // id collisions when both are rendered (in practice only one page at a time).
+  const wrapperId = variant === "hero" ? "heroRecentSearches" : "recentSearches";
+  const clearId   = variant === "hero" ? "clearRecentSearchesBtnHero" : "clearRecentSearchesBtn";
+  return `
+    <section class="recent-searches" id="${wrapperId}" data-recent-variant="${variant}">
+      <div class="recent-searches-header">
+        <span class="recent-searches-title">Recent searches</span>
+        <button type="button" class="recent-searches-clear" id="${clearId}">Clear</button>
+      </div>
+      <div class="recent-searches-list">
+        ${recentSearches.map(item => `
+          <button
+            type="button"
+            class="recent-search-chip"
+            data-recent-search="${escapeHtml(item)}"
+            data-recent-variant="${variant}"
+          >${escapeHtml(item)}</button>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function renderSearchSuggestions(id = "searchSuggestions") {
+  if (!searchSuggestions.length) {
+    return `<div class="search-suggestions empty" id="${id}" hidden></div>`;
+  }
+  return `
+    <div class="search-suggestions" id="${id}">
+      ${searchSuggestions.map((item, index) => `
+        <button
+          type="button"
+          class="search-suggestion-item ${index === activeSuggestionIndex ? "active" : ""}"
+          data-suggestion-value="${escapeHtml(item.value)}"
+          data-suggestion-index="${index}"
+        >
+          <span class="search-suggestion-label">${escapeHtml(item.label)}</span>
+          <span class="search-suggestion-meta">${escapeHtml(item.type)}</span>
+        </button>
+      `).join("")}
+    </div>
+  `;
+}
+
+// Imperative update: replace only the suggestions panel, keeping the input focused.
+// Called from the input listener instead of a full render().
+// `id` defaults to the library panel; pass "heroSuggestions" for the home page.
+function updateSuggestionsDOM(id = "searchSuggestions") {
+  const panel = document.getElementById(id);
+  if (!panel) return;
+  if (!searchSuggestions.length) {
+    panel.innerHTML = "";
+    panel.classList.add("empty");
+    panel.setAttribute("hidden", "");
+    return;
+  }
+  panel.classList.remove("empty");
+  panel.removeAttribute("hidden");
+  panel.innerHTML = searchSuggestions.map((item, index) => `
+    <button
+      type="button"
+      class="search-suggestion-item ${index === activeSuggestionIndex ? "active" : ""}"
+      data-suggestion-value="${escapeHtml(item.value)}"
+      data-suggestion-index="${index}"
+    >
+      <span class="search-suggestion-label">${escapeHtml(item.label)}</span>
+      <span class="search-suggestion-meta">${escapeHtml(item.type)}</span>
+    </button>
+  `).join("");
+  bindSuggestionItemEvents(id);
+}
+
+function bindSuggestionItemEvents(id = "searchSuggestions", onSelect) {
+  const panel = document.getElementById(id);
+  if (!panel) return;
+
+  // Use event delegation on the panel rather than per-button listeners.
+  // The panel element persists across DOM updates of its children, so
+  // even if the button the user tapped is replaced before the event
+  // finishes propagating, the panel's listener still runs.
+  //
+  // We mark the panel so we only bind once, even if bindSuggestionItemEvents
+  // is called multiple times for the same panel across renders.
+  if (panel.dataset.suggestBound === "1") return;
+  panel.dataset.suggestBound = "1";
+
+  // Touch devices need different commit timing than mouse: pointerdown fires
+  // at the very start of a touch, before the browser knows whether the user
+  // is scrolling or tapping, so committing on pointerdown breaks scrolling.
+  // We track touch movement and only commit on click (which fires at the end
+  // of a tap, after touch resolution has happened). Mouse and pen still
+  // commit on pointerdown for snappy desktop feel.
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchMoved = false;
+  const TOUCH_MOVE_THRESHOLD = 8; // px — above this, treat as scroll
+
+  const commitSelection = (event) => {
+    // Walk up from event.target to find the nearest suggestion button.
+    // Event.target can be the inner <span>, so we can't just check the button.
+    const target = event.target && event.target.closest
+      ? event.target.closest("[data-suggestion-value]")
+      : null;
+    if (!target) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const value = target.getAttribute("data-suggestion-value") || "";
+    if (!value) return;
+    if (typeof onSelect === "function") {
+      onSelect(value);
+      return;
+    }
+    // default: library search behaviour.
+    // Note: we deliberately do NOT call input.blur() here. Blurring during
+    // a pointerup sequence causes some browsers (esp. macOS Safari and
+    // Chrome with precision trackpad drivers) to interpret the gesture
+    // as a cancel rather than a commit, which breaks selection. The render()
+    // below rebuilds the page; if focus should shift elsewhere, that will
+    // happen naturally as the user interacts with the new page state.
+    const input = document.getElementById("mainSearch");
+    if (input) input.value = value;
+    libraryQuery = value;
+    searchSuggestions = [];
+    activeSuggestionIndex = -1;
+    pushRecentSearch(value);
+    applyLibraryQuery(value, true);
+    render();
+  };
+
+  // Track touch movement so we can distinguish a tap from a scroll gesture.
+  panel.addEventListener("touchstart", (event) => {
+    const touch = event.touches && event.touches[0];
+    if (!touch) return;
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+    touchMoved = false;
+  }, { passive: true });
+
+  panel.addEventListener("touchmove", (event) => {
+    const touch = event.touches && event.touches[0];
+    if (!touch) return;
+    const dx = Math.abs(touch.clientX - touchStartX);
+    const dy = Math.abs(touch.clientY - touchStartY);
+    if (dx > TOUCH_MOVE_THRESHOLD || dy > TOUCH_MOVE_THRESHOLD) touchMoved = true;
+  }, { passive: true });
+
+  // Mouse and pen: commit on pointerdown. Per-event pointerType detection is
+  // more accurate than a static (pointer: coarse) media query, because hybrid
+  // devices (touch-screen laptops, iPad with mouse) can use either input
+  // method depending on the moment.
+  panel.addEventListener("pointerdown", (event) => {
+    if (event.pointerType === "touch") return;
+    commitSelection(event);
+  }, { passive: false });
+
+  // Touch: commit on click, which fires after the touch ends and only if the
+  // touch wasn't a scroll gesture (i.e. movement stayed under threshold).
+  // Click also serves as a fallback for any pointerType the pointerdown path
+  // didn't handle.
+  panel.addEventListener("click", (event) => {
+    if (touchMoved) {
+      // user was scrolling, not tapping — reset and ignore
+      touchMoved = false;
+      return;
+    }
+    commitSelection(event);
+  });
+}
+
+function closeSuggestionsPanel(id = "searchSuggestions") {
+  if (!searchSuggestions.length && activeSuggestionIndex === -1) return;
+  searchSuggestions = [];
+  activeSuggestionIndex = -1;
+  updateSuggestionsDOM(id);
+}
+
 function collectionCoverageScore(collection) {
   const searchTerms = uniqueValues([collection.title, collection.region, ...(collection.searchTerms || [])]);
   const foldedTerms = searchTerms.map(term => foldText(term));
@@ -1194,10 +1790,12 @@ function getPrimaryNarrative(record) {
 }
 
 function getLeadImage(record) {
+  if (!record || !Array.isArray(record.images) || !record.images.length) return null;
   return record.images[0] || null;
 }
 
 function getGalleryImages(record) {
+  if (!record || !Array.isArray(record.images) || record.images.length < 2) return [];
   return record.images.slice(1);
 }
 
@@ -1208,7 +1806,7 @@ function buildRecordSearchText(record) {
     record.creator,
     record.summary,
     record.abstract,
-    record.description.join(" "),
+    (Array.isArray(record.description) ? record.description.join(" ") : (record.description || "")),
     record.region,
     record.country,
     record.community,
@@ -1242,7 +1840,7 @@ function scoreRecord(record, context) {
   const tags = foldText([...(record.tags || []), ...(record.keywords || []), ...(record.concepts || []), ...(record.themes || [])].join(" "));
   const geo = foldText([record.region, record.country, record.community].join(" "));
   const summary = foldText([record.abstract, record.summary].join(" "));
-  const detail = foldText(record.description.join(" "));
+  const detail = foldText(Array.isArray(record.description) ? record.description.join(" ") : (record.description || ""));
   const meta = foldText([record.collection, record.type, record.cat, record.recordIdentifier, record.archiveIdentifier, record.institution, ...(record.sourcePathways || []), ...(record.language || [])].join(" "));
   const phraseBonus = context.phrases.reduce((bonus, phrase) => {
     const normalizedPhrase = normalizeComparable(phrase);
@@ -1402,6 +2000,48 @@ function navigate(page, recordId = null) {
   syncRouteFromHash();
 }
 
+
+let siteContent = {
+  about: {
+    eyebrow: "About",
+    title: "About this archive",
+    lead:
+      "A working archive of decolonising knowledge across Africa, the diaspora, and the Global South.",
+    body:
+      "<p>This archive brings together records, theories, visual culture, oral traditions, and institutional pathways that support the recovery and organisation of decolonising knowledge.</p>",
+    missionTitle: "Mission",
+    missionBody:
+      "<p>To build an accessible, evolving archive that supports research, teaching, cultural memory, and public knowledge.</p>",
+    contactTitle: "Contact",
+    contactBody:
+      "<p>For rights, corrections, collaborations, or archival enquiries, please contact the archive administrator.</p>"
+  }
+};
+
+async function loadSiteContent() {
+  try {
+    const response = await fetch("/api/site-content", { cache: "no-store" });
+    const data = await response.json();
+
+    if (data && data.ok && data.content) {
+      siteContent = {
+        ...siteContent,
+        ...data.content,
+        about: {
+          ...siteContent.about,
+          ...(data.content.about || {})
+        }
+      };
+
+      if (currentPage === "about") {
+        render();
+      }
+    }
+  } catch (error) {
+    console.warn("Could not load site content, using defaults.", error);
+  }
+}
+
 function renderCollectionCard(collection) {
   return `
     <article class="coll-card" data-page="library" data-collection="${escapeHtml(collection.title)}">
@@ -1457,6 +2097,67 @@ function generateArchiveCitation(record) {
   return [creator, title ? `"${title}."` : "", institution, year, url, id ? `Record ID: ${id}.` : ""].filter(Boolean).join(" ");
 }
 
+function splitCreatorName(name) {
+  const clean = String(name || "").trim();
+  if (!clean) return { full: "Unknown", last: "Unknown", initials: "" };
+  if (clean.includes(",")) {
+    const [last, rest] = clean.split(",").map(part => part.trim());
+    const initials = (rest || "")
+      .split(/\s+/)
+      .filter(Boolean)
+      .map(part => `${part.charAt(0).toUpperCase()}.`)
+      .join(" ");
+    return { full: clean, last, initials };
+  }
+  const parts = clean.split(/\s+/).filter(Boolean);
+  const last = parts.length ? parts[parts.length - 1] : clean;
+  const initials = parts.slice(0, -1).map(part => `${part.charAt(0).toUpperCase()}.`).join(" ");
+  return { full: clean, last, initials };
+}
+
+function formatApaCitation(record) {
+  const author = splitCreatorName(record.creator);
+  const year = extractCitationYear(record.period) || "n.d.";
+  const title = record.title || "Untitled";
+  const source = record.institution || record.source || "Decolonising Archive";
+  const url = record.sourceUrl || "";
+  return `${author.last}, ${author.initials} (${year}). ${title}. ${source}.${url ? ` ${url}` : ""}`;
+}
+
+function formatChicagoCitation(record) {
+  const creator = record.creator || "Unknown";
+  const year = extractCitationYear(record.period) || "n.d.";
+  const title = record.title || "Untitled";
+  const source = record.institution || record.source || "Decolonising Archive";
+  const url = record.sourceUrl || "";
+  return `${creator}. "${title}." ${source}, ${year}.${url ? ` ${url}` : ""}`;
+}
+
+function formatMlaCitation(record) {
+  const creator = record.creator || "Unknown";
+  const title = record.title || "Untitled";
+  const source = record.institution || record.source || "Decolonising Archive";
+  const year = extractCitationYear(record.period) || "n.d.";
+  const url = record.sourceUrl || "";
+  return `${creator}. "${title}." ${source}, ${year}.${url ? ` ${url}` : ""}`;
+}
+
+function formatHarvardCitation(record) {
+  const creator = record.creator || "Unknown";
+  const year = extractCitationYear(record.period) || "n.d.";
+  const title = record.title || "Untitled";
+  const source = record.institution || record.source || "Decolonising Archive";
+  const url = record.sourceUrl || "";
+  return `${creator} (${year}) ${title}. ${source}.${url ? ` Available at: ${url}` : ""}`;
+}
+
+function generateCitationByStyle(record, style = "apa") {
+  if (style === "chicago") return formatChicagoCitation(record);
+  if (style === "mla") return formatMlaCitation(record);
+  if (style === "harvard") return formatHarvardCitation(record);
+  return formatApaCitation(record);
+}
+
 function generateRIS(record) {
   const lines = [];
   const year = extractCitationYear(record.period);
@@ -1473,7 +2174,7 @@ function generateRIS(record) {
 }
 
 async function copyCitation(record) {
-  const citation = generateArchiveCitation(record);
+  const citation = generateCitationByStyle(record, citationStyle);
   await navigator.clipboard.writeText(citation);
 }
 
@@ -1491,6 +2192,56 @@ function downloadRIS(record) {
   URL.revokeObjectURL(url);
 }
 
+function bibtexEscape(value) {
+  return String(value || "")
+    .replace(/\\/g, "\\\\")
+    .replace(/{/g, "\\{")
+    .replace(/}/g, "\\}");
+}
+
+function mapRecordTypeToBibTeX(type) {
+  const value = String(type || "").toLowerCase();
+  if (value.includes("book")) return "book";
+  if (value.includes("journal") || value.includes("article")) return "article";
+  if (value.includes("archival")) return "misc";
+  if (value.includes("oral")) return "misc";
+  if (value.includes("image")) return "misc";
+  if (value.includes("artefact") || value.includes("artifact")) return "misc";
+  return "misc";
+}
+
+function generateBibTeX(record) {
+  const entryType = mapRecordTypeToBibTeX(record.type);
+  const keyBase = slugify(`${record.creator || "unknown"}-${record.title || "record"}-${extractCitationYear(record.period) || "nd"}`) || "archive-record";
+  const lines = [
+    `@${entryType}{${keyBase},`,
+    `  author = {${bibtexEscape(record.creator || "Unknown")}},`,
+    `  title = {${bibtexEscape(record.title || "Untitled")}},`
+  ];
+  const year = extractCitationYear(record.period);
+  if (year) lines.push(`  year = {${year}},`);
+  if (record.institution || record.source) lines.push(`  publisher = {${bibtexEscape(record.institution || record.source)}},`);
+  if (record.collection) lines.push(`  series = {${bibtexEscape(record.collection)}},`);
+  if (record.sourceUrl) lines.push(`  url = {${bibtexEscape(record.sourceUrl)}},`);
+  if (record.recordIdentifier || record.archiveIdentifier) lines.push(`  note = {Record ID: ${bibtexEscape(record.recordIdentifier || record.archiveIdentifier)}},`);
+  lines.push(`}`);
+  return lines.join("\n");
+}
+
+function downloadBibTeX(record) {
+  const bib = generateBibTeX(record);
+  const blob = new Blob([bib], { type: "application/x-bibtex" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  const safeName = (record.title || "record").toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  link.href = url;
+  link.download = `${safeName}.bib`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
 function renderTagSection(label, values, extraClass = "") {
   if (!values || !values.length) return "";
   return `
@@ -1500,6 +2251,175 @@ function renderTagSection(label, values, extraClass = "") {
         ${values.map(value => `<span class="tag ${extraClass}">${escapeHtml(value)}</span>`).join("")}
       </div>
     </section>
+  `;
+}
+
+function renderRecordWorkspaceTools(record) {
+  const state = getRecordWorkspaceState(record.id);
+  if (state.status === "idle") {
+    queueMicrotask(() => fetchRecordWorkspaceState(record));
+  }
+
+  if (state.status === "loading" || state.authenticated === null) {
+    return `
+      <section class="detail-section record-workspace-tools">
+        <h2>My workspace</h2>
+        <p class="record-tools-muted">Loading your saved tools...</p>
+      </section>
+    `;
+  }
+
+  if (!state.authenticated) {
+    return `
+      <section class="detail-section record-workspace-tools">
+        <h2>My workspace</h2>
+        <p class="record-tools-muted">Sign in to bookmark this record, save related searches, and create reading lists.</p>
+        <a class="record-tools-primary" href="${escapeHtml(memberSignInUrl())}">Sign in to save</a>
+      </section>
+    `;
+  }
+
+  const data = state.data || {};
+  const readingLists = data.readingLists || [];
+  const bookmark = data.bookmark;
+  const message = state.message ? `<p class="record-tools-message">${escapeHtml(state.message)}</p>` : "";
+  const defaultSearch = uniqueValues([record.title, record.creator, record.collection, record.region].filter(Boolean)).slice(0, 3).join(" ");
+
+  return `
+    <section class="detail-section record-workspace-tools">
+      <h2>My workspace</h2>
+      ${message}
+      <div class="record-tools-stack">
+        <form class="record-tool-form" data-record-tool="bookmark">
+          <div class="record-tool-heading">
+            <strong>${bookmark ? "Bookmarked" : "Bookmark record"}</strong>
+            ${bookmark ? `<span>Saved</span>` : ""}
+          </div>
+          <label>
+            <span>Private note</span>
+            <textarea name="note" rows="3" placeholder="Why this record matters">${escapeHtml(bookmark?.note || "")}</textarea>
+          </label>
+          <button type="submit">${bookmark ? "Update bookmark" : "Save bookmark"}</button>
+        </form>
+
+        <form class="record-tool-form" data-record-tool="save_search">
+          <div class="record-tool-heading">
+            <strong>Save search</strong>
+          </div>
+          <label>
+            <span>Search query</span>
+            <input name="query" value="${escapeHtml(defaultSearch)}" />
+          </label>
+          <button type="submit">Save search</button>
+        </form>
+
+        <form class="record-tool-form" data-record-tool="add_to_reading_list">
+          <div class="record-tool-heading">
+            <strong>Add to reading list</strong>
+            <span>${readingLists.length} list${readingLists.length === 1 ? "" : "s"}</span>
+          </div>
+          ${readingLists.length ? `
+            <label>
+              <span>Add to existing</span>
+              <select name="readingListId" required>
+                <option value="">Choose list</option>
+                ${readingLists.map(list => `<option value="${escapeHtml(list.id)}">${escapeHtml(list.title)}</option>`).join("")}
+              </select>
+            </label>
+            <button type="submit" ${state.status === "saving" ? "disabled" : ""}>Add to list</button>
+          ` : `
+            <p class="record-tools-muted">No reading lists yet.</p>
+          `}
+        </form>
+
+        <form class="record-tool-form" data-record-tool="create_reading_list">
+          <div class="record-tool-heading">
+            <strong>Create list with this record</strong>
+          </div>
+          <label>
+            <span>List title</span>
+            <input name="title" placeholder="Research list title" />
+          </label>
+          <label class="record-tool-check">
+            <input type="checkbox" name="isPublic" />
+            <span>Public list</span>
+          </label>
+          <button type="submit" ${state.status === "saving" ? "disabled" : ""}>Create list</button>
+        </form>
+
+      </div>
+    </section>
+  `;
+}
+
+function renderCardWorkspaceActions(record) {
+  if (memberWorkspaceState.status === "idle") {
+    queueMicrotask(fetchMemberWorkspaceState);
+  }
+
+  if (memberWorkspaceState.status === "loading" || memberWorkspaceState.authenticated === null) {
+    return `<div class="record-actions" data-stop-card-open="true"><span class="card-member-note">Checking saved state...</span></div>`;
+  }
+
+  if (!memberWorkspaceState.authenticated) {
+    return `
+      <div class="record-actions" data-stop-card-open="true">
+        <button class="record-action-icon" type="button" data-member-signin aria-label="Sign in to bookmark" title="Sign in to bookmark">
+          ${iconBookmarkOutline()}
+        </button>
+        <button class="record-action-icon" type="button" data-member-signin aria-label="Sign in to manage reading lists" title="Sign in to manage reading lists">
+          ${iconListPlus()}
+        </button>
+      </div>
+    `;
+  }
+
+  const data = memberWorkspaceState.data || {};
+  const readingLists = data.readingLists || [];
+  const bookmarked = (data.bookmarkRecordIds || []).includes(record.id);
+  const isSaving = memberWorkspaceState.status === "saving";
+  const listComposerOpen = getCardListComposerOpen(record.id);
+  const message = memberWorkspaceState.message ? `<span class="card-member-message">${escapeHtml(memberWorkspaceState.message)}</span>` : "";
+  return `
+    <div class="record-actions-wrap" data-record-id="${escapeHtml(record.id)}" data-stop-card-open="true">
+      <div class="record-actions">
+        <button
+          class="record-action-icon ${bookmarked ? "is-active" : ""}"
+          type="button"
+          data-card-bookmark
+          aria-label="${bookmarked ? "Remove bookmark" : "Save bookmark"}"
+          title="${bookmarked ? "Remove bookmark" : "Save bookmark"}"
+          ${isSaving ? "disabled" : ""}
+        >
+          ${isSaving ? "…" : bookmarked ? iconBookmarkCheck() : iconBookmarkOutline()}
+        </button>
+        <button
+          class="record-action-icon ${listComposerOpen ? "is-active" : ""}"
+          type="button"
+          data-card-list-toggle
+          aria-expanded="${listComposerOpen ? "true" : "false"}"
+          aria-label="${listComposerOpen ? "Hide list actions" : "Show list actions"}"
+          title="${listComposerOpen ? "Hide list actions" : "Show list actions"}"
+          ${isSaving ? "disabled" : ""}
+        >
+          ${iconListPlus()}
+        </button>
+      </div>
+      ${listComposerOpen ? `
+        <div class="record-list-create">
+          ${readingLists.length ? `
+            <select class="card-member-select" data-card-reading-list aria-label="Choose reading list">
+              <option value="">Reading list</option>
+              ${readingLists.map(list => `<option value="${escapeHtml(list.id)}">${escapeHtml(list.title)}</option>`).join("")}
+            </select>
+            <button class="record-action-inline" type="button" data-card-add-list ${isSaving ? "disabled" : ""}>Add</button>
+          ` : ""}
+          <input class="card-member-input" data-card-new-list type="text" placeholder="New list" aria-label="New reading list title" />
+          <button class="record-action-inline" type="button" data-card-create-list ${isSaving ? "disabled" : ""}>Create</button>
+        </div>
+      ` : ""}
+      ${message}
+    </div>
   `;
 }
 
@@ -1551,6 +2471,16 @@ function renderActionList(record) {
     </a>
   `);
 
+  items.push(`
+    <a class="action-link" href="javascript:void(0)" id="downloadBibBtn">
+      <div>
+        <span>Download BibTeX</span>
+        <small>Export for LaTeX and reference managers</small>
+      </div>
+      <span>↓</span>
+    </a>
+  `);
+
   return `
     <section class="detail-section">
       <h2>Links &amp; Access</h2>
@@ -1579,7 +2509,9 @@ function renderHome() {
           <div class="hero-search">
             <input type="text" id="heroSearch" placeholder="Search by title, creator, theme, region, community…" autocomplete="off"/>
             <button id="heroSearchBtn" type="button">Search</button>
+            ${renderSearchSuggestions("heroSuggestions")}
           </div>
+          ${renderRecentSearches('hero')}
           <div class="hero-suggestions">
             ${FEATURED_QUERY_SUGGESTIONS.slice(0, 7).map(term => `<span class="suggestion" data-q="${escapeHtml(term)}">${escapeHtml(term)}</span>`).join("")}
           </div>
@@ -1588,20 +2520,22 @@ function renderHome() {
       </section>
 
       <div class="stats-bar">
-        ${[
-          [relatedCount.toLocaleString(), "Related searches"],
-          [COLLECTIONS.length, "Collections"],
-          [THEMES.length, "Themes"],
-          [SOURCES.length, "Source pathways"],
-          [searchReadyCount, "Search-ready sources"],
-          [countryCount, "Countries & territories"],
-          [languageCount, "Languages"]
-        ].map(([count, label]) => `
-          <div class="stat-item">
-            <div class="stat-n">${escapeHtml(String(count))}</div>
-            <div class="stat-l">${escapeHtml(String(label))}</div>
-          </div>
-        `).join("")}
+        <div class="stats-bar-inner">
+          ${[
+            [relatedCount.toLocaleString(), "Related searches"],
+            [COLLECTIONS.length, "Collections"],
+            [THEMES.length, "Themes"],
+            [SOURCES.length, "Source pathways"],
+            [searchReadyCount, "Search-ready sources"],
+            [countryCount, "Countries & territories"],
+            [languageCount, "Languages"]
+          ].map(([count, label]) => `
+            <div class="stat-item">
+              <div class="stat-n">${escapeHtml(String(count))}</div>
+              <div class="stat-l">${escapeHtml(String(label))}</div>
+            </div>
+          `).join("").repeat(2)}
+        </div>
       </div>
 
       <section class="section">
@@ -1715,9 +2649,11 @@ function renderSources() {
   return `
     <div class="page active">
       <section class="hero hero-compact">
-        <div class="hero-eyebrow">${SOURCES.length} source pathways · ${searchReadyCount} search-ready routes · static-friendly discovery model</div>
-        <h1 class="source-hero-title">Archive <strong>source directory</strong></h1>
-        <p class="hero-sub hero-sub-tight">The source directory now reflects a larger archive architecture: African-priority institutions, search-ready discovery layers, internal enrichment pathways, and partner routes for records that cannot simply be fetched live in the browser.</p>
+        <div class="hero-inner">
+          <div class="hero-eyebrow">${SOURCES.length} source pathways · ${searchReadyCount} search-ready routes · static-friendly discovery model</div>
+          <h1 class="source-hero-title">Archive <strong>source directory</strong></h1>
+          <p class="hero-sub hero-sub-tight">The source directory now reflects a larger archive architecture: African-priority institutions, search-ready discovery layers, internal enrichment pathways, and partner routes for records that cannot simply be fetched live in the browser.</p>
+        </div>
       </section>
 
       ${groups.filter(group => group.items.length).map(group => `
@@ -1744,41 +2680,22 @@ function renderSources() {
 }
 
 function renderAbout() {
+  const about = siteContent.about || {};
+
   return `
     <div class="page active">
       <div class="about-body">
-        <div class="hero-eyebrow eyebrow-tight">About this project</div>
-        <h1>Decolonising Archive</h1>
-        <p class="about-lead">An open-access cultural knowledge archive dedicated to preserving, organising, and making discoverable records related to decolonising knowledge across Africa, the diaspora, and the Global South.</p>
-        <p>The archive combines a stable local index with optional source handoffs to external institutions. That means the core browsing, search, and record-detail experience works reliably on static hosting, while still keeping institutional pathways visible.</p>
-        <p>All metadata is published under CC0. Individual records remain subject to the rights, custodianship conditions, and access policies of their originating communities and institutions. The archive does not claim ownership of any record — it facilitates discovery, provenance transparency, and contextual reading.</p>
+        <div class="hero-eyebrow eyebrow-tight">${escapeHtml(about.eyebrow || "About")}</div>
+        <h1>${escapeHtml(about.title || "About this archive")}</h1>
+        <p class="about-lead">${escapeHtml(about.lead || "")}</p>
 
-        <h2>Founding Editor</h2>
-        <div class="person-block">
-          <div class="person-avatar">YO</div>
-          <div>
-            <div class="person-name">Dr Yaw Ofosu-Asare</div>
-            <div class="person-role">Design researcher and author based in Melbourne, Australia. Author of <em>Decolonising Design in Africa</em> (Routledge, 2024) and <em>African Design Futures</em> (Palgrave Macmillan, 2024). Guest editor, <em>Design and Culture</em> special issue: Afrikan Design. Research focus: decolonial design theory, African design philosophy, and design pedagogy.</div>
-          </div>
-        </div>
+        <div class="about-richtext">${about.body || ""}</div>
 
-        <h2>Technical Architecture</h2>
-        <div class="info-block">
-          <p>Static archive interface · Structured local record index and search layer · Expanded taxonomy architecture spanning collections, themes, source pathways, and related-search routes · Stable internal routing for consistent access and navigation · Responsive editorial layout designed for clarity across devices · External source pathways integrated for broader discovery · Built for resilient public browsing, extensibility, and ongoing archival growth.</p>
-        </div>
+        <h2>${escapeHtml(about.missionTitle || "Mission")}</h2>
+        <div class="about-richtext">${about.missionBody || ""}</div>
 
-        <h2>Data Model</h2>
-        <div class="info-block">
-          <p>Each record can carry richer fields including abstract, summary, multi-paragraph description, institution, contributors, collection, rights, provenance, citation, notes, identifiers, optional images, external references, related-record links, language, country coverage, and source pathways. The larger working-library shelf is embedded into the static index so topics such as African philosophy return broader local results, while the expanded taxonomy layer powers filters, browse routes, and query expansion. Missing fields are hidden cleanly rather than rendered as empty placeholders.</p>
-        </div>
-
-        <h2>Production Notes</h2>
-        <div class="info-block">
-          <p>The site is designed to deploy safely on static hosts. The local index powers search, filters, and record pages without cross-origin requests. External archives remain available through explicit source links, so CORS failures no longer block the core experience.</p>
-        </div>
-
-        <h2>Contact &amp; Partnership</h2>
-        <p>For institutional partnership, bulk data access, or repatriation documentation enquiries, contact through the archive editor. For archive contribution or source pathway additions, reach out via <a href="https://yofosuasare.com" class="inline-link">yofosuasare.com</a>.</p>
+        <h2>${escapeHtml(about.contactTitle || "Contact")}</h2>
+        <div class="about-richtext">${about.contactBody || ""}</div>
       </div>
     </div>
   `;
@@ -1824,7 +2741,10 @@ const LIVE_SOURCE_ADAPTERS = [
       if (!response.ok || !data.ok) {
         throw new Error(data.detail || data.error || 'CORE search failed');
       }
-      coreTotalHits = Number(data.totalHits || 0);
+      if (data.partial) {
+        console.warn('[LIVE] CORE returned partial results:', data.warning || 'cluster under load');
+      }
+      const incomingHits = Number(data.totalHits || 0); if (incomingHits > 0) coreTotalHits = incomingHits;
       return Array.isArray(data.results) ? data.results : [];
     }
   },
@@ -1892,7 +2812,14 @@ const LIVE_SOURCE_ADAPTERS = [
     label:"Crossref",
     trust:0.89,
     async search(query) {
-      const json = await fetchJsonWithTimeout(`https://api.crossref.org/works?rows=8&query.bibliographic=${encodeURIComponent(query)}&select=DOI,title,author,issued,abstract,URL,container-title,type,subject,publisher,language`, {headers:{Accept:"application/json"}}, 6500);
+      // NOTE: `language` is NOT a valid Crossref `select` field — including it
+      // makes the API reject the entire request with 400. (Authoritative list:
+      // https://github.com/fabiobatalha/crossrefapi -> Works.FIELDS_SELECT.)
+      // We rely on `mapLanguageCode(item.language)` falling back to "" when
+      // the field is absent in the response.
+      // `mailto` puts us in Crossref's "polite pool" (priority routing /
+      // fewer 429s); harmless if you change the address.
+      const json = await fetchJsonWithTimeout(`https://api.crossref.org/works?rows=8&query.bibliographic=${encodeURIComponent(query)}&select=DOI,title,author,issued,abstract,URL,container-title,type,subject,publisher&mailto=archive@ared.design`, {headers:{Accept:"application/json"}}, 6500);
       const items = json?.message?.items && Array.isArray(json.message.items) ? json.message.items.slice(0, 8) : [];
       return items.map((item, index) => {
         const authors = Array.isArray(item.author) ? item.author.map(person => [person.given, person.family].filter(Boolean).join(" ").trim()).filter(Boolean) : [];
@@ -2198,13 +3125,98 @@ function buildInstitutionalSearchLinks(query){
 }
 
 function makeExternalFallbacks(query){ return buildExternalDiscovery(query).map((source, index) => normalizeLiveRecord({ id:`handoff-${slugify(source.name + '-' + query + '-' + index)}`, title:`Search ${source.name}`, creator: source.region || 'External archive', summary: source.desc, abstract: `No strong local match was found, so this handoff opens ${source.name} directly for broader archive discovery.`, description:[source.desc], type:'External handoff', cat:'External source pathways', region: source.region || 'Global', collection:'External Source Handoffs', institution: source.name, source: source.name, sourceUrl: source.actionUrl, sourceActionLabel: source.actionLabel || 'Open source', externalLinks: source.url && source.url !== source.actionUrl ? [{label:'Source home', url:source.url}] : [], notes:['This result is a handoff to the source institution or discovery service rather than a hosted local archive record.'], sourcePathways:['Source handoff router', source.name], resultMode:'external_handoff', trustScore:0.55, liveSourceHint:'handoff' })); }
-function scoreBlendedResult(record, query){ const context = buildQueryContext(query); const base = scoreRecord(record, context); const mode = getResultMode(record); const modeBonus = {local:18, hybrid:12, live:7, external_handoff:2}[mode] || 0; const completeness = [record.abstract, record.summary, (record.description || []).join(' '), (record.images || []).length ? 'img' : ''].filter(Boolean).length * 2; return base + modeBonus + completeness + Math.round((record.trustScore || 0) * 6); }
+function scoreBlendedResult(record, query){
+  const context = buildQueryContext(query);
+  const base = scoreRecord(record, context);
+  const mode = getResultMode(record);
+  const modeBonus = {local:18, hybrid:12, live:7, external_handoff:2}[mode] || 0;
+  const descriptionText = Array.isArray(record.description)
+    ? record.description.join(' ')
+    : (record.description || '');
+  const completeness = [
+    record.abstract,
+    record.summary,
+    descriptionText,
+    (record.images || []).length ? 'img' : ''
+  ].filter(Boolean).length * 2;
+  return base + modeBonus + completeness + Math.round((record.trustScore || 0) * 6);
+}
 function dedupeBlendedResults(items, query){ const seen = new Map(); const ranked = items.filter(Boolean).map(item => ({item, score: scoreBlendedResult(item, query || libraryQuery)})).sort((a,b) => b.score - a.score || a.item.title.localeCompare(b.item.title)); for (const entry of ranked){ const key = normalizeComparable([entry.item.title, entry.item.creator, entry.item.period].join(' ')); if (!seen.has(key)) seen.set(key, entry); } return [...seen.values()].map(entry => entry.item); }
-async function fetchLiveResults(query){ const normalizedQuery = query.trim(); if (!normalizedQuery) return []; if (LIVE_RESULT_CACHE.has(normalizedQuery)) return LIVE_RESULT_CACHE.get(normalizedQuery); liveStatus = {state:'loading', message:`Searching live sources for “${normalizedQuery}”…`, sources:LIVE_SOURCE_ADAPTERS.map(adapter => ({label:adapter.label, state:'loading'}))}; render(); const settled = await Promise.allSettled(LIVE_SOURCE_ADAPTERS.map(adapter => adapter.search(normalizedQuery))); const gathered = []; const statuses = []; settled.forEach((result, index) => { const adapter = LIVE_SOURCE_ADAPTERS[index]; if (result.status === 'fulfilled') { const items = Array.isArray(result.value) ? result.value : []; items.forEach(item => { TRANSIENT_RESULTS_BY_ID.set(item.id, item); gathered.push(item); }); statuses.push({label:adapter.label, state:items.length ? 'ok' : 'empty', count:items.length}); } else { statuses.push({label:adapter.label, state:'fail', count:0}); } }); const fallbacks = makeExternalFallbacks(normalizedQuery); fallbacks.forEach(item => TRANSIENT_RESULTS_BY_ID.set(item.id, item)); const fallbackPool = gathered.length >= 10 ? [] : fallbacks.slice(0, Math.max(4, 12 - gathered.length)); const combined = dedupeBlendedResults([...gathered, ...fallbackPool], normalizedQuery).slice(0, 24); LIVE_RESULT_CACHE.set(normalizedQuery, combined); liveStatus = { state:'done', message: gathered.length ? `Showing ${gathered.length} live records and ${combined.filter(item => getResultMode(item) === 'external_handoff').length} source handoffs for “${normalizedQuery}”.` : `Live fallback could not return direct records for “${normalizedQuery}”, so source handoffs are shown instead.`, sources: statuses }; return combined; }
-function maybeFetchLiveResults(query){ const normalizedQuery = query.trim(); if (!sourceMode || !normalizedQuery) return Promise.resolve([]); return fetchLiveResults(normalizedQuery).then(results => { liveResults = results; externalDiscovery = results.filter(item => getResultMode(item) === 'external_handoff'); render(); return results; }).catch(() => { liveStatus = {state:'error', message:'Live fallback failed. The local archive is still available, and external handoffs remain in place.', sources:LIVE_SOURCE_ADAPTERS.map(adapter => ({label:adapter.label, state:'fail'}))}; liveResults = makeExternalFallbacks(normalizedQuery); externalDiscovery = liveResults.filter(item => getResultMode(item) === 'external_handoff'); render(); return liveResults; }); }
-function renderCard(record) { const summary = record.abstract || record.summary || (record.description && record.description[0]) || ''; const mode = getResultMode(record); const leadImage = (record.images || [])[0]; const externalPrimary = (record.externalLinks || [])[0]; const subSource = record.institution || record.source || 'Archive record'; const actionHint = mode === 'external_handoff' ? 'Open source' : 'Open record'; return `<article class="card" data-id="${escapeHtml(record.id)}" data-mode="${escapeHtml(mode)}" ${mode === 'external_handoff' && record.sourceUrl ? `data-url="${escapeHtml(record.sourceUrl)}"` : ''} role="button" tabindex="0" aria-label="${escapeHtml(actionHint)} ${escapeHtml(record.title)}">${leadImage ? `<div class="card-thumb"><img src="${escapeHtml(leadImage.src)}" alt="${escapeHtml(leadImage.alt || record.title)}" loading="lazy"/></div>` : ''}<div class="card-meta"><span class="badge">${escapeHtml(record.type)}</span><span class="result-status ${escapeHtml(mode)}">${escapeHtml(resultModeLabel(mode))}</span></div><div class="card-title">${escapeHtml(record.title)}</div><div class="card-creator">${escapeHtml(record.creator)}</div><div class="card-source">${escapeHtml(subSource)}${record.period ? ` · ${escapeHtml(record.period)}` : ''}</div><div class="card-summary">${escapeHtml(summary)}</div><div class="card-footer">${record.region ? `<span class="chip">${escapeHtml(record.region)}</span>` : ''}${record.country ? `<span class="chip">${escapeHtml(record.country)}</span>` : ''}${(record.concepts || [])[0] ? `<span class="chip">${escapeHtml(record.concepts[0])}</span>` : ''}</div>${(record.sourceUrl || externalPrimary) ? `<div class="card-links">${record.sourceUrl ? `<a class="card-link" href="${escapeHtml(record.sourceUrl)}" target="_blank" rel="noopener noreferrer" data-stop-card-open="true">View source</a>` : ''}${externalPrimary ? `<a class="card-link" href="${escapeHtml(externalPrimary.url)}" target="_blank" rel="noopener noreferrer" data-stop-card-open="true">More links</a>` : ''}</div>` : ''}</article>`; }
-function renderRecord() { const record = getRecordByIdAny(selectedRecordId); if (!record) { return `<div class="page active"><div class="detail"><div class="detail-shell"><div class="breadcrumb"><a href="#/home" data-page="home">Archive</a><span>›</span><a href="#/library" data-page="library">Library</a><span>›</span><span>Record</span></div><div class="empty"><h3>Record not found</h3><p>The requested record is not available in the local archive index or current live result cache. Return to the library and continue browsing.</p></div></div></div></div>`; } const {primary, secondary} = getPrimaryNarrative(record); const metadataRows = [['Title', record.title], ['Alternate title', record.alternateTitle], ['Creator', record.creator], ['Contributors', humanList(record.contributors)], ['Institution', record.institution], ['Source', record.source], ['Country', record.country], ['Region', record.region], ['Community', record.community], ['Period', record.period], ['Category', record.cat], ['Record type', record.type], ['Collection', record.collection], ['Material', record.material], ['Medium', record.medium], ['Language', humanList(record.language)]].filter(([,value]) => value); const identifierRows = [['Record ID', record.recordIdentifier], ['Archive ID', record.archiveIdentifier], ['Mode', resultModeLabel(getResultMode(record))]].filter(([,value]) => value); const related = getResultMode(record) === 'local' || getResultMode(record) === 'hybrid' ? getRelatedRecords(record, 3) : []; const leadImage = getLeadImage(record); const gallery = getGalleryImages(record); const mode = getResultMode(record); const badges = [`<span class="badge">${escapeHtml(record.type)}</span>`, record.period ? `<span class="period">${escapeHtml(record.period)}</span>` : '', `<span class="result-status ${escapeHtml(mode)}">${escapeHtml(resultModeLabel(mode))}</span>`, record.source ? `<span class="badge">${escapeHtml(record.source)}</span>` : ''].filter(Boolean).join(''); return `<div class="page active"><div class="detail"><div class="detail-shell"><div class="breadcrumb"><a href="#/home" data-page="home">Archive</a><span>›</span><a href="#/library" data-page="library">Library</a><span>›</span><span>${escapeHtml(record.type)}</span></div><header class="detail-header"><div class="detail-type">${badges}</div><h1>${escapeHtml(record.title)}</h1>${record.alternateTitle ? `<div class="detail-alt">${escapeHtml(record.alternateTitle)}</div>` : ''}<div class="detail-creator">${escapeHtml(record.creator)}</div><div class="detail-subline">${record.institution ? `<span>${escapeHtml(record.institution)}</span>` : ''}${record.collection ? `<span>${escapeHtml(record.collection)}</span>` : ''}${record.country ? `<span>${escapeHtml(record.country)}</span>` : ''}${record.sourceUrl ? `<span class="detail-outbound"><a class="inline-link" href="${escapeHtml(record.sourceUrl)}" target="_blank" rel="noopener noreferrer">Open original source ↗</a></span>` : ''}</div></header>${leadImage ? `<figure class="detail-media" data-media-root><div class="detail-media-main"><img src="${escapeHtml(leadImage.src)}" alt="${escapeHtml(leadImage.alt)}" loading="lazy"/></div>${leadImage.caption ? `<figcaption class="detail-media-caption">${escapeHtml(leadImage.caption)}</figcaption>` : ''}${gallery.length ? `<div class="gallery-grid">${gallery.map(image => `<figure class="gallery-thumb"><img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt)}" loading="lazy"/>${image.caption ? `<figcaption>${escapeHtml(image.caption)}</figcaption>` : ''}</figure>`).join('')}</div>` : ''}</figure>` : ''}<div class="detail-body"><div class="detail-main"><section class="detail-summary"><div class="label">${escapeHtml(primary.label)}</div>${primary.content.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join('')}</section>${secondary.map(section => `<section class="detail-section alt"><h2>${escapeHtml(section.label)}</h2><div class="detail-copy">${section.content.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join('')}</div></section>`).join('')}<section class="detail-section"><h2>Metadata</h2><table class="meta-table">${metadataRows.map(([label, value]) => `<tr><td>${escapeHtml(label)}</td><td>${escapeHtml(value)}</td></tr>`).join('')}</table></section>${renderTagSection('Concepts', record.concepts, 'concept-tag')}${renderTagSection('Themes', record.themes, 'theme-chip')}${renderTagSection('Tags', record.tags)}<section class="provenance-box"><div class="label">Provenance & rights</div>${record.provenance ? `<p>${escapeHtml(record.provenance)}</p>` : ''}${record.rights ? `<p><strong>Rights:</strong> ${escapeHtml(record.rights)}</p>` : ''}</section>${related.length ? `<section class="detail-section"><div class="section-header"><span class="section-title">Related records</span></div><div class="card-grid">${related.map(renderCard).join('')}</div></section>` : ''}</div><aside class="detail-side">${renderActionList(record)}<section class="detail-section alt"><h2>Citation</h2><div class="citation">${escapeHtml(record.citation || 'Citation not yet available.')}</div></section>${record.notes.length ? `<section class="detail-section"><h2>Notes</h2><div class="note-list">${record.notes.map(note => `<p>${escapeHtml(note)}</p>`).join('')}</div></section>` : ''}<section class="detail-section alt"><h2>Identifiers</h2><table class="meta-table">${identifierRows.map(([label, value]) => `<tr><td>${escapeHtml(label)}</td><td>${escapeHtml(value)}</td></tr>`).join('')}</table></section>${record.externalLinks.length ? `<section class="detail-section"><h2>External References</h2><div class="inline-links">${record.externalLinks.map(link => `<a class="inline-link" href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(link.label)}</a>`).join('')}</div></section>` : ''}</aside></div></div></div></div>`; }
+async function fetchLiveResults(query){ const normalizedQuery = query.trim(); if (!normalizedQuery) return []; console.log('[LIVE] fetchLiveResults start', { query: normalizedQuery }); if (LIVE_RESULT_CACHE.has(normalizedQuery)) { console.log('[LIVE] cache hit', normalizedQuery); return LIVE_RESULT_CACHE.get(normalizedQuery); } liveStatus = {state:'loading', message:`Searching live sources for “${normalizedQuery}”…`, sources:LIVE_SOURCE_ADAPTERS.map(adapter => ({label:adapter.label, state:'loading'}))}; render(); const settled = await Promise.allSettled(LIVE_SOURCE_ADAPTERS.map(adapter => adapter.search(normalizedQuery))); const gathered = []; const statuses = []; settled.forEach((result, index) => { const adapter = LIVE_SOURCE_ADAPTERS[index]; if (result.status === 'fulfilled') { const items = Array.isArray(result.value) ? result.value : []; console.log('[LIVE] adapter success', { adapter: adapter.label, count: items.length }); items.forEach(item => { TRANSIENT_RESULTS_BY_ID.set(item.id, item); gathered.push(item); }); statuses.push({label:adapter.label, state:items.length ? 'ok' : 'empty', count:items.length}); } else { console.warn('[LIVE] adapter failed', { adapter: adapter.label, error: String(result.reason) }); statuses.push({label:adapter.label, state:'fail', count:0}); } }); const fallbacks = makeExternalFallbacks(normalizedQuery); fallbacks.forEach(item => TRANSIENT_RESULTS_BY_ID.set(item.id, item)); const fallbackPool = gathered.length >= 10 ? [] : fallbacks.slice(0, Math.max(4, 12 - gathered.length)); const combined = dedupeBlendedResults([...gathered, ...fallbackPool], normalizedQuery).slice(0, 24); console.log('[LIVE] combined results', { gathered: gathered.length, fallbackPool: fallbackPool.length, combined: combined.length }); LIVE_RESULT_CACHE.set(normalizedQuery, combined); liveStatus = { state:'done', message: gathered.length ? `Showing ${gathered.length} live records and ${combined.filter(item => getResultMode(item) === 'external_handoff').length} source handoffs for “${normalizedQuery}”.` : `Live fallback could not return direct records for “${normalizedQuery}”, so source handoffs are shown instead.`, sources: statuses }; return combined; }
+function maybeFetchLiveResults(query){ const normalizedQuery = query.trim(); console.log('[LIVE] maybeFetchLiveResults', { normalizedQuery, sourceMode }); if (!sourceMode || !normalizedQuery) return Promise.resolve([]); return fetchLiveResults(normalizedQuery).then(results => { console.log('[LIVE] maybeFetchLiveResults success', { count: results.length, liveCount: results.filter(item => getResultMode(item) === 'live').length }); liveResults = results; externalDiscovery = results.filter(item => getResultMode(item) === 'external_handoff'); render(); return results; }).catch(error => { console.warn('[LIVE] maybeFetchLiveResults failed', error); liveStatus = {state:'error', message:'Live fallback failed. The local archive is still available, and external handoffs remain in place.', sources:LIVE_SOURCE_ADAPTERS.map(adapter => ({label:adapter.label, state:'fail'}))}; liveResults = makeExternalFallbacks(normalizedQuery); externalDiscovery = liveResults.filter(item => getResultMode(item) === 'external_handoff'); render(); return liveResults; }); }
+function renderCard(record) {
+  const summary =
+    record.abstract ||
+    record.summary ||
+    (Array.isArray(record.description) ? record.description[0] : record.description) ||
+    '';
+  const mode = getResultMode(record);
+  const leadImage = getLeadImage(record);
+  const externalPrimary = (record.externalLinks || [])[0];
+  const subSource = record.institution || record.source || 'Archive record';
+  const actionHint = mode === 'external_handoff' ? 'Open source' : 'Open record';
+  const sourceUrl = safeUrl(record.sourceUrl);
+  const externalPrimaryUrl = externalPrimary ? safeUrl(externalPrimary.url) : '';
+  return `<article class="card" data-id="${escapeHtml(record.id)}" data-mode="${escapeHtml(mode)}" ${mode === 'external_handoff' && sourceUrl ? `data-url="${escapeHtml(sourceUrl)}"` : ''} role="button" tabindex="0" aria-label="${escapeHtml(actionHint)} ${escapeHtml(record.title)}">
+    ${leadImage ? `<div class="card-thumb"><img src="${escapeHtml(leadImage.src)}" alt="${escapeHtml(leadImage.alt || record.title)}" loading="lazy"/></div>` : ''}
+    <div class="card-meta">
+      <span class="badge">${escapeHtml(record.type)}</span>
+      <span class="result-status ${escapeHtml(mode)}">${escapeHtml(resultModeLabel(mode))}</span>
+    </div>
+    <div class="card-title">${escapeHtml(record.title)}</div>
+    <div class="card-creator">${escapeHtml(record.creator)}</div>
+    <div class="card-source">${escapeHtml(subSource)}${record.period ? ` · ${escapeHtml(record.period)}` : ''}</div>
+    <div class="card-summary">${escapeHtml(summary)}</div>
+    <div class="card-footer">
+      ${record.region ? `<span class="chip">${escapeHtml(record.region)}</span>` : ''}
+      ${record.country ? `<span class="chip">${escapeHtml(record.country)}</span>` : ''}
+      ${(record.concepts || [])[0] ? `<span class="chip">${escapeHtml(record.concepts[0])}</span>` : ''}
+    </div>
+    ${(sourceUrl || externalPrimaryUrl) ? `<div class="card-links">
+      ${sourceUrl ? `<a class="card-link" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer" data-stop-card-open="true">View source</a>` : ''}
+      ${externalPrimaryUrl ? `<a class="card-link" href="${escapeHtml(externalPrimaryUrl)}" target="_blank" rel="noopener noreferrer" data-stop-card-open="true">More links</a>` : ''}
+    </div>` : ''}
+    ${renderCardWorkspaceActions(record)}
+  </article>`;
+}
+function renderRecord() { const record = getRecordByIdAny(selectedRecordId); if (!record) { return `<div class="page active"><div class="detail"><div class="detail-shell"><div class="breadcrumb"><a href="#/home" data-page="home">Archive</a><span>›</span><a href="#/library" data-page="library">Library</a><span>›</span><span>Record</span></div><div class="empty"><h3>Record not found</h3><p>The requested record is not available in the local archive index or current live result cache. Return to the library and continue browsing.</p></div></div></div></div>`; } const {primary, secondary} = getPrimaryNarrative(record); const metadataRows = [['Title', record.title], ['Alternate title', record.alternateTitle], ['Creator', record.creator], ['Contributors', humanList(record.contributors)], ['Institution', record.institution], ['Source', record.source], ['Country', record.country], ['Region', record.region], ['Community', record.community], ['Period', record.period], ['Category', record.cat], ['Record type', record.type], ['Collection', record.collection], ['Material', record.material], ['Medium', record.medium], ['Language', humanList(record.language)]].filter(([,value]) => value); const identifierRows = [['Record ID', record.recordIdentifier], ['Archive ID', record.archiveIdentifier], ['Mode', resultModeLabel(getResultMode(record))]].filter(([,value]) => value); const related = getResultMode(record) === 'local' || getResultMode(record) === 'hybrid' ? getRelatedRecords(record, 3) : []; const leadImage = getLeadImage(record); const gallery = getGalleryImages(record); const mode = getResultMode(record); const badges = [`<span class="badge">${escapeHtml(record.type)}</span>`, record.period ? `<span class="period">${escapeHtml(record.period)}</span>` : '', `<span class="result-status ${escapeHtml(mode)}">${escapeHtml(resultModeLabel(mode))}</span>`, record.source ? `<span class="badge">${escapeHtml(record.source)}</span>` : ''].filter(Boolean).join(''); return `<div class="page active"><div class="detail"><div class="detail-shell"><div class="breadcrumb"><a href="#/home" data-page="home">Archive</a><span>›</span><a href="#/library" data-page="library">Library</a><span>›</span><span>${escapeHtml(record.type)}</span></div><header class="detail-header"><div class="detail-type">${badges}</div><h1>${escapeHtml(record.title)}</h1>${record.alternateTitle ? `<div class="detail-alt">${escapeHtml(record.alternateTitle)}</div>` : ''}<div class="detail-creator">${escapeHtml(record.creator)}</div><div class="detail-subline">${record.institution ? `<span>${escapeHtml(record.institution)}</span>` : ''}${record.collection ? `<span>${escapeHtml(record.collection)}</span>` : ''}${record.country ? `<span>${escapeHtml(record.country)}</span>` : ''}${record.sourceUrl ? `<span class="detail-outbound"><a class="inline-link" href="${escapeHtml(record.sourceUrl)}" target="_blank" rel="noopener noreferrer">Open original source ↗</a></span>` : ''}</div></header>${leadImage ? `<figure class="detail-media" data-media-root><div class="detail-media-main"><img src="${escapeHtml(leadImage.src)}" alt="${escapeHtml(leadImage.alt)}" loading="lazy"/></div>${leadImage.caption ? `<figcaption class="detail-media-caption">${escapeHtml(leadImage.caption)}</figcaption>` : ''}${gallery.length ? `<div class="gallery-grid">${gallery.map(image => `<figure class="gallery-thumb"><img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt)}" loading="lazy"/>${image.caption ? `<figcaption>${escapeHtml(image.caption)}</figcaption>` : ''}</figure>`).join('')}</div>` : ''}</figure>` : ''}<div class="detail-body"><div class="detail-main"><section class="detail-summary"><div class="label">${escapeHtml(primary.label)}</div>${primary.content.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join('')}</section>${secondary.map(section => `<section class="detail-section alt"><h2>${escapeHtml(section.label)}</h2><div class="detail-copy">${section.content.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join('')}</div></section>`).join('')}<section class="detail-section"><h2>Metadata</h2><table class="meta-table">${metadataRows.map(([label, value]) => `<tr><td>${escapeHtml(label)}</td><td>${escapeHtml(value)}</td></tr>`).join('')}</table></section>${renderTagSection('Concepts', record.concepts, 'concept-tag')}${renderTagSection('Themes', record.themes, 'theme-chip')}${renderTagSection('Tags', record.tags)}<section class="provenance-box"><div class="label">Provenance & rights</div>${record.provenance ? `<p>${escapeHtml(record.provenance)}</p>` : ''}${record.rights ? `<p><strong>Rights:</strong> ${escapeHtml(record.rights)}</p>` : ''}</section>${related.length ? `<section class="detail-section"><div class="section-header"><span class="section-title">Related records</span></div><div class="card-grid">${related.map(renderCard).join('')}</div></section>` : ''}</div><aside class="detail-side">${renderRecordWorkspaceTools(record)}${renderActionList(record)}<section class="detail-section alt"><h2>Citation</h2><div class="citation-controls"><label for="citationStyleSelect" class="citation-label">Style</label><select id="citationStyleSelect" class="citation-select"><option value="apa" ${citationStyle === "apa" ? "selected" : ""}>APA 7</option><option value="chicago" ${citationStyle === "chicago" ? "selected" : ""}>Chicago</option><option value="mla" ${citationStyle === "mla" ? "selected" : ""}>MLA 9</option><option value="harvard" ${citationStyle === "harvard" ? "selected" : ""}>Harvard</option></select><button class="citation-copy-btn" id="copyCitationInlineBtn" type="button" title="Copy citation">⎘</button></div><div class="citation" id="citationText">${escapeHtml(generateCitationByStyle(record, citationStyle))}</div></section>${record.notes.length ? `<section class="detail-section"><h2>Notes</h2><div class="note-list">${record.notes.map(note => `<p>${escapeHtml(note)}</p>`).join('')}</div></section>` : ''}<section class="detail-section alt"><h2>Identifiers</h2><table class="meta-table">${identifierRows.map(([label, value]) => `<tr><td>${escapeHtml(label)}</td><td>${escapeHtml(value)}</td></tr>`).join('')}</table></section>${record.externalLinks.length ? `<section class="detail-section"><h2>External References</h2><div class="inline-links">${record.externalLinks.map(link => `<a class="inline-link" href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(link.label)}</a>`).join('')}</div></section>` : ''}</aside></div></div></div></div>`; }
 function renderLiveStatus(){ const effectiveQuery = getEffectiveSearchQuery(); if (!effectiveQuery || !sourceMode) return '';  return `<div class="source-status"><div class="live-status-detail"><div>${escapeHtml(liveStatus.message || 'Live fallback is ready when local results are sparse.')}</div>${liveStatus.sources && liveStatus.sources.length ? `<div class="live-status-meta">${liveStatus.sources.map(source => `<span class="live-status-chip ${source.state === 'ok' ? 'ok' : source.state === 'fail' ? 'fail' : ''}">${escapeHtml(source.label)}${typeof source.count === 'number' ? ` · ${source.count}` : ''}</span>`).join('')}</div>` : ''}</div></div>`; }
+function renderSearchSaveAction(effectiveQuery) {
+  const hasSearch = Boolean(effectiveQuery || libraryQuery || filterType || filterRegion || filterCat || filterTheme || filterCollection || filterLanguage);
+  if (!hasSearch) return "";
+
+  if (memberWorkspaceState.status === "idle") {
+    queueMicrotask(fetchMemberWorkspaceState);
+  }
+
+  if (memberWorkspaceState.status === "loading" || memberWorkspaceState.authenticated === null) {
+    return `<div class="search-save-bar"><span>Checking saved-search tools...</span></div>`;
+  }
+
+  const message = memberWorkspaceState.message ? `<span class="search-save-message">${escapeHtml(memberWorkspaceState.message)}</span>` : "";
+
+  if (!memberWorkspaceState.authenticated) {
+    return `
+      <div class="search-save-bar">
+        <span>Save this search to your workspace.</span>
+        <button type="button" data-member-signin>Sign in to save search</button>
+      </div>
+    `;
+  }
+
+  const defaultLabel = effectiveQuery || libraryQuery || "Archive search";
+  return `
+    <form class="search-save-bar search-save-form" data-save-search>
+      <input type="hidden" name="query" value="${escapeHtml(effectiveQuery || libraryQuery)}" />
+      <label>
+        <span>Save this search</span>
+        <input name="label" value="${escapeHtml(defaultLabel)}" aria-label="Saved search label" />
+      </label>
+      <button type="submit">${memberWorkspaceState.status === "saving" ? "Saving..." : "Save"}</button>
+      ${message}
+    </form>
+  `;
+}
 function getEffectiveSearchQuery(){ const parts = [libraryQuery, filterType, filterRegion, filterCat, filterTheme, filterCollection, filterLanguage].map(value => (value || '').trim()).filter(Boolean); return uniqueValues(parts).join(' '); }
 function refreshBlendedDiscovery(forceLive = false){ const effectiveQuery = getEffectiveSearchQuery(); externalDiscovery = effectiveQuery ? buildExternalDiscovery(effectiveQuery) : []; if (!sourceMode || !effectiveQuery) { if (!effectiveQuery) { liveResults = []; liveStatus = {state:'idle', message:'', sources:[]}; } return Promise.resolve([]); } if (forceLive || localResults.length < 24 || liveResults.length === 0) { return maybeFetchLiveResults(effectiveQuery); } return Promise.resolve(liveResults); }
 function renderLibraryLoader(){
@@ -2225,26 +3237,51 @@ function renderLibraryLoader(){
   </div>`;
 }
 
-function renderLibrary() { const effectiveQuery = getEffectiveSearchQuery(); const types = uniqueValues(RECORDS.map(record => record.type)).sort(); const regions = uniqueValues(RECORDS.map(record => record.region)).sort(); const cats = uniqueValues(RECORDS.map(record => record.cat)).sort(); const themeOptions = buildFacetOptions(localResults, record => [...record.themes, ...record.concepts], 10); const collectionOptions = buildFacetOptions(localResults, record => [record.collection], 8); const languageOptions = buildFacetOptions(localResults, record => record.language, 8); const displayedLive = sourceMode ? liveResults.filter(item => getResultMode(item) === 'live') : []; const displayedExternal = sourceMode ? liveResults.filter(item => getResultMode(item) === 'external_handoff') : []; const displayedLocal = filterDisplayedRecords(localResults); const canLoadMoreCore = displayedLive.length < coreTotalHits; const relatedSearches = getRelatedSearchSuggestions(effectiveQuery || libraryQuery || filterTheme || filterCollection || filterLanguage, 18); const collectionSuggestions = getCollectionSuggestions(effectiveQuery || libraryQuery || filterTheme || filterCollection, 8); const topThemes = getFeaturedThemes(12); const topSources = SOURCES.filter(source => source.access === "search").slice(0, 6); const hasFilter = filterType || filterRegion || filterCat || filterTheme || filterCollection || filterLanguage || libraryQuery; const localOnlyCount = displayedLocal.length; const liveOnlyCount = displayedLive.length; const handoffCount = displayedExternal.length; const totalDisplayed = displayedLive.length + displayedLocal.length + displayedExternal.length; return `<div class="page active"><div class="library-layout"><aside class="sidebar ${mobileFiltersOpen ? 'mobile-open' : ''}">${hasFilter ? `<button class="clear-btn" id="clearBtn" type="button">Clear all filters</button>` : ''}<div class="sidebar-section"><div class="sidebar-label">Record type</div>${types.map(type => `<label class="filter-opt"><input type="radio" name="type" value="${escapeHtml(type)}" ${filterType === type ? 'checked' : ''}/><span>${escapeHtml(type)}</span></label>`).join('')}</div><div class="sidebar-section"><div class="sidebar-label">Region</div>${regions.map(region => `<label class="filter-opt"><input type="radio" name="region" value="${escapeHtml(region)}" ${filterRegion === region ? 'checked' : ''}/><span>${escapeHtml(region)}</span></label>`).join('')}</div><div class="sidebar-section"><div class="sidebar-label">Category</div>${cats.map(cat => `<label class="filter-opt"><input type="radio" name="cat" value="${escapeHtml(cat)}" ${filterCat === cat ? 'checked' : ''}/><span>${escapeHtml(cat)}</span></label>`).join('')}</div>${collectionOptions.length ? `<div class="sidebar-section"><div class="sidebar-label">Collection</div>${collectionOptions.map(option => `<label class="filter-opt"><input type="radio" name="collection" value="${escapeHtml(option.value)}" ${filterCollection === option.value ? 'checked' : ''}/><span>${escapeHtml(option.value)} (${option.count})</span></label>`).join('')}</div>` : ''}${themeOptions.length ? `<div class="sidebar-section"><div class="sidebar-label">Theme</div>${themeOptions.map(option => `<label class="filter-opt"><input type="radio" name="theme" value="${escapeHtml(option.value)}" ${filterTheme === option.value ? 'checked' : ''}/><span>${escapeHtml(option.value)} (${option.count})</span></label>`).join('')}</div>` : ''}${languageOptions.length ? `<div class="sidebar-section"><div class="sidebar-label">Language</div>${languageOptions.map(option => `<label class="filter-opt"><input type="radio" name="language" value="${escapeHtml(option.value)}" ${filterLanguage === option.value ? 'checked' : ''}/><span>${escapeHtml(option.value)} (${option.count})</span></label>`).join('')}</div>` : ''}</aside><div class="main-results"><div class="search-bar"><input type="text" id="mainSearch" value="${escapeHtml(libraryQuery)}" placeholder="Search the local archive index, live sources, and source handoffs…" autocomplete="off"/><button id="localSearchBtn" type="button">Search</button><button class="secondary ${sourceMode ? 'live-on' : 'live-off'}" id="sourceSearchBtn" type="button">${sourceMode ? 'Live sources on' : 'Live sources off'}</button></div><div class="mobile-filter-bar"><button id="mobileFilterToggle" class="mobile-filter-btn ${mobileFiltersOpen ? 'active' : ''}" type="button">${mobileFiltersOpen ? 'Hide filters' : 'Show filters'}</button>${hasFilter ? `<button id="mobileClearFilters" class="mobile-clear-btn" type="button">Clear all</button>` : ``}</div>${renderLibraryLoader()}<div class="results-meta"><span>${totalDisplayed} total result${totalDisplayed !== 1 ? 's' : ''}${effectiveQuery ? ` for “${escapeHtml(effectiveQuery)}”` : ''}</span><span class="meta-separator" aria-hidden="true">|</span><span>${liveOnlyCount} live</span><span class="meta-separator" aria-hidden="true">|</span><span>${localOnlyCount} local</span><span class="meta-separator" aria-hidden="true">|</span><span>${handoffCount} external</span><span class="meta-separator" aria-hidden="true">|</span><span>${RELATED_SEARCH_INDEX.length.toLocaleString()} related searches</span></div>${renderLiveStatus()}<div class="results-stack">${displayedLive.length ? `<section class="results-section"><div class="results-section-title"><h3>Live results</h3><span>Results from live APIs including CORE</span></div><div class="card-grid">${displayedLive.map(renderCard).join('')}</div>${canLoadMoreCore ? `<div class="load-more-wrap"><button id="loadMoreCoreBtn" class="load-more-btn" type="button">${coreLoadingMore ? 'Loading…' : 'Load more CORE results'}</button></div>` : ``}</section>` : ``}${displayedLocal.length ? `<section class="results-section"><div class="results-section-title"><h3>Local archive results</h3><span>Records from the local archive index</span></div><div class="card-grid">${displayedLocal.map(renderCard).join('')}</div></section>` : `<div class="empty empty-guide"><h3>No local match yet</h3><p>No local archive records matched this search. Try one of these guided paths.</p>${relatedSearches.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Related searches</div>${renderRelatedSearchTags(relatedSearches.slice(0, 8))}</div>` : ``}${topThemes.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Top themes</div>${renderRelatedSearchTags(topThemes.slice(0, 10))}</div>` : ``}${collectionSuggestions.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Collection pathways</div><div class="coll-grid">${collectionSuggestions.slice(0, 4).map(renderCollectionCard).join('')}</div></div>` : ``}${topSources.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Source pathways</div><div class="source-grid">${topSources.map(source => renderSourceCard(source)).join('')}</div></div>` : ``}</div>`}${displayedExternal.length ? `<section class="results-section"><div class="results-section-title"><h3>External results</h3><span>Source handoffs and external discovery links</span></div><div class="card-grid">${displayedExternal.map(renderCard).join('')}</div></section>` : ``}${relatedSearches.length ? `<section class="results-section"><div class="results-section-title"><h3>Related Searches</h3><span>${RELATED_SEARCH_INDEX.length.toLocaleString()} discovery routes</span></div>${renderRelatedSearchTags(relatedSearches)}</section>` : ''}${collectionSuggestions.length ? `<section class="results-section"><div class="results-section-title"><h3>Collection Pathways</h3><span>${COLLECTIONS.length} editorial browse routes</span></div><div class="coll-grid">${collectionSuggestions.map(renderCollectionCard).join('')}</div></section>` : ''}</div></div></div></div>`; }
-function applyLibraryQuery(value, clearSources = true) { libraryQuery = value.trim(); localResults = searchLocalRecords(getEffectiveSearchQuery() || libraryQuery); if (clearSources) { liveResults = []; externalDiscovery = []; coreOffset = coreLimit; coreTotalHits = 0; liveStatus = {state:'idle', message: getEffectiveSearchQuery() ? 'Local-first results loaded. Live fallback is blending API and handoff results.' : '', sources:[]}; } refreshBlendedDiscovery(true); }
+function renderLibrary() { const effectiveQuery = getEffectiveSearchQuery(); const types = uniqueValues(RECORDS.map(record => record.type)).sort(); const regions = uniqueValues(RECORDS.map(record => record.region)).sort(); const cats = uniqueValues(RECORDS.map(record => record.cat)).sort(); const themeOptions = buildFacetOptions(localResults, record => [...record.themes, ...record.concepts], 10); const collectionOptions = buildFacetOptions(localResults, record => [record.collection], 8); const languageOptions = buildFacetOptions(localResults, record => record.language, 8); const displayedLive = sourceMode ? liveResults.filter(item => getResultMode(item) === 'live') : []; const displayedExternal = sourceMode ? liveResults.filter(item => getResultMode(item) === 'external_handoff') : []; const displayedLocal = filterDisplayedRecords(localResults); console.log('[RENDER LIBRARY]', { libraryQuery, effectiveQuery, sourceMode, localResults: localResults.length, liveResults: liveResults.length, displayedLive: sourceMode ? liveResults.filter(item => getResultMode(item) === 'live').length : 0 }); const canLoadMoreCore = sourceMode && displayedLive.length > 0 && (coreTotalHits === 0 || displayedLive.length < coreTotalHits); const relatedSearches = getRelatedSearchSuggestions(effectiveQuery || libraryQuery || filterTheme || filterCollection || filterLanguage, 18); const collectionSuggestions = getCollectionSuggestions(effectiveQuery || libraryQuery || filterTheme || filterCollection, 8); const topThemes = getFeaturedThemes(12); const topSources = SOURCES.filter(source => source.access === "search").slice(0, 6); const hasFilter = filterType || filterRegion || filterCat || filterTheme || filterCollection || filterLanguage || libraryQuery; const localOnlyCount = displayedLocal.length; const liveOnlyCount = displayedLive.length; const handoffCount = displayedExternal.length; const totalDisplayed = displayedLive.length + displayedLocal.length + displayedExternal.length; return `<div class="page active"><div class="library-layout"><aside class="sidebar ${mobileFiltersOpen ? 'mobile-open' : ''}">${hasFilter ? `<button class="clear-btn" id="clearBtn" type="button">Clear all filters</button>` : ''}<div class="sidebar-section"><div class="sidebar-label">Record type</div>${types.map(type => `<label class="filter-opt"><input type="radio" name="type" value="${escapeHtml(type)}" ${filterType === type ? 'checked' : ''}/><span>${escapeHtml(type)}</span></label>`).join('')}</div><div class="sidebar-section"><div class="sidebar-label">Region</div>${regions.map(region => `<label class="filter-opt"><input type="radio" name="region" value="${escapeHtml(region)}" ${filterRegion === region ? 'checked' : ''}/><span>${escapeHtml(region)}</span></label>`).join('')}</div><div class="sidebar-section"><div class="sidebar-label">Category</div>${cats.map(cat => `<label class="filter-opt"><input type="radio" name="cat" value="${escapeHtml(cat)}" ${filterCat === cat ? 'checked' : ''}/><span>${escapeHtml(cat)}</span></label>`).join('')}</div>${collectionOptions.length ? `<div class="sidebar-section"><div class="sidebar-label">Collection</div>${collectionOptions.map(option => `<label class="filter-opt"><input type="radio" name="collection" value="${escapeHtml(option.value)}" ${filterCollection === option.value ? 'checked' : ''}/><span>${escapeHtml(option.value)} (${option.count})</span></label>`).join('')}</div>` : ''}${themeOptions.length ? `<div class="sidebar-section"><div class="sidebar-label">Theme</div>${themeOptions.map(option => `<label class="filter-opt"><input type="radio" name="theme" value="${escapeHtml(option.value)}" ${filterTheme === option.value ? 'checked' : ''}/><span>${escapeHtml(option.value)} (${option.count})</span></label>`).join('')}</div>` : ''}${languageOptions.length ? `<div class="sidebar-section"><div class="sidebar-label">Language</div>${languageOptions.map(option => `<label class="filter-opt"><input type="radio" name="language" value="${escapeHtml(option.value)}" ${filterLanguage === option.value ? 'checked' : ''}/><span>${escapeHtml(option.value)} (${option.count})</span></label>`).join('')}</div>` : ''}</aside><div class="main-results"><div class="search-bar"><input type="text" id="mainSearch" value="${escapeHtml(libraryQuery)}" placeholder="Search the local archive index, live sources, and source handoffs…" autocomplete="off"/><button id="localSearchBtn" type="button">Search</button><button class="secondary ${sourceMode ? 'live-on' : 'live-off'}" id="sourceSearchBtn" type="button">${sourceMode ? 'Live sources on' : 'Live sources off'}</button></div>${renderSearchSuggestions()}${renderRecentSearches('library')}${renderSearchSaveAction(effectiveQuery)}<div class="mobile-filter-bar"><button id="mobileFilterToggle" class="mobile-filter-btn ${mobileFiltersOpen ? 'active' : ''}" type="button">${mobileFiltersOpen ? 'Hide filters' : 'Show filters'}</button>${hasFilter ? `<button id="mobileClearFilters" class="mobile-clear-btn" type="button">Clear all</button>` : ``}</div>${renderLibraryLoader()}<div class="results-meta"><span>${totalDisplayed} total result${totalDisplayed !== 1 ? 's' : ''}${effectiveQuery ? ` for “${escapeHtml(effectiveQuery)}”` : ''}</span><span class="meta-separator" aria-hidden="true">|</span><span>${liveOnlyCount} live</span><span class="meta-separator" aria-hidden="true">|</span><span>${localOnlyCount} local</span><span class="meta-separator" aria-hidden="true">|</span><span>${handoffCount} external</span><span class="meta-separator" aria-hidden="true">|</span><span>${RELATED_SEARCH_INDEX.length.toLocaleString()} related searches</span></div>${renderLiveStatus()}<div class="results-stack">${displayedLive.length ? `<section class="results-section"><div class="results-section-title"><h3>Live results</h3><span>Results from live APIs including CORE</span></div><div class="card-grid">${displayedLive.map(renderCard).join('')}</div>${canLoadMoreCore ? `<div class="load-more-wrap"><button id="loadMoreCoreBtn" class="load-more-btn" type="button">${coreLoadingMore ? 'Loading…' : 'Load more CORE results'}</button></div>` : ``}</section>` : ``}${displayedLocal.length ? `<section class="results-section"><div class="results-section-title"><h3>Local archive results</h3><span>Records from the local archive index</span></div><div class="card-grid">${displayedLocal.map(renderCard).join('')}</div></section>` : `<div class="empty empty-guide"><h3>No local match yet</h3><p>No local archive records matched this search. Try one of these guided paths.</p>${relatedSearches.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Related searches</div>${renderRelatedSearchTags(relatedSearches.slice(0, 8))}</div>` : ``}${topThemes.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Top themes</div>${renderRelatedSearchTags(topThemes.slice(0, 10))}</div>` : ``}${collectionSuggestions.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Collection pathways</div><div class="coll-grid">${collectionSuggestions.slice(0, 4).map(renderCollectionCard).join('')}</div></div>` : ``}${topSources.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Source pathways</div><div class="source-grid">${topSources.map(source => renderSourceCard(source)).join('')}</div></div>` : ``}</div>`}${displayedExternal.length ? `<section class="results-section"><div class="results-section-title"><h3>External results</h3><span>Source handoffs and external discovery links</span></div><div class="card-grid">${displayedExternal.map(renderCard).join('')}</div></section>` : ``}${relatedSearches.length ? `<section class="results-section"><div class="results-section-title"><h3>Related Searches</h3><span>${RELATED_SEARCH_INDEX.length.toLocaleString()} discovery routes</span></div>${renderRelatedSearchTags(relatedSearches)}</section>` : ''}${collectionSuggestions.length ? `<section class="results-section"><div class="results-section-title"><h3>Collection Pathways</h3><span>${COLLECTIONS.length} editorial browse routes</span></div><div class="coll-grid">${collectionSuggestions.map(renderCollectionCard).join('')}</div></section>` : ''}</div></div></div></div>`; }
+function applyLibraryQuery(value, clearSources = true) { const nextQuery = value.trim(); const queryChanged = nextQuery !== libraryQuery; console.log('[APPLY QUERY]', { value: nextQuery, clearSources, queryChanged, beforeLiveResults: liveResults.length }); libraryQuery = nextQuery; localResults = searchLocalRecords(getEffectiveSearchQuery() || libraryQuery); if (clearSources && queryChanged) { liveResults = []; externalDiscovery = []; coreOffset = coreLimit; coreTotalHits = 0; liveStatus = {state:'idle', message: getEffectiveSearchQuery() ? 'Local-first results loaded. Live fallback is blending API and handoff results.' : '', sources:[]}; } refreshBlendedDiscovery(true); }
 function bindCardEvents() {
   document.querySelectorAll(".card[data-id]").forEach(card => {
     const open = () => {
-      const mode = card.dataset.mode || "local";
-      const url = card.dataset.url;
-      if (mode === "external_handoff" && url) {
-        openExternal(url);
+      const recordId = card.dataset.id;
+      const record = recordId ? getRecordByIdAny(recordId) : null;
+      console.log('[CARD CLICK]', {
+        recordId,
+        mode: card.dataset.mode,
+        hasRecord: !!record,
+        sourceUrl: record?.sourceUrl || card.dataset.url || ''
+      });
+      if (recordId && record) {
+        navigate("record", recordId);
         return;
       }
-      navigate("record", card.dataset.id);
+
+      const url = card.dataset.url;
+      if (typeof url === "string" && /^https?:\/\//i.test(url.trim())) {
+        openExternal(url.trim());
+      }
     };
 
+    // Selector for "interactive descendants whose events must not bubble up
+    // and trigger the card-open behaviour". Native form controls are listed
+    // explicitly so the guard still works if a control is missing the
+    // `data-stop-card-open` marker. `label` is included because clicking a
+    // <label> synthesises a click on its associated input.
+    const interactiveSelector =
+      'a,button,input,select,textarea,label,[contenteditable="true"],[data-stop-card-open="true"]';
+
     card.addEventListener("click", event => {
-      if (event.target instanceof Element && event.target.closest("a,button,[data-stop-card-open=\"true\"]")) return;
+      if (event.target instanceof Element && event.target.closest(interactiveSelector)) return;
       open();
     });
 
     card.addEventListener("keydown", event => {
+      // Skip when the keystroke is happening inside a nested interactive
+      // control — otherwise typing Space/Enter inside the "New list title"
+      // input or pressing Space on the bookmark button would navigate to the
+      // record page (and eat the keystroke). The card itself has
+      // role="button" + tabindex="0", so we still handle Enter/Space when
+      // it is focused directly.
+      if (event.target instanceof Element && event.target !== card && event.target.closest(interactiveSelector)) return;
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
         open();
@@ -2257,6 +3294,7 @@ async function loadMoreCoreResults() {
   if (coreLoadingMore || !sourceMode) return;
   const effectiveQuery = getEffectiveSearchQuery();
   if (!effectiveQuery) return;
+  console.log('[CORE LOAD MORE] start', { query: effectiveQuery, offset: coreOffset, limit: coreLimit });
   coreLoadingMore = true;
   render();
   try {
@@ -2266,19 +3304,23 @@ async function loadMoreCoreResults() {
       offset: coreOffset,
       limit: coreLimit
     });
+    console.log('[CORE LOAD MORE] returned', { count: Array.isArray(nextBatch) ? nextBatch.length : 0 });
     if (Array.isArray(nextBatch) && nextBatch.length) {
       const existingIds = new Set(liveResults.map(item => item.id));
       nextBatch.forEach(item => {
-        if (!existingIds.has(item.id)) liveResults.push(item);
+        TRANSIENT_RESULTS_BY_ID.set(item.id, item);
+        if (!existingIds.has(item.id)) {
+          liveResults.push(item);
+        }
       });
       coreOffset += coreLimit;
     }
   } catch (error) {
-    console.warn('Failed to load more CORE results:', error);
+    console.warn('[CORE LOAD MORE] failed', { error: String(error) });
     liveStatus = {
       state:'warning',
       message:'CORE is temporarily busy. Try loading more again.',
-      sources:['CORE']
+      sources:[{ label:'CORE', state:'fail', count:0 }]
     };
   } finally {
     coreLoadingMore = false;
@@ -2286,14 +3328,225 @@ async function loadMoreCoreResults() {
   }
 }
 
-function bindEvents() { document.querySelectorAll('[data-page]').forEach(element => { element.addEventListener('click', event => { const page = element.dataset.page; if (!page) return; event.preventDefault(); if (element.dataset.collection) { filterType = ''; filterRegion = ''; filterCat = ''; filterTheme = ''; filterLanguage = ''; filterCollection = element.dataset.collection; libraryQuery = ''; localResults = searchLocalRecords(getEffectiveSearchQuery()); liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'', sources:[]}; refreshBlendedDiscovery(true); } navigate(page); }); }); const hamburger = document.getElementById('hamburger'); const navMobile = document.getElementById('navMobile'); if (hamburger && navMobile) hamburger.addEventListener('click', () => navMobile.classList.toggle('open')); document.querySelectorAll('.suggestion[data-q], .related-search[data-related]').forEach(element => { element.addEventListener('click', () => { applyLibraryQuery(element.dataset.q || element.dataset.related || ''); navigate('library'); }); }); const heroInput = document.getElementById('heroSearch'); const heroButton = document.getElementById('heroSearchBtn'); if (heroInput && heroButton) { const submitHero = () => { applyLibraryQuery(heroInput.value); currentPage = 'library'; selectedRecordId = null; navigate('library'); requestAnimationFrame(() => { render(); const mainSearchAfter = document.getElementById('mainSearch'); if (mainSearchAfter) mainSearchAfter.value = libraryQuery; }); }; heroButton.addEventListener('click', submitHero); heroInput.addEventListener('keydown', event => { if (event.key === 'Enter') submitHero(); }); } const mainSearch = document.getElementById('mainSearch'); const localSearchBtn = document.getElementById('localSearchBtn'); const sourceSearchBtn = document.getElementById('sourceSearchBtn'); const mobileFilterToggle = document.getElementById('mobileFilterToggle'); const mobileClearFilters = document.getElementById('mobileClearFilters'); if (mainSearch && localSearchBtn) { const submitSearch = () => { applyLibraryQuery(mainSearch.value); render(); }; localSearchBtn.addEventListener('click', submitSearch); mainSearch.addEventListener('keydown', event => { if (event.key === 'Enter') submitSearch(); }); mainSearch.addEventListener('input', () => { clearTimeout(debounceTimer); debounceTimer = window.setTimeout(() => { applyLibraryQuery(mainSearch.value); render(); }, 260); }); } const loadMoreCoreBtn = document.getElementById('loadMoreCoreBtn'); if (loadMoreCoreBtn) { loadMoreCoreBtn.addEventListener('click', () => { loadMoreCoreResults(); }); }
+function bindEvents() { document.querySelectorAll('[data-page]').forEach(element => { element.addEventListener('click', event => { const page = element.dataset.page; if (!page) return; event.preventDefault(); if (element.dataset.collection) { filterType = ''; filterRegion = ''; filterCat = ''; filterTheme = ''; filterLanguage = ''; filterCollection = element.dataset.collection; libraryQuery = ''; localResults = searchLocalRecords(getEffectiveSearchQuery()); liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'', sources:[]}; refreshBlendedDiscovery(true); } navigate(page); }); }); const hamburger = document.getElementById('hamburger'); const navMobile = document.getElementById('navMobile'); if (hamburger && navMobile) hamburger.addEventListener('click', () => navMobile.classList.toggle('open')); document.querySelectorAll('.suggestion[data-q], .related-search[data-related]').forEach(element => { element.addEventListener('click', () => { applyLibraryQuery(element.dataset.q || element.dataset.related || ''); navigate('library'); }); }); const heroInput = document.getElementById('heroSearch'); const heroButton = document.getElementById('heroSearchBtn'); if (heroInput && heroButton) { const submitHero = () => { const value = heroInput.value.trim(); if (value) pushRecentSearch(value); applyLibraryQuery(value); searchSuggestions = []; activeSuggestionIndex = -1; currentPage = 'library'; selectedRecordId = null; navigate('library'); requestAnimationFrame(() => { render(); const mainSearchAfter = document.getElementById('mainSearch'); if (mainSearchAfter) mainSearchAfter.value = libraryQuery; }); };
+const pickHeroSuggestion = (value) => {
+  heroInput.value = value;
+  libraryQuery = value;
+  searchSuggestions = [];
+  activeSuggestionIndex = -1;
+  pushRecentSearch(value);
+  applyLibraryQuery(value);
+  currentPage = 'library';
+  selectedRecordId = null;
+  navigate('library');
+  requestAnimationFrame(() => { render(); const mainSearchAfter = document.getElementById('mainSearch'); if (mainSearchAfter) mainSearchAfter.value = libraryQuery; });
+};
+heroButton.addEventListener('click', submitHero);
+heroInput.addEventListener('keydown', event => {
+  if (event.key === 'Enter') {
+    if (activeSuggestionIndex >= 0 && searchSuggestions[activeSuggestionIndex]) {
+      pickHeroSuggestion(searchSuggestions[activeSuggestionIndex].value);
+      return;
+    }
+    submitHero();
+    return;
+  }
+  if (event.key === 'ArrowDown' && searchSuggestions.length) {
+    event.preventDefault();
+    activeSuggestionIndex = (activeSuggestionIndex + 1) % searchSuggestions.length;
+    updateSuggestionsDOM('heroSuggestions');
+    return;
+  }
+  if (event.key === 'ArrowUp' && searchSuggestions.length) {
+    event.preventDefault();
+    activeSuggestionIndex = activeSuggestionIndex <= 0 ? searchSuggestions.length - 1 : activeSuggestionIndex - 1;
+    updateSuggestionsDOM('heroSuggestions');
+    return;
+  }
+  if (event.key === 'Escape') {
+    closeSuggestionsPanel('heroSuggestions');
+  }
+});
+heroInput.addEventListener('input', () => {
+  searchSuggestions = getSearchSuggestions(heroInput.value);
+  activeSuggestionIndex = -1;
+  updateSuggestionsDOM('heroSuggestions');
+});
+heroInput.addEventListener('focus', () => {
+  if (heroInput.value && !searchSuggestions.length) {
+    searchSuggestions = getSearchSuggestions(heroInput.value);
+    activeSuggestionIndex = -1;
+    updateSuggestionsDOM('heroSuggestions');
+  }
+});
+bindSuggestionItemEvents('heroSuggestions', pickHeroSuggestion);
+} const mainSearch = document.getElementById('mainSearch'); const localSearchBtn = document.getElementById('localSearchBtn'); const sourceSearchBtn = document.getElementById('sourceSearchBtn'); const mobileFilterToggle = document.getElementById('mobileFilterToggle'); const mobileClearFilters = document.getElementById('mobileClearFilters'); if (mainSearch && localSearchBtn) { const submitSearch = () => { const value = mainSearch.value.trim(); searchSuggestions = []; activeSuggestionIndex = -1; if (value) pushRecentSearch(value); applyLibraryQuery(value); render(); }; localSearchBtn.addEventListener('click', submitSearch); mainSearch.addEventListener('keydown', event => {
+  if (event.key === 'Enter') {
+    if (activeSuggestionIndex >= 0 && searchSuggestions[activeSuggestionIndex]) {
+      const chosen = searchSuggestions[activeSuggestionIndex];
+      mainSearch.value = chosen.value;
+      libraryQuery = chosen.value;
+      searchSuggestions = [];
+      activeSuggestionIndex = -1;
+      pushRecentSearch(chosen.value);
+      applyLibraryQuery(chosen.value);
+      render();
+      return;
+    }
+    submitSearch();
+    return;
+  }
+  if (event.key === 'ArrowDown' && searchSuggestions.length) {
+    event.preventDefault();
+    activeSuggestionIndex = (activeSuggestionIndex + 1) % searchSuggestions.length;
+    updateSuggestionsDOM();
+    return;
+  }
+  if (event.key === 'ArrowUp' && searchSuggestions.length) {
+    event.preventDefault();
+    activeSuggestionIndex = activeSuggestionIndex <= 0 ? searchSuggestions.length - 1 : activeSuggestionIndex - 1;
+    updateSuggestionsDOM();
+    return;
+  }
+  if (event.key === 'Escape') {
+    closeSuggestionsPanel();
+  }
+}); mainSearch.addEventListener('input', () => {
+  clearTimeout(debounceTimer);
+  searchSuggestions = getSearchSuggestions(mainSearch.value);
+  activeSuggestionIndex = -1;
+  updateSuggestionsDOM();
+}); mainSearch.addEventListener('focus', () => {
+  if (mainSearch.value && !searchSuggestions.length) {
+    searchSuggestions = getSearchSuggestions(mainSearch.value);
+    activeSuggestionIndex = -1;
+    updateSuggestionsDOM();
+  }
+}); bindSuggestionItemEvents(); } const loadMoreCoreBtn = document.getElementById('loadMoreCoreBtn'); if (loadMoreCoreBtn) { loadMoreCoreBtn.addEventListener('click', () => { loadMoreCoreResults(); }); }
 const copyCitationBtn = document.getElementById('copyCitationBtn'); if (copyCitationBtn && currentPage === 'record' && selectedRecordId) { copyCitationBtn.addEventListener('click', async () => { try { const record = getRecordByIdAny(selectedRecordId); if (!record) return; await copyCitation(record); const note = document.getElementById('copyCitationNote'); if (note) note.textContent = 'Copied'; window.setTimeout(() => { const resetNote = document.getElementById('copyCitationNote'); if (resetNote) resetNote.textContent = 'Copy archive citation text'; }, 1400); } catch (error) { console.error('Failed to copy citation:', error); } }); }
-const downloadRisBtn = document.getElementById('downloadRisBtn'); if (downloadRisBtn && currentPage === 'record' && selectedRecordId) { downloadRisBtn.addEventListener('click', () => { const record = getRecordByIdAny(selectedRecordId); if (!record) return; downloadRIS(record); }); } if (mobileFilterToggle) { mobileFilterToggle.addEventListener('click', () => { mobileFiltersOpen = !mobileFiltersOpen; render(); }); } if (mobileClearFilters) { mobileClearFilters.addEventListener('click', () => { filterType = ''; filterRegion = ''; filterCat = ''; filterTheme = ''; filterCollection = ''; filterLanguage = ''; libraryQuery = ''; localResults = [...RECORDS]; liveResults = []; externalDiscovery = []; mobileFiltersOpen = false; liveStatus = {state:'idle', message:'', sources:[]}; render(); }); } if (sourceSearchBtn) { sourceSearchBtn.addEventListener('click', () => { sourceMode = !sourceMode; if (sourceMode) { refreshBlendedDiscovery(true); } else { liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'Live fallback is off. Showing local archive records only.', sources:[]}; } render(); }); } document.querySelectorAll('input[name="type"], input[name="region"], input[name="cat"], input[name="theme"], input[name="collection"], input[name="language"]').forEach(input => { input.addEventListener('change', () => { const checked = document.querySelector('input[name="type"]:checked'); filterType = checked ? checked.value : ''; const checkedRegion = document.querySelector('input[name="region"]:checked'); filterRegion = checkedRegion ? checkedRegion.value : ''; const checkedCat = document.querySelector('input[name="cat"]:checked'); filterCat = checkedCat ? checkedCat.value : ''; const checkedTheme = document.querySelector('input[name="theme"]:checked'); filterTheme = checkedTheme ? checkedTheme.value : ''; const checkedCollection = document.querySelector('input[name="collection"]:checked'); filterCollection = checkedCollection ? checkedCollection.value : ''; const checkedLanguage = document.querySelector('input[name="language"]:checked'); filterLanguage = checkedLanguage ? checkedLanguage.value : ''; localResults = searchLocalRecords(getEffectiveSearchQuery()); if (window.innerWidth <= 640) { mobileFiltersOpen = false; } refreshBlendedDiscovery(true); render(); }); }); const clearBtn = document.getElementById('clearBtn'); if (clearBtn) { clearBtn.addEventListener('click', () => { filterType = ''; filterRegion = ''; filterCat = ''; filterTheme = ''; filterCollection = ''; filterLanguage = ''; libraryQuery = ''; localResults = [...RECORDS]; liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'', sources:[]}; render(); }); } bindCardEvents(); document.querySelectorAll('[data-media-root] img').forEach(image => { image.addEventListener('error', () => { const mediaRoot = image.closest('[data-media-root]'); if (mediaRoot) mediaRoot.classList.add('hidden'); }, {once:true}); }); }
-function syncRouteFromHash() { const route = parseHash(); currentPage = route.page; selectedRecordId = route.recordId; if (currentPage === 'record' && selectedRecordId && !getRecordByIdAny(selectedRecordId)) { currentPage = 'library'; selectedRecordId = null; } document.querySelectorAll('.nav-link').forEach(link => { link.classList.toggle('active', link.dataset.page === currentPage); }); render(); window.scrollTo({top:0, behavior:'auto'}); }
+const citationStyleSelect = document.getElementById('citationStyleSelect'); if (citationStyleSelect && currentPage === 'record' && selectedRecordId) { citationStyleSelect.addEventListener('change', event => { citationStyle = event.target.value || 'apa'; render(); }); }
+const copyCitationInlineBtn = document.getElementById('copyCitationInlineBtn'); if (copyCitationInlineBtn && currentPage === 'record' && selectedRecordId) { copyCitationInlineBtn.addEventListener('click', async () => { try { const record = getRecordByIdAny(selectedRecordId); if (!record) return; await navigator.clipboard.writeText(generateCitationByStyle(record, citationStyle)); copyCitationInlineBtn.textContent = '✓'; copyCitationInlineBtn.classList.add('copied'); window.setTimeout(() => { copyCitationInlineBtn.textContent = '⎘'; copyCitationInlineBtn.classList.remove('copied'); }, 1800); } catch(e) { console.warn('copy failed', e); } }); }
+const downloadRisBtn = document.getElementById('downloadRisBtn'); if (downloadRisBtn && currentPage === 'record' && selectedRecordId) { downloadRisBtn.addEventListener('click', () => { const record = getRecordByIdAny(selectedRecordId); if (!record) return; downloadRIS(record); }); }
+const downloadBibBtn = document.getElementById('downloadBibBtn'); if (downloadBibBtn && currentPage === 'record' && selectedRecordId) { downloadBibBtn.addEventListener('click', () => { const record = getRecordByIdAny(selectedRecordId); if (!record) return; downloadBibTeX(record); }); }
+
+document.querySelectorAll('[data-record-tool]').forEach(form => {
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    const record = getRecordByIdAny(selectedRecordId);
+    if (!record) return;
+    const formData = new FormData(form);
+    const tool = form.dataset.recordTool;
+    const payload = {action: tool};
+    formData.forEach((value, key) => {
+      payload[key] = typeof value === 'string' ? value : '';
+    });
+    if (tool === 'create_reading_list') payload.isPublic = formData.get('isPublic') === 'on';
+    postRecordWorkspaceAction(record, payload);
+  });
+});
+document.querySelectorAll('[data-member-signin]').forEach(button => {
+  button.addEventListener('click', event => {
+    event.preventDefault();
+    redirectToMemberSignIn();
+  });
+});
+document.querySelectorAll('[data-card-bookmark]').forEach(button => {
+  button.addEventListener('click', event => {
+    event.preventDefault();
+    const container = button.closest('[data-record-id]');
+    const record = container ? getRecordByIdAny(container.dataset.recordId || '') : null;
+    if (!record) return;
+    const data = memberWorkspaceState.data || {};
+    const bookmarked = (data.bookmarkRecordIds || []).includes(record.id);
+    postRecordWorkspaceAction(record, {
+      action:"bookmark",
+      bookmarked:!bookmarked
+    });
+  });
+});
+document.querySelectorAll('[data-card-list-toggle]').forEach(button => {
+  button.addEventListener('click', event => {
+    event.preventDefault();
+    const container = button.closest('[data-record-id]');
+    const recordId = container ? String(container.dataset.recordId || "") : "";
+    if (!recordId) return;
+    setCardListComposerOpen(recordId, !getCardListComposerOpen(recordId));
+    render();
+  });
+});
+document.querySelectorAll('[data-card-add-list]').forEach(button => {
+  button.addEventListener('click', event => {
+    event.preventDefault();
+    const container = button.closest('[data-record-id]');
+    const record = container ? getRecordByIdAny(container.dataset.recordId || '') : null;
+    const select = container ? container.querySelector('[data-card-reading-list]') : null;
+    if (!record || !select || !select.value) return;
+    postRecordWorkspaceAction(record, {
+      action:"add_to_reading_list",
+      readingListId:select.value
+    });
+  });
+});
+document.querySelectorAll('[data-card-create-list]').forEach(button => {
+  button.addEventListener('click', event => {
+    event.preventDefault();
+    const container = button.closest('[data-record-id]');
+    const record = container ? getRecordByIdAny(container.dataset.recordId || '') : null;
+    const input = container ? container.querySelector('[data-card-new-list]') : null;
+    const title = input ? input.value.trim() : "";
+    if (!record || !title) {
+      memberWorkspaceState = {...memberWorkspaceState, status:"ready", message:"Add a list title first."};
+      render();
+      return;
+    }
+    postRecordWorkspaceAction(record, {
+      action:"create_reading_list",
+      title
+    });
+  });
+});
+document.querySelectorAll('[data-save-search]').forEach(form => {
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    const formData = new FormData(form);
+    const query = String(formData.get('query') || getEffectiveSearchQuery() || libraryQuery).trim();
+    const label = String(formData.get('label') || query).trim();
+    postSearchWorkspaceAction({
+      action:"save_search",
+      query,
+      label,
+      filters:getCurrentSearchFilters()
+    });
+  });
+});
+if (mobileFilterToggle) { mobileFilterToggle.addEventListener('click', () => { mobileFiltersOpen = !mobileFiltersOpen; render(); }); } if (mobileClearFilters) { mobileClearFilters.addEventListener('click', () => { filterType = ''; filterRegion = ''; filterCat = ''; filterTheme = ''; filterCollection = ''; filterLanguage = ''; libraryQuery = ''; localResults = [...RECORDS]; liveResults = []; externalDiscovery = []; mobileFiltersOpen = false; liveStatus = {state:'idle', message:'', sources:[]}; render(); }); } if (sourceSearchBtn) { sourceSearchBtn.addEventListener('click', () => { sourceMode = !sourceMode; if (sourceMode) { refreshBlendedDiscovery(true); } else { liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'Live fallback is off. Showing local archive records only.', sources:[]}; } render(); }); } document.querySelectorAll('input[name="type"], input[name="region"], input[name="cat"], input[name="theme"], input[name="collection"], input[name="language"]').forEach(input => { input.addEventListener('change', () => { const checked = document.querySelector('input[name="type"]:checked'); filterType = checked ? checked.value : ''; const checkedRegion = document.querySelector('input[name="region"]:checked'); filterRegion = checkedRegion ? checkedRegion.value : ''; const checkedCat = document.querySelector('input[name="cat"]:checked'); filterCat = checkedCat ? checkedCat.value : ''; const checkedTheme = document.querySelector('input[name="theme"]:checked'); filterTheme = checkedTheme ? checkedTheme.value : ''; const checkedCollection = document.querySelector('input[name="collection"]:checked'); filterCollection = checkedCollection ? checkedCollection.value : ''; const checkedLanguage = document.querySelector('input[name="language"]:checked'); filterLanguage = checkedLanguage ? checkedLanguage.value : ''; localResults = searchLocalRecords(getEffectiveSearchQuery()); if (window.innerWidth <= 640) { mobileFiltersOpen = false; } refreshBlendedDiscovery(true); render(); }); }); const clearBtn = document.getElementById('clearBtn'); if (clearBtn) { clearBtn.addEventListener('click', () => { filterType = ''; filterRegion = ''; filterCat = ''; filterTheme = ''; filterCollection = ''; filterLanguage = ''; libraryQuery = ''; localResults = [...RECORDS]; liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'', sources:[]}; render(); }); } bindCardEvents(); document.querySelectorAll('[data-recent-search]').forEach(button => { button.addEventListener('click', () => { const value = button.dataset.recentSearch || ''; if (!value) return; const variant = button.dataset.recentVariant || 'library'; libraryQuery = value; searchSuggestions = []; activeSuggestionIndex = -1; pushRecentSearch(value); applyLibraryQuery(value, true); if (variant === 'hero') { currentPage = 'library'; selectedRecordId = null; navigate('library'); requestAnimationFrame(() => { render(); const ms = document.getElementById('mainSearch'); if (ms) ms.value = value; }); } else { render(); const ms = document.getElementById('mainSearch'); if (ms) ms.value = value; } }); }); const clearRecentBtnLibrary = document.getElementById('clearRecentSearchesBtn'); if (clearRecentBtnLibrary) { clearRecentBtnLibrary.addEventListener('click', () => { clearRecentSearches(); render(); }); } const clearRecentBtnHero = document.getElementById('clearRecentSearchesBtnHero'); if (clearRecentBtnHero) { clearRecentBtnHero.addEventListener('click', () => { clearRecentSearches(); render(); }); } document.querySelectorAll('[data-media-root] img').forEach(image => { image.addEventListener('error', () => { const mediaRoot = image.closest('[data-media-root]'); if (mediaRoot) mediaRoot.classList.add('hidden'); }, {once:true}); }); }
+function syncRouteFromHash() { const route = parseHash(); currentPage = route.page; selectedRecordId = route.recordId; if (currentPage === 'library') hydrateSearchFromLocation(); if (currentPage === 'record' && selectedRecordId && !getRecordByIdAny(selectedRecordId)) { currentPage = 'library'; selectedRecordId = null; } document.querySelectorAll('.nav-link').forEach(link => { link.classList.toggle('active', link.dataset.page === currentPage); }); render(); window.scrollTo({top:0, behavior:'auto'}); }
 
 window.addEventListener("hashchange", syncRouteFromHash);
 
 function initArchiveApp() {
+  recentSearches = loadRecentSearches();
+  loadSiteContent();
+
+  // Global outside-click handler for suggestion panels.
+  // Registered once, not on every render, to avoid leaking listeners.
+  //
+  // Uses 'click' (not 'pointerdown'): pointerdown fires during scroll gestures
+  // on trackpads, which would close the panel just from scrolling. 'click'
+  // only fires when pointer down+up land on the same element.
+  //
+  // The suggestion buttons call preventDefault on their own mousedown to hold
+  // focus, and run their action on click, so the inside-click check here
+  // correctly excludes them before this handler decides to close anything.
+  document.addEventListener('click', event => {
+    const inSearchBar   = event.target.closest('.search-bar');
+    const inHeroSearch  = event.target.closest('.hero-search');
+    const inPanel       = event.target.closest('.search-suggestions');
+    if (inSearchBar || inHeroSearch || inPanel) return;
+    if (document.getElementById('searchSuggestions')) closeSuggestionsPanel('searchSuggestions');
+    if (document.getElementById('heroSuggestions'))   closeSuggestionsPanel('heroSuggestions');
+  });
+
   if (!window.location.hash) {
     navigate("home");
     return;
