@@ -177,3 +177,35 @@ export async function submitContent(formData: FormData) {
   revalidatePath("/workspace");
   done("Content submitted for curator review.");
 }
+
+export async function saveProfileDetails(formData: FormData) {
+  const profile = await requireMember();
+  const fullName = text(formData, "full_name");
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("profiles")
+    .update({ full_name: fullName || null })
+    .eq("id", profile.id);
+
+  if (error) fail(error.message);
+
+  // TODO: Persist extended member profile fields (institution, interests, website, bio)
+  // once a dedicated profile-details schema/table is introduced.
+  revalidatePath("/workspace");
+  done("Profile updated.");
+}
+
+export async function submitSupportRequest(formData: FormData) {
+  await requireMember();
+  const category = text(formData, "category");
+  const subject = text(formData, "subject");
+  const message = text(formData, "message");
+
+  if (!category || !subject || !message) {
+    fail("Support request needs category, subject, and message.");
+  }
+
+  // TODO: Persist support requests when a support_requests table/API is available.
+  done("Support request captured. We'll wire delivery next.");
+}

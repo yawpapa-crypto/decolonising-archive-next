@@ -813,6 +813,21 @@ async function postRecordWorkspaceAction(record, payload) {
     });
     const data = await response.json();
     if (response.status === 401) {
+      // Defensive reset before navigation so the UI cannot remain frozen
+      // if the redirect is delayed or blocked.
+      memberWorkspaceState = {
+        ...memberWorkspaceState,
+        status:"ready",
+        authenticated:false,
+        message:""
+      };
+      setRecordWorkspaceState(record.id, {
+        ...getRecordWorkspaceState(record.id),
+        status:"ready",
+        authenticated:false,
+        message:""
+      });
+      render();
       redirectToMemberSignIn();
       return;
     }

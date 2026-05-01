@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/src/lib/supabase";
 
+type Entity = { id: string; [key: string]: unknown };
+
 export async function GET() {
   const { data, error } = await supabase
     .from("sources")
@@ -16,14 +18,16 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  const sources = body.sources || body;
+  const body = (await request.json()) as { sources?: unknown } | unknown;
+  const sources = Array.isArray(body)
+    ? body
+    : (body as { sources?: unknown })?.sources;
 
   if (!Array.isArray(sources)) {
     return NextResponse.json({ ok: false, error: "Invalid sources payload" }, { status: 400 });
   }
 
-  const payload = sources.map((source: any) => ({
+  const payload = (sources as Entity[]).map((source) => ({
     id: source.id,
     content: source,
     updated_at: new Date().toISOString(),

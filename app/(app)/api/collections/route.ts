@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/src/lib/supabase";
 
+type Entity = { id: string; [key: string]: unknown };
+
 export async function GET() {
   const { data, error } = await supabase
     .from("collections")
@@ -16,14 +18,16 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  const collections = body.collections || body;
+  const body = (await request.json()) as { collections?: unknown } | unknown;
+  const collections = Array.isArray(body)
+    ? body
+    : (body as { collections?: unknown })?.collections;
 
   if (!Array.isArray(collections)) {
     return NextResponse.json({ ok: false, error: "Invalid collections payload" }, { status: 400 });
   }
 
-  const payload = collections.map((collection: any) => ({
+  const payload = (collections as Entity[]).map((collection) => ({
     id: collection.id,
     content: collection,
     updated_at: new Date().toISOString(),

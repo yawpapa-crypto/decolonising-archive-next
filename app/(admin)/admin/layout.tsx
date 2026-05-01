@@ -8,12 +8,14 @@ import { requireAdmin } from '@/src/lib/auth'
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   const profile = await requireAdmin()
+  const name = profile.full_name?.trim() || profile.email || "Admin"
 
   return (
     <div className="admin-shell">
       <aside className="admin-sidebar">
         <div className="admin-sidebar-inner">
           <div className="admin-brand">Decolonising Archive</div>
+          <p className="admin-sidebar-kicker">Control center</p>
 
           <nav className="admin-nav">
             <a className="admin-nav-link" href="/admin">Dashboard</a>
@@ -30,7 +32,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
             <div className="admin-sidebar-user">
               <span className="role-badge role-admin">Admin</span>
               <span className="admin-sidebar-email">
-                {profile.email ?? profile.full_name ?? 'Signed in'}
+                {name}
               </span>
             </div>
             <a className="admin-nav-link" href="/workspace">Member workspace</a>

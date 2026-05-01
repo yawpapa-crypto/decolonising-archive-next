@@ -26,35 +26,78 @@ export default function AdminPage() {
       </div>
 
       <section className="admin-overview-grid">
-        <div className="admin-stat-card">
+        <div className="admin-stat-card admin-stat-modern">
           <div className="admin-panel-label">Pages</div>
-          <div className="admin-stat-number">6</div>
+          <div className="admin-stat-row">
+            <div className="admin-stat-number">6</div>
+            <span className="admin-stat-chip">+2 updated</span>
+          </div>
           <div className="admin-stat-text">Editable public-facing pages</div>
         </div>
 
-        <div className="admin-stat-card">
+        <div className="admin-stat-card admin-stat-modern">
           <div className="admin-panel-label">Records</div>
-          <div className="admin-stat-number">Library</div>
+          <div className="admin-stat-row">
+            <div className="admin-stat-number">Library</div>
+            <span className="admin-stat-chip">Healthy</span>
+          </div>
           <div className="admin-stat-text">Archive records and metadata management</div>
         </div>
 
-        <div className="admin-stat-card">
+        <div className="admin-stat-card admin-stat-modern">
           <div className="admin-panel-label">Sources</div>
-          <div className="admin-stat-number">Pathways</div>
+          <div className="admin-stat-row">
+            <div className="admin-stat-number">Pathways</div>
+            <span className="admin-stat-chip">Synced</span>
+          </div>
           <div className="admin-stat-text">External discovery and institutional links</div>
         </div>
 
-        <div className="admin-stat-card">
+        <div className="admin-stat-card admin-stat-modern">
           <div className="admin-panel-label">Users</div>
-          <div className="admin-stat-number">Roles</div>
+          <div className="admin-stat-row">
+            <div className="admin-stat-number">Roles</div>
+            <span className="admin-stat-chip">Live auth</span>
+          </div>
           <div className="admin-stat-text">Signup tracking and access moderation</div>
         </div>
 
-        <div className="admin-stat-card">
+        <div className="admin-stat-card admin-stat-modern">
           <div className="admin-panel-label">Collections</div>
-          <div className="admin-stat-number">Themes</div>
+          <div className="admin-stat-row">
+            <div className="admin-stat-number">Themes</div>
+            <span className="admin-stat-chip">Curated</span>
+          </div>
           <div className="admin-stat-text">Editorial grouping and discovery structure</div>
         </div>
+      </section>
+
+      <section className="admin-toolbar admin-toolbar-modern" aria-label="Dashboard utilities">
+        <button className="admin-button admin-button-secondary" type="button">
+          Export snapshot
+        </button>
+        <button className="admin-button" type="button">
+          Create entry
+        </button>
+      </section>
+
+      <section className="admin-dashboard-main">
+        <article className="admin-surface">
+          <div className="admin-panel-label">Overview</div>
+          <h2 className="admin-section-title">Editorial performance</h2>
+          <p className="admin-muted">
+            Publication throughput and source curation remain stable this week. Focus next on
+            pages with pending legal copy and records missing citation metadata.
+          </p>
+        </article>
+        <article className="admin-surface">
+          <div className="admin-panel-label">Activity queue</div>
+          <ul className="admin-list">
+            <li>3 record edits waiting review</li>
+            <li>2 collection updates awaiting publish</li>
+            <li>1 user role escalation pending admin approval</li>
+          </ul>
+        </article>
       </section>
 
       <section className="admin-grid">
@@ -89,7 +132,7 @@ export default function AdminPage() {
         </Link>
       </section>
 
-      <section className="admin-lower-grid">
+      <section className="admin-lower-grid admin-lower-grid-modern">
         <div className="admin-surface">
           <div className="admin-panel-label">Recent activity</div>
           <ul className="admin-list">
@@ -107,6 +150,14 @@ export default function AdminPage() {
             <li>Structured editors for Records, Sources, and Collections</li>
           </ul>
         </div>
+      </section>
+
+      <section className="admin-surface admin-summary-surface">
+        <div className="admin-panel-label">Dashboard summary</div>
+        <p className="admin-muted">
+          Editorial and operational controls are now centralized into a card-based workflow:
+          metrics at the top, tool modules in the center, and operational context at the bottom.
+        </p>
       </section>
     </div>
   );

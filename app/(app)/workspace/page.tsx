@@ -10,13 +10,17 @@ import {
   createSavedSearch,
   deleteBookmark,
   deleteSavedSearch,
+  saveProfileDetails,
+  submitSupportRequest,
   submitContent,
 } from "./actions";
+import WorkspaceSettingsPanel from "./WorkspaceSettingsPanel";
 
 type SearchParams = Promise<{
   denied?: string;
   updated?: string;
   error?: string;
+  section?: string;
 }>;
 
 type BookmarkRow = {
@@ -52,6 +56,40 @@ type SubmittedContentRow = {
   review_status: string;
   created_at: string;
 };
+
+const WORKSPACE_SECTIONS = [
+  "overview",
+  "bookmarks",
+  "saved-searches",
+  "reading-lists",
+  "submissions",
+  "profile",
+  "notifications",
+  "help",
+  "settings",
+] as const;
+
+type WorkspaceSection = (typeof WORKSPACE_SECTIONS)[number];
+
+type NotificationItem = {
+  id: string;
+  title: string;
+  type:
+    | "archive update"
+    | "saved search alert"
+    | "admin announcement"
+    | "support reply"
+    | "account notice";
+  unread: boolean;
+  created_at: string;
+};
+
+function normalizeSection(value: string | undefined): WorkspaceSection {
+  if (!value) return "overview";
+  return (WORKSPACE_SECTIONS as readonly string[]).includes(value)
+    ? (value as WorkspaceSection)
+    : "overview";
+}
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("en-AU", { dateStyle: "medium" }).format(
@@ -137,20 +175,41 @@ export default async function WorkspacePage({
       : profile.role === "curator"
         ? "Curator"
         : "Member";
+  const workspaceHeading = profile.role === "admin" ? "Admin Workspace" : "Member Workspace";
+  const roleBadgeLabel =
+    profile.role === "admin"
+      ? "ADMIN"
+      : profile.role === "curator"
+        ? "CURATOR"
+        : "MEMBER";
+  const currentSection = normalizeSection(sp.section);
+  const notifications: NotificationItem[] = [];
+  const unreadNotifications = notifications.filter((item) => item.unread).length;
 
   return (
     <PageShell>
       <main className="workspace-page">
         <header className="workspace-header">
-          <p className="workspace-eyebrow">Member workspace</p>
+          <p className="workspace-eyebrow">{workspaceHeading}</p>
           <div className="workspace-titlebar">
-            <h1>{profile.full_name ?? profile.email ?? "Welcome"}</h1>
-            <span className={`role-badge role-${profile.role}`}>{roleLabel}</span>
+            <h1>{profile.full_name ?? profile.email ?? workspaceHeading}</h1>
+            <span className={`role-badge role-${profile.role}`}>{roleBadgeLabel}</span>
           </div>
           <p className="workspace-sub">
             Save records, rerun useful searches, assemble reading lists, and
             send community knowledge into the curator review queue.
           </p>
+          <div className="workspace-actions workspace-actions-header">
+            <Link href="/my/bookmarks" className="workspace-cta workspace-cta-secondary">
+              View bookmarks
+            </Link>
+            <Link href="/my/lists" className="workspace-cta workspace-cta-secondary">
+              Reading lists
+            </Link>
+            <Link href="/my/searches" className="workspace-cta workspace-cta-secondary">
+              Saved searches
+            </Link>
+          </div>
         </header>
 
         {sp.updated ? <p className="auth-notice">{sp.updated}</p> : null}
@@ -165,27 +224,100 @@ export default async function WorkspacePage({
           <p className="auth-notice">Admin access required for that page.</p>
         ) : null}
 
-        <section className="workspace-metrics" aria-label="Workspace overview">
-          <div>
-            <span>{bookmarks.length}</span>
-            <p>Bookmarks</p>
-          </div>
-          <div>
-            <span>{savedSearches.length}</span>
-            <p>Saved searches</p>
-          </div>
-          <div>
-            <span>{readingLists.length}</span>
-            <p>Reading lists</p>
-          </div>
-          <div>
-            <span>{submissions.length}</span>
-            <p>Submissions</p>
-          </div>
-        </section>
+        <nav className="workspace-nav" aria-label="Workspace sections">
+          <Link
+            href="/workspace?section=overview"
+            className={`workspace-nav-link ${currentSection === "overview" ? "is-active" : ""}`}
+          >
+            Overview
+          </Link>
+          <Link
+            href="/workspace?section=bookmarks"
+            className={`workspace-nav-link ${currentSection === "bookmarks" ? "is-active" : ""}`}
+          >
+            Bookmarks
+          </Link>
+          <Link
+            href="/workspace?section=saved-searches"
+            className={`workspace-nav-link ${currentSection === "saved-searches" ? "is-active" : ""}`}
+          >
+            Saved Searches
+          </Link>
+          <Link
+            href="/workspace?section=reading-lists"
+            className={`workspace-nav-link ${currentSection === "reading-lists" ? "is-active" : ""}`}
+          >
+            Reading Lists
+          </Link>
+          <Link
+            href="/workspace?section=submissions"
+            className={`workspace-nav-link ${currentSection === "submissions" ? "is-active" : ""}`}
+          >
+            Submissions
+          </Link>
+          <Link
+            href="/workspace?section=profile"
+            className={`workspace-nav-link ${currentSection === "profile" ? "is-active" : ""}`}
+          >
+            Profile
+          </Link>
+          <Link
+            href="/workspace?section=notifications"
+            className={`workspace-nav-link ${currentSection === "notifications" ? "is-active" : ""}`}
+          >
+            Notifications
+            <span className="workspace-nav-badge">{unreadNotifications}</span>
+          </Link>
+          <Link
+            href="/workspace?section=help"
+            className={`workspace-nav-link ${currentSection === "help" ? "is-active" : ""}`}
+          >
+            Help
+          </Link>
+          <Link
+            href="/workspace?section=settings"
+            className={`workspace-nav-link ${currentSection === "settings" ? "is-active" : ""}`}
+          >
+            Settings
+          </Link>
+        </nav>
 
-        <section className="workspace-grid workspace-grid-three">
-          <article className="workspace-tile workspace-tool">
+        {currentSection === "overview" ? (
+          <section className="workspace-metrics" aria-label="Workspace overview">
+            <div className="workspace-metric-card">
+              <div className="workspace-metric-head">
+                <p>Bookmarks</p>
+                <span>Active</span>
+              </div>
+              <span>{bookmarks.length}</span>
+            </div>
+            <div className="workspace-metric-card">
+              <div className="workspace-metric-head">
+                <p>Saved searches</p>
+                <span>Reusable</span>
+              </div>
+              <span>{savedSearches.length}</span>
+            </div>
+            <div className="workspace-metric-card">
+              <div className="workspace-metric-head">
+                <p>Reading lists</p>
+                <span>Curated</span>
+              </div>
+              <span>{readingLists.length}</span>
+            </div>
+            <div className="workspace-metric-card">
+              <div className="workspace-metric-head">
+                <p>Submissions</p>
+                <span>In review</span>
+              </div>
+              <span>{submissions.length}</span>
+            </div>
+          </section>
+        ) : null}
+
+        {currentSection === "overview" || currentSection === "bookmarks" ? (
+          <section className="workspace-grid workspace-grid-three">
+            <article className="workspace-tile workspace-tool">
             <div className="workspace-tile-head">
               <h2>Bookmarks</h2>
               <Link href="/my/bookmarks" className="workspace-link">
@@ -223,9 +355,13 @@ export default async function WorkspacePage({
                 <p className="workspace-empty">No bookmarks yet.</p>
               )}
             </div>
-          </article>
+            </article>
+          </section>
+        ) : null}
 
-          <article className="workspace-tile workspace-tool">
+        {currentSection === "overview" || currentSection === "saved-searches" ? (
+          <section className="workspace-grid workspace-grid-three">
+            <article className="workspace-tile workspace-tool">
             <div className="workspace-tile-head">
               <h2>Saved searches</h2>
               <Link href="/my/searches" className="workspace-link">
@@ -268,9 +404,13 @@ export default async function WorkspacePage({
                 <p className="workspace-empty">No saved searches yet.</p>
               )}
             </div>
-          </article>
+            </article>
+          </section>
+        ) : null}
 
-          <article className="workspace-tile workspace-tool">
+        {currentSection === "overview" || currentSection === "reading-lists" ? (
+          <section className="workspace-grid workspace-grid-three">
+            <article className="workspace-tile workspace-tool">
             <div className="workspace-tile-head">
               <h2>Reading lists</h2>
               <Link href="/my/lists" className="workspace-link">
@@ -332,10 +472,12 @@ export default async function WorkspacePage({
                 <p className="workspace-empty">No reading lists yet.</p>
               )}
             </div>
-          </article>
-        </section>
+            </article>
+          </section>
+        ) : null}
 
-        <section className="workspace-elevated workspace-submit-panel">
+        {currentSection === "overview" || currentSection === "submissions" ? (
+          <section className="workspace-elevated workspace-submit-panel">
           <div>
             <h2>Submitted content</h2>
             <p>
@@ -391,22 +533,127 @@ export default async function WorkspacePage({
               <p className="workspace-empty">No submitted content yet.</p>
             )}
           </div>
-        </section>
+          </section>
+        ) : null}
 
-        <section className="workspace-profile-row">
-          <article className="workspace-tile">
-            <h2>Profile</h2>
-            <p>Email: {profile.email ?? "-"}</p>
-            <p>Role: {roleLabel}</p>
+        {currentSection === "notifications" ? (
+          <section className="workspace-elevated">
+            <h2>Notifications</h2>
+            <p>Unread: {unreadNotifications}</p>
+            <div className="workspace-list">
+              {notifications.length ? (
+                notifications.map((item) => (
+                  <div className="workspace-list-item" key={item.id}>
+                    <strong>{item.title}</strong>
+                    <span>{item.type}</span>
+                    <span>{formatDate(item.created_at)}</span>
+                  </div>
+                ))
+              ) : (
+                <p className="workspace-empty">No notifications yet.</p>
+              )}
+            </div>
+          </section>
+        ) : null}
+
+        {currentSection === "help" ? (
+          <>
+            <section className="workspace-grid workspace-grid-three">
+              {[
+                ["Searching the archive", "Use filters and keywords to narrow large result sets quickly."],
+                ["Saving records", "Bookmark records to keep track of sources and return later."],
+                ["Creating reading lists", "Group records into private or public thematic lists."],
+                ["Submitting corrections", "Send factual fixes and additions for curator review."],
+                ["Requesting a source", "Ask for a source pathway to be added to the archive."],
+                ["Reporting a broken link", "Flag invalid URLs so editors can update records."],
+              ].map(([title, description]) => (
+                <article key={title} className="workspace-tile">
+                  <h2>{title}</h2>
+                  <p>{description}</p>
+                </article>
+              ))}
+            </section>
+
+            <section className="workspace-elevated">
+              <h2>Support</h2>
+              <form action={submitSupportRequest} className="workspace-form workspace-wide-form">
+                <label>
+                  <span>Category</span>
+                  <select name="category" required defaultValue="General support">
+                    <option>Account issue</option>
+                    <option>Search issue</option>
+                    <option>Broken source link</option>
+                    <option>Suggest a source</option>
+                    <option>General support</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Subject</span>
+                  <input name="subject" required />
+                </label>
+                <label className="span-two">
+                  <span>Message</span>
+                  <textarea name="message" rows={5} required />
+                </label>
+                <button type="submit" className="workspace-cta">
+                  Submit support request
+                </button>
+              </form>
+            </section>
+          </>
+        ) : null}
+
+        {currentSection === "settings" ? (
+          <section className="workspace-elevated">
+            <h2>Settings</h2>
+            <WorkspaceSettingsPanel />
             <form action="/auth/signout" method="post">
               <button type="submit" className="workspace-link workspace-signout">
                 Sign out
               </button>
             </form>
+          </section>
+        ) : null}
+
+        {currentSection === "overview" || currentSection === "profile" ? (
+          <section className="workspace-profile-row">
+            <article className="workspace-tile">
+            <h2>Profile</h2>
+            <p>Email: {profile.email ?? "-"}</p>
+            <p>Role: {roleLabel}</p>
+            <form action={saveProfileDetails} className="workspace-form">
+              <label>
+                <span>Display name</span>
+                <input name="display_name" defaultValue={profile.full_name ?? ""} />
+              </label>
+              <label>
+                <span>Full name</span>
+                <input name="full_name" defaultValue={profile.full_name ?? ""} />
+              </label>
+              <label>
+                <span>Institution / organisation</span>
+                <input name="institution" />
+              </label>
+              <label>
+                <span>Research interests</span>
+                <input name="research_interests" />
+              </label>
+              <label>
+                <span>Website</span>
+                <input name="website" placeholder="https://..." />
+              </label>
+              <label>
+                <span>Short bio</span>
+                <textarea name="bio" rows={4} />
+              </label>
+              <button type="submit" className="workspace-cta">
+                Save profile
+              </button>
+            </form>
           </article>
 
-          {hasRole(profile, "curator") ? (
-            <article className="workspace-tile">
+            {hasRole(profile, "curator") ? (
+              <article className="workspace-tile">
               <h2>Editorial tools</h2>
               <p>
                 You have curator access for dossiers, notes, featured records,
@@ -422,9 +669,10 @@ export default async function WorkspacePage({
                   </Link>
                 ) : null}
               </div>
-            </article>
-          ) : null}
-        </section>
+              </article>
+            ) : null}
+          </section>
+        ) : null}
       </main>
     </PageShell>
   );
