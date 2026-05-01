@@ -1,8 +1,11 @@
 import PageShell from "@/src/components/layout/PageShell";
 
+export const dynamic = "force-dynamic";
+
 async function getSiteContent() {
   const baseUrl =
     process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.VERCEL_URL ||
     process.env.NEXT_PUBLIC_VERCEL_URL ||
     "http://localhost:3000";
 
@@ -29,12 +32,15 @@ export default async function AboutPage() {
   const aboutContent = siteContent?.about || {
     eyebrow: "About",
     title: "About this archive",
-    lead: "A working archive of decolonising knowledge across Africa, the diaspora, and the Global South.",
+    lead:
+      "A working archive of decolonising knowledge across Africa, the diaspora, and the Global South.",
     body: "<p>This archive brings together records, theories, visual culture, oral traditions, and institutional pathways that support the recovery and organisation of decolonising knowledge.</p>",
     missionTitle: "Mission",
-    missionBody: "<p>To build an accessible, evolving archive that supports research, teaching, cultural memory, and public knowledge.</p>",
+    missionBody:
+      "<p>To build an accessible, evolving archive that supports research, teaching, cultural memory, and public knowledge.</p>",
     contactTitle: "Contact",
-    contactBody: "<p>For rights, corrections, collaborations, or archival enquiries, please contact the archive administrator.</p>",
+    contactBody:
+      "<p>For rights, corrections, collaborations, or archival enquiries, please contact the archive administrator.</p>",
   };
 
   return (

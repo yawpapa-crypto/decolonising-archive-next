@@ -1,76 +1,93 @@
-"use client";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import PageShell from "@/src/components/layout/PageShell";
+import { getCurrentUser } from "@/src/lib/auth";
+import { signInWithMagicLink, signInWithPassword } from "../signin/actions";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+type SearchParams = Promise<{
+  error?: string;
+  sent?: string;
+  email?: string;
+}>;
 
-export default function AdminLoginPage() {
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const router = useRouter();
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError("");
-
-    const res = await fetch("/api/admin-login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ password }),
-    });
-
-    if (!res.ok) {
-      setError("Incorrect password");
-      return;
-    }
-
-    router.push("/admin");
-    router.refresh();
-  }
+export default async function AdminLoginPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const sp = await searchParams;
+  const user = await getCurrentUser();
+  if (user) redirect("/admin");
 
   return (
-    <main className="legal-page">
-      <div className="legal-wrap" style={{ maxWidth: "420px" }}>
-        <p className="legal-eyebrow">Protected Access</p>
-        <h1>Admin Login</h1>
-        <p className="legal-updated">Enter the admin password to continue.</p>
+    <PageShell>
+      <main className="auth-page">
+        <div className="auth-card">
+          <p className="auth-eyebrow">Admin</p>
+          <h1 className="auth-title">Admin sign in</h1>
+          <p className="auth-sub">
+            Sign in with an account that has the Admin role to manage archive
+            content, users, and moderation.
+          </p>
 
-        <form onSubmit={handleSubmit} style={{ display: "grid", gap: "14px" }}>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            style={{
-              minHeight: "48px",
-              padding: "0 14px",
-              border: "1px solid #000",
-              background: "#fff",
-              color: "#000",
-              fontSize: "14px",
-            }}
-          />
+          {sp.error ? <p className="auth-error">{sp.error}</p> : null}
+          {sp.sent ? (
+            <p className="auth-notice">
+              We sent a magic link to{" "}
+              <strong>{sp.email ?? "your email"}</strong>. Open it on this
+              device to continue to admin.
+            </p>
+          ) : null}
 
-          <button
-            type="submit"
-            style={{
-              minHeight: "48px",
-              border: "1px solid #000",
-              background: "#000",
-              color: "#fff",
-              cursor: "pointer",
-              fontSize: "14px",
-            }}
-          >
-            Enter
-          </button>
-        </form>
+          <form action={signInWithPassword} className="auth-form">
+            <input type="hidden" name="next" value="/admin" />
+            <input type="hidden" name="statusPath" value="/admin-login" />
+            <label className="auth-field">
+              <span>Email</span>
+              <input type="email" name="email" autoComplete="email" required />
+            </label>
+            <label className="auth-field">
+              <span>Password</span>
+              <input
+                type="password"
+                name="password"
+                autoComplete="current-password"
+                required
+                minLength={8}
+              />
+            </label>
+            <button type="submit" className="auth-submit">
+              Sign in to admin
+            </button>
+          </form>
 
-        {error ? (
-          <p style={{ marginTop: "14px", color: "#b00020" }}>{error}</p>
-        ) : null}
-      </div>
-    </main>
+          <div className="auth-divider">
+            <span>or</span>
+          </div>
+
+          <form action={signInWithMagicLink} className="auth-form">
+            <input type="hidden" name="next" value="/admin" />
+            <input type="hidden" name="statusPath" value="/admin-login" />
+            <label className="auth-field">
+              <span>Email me an admin magic link</span>
+              <input
+                type="email"
+                name="email"
+                autoComplete="email"
+                placeholder="you@example.com"
+                required
+              />
+            </label>
+            <button type="submit" className="auth-submit auth-submit-secondary">
+              Send magic link
+            </button>
+          </form>
+
+          <p className="auth-footer">
+            Need a member account first? <Link href="/signup">Create one</Link>.
+          </p>
+        </div>
+      </main>
+    </PageShell>
   );
 }

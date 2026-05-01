@@ -1,60 +1,20 @@
-"use client";
+// Server-side navbar wrapper. Reads the current profile from Supabase, then
+// hands a plain serialisable shape to the client navbar so the avatar menu
+// can render without re-fetching.
 
-import { useEffect, useState } from "react";
+import { getCurrentProfile } from "@/src/lib/auth";
+import NavbarClient, { type NavProfile } from "./NavbarClient";
 
-export default function Navbar() {
-  const [open, setOpen] = useState(false);
+export default async function Navbar() {
+  const profile = await getCurrentProfile();
 
-  useEffect(() => {
-    const closeMenu = () => setOpen(false);
+  const navProfile: NavProfile | null = profile
+    ? {
+        email: profile.email,
+        full_name: profile.full_name,
+        role: profile.role,
+      }
+    : null;
 
-    window.addEventListener("hashchange", closeMenu);
-    window.addEventListener("resize", closeMenu);
-
-    return () => {
-      window.removeEventListener("hashchange", closeMenu);
-      window.removeEventListener("resize", closeMenu);
-    };
-  }, []);
-
-  const handleNavClick = () => setOpen(false);
-
-  return (
-    <nav className="nav">
-      <div className="nav-inner">
-        <a href="/#/home" className="nav-logo" onClick={handleNavClick}>
-          DECOLONISING ARCHIVE
-        </a>
-
-        <div className="nav-links">
-          <a href="/#/home" className="nav-link">Home</a>
-          <a href="/#/library" className="nav-link">Library</a>
-          <a href="/#/sources" className="nav-link">Sources</a>
-          <a href="/#/about" className="nav-link">About</a>
-        </div>
-
-        <a href="/#/library" className="nav-cta">
-          Search archive
-        </a>
-
-        <button
-          id="hamburger"
-          className="hamburger"
-          type="button"
-          aria-label="Toggle navigation"
-          aria-expanded={open ? "true" : "false"}
-          onClick={() => setOpen((v) => !v)}
-        >
-          ☰
-        </button>
-      </div>
-
-      <div id="navMobile" className={`nav-mobile${open ? " open" : ""}`}>
-        <a href="/#/home" className="nav-link" onClick={handleNavClick}>Home</a>
-        <a href="/#/library" className="nav-link" onClick={handleNavClick}>Library</a>
-        <a href="/#/sources" className="nav-link" onClick={handleNavClick}>Sources</a>
-        <a href="/#/about" className="nav-link" onClick={handleNavClick}>About</a>
-      </div>
-    </nav>
-  );
+  return <NavbarClient profile={navProfile} />;
 }

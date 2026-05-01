@@ -1,17 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import HashAnalytics from "@/src/components/analytics/HashAnalytics";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Decolonising Archive",
@@ -49,8 +38,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} min-h-full flex flex-col`}>
+    <>
         {children}
 
         <footer className="site-footer">
@@ -65,7 +53,6 @@ export default function RootLayout({
 
         <HashAnalytics />
         <Analytics />
-      </body>
-    </html>
+    </>
   );
 }

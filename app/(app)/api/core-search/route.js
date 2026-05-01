@@ -86,6 +86,53 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function isEsOverload(text) {
+  return (
+    typeof text === 'string' &&
+    text.includes('es_rejected_execution_exception')
+  );
+}
+
+function extractPartialResults(text) {
+  try {
+    let parsed;
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      return null;
+    }
+
+    if (typeof parsed?.message === 'string') {
+      try {
+        const inner = JSON.parse(parsed.message);
+        if (inner?.hits?.hits || inner?.results) {
+          parsed = inner;
+        }
+      } catch {
+        // not double-encoded, continue with parsed as-is
+      }
+    }
+
+    if (Array.isArray(parsed?.results) && parsed.results.length > 0) {
+      return {
+        results: parsed.results,
+        totalHits: parsed.total_hits ?? parsed.totalHits ?? parsed.results.length,
+      };
+    }
+
+    if (Array.isArray(parsed?.hits?.hits) && parsed.hits.hits.length > 0) {
+      return {
+        results: parsed.hits.hits.map((hit) => hit._source || hit),
+        totalHits: parsed.hits?.total?.value ?? parsed.hits.hits.length,
+      };
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 async function fetchCore(url, apiKey, attempt = 1) {
   const response = await fetch(url, {
     headers: {
@@ -96,13 +143,41 @@ async function fetchCore(url, apiKey, attempt = 1) {
   });
 
   if (response.ok) {
-    return response.json();
+    return { data: await response.json(), partial: false };
   }
 
   const text = await response.text();
 
-  if (attempt < 4 && response.status >= 500) {
+  if (isEsOverload(text)) {
+    if (attempt === 1) {
+      console.warn('[CORE API] ES overload detected, retrying after 900ms', {
+        attempt,
+        status: response.status,
+      });
+      await sleep(900);
+      return fetchCore(url, apiKey, attempt + 1);
+    }
+
+    const partial = extractPartialResults(text);
+    if (partial && partial.results.length > 0) {
+      console.warn('[CORE API] ES overload on retry, returning partial results', {
+        count: partial.results.length,
+      });
+      return { data: partial, partial: true };
+    }
+
+    // No results extractable — return empty gracefully rather than throwing
+    console.warn('[CORE API] ES overload on retry, no results extractable, returning empty');
+    return {
+      data: { results: [], total_hits: 0 },
+      partial: true,
+      overloaded: true,
+    };
+  }
+
+  if (attempt < 3 && response.status >= 500) {
     const delay = 700 * attempt;
+    console.warn('[CORE API] 5xx error, retrying', { attempt, status: response.status, delay });
     await sleep(delay);
     return fetchCore(url, apiKey, attempt + 1);
   }
@@ -118,6 +193,13 @@ export async function GET(request) {
     const offset = Number(searchParams.get('offset') || '0');
     const apiKey = process.env.CORE_API_KEY;
 
+    console.log('[CORE API] incoming request', {
+      q,
+      limit,
+      offset,
+      time: new Date().toISOString(),
+    });
+
     if (!q) {
       return NextResponse.json(
         { ok: false, error: 'Missing q parameter' },
@@ -126,6 +208,7 @@ export async function GET(request) {
     }
 
     if (!apiKey) {
+      console.error('[CORE API] missing CORE_API_KEY environment variable');
       return NextResponse.json(
         { ok: false, error: 'Missing CORE_API_KEY' },
         { status: 500 }
@@ -138,18 +221,53 @@ export async function GET(request) {
       `&limit=${limit}` +
       `&offset=${offset}`;
 
-    const data = await fetchCore(url, apiKey);
-    const results = asArray(data.results).map((item, index) =>
-      normalizeCoreItem(item, index)
-    );
+    console.log('[CORE API] fetching upstream', url);
+
+    const { data, partial, overloaded } = await fetchCore(url, apiKey);
+
+    console.log('[CORE API] upstream shape', {
+      hasResults: !!data?.results,
+      resultsCount: Array.isArray(data?.results) ? data.results.length : null,
+      totalHits: data?.total_hits ?? data?.totalHits ?? null,
+      partial,
+      overloaded: overloaded || false,
+    });
+
+    const results = asArray(data.results).map((item, index) => {
+      const normalized = normalizeCoreItem(item, index);
+      console.log('[CORE API] normalized item', {
+        index,
+        id: normalized.id,
+        hasTitle: !!normalized.title && normalized.title !== 'Untitled record',
+        hasCreator: !!normalized.creator && normalized.creator !== 'Unknown creator',
+        hasSourceUrl: !!normalized.sourceUrl,
+        hasAbstract: !!normalized.abstract,
+      });
+      return normalized;
+    });
+
+    console.log('[CORE API] returning results', {
+      count: results.length,
+      totalHits: data.total_hits ?? data.totalHits ?? results.length,
+      partial,
+    });
 
     return NextResponse.json({
       ok: true,
+      partial: partial || false,
+      warning: overloaded
+        ? 'CORE search service is temporarily under load. Local and fallback results are shown instead.'
+        : partial
+        ? 'CORE returned partial results because its search service is under load. Showing available results.'
+        : undefined,
       totalHits: data.total_hits ?? data.totalHits ?? results.length,
       results,
     });
   } catch (error) {
-    console.error('CORE search failed:', error);
+    console.error('[CORE API] failed', {
+      message: error instanceof Error ? error.message : String(error),
+      time: new Date().toISOString(),
+    });
 
     return NextResponse.json(
       {

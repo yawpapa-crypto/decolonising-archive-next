@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function AdminPage() {
   return (
     <div className="admin-dashboard">
@@ -11,12 +13,15 @@ export default function AdminPage() {
         </div>
 
         <div className="admin-actions">
-          <a href="/" className="admin-button admin-button-secondary">
+          <Link href="/" className="admin-button admin-button-secondary">
             View site
-          </a>
-          <a href="/admin/pages" className="admin-button">
+          </Link>
+          <Link href="/admin/pages" className="admin-button">
             Edit pages
-          </a>
+          </Link>
+          <Link href="/admin/users" className="admin-button">
+            Moderate users
+          </Link>
         </div>
       </div>
 
@@ -40,6 +45,12 @@ export default function AdminPage() {
         </div>
 
         <div className="admin-stat-card">
+          <div className="admin-panel-label">Users</div>
+          <div className="admin-stat-number">Roles</div>
+          <div className="admin-stat-text">Signup tracking and access moderation</div>
+        </div>
+
+        <div className="admin-stat-card">
           <div className="admin-panel-label">Collections</div>
           <div className="admin-stat-number">Themes</div>
           <div className="admin-stat-text">Editorial grouping and discovery structure</div>
@@ -47,29 +58,35 @@ export default function AdminPage() {
       </section>
 
       <section className="admin-grid">
-        <a href="/admin/pages" className="admin-panel">
+        <Link href="/admin/pages" className="admin-panel">
           <div className="admin-panel-label">Pages</div>
           <h2>Front-end pages</h2>
           <p>Edit homepage, about text, footer content, and legal pages.</p>
-        </a>
+        </Link>
 
-        <a href="/admin/records" className="admin-panel">
+        <Link href="/admin/records" className="admin-panel">
           <div className="admin-panel-label">Records</div>
           <h2>Archive records</h2>
           <p>Manage titles, summaries, metadata, links, and publishing structure.</p>
-        </a>
+        </Link>
 
-        <a href="/admin/sources" className="admin-panel">
+        <Link href="/admin/sources" className="admin-panel">
           <div className="admin-panel-label">Sources</div>
           <h2>Source pathways</h2>
           <p>Update external source listings, discovery links, and pathway descriptions.</p>
-        </a>
+        </Link>
 
-        <a href="/admin/collections" className="admin-panel">
+        <Link href="/admin/collections" className="admin-panel">
           <div className="admin-panel-label">Collections</div>
           <h2>Collections and themes</h2>
           <p>Maintain editorial groupings, featured areas, and discovery structure.</p>
-        </a>
+        </Link>
+
+        <Link href="/admin/users" className="admin-panel">
+          <div className="admin-panel-label">Users</div>
+          <h2>Signup moderation</h2>
+          <p>Review members, track workspace use, update roles, and block sign-in.</p>
+        </Link>
       </section>
 
       <section className="admin-lower-grid">
