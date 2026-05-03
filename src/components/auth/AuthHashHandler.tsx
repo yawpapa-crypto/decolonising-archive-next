@@ -43,7 +43,7 @@ export default function AuthHashHandler() {
         }
 
         if (type === "recovery") {
-          window.location.replace("/reset-password");
+          window.location.replace("/auth/reset-password");
           return;
         }
 

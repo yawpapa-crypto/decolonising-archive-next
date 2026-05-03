@@ -109,7 +109,7 @@ export async function requireCurator(): Promise<Profile> {
 
 export async function requireAdmin(): Promise<Profile> {
   const profile = await getCurrentProfile();
-  if (!profile) redirect("/auth/sign-in?next=/admin");
+  if (!profile) redirect("/admin/signin?next=/admin");
   if (!hasRole(profile, "admin")) redirect("/workspace?denied=admin");
   return profile;
 }

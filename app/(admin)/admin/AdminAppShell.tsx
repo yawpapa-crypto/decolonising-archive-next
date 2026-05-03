@@ -13,6 +13,7 @@ const NAV: { href: string; label: string }[] = [
   { href: "/admin/sources", label: "Sources" },
   { href: "/admin/collections", label: "Collections" },
   { href: "/admin/users", label: "Users" },
+  { href: "/admin/invites", label: "Invites" },
   { href: "/admin/settings", label: "Settings" },
   { href: "/admin/analytics", label: "Analytics" },
 ];

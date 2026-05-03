@@ -10,13 +10,19 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import PageShell from "@/src/components/layout/PageShell";
 import { getCurrentUser } from "@/src/lib/auth";
-import { signInWithPassword, signInWithMagicLink } from "./actions";
+import {
+  requestPasswordReset,
+  signInWithMagicLink,
+  signInWithPassword,
+} from "./actions";
 import OAuthButtons from "./OAuthButtons";
 
 type SearchParams = Promise<{
   next?: string;
   error?: string;
+  updated?: string;
   sent?: string;
+  resetSent?: string;
   email?: string;
 }>;
 
@@ -43,11 +49,18 @@ export default async function SignInPage({
           </p>
 
           {sp.error ? <p className="auth-error">{sp.error}</p> : null}
+          {sp.updated ? <p className="auth-notice">{sp.updated}</p> : null}
           {sp.sent ? (
             <p className="auth-notice">
               We sent a magic link to{" "}
               <strong>{sp.email ?? "your email"}</strong>. Open it on this
               device to finish signing in.
+            </p>
+          ) : null}
+          {sp.resetSent ? (
+            <p className="auth-notice">
+              We sent a password reset link to{" "}
+              <strong>{sp.email ?? "your email"}</strong>.
             </p>
           ) : null}
 
@@ -76,6 +89,26 @@ export default async function SignInPage({
               Sign in
             </button>
           </form>
+
+          <details className="auth-recovery">
+            <summary>Forgot your password?</summary>
+            <form action={requestPasswordReset} className="auth-form">
+              <input type="hidden" name="statusPath" value="/signin" />
+              <label className="auth-field">
+                <span>Email for password reset</span>
+                <input
+                  type="email"
+                  name="email"
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                  required
+                />
+              </label>
+              <button type="submit" className="auth-submit auth-submit-secondary">
+                Send reset link
+              </button>
+            </form>
+          </details>
 
           <div className="auth-divider"><span>or</span></div>
 

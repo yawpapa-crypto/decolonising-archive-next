@@ -6,16 +6,22 @@ import { NextResponse, type NextRequest } from "next/server";
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { createClient } from "@/src/lib/supabase/server";
 
+function safeNext(value: string | null) {
+  if (value?.startsWith("/") && !value.startsWith("//")) return value;
+  return "/workspace";
+}
+
 function getErrorPath(next: string) {
-  return next.startsWith("/admin") ? "/admin-login" : "/signin";
+  return next.startsWith("/admin") ? "/admin/signin" : "/signin";
 }
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const token_hash = url.searchParams.get("token_hash");
   const type = url.searchParams.get("type") as EmailOtpType | null;
-  const next = url.searchParams.get("next") ?? "/workspace";
+  const next = safeNext(url.searchParams.get("next"));
   const errorPath = getErrorPath(next);
+  const isRecovery = type === "recovery";
 
   if (!token_hash || !type) {
     return NextResponse.redirect(
@@ -30,12 +36,27 @@ export async function GET(request: NextRequest) {
   const { error } = await supabase.auth.verifyOtp({ type, token_hash });
 
   if (error) {
+    if (isRecovery) {
+      return NextResponse.redirect(
+        new URL(
+          `/signin?error=${encodeURIComponent(
+            "Password reset link has expired. Please request a new one.",
+          )}`,
+          request.url,
+        ),
+      );
+    }
+
     return NextResponse.redirect(
       new URL(
         `${errorPath}?error=${encodeURIComponent(error.message)}`,
         request.url
       )
     );
+  }
+
+  if (isRecovery) {
+    return NextResponse.redirect(new URL("/reset-password", request.url));
   }
 
   return NextResponse.redirect(new URL(next, request.url));

@@ -10,6 +10,13 @@ import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { createClient } from "@/src/lib/supabase/server";
 
+function siteUrl() {
+  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  const vercelUrl = process.env.VERCEL_URL?.trim();
+  const raw = configured || (vercelUrl ? `https://${vercelUrl}` : "http://localhost:3000");
+  return raw.replace(/\/$/, "");
+}
+
 function safeNext(value: FormDataEntryValue | null): string {
   const v = typeof value === "string" ? value : "";
   // Only allow same-origin paths.
@@ -98,4 +105,26 @@ export async function signInWithMagicLink(formData: FormData) {
   }
 
   redirect(`${statusPath}?sent=1&email=${encodeURIComponent(email)}`);
+}
+
+export async function requestPasswordReset(formData: FormData) {
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const statusPath = safeStatusPath(formData.get("statusPath"));
+
+  if (!email) {
+    redirect(
+      `${statusPath}?error=${encodeURIComponent("Email is required for password recovery.")}`,
+    );
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${siteUrl()}/auth/confirm?next=/reset-password`,
+  });
+
+  if (error) {
+    redirect(`${statusPath}?error=${encodeURIComponent(error.message)}`);
+  }
+
+  redirect(`${statusPath}?resetSent=1&email=${encodeURIComponent(email)}`);
 }

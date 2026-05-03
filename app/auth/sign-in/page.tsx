@@ -11,5 +11,8 @@ export default async function AuthSignInPage({
 }) {
   const sp = await searchParams;
   const next = sp.next ?? "/workspace";
+  if (next.startsWith("/admin") && !next.startsWith("//")) {
+    redirect(`/admin/signin?next=${encodeURIComponent(next)}`);
+  }
   redirect(`/signin?next=${encodeURIComponent(next)}`);
 }
