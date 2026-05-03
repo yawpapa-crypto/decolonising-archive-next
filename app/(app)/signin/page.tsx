@@ -12,7 +12,6 @@ import PageShell from "@/src/components/layout/PageShell";
 import { getCurrentUser } from "@/src/lib/auth";
 import {
   requestPasswordReset,
-  signInWithMagicLink,
   signInWithPassword,
 } from "./actions";
 import OAuthButtons from "./OAuthButtons";
@@ -52,7 +51,7 @@ export default async function SignInPage({
           {sp.updated ? <p className="auth-notice">{sp.updated}</p> : null}
           {sp.sent ? (
             <p className="auth-notice">
-              We sent a magic link to{" "}
+              We sent a email and password to{" "}
               <strong>{sp.email ?? "your email"}</strong>. Open it on this
               device to finish signing in.
             </p>
@@ -111,23 +110,6 @@ export default async function SignInPage({
           </details>
 
           <div className="auth-divider"><span>or</span></div>
-
-          <form action={signInWithMagicLink} className="auth-form">
-            <input type="hidden" name="next" value={next} />
-            <label className="auth-field">
-              <span>Email me a magic link</span>
-              <input
-                type="email"
-                name="email"
-                autoComplete="email"
-                placeholder="you@example.com"
-                required
-              />
-            </label>
-            <button type="submit" className="auth-submit auth-submit-secondary">
-              Send magic link
-            </button>
-          </form>
 
           <div className="auth-divider"><span>or</span></div>
 

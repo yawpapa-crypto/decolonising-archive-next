@@ -1,7 +1,7 @@
 "use server";
 
 // Server actions for the sign-in page.
-// Email+password and magic link both run server-side; OAuth happens
+// Email+password and email and password both run server-side; OAuth happens
 // client-side because it needs a browser redirect with a session-bound
 // PKCE code verifier stored in the browser.
 
@@ -35,7 +35,7 @@ function formatSignInError(message: string): string {
   if (m === "Invalid login credentials") {
     return (
       "Invalid email or password, or no matching user in this Supabase project. " +
-      "Confirm NEXT_PUBLIC_SUPABASE_URL and publishable key match your project, check the account is not banned (Authentication → Users), or use a magic link."
+      "Confirm NEXT_PUBLIC_SUPABASE_URL and publishable key match your project, check the account is not banned (Authentication → Users), or use a email and password."
     );
   }
   return m;
@@ -76,36 +76,7 @@ export async function signInWithPassword(formData: FormData) {
   redirect(next);
 }
 
-export async function signInWithMagicLink(formData: FormData) {
-  const email = String(formData.get("email") ?? "").trim().toLowerCase();
-  const next = safeNext(formData.get("next"));
-  const statusPath = safeStatusPath(formData.get("statusPath"));
 
-  if (!email) {
-    redirect(
-      `${statusPath}?error=${encodeURIComponent("Email is required for a magic link.")}`
-    );
-  }
-
-  const h = await headers();
-  const origin =
-    h.get("origin") ??
-    `https://${h.get("host") ?? "localhost:3000"}`;
-
-  const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithOtp({
-    email,
-    options: {
-      emailRedirectTo: `${origin}/auth/confirm?next=${encodeURIComponent(next)}`,
-    },
-  });
-
-  if (error) {
-    redirect(`${statusPath}?error=${encodeURIComponent(error.message)}`);
-  }
-
-  redirect(`${statusPath}?sent=1&email=${encodeURIComponent(email)}`);
-}
 
 export async function requestPasswordReset(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
