@@ -1,63 +1,47 @@
-// Email confirmation handler (signup verification, password recovery).
-// Supabase emails users a link of the form /auth/confirm?token_hash=...&type=...
-// We verify the OTP token and then send them on to ?next=... (or /workspace).
-
-import { NextResponse, type NextRequest } from "next/server";
-import type { EmailOtpType } from "@supabase/supabase-js";
-import { createClient } from "@/src/lib/supabase/server";
-
-function safeNext(value: string | null) {
-  if (value?.startsWith("/") && !value.startsWith("//")) return value;
-  return "/workspace";
-}
-
-function getErrorPath(next: string) {
-  return next.startsWith("/admin") ? "/admin/signin" : "/signin";
-}
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "../../../src/lib/supabase/server";
 
 export async function GET(request: NextRequest) {
-  const url = new URL(request.url);
-  const token_hash = url.searchParams.get("token_hash");
-  const type = url.searchParams.get("type") as EmailOtpType | null;
-  const next = safeNext(url.searchParams.get("next"));
-  const errorPath = getErrorPath(next);
-  const isRecovery = type === "recovery";
+  const requestUrl = new URL(request.url);
 
-  if (!token_hash || !type) {
-    return NextResponse.redirect(
-      new URL(
-        `${errorPath}?error=${encodeURIComponent("Missing email verification token.")}`,
-        request.url
-      )
-    );
-  }
+  const code = requestUrl.searchParams.get("code");
+  const tokenHash = requestUrl.searchParams.get("token_hash");
+  const type = requestUrl.searchParams.get("type");
+  const next = requestUrl.searchParams.get("next") || "/workspace";
 
+  const origin = requestUrl.origin;
   const supabase = await createClient();
-  const { error } = await supabase.auth.verifyOtp({ type, token_hash });
 
-  if (error) {
-    if (isRecovery) {
+  // Newer Supabase email links often return a code.
+  if (code) {
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+
+    if (error) {
       return NextResponse.redirect(
-        new URL(
-          `/signin?error=${encodeURIComponent(
-            "Password reset link has expired. Please request a new one.",
-          )}`,
-          request.url,
-        ),
+        `${origin}/signin?message=${encodeURIComponent(error.message)}`
       );
     }
 
-    return NextResponse.redirect(
-      new URL(
-        `${errorPath}?error=${encodeURIComponent(error.message)}`,
-        request.url
-      )
-    );
+    return NextResponse.redirect(`${origin}${next}`);
   }
 
-  if (isRecovery) {
-    return NextResponse.redirect(new URL("/reset-password", request.url));
+  // Older / token-hash email links use token_hash + type.
+  if (tokenHash && type) {
+    const { error } = await supabase.auth.verifyOtp({
+      token_hash: tokenHash,
+      type: type as "signup" | "magiclink" | "recovery" | "invite" | "email_change",
+    });
+
+    if (error) {
+      return NextResponse.redirect(
+        `${origin}/signin?message=${encodeURIComponent(error.message)}`
+      );
+    }
+
+    return NextResponse.redirect(`${origin}${next}`);
   }
 
-  return NextResponse.redirect(new URL(next, request.url));
+  return NextResponse.redirect(
+    `${origin}/signin?message=${encodeURIComponent("Missing email verification token.")}`
+  );
 }
