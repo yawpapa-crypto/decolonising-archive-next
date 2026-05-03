@@ -13,6 +13,133 @@ function clean(value: unknown, fallback = "") {
   return String(value ?? fallback).trim();
 }
 
+function firstText(...values: Array<unknown>) {
+  for (const value of values) {
+    if (typeof value === "string" && value.trim()) return value.trim();
+    if (typeof value === "number") return String(value);
+  }
+  return "";
+}
+
+function asPlainObject(value: unknown): Record<string, unknown> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  return value as Record<string, unknown>;
+}
+
+function extractYear(value: unknown) {
+  const text = firstText(value);
+  if (!text) return "";
+  return text.match(/\b(1[5-9]\d{2}|20\d{2}|21\d{2})\b/)?.[0] ?? text;
+}
+
+function buildRecordSnapshot(
+  body: Record<string, unknown>,
+  recordId: string,
+  recordTitle: string,
+  recordUrl: string,
+) {
+  const nestedRecord = asPlainObject(body.record);
+  const nestedMetadata = asPlainObject(body.metadata);
+  const incomingRecord = Object.keys(nestedRecord).length
+    ? nestedRecord
+    : Object.keys(nestedMetadata).length
+      ? nestedMetadata
+      : body;
+  const incomingMetadata = asPlainObject(incomingRecord.metadata);
+
+  const title =
+    firstText(
+      incomingRecord.title,
+      incomingRecord.name,
+      incomingRecord.recordTitle,
+      incomingRecord.display_title,
+      incomingRecord.displayTitle,
+      incomingRecord.record_title,
+      incomingMetadata.title,
+      body.recordTitle,
+      recordTitle,
+    ) || null;
+
+  const author =
+    firstText(
+      incomingRecord.author,
+      incomingRecord.creator,
+      incomingRecord.contributor,
+      incomingRecord.record_author,
+      incomingMetadata.author,
+      incomingMetadata.creator,
+      incomingMetadata.contributor,
+    ) || null;
+
+  const source =
+    firstText(
+      incomingRecord.source,
+      incomingRecord.source_name,
+      incomingRecord.publisher,
+      incomingRecord.archive,
+      incomingRecord.collection,
+      incomingRecord.record_source,
+      incomingMetadata.source,
+      incomingMetadata.publisher,
+    ) || null;
+
+  const sourceUrl =
+    firstText(
+      incomingRecord.url,
+      incomingRecord.source_url,
+      incomingRecord.sourceUrl,
+      incomingRecord.recordUrl,
+      incomingRecord.href,
+      incomingRecord.record_source_url,
+      incomingMetadata.url,
+      incomingMetadata.source_url,
+      body.recordUrl,
+      recordUrl,
+    ) || null;
+
+  const type =
+    firstText(
+      incomingRecord.type,
+      incomingRecord.record_type,
+      incomingRecord.kind,
+      incomingRecord.recordType,
+      incomingMetadata.type,
+    ) || null;
+
+  const year =
+    extractYear(
+      firstText(
+        incomingRecord.year,
+        incomingRecord.date,
+        incomingRecord.published_at,
+        incomingRecord.created_at,
+        incomingRecord.record_year,
+        incomingMetadata.year,
+        incomingMetadata.date,
+      ),
+    ) || null;
+
+  return {
+    record_title: title,
+    record_author: author,
+    record_source: source,
+    record_source_url: sourceUrl,
+    record_type: type,
+    record_year: year,
+    record_metadata: {
+      ...incomingMetadata,
+      ...incomingRecord,
+      id: firstText(incomingRecord.id, recordId),
+      title: title ?? undefined,
+      author: author ?? undefined,
+      source: source ?? undefined,
+      source_url: sourceUrl ?? undefined,
+      type: type ?? undefined,
+      year: year ?? undefined,
+    },
+  };
+}
+
 function jsonError(message: string, status = 400) {
   return NextResponse.json({ ok: false, error: message }, { status });
 }
@@ -116,6 +243,7 @@ export async function POST(request: NextRequest) {
   const recordId = clean(body.recordId);
   const recordTitle = clean(body.recordTitle, "Archive record");
   const recordUrl = clean(body.recordUrl) || recordId;
+  const recordSnapshot = buildRecordSnapshot(body, recordId, recordTitle, recordUrl);
 
   if (action !== "save_search" && !recordId) return jsonError("Missing recordId.");
 
@@ -194,6 +322,7 @@ export async function POST(request: NextRequest) {
         record_id: recordId,
         position: 0,
         note: clean(body.note) || null,
+        ...recordSnapshot,
       },
       { onConflict: "reading_list_id,record_id" },
     );
@@ -231,6 +360,7 @@ export async function POST(request: NextRequest) {
         record_id: recordId,
         position: count ?? 0,
         note: clean(body.note) || null,
+        ...recordSnapshot,
       },
       { onConflict: "reading_list_id,record_id" },
     );

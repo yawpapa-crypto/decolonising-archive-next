@@ -12,6 +12,8 @@ export default async function Navbar() {
     ? {
         email: profile.email,
         full_name: profile.full_name,
+        display_name: profile.display_name,
+        avatar_url: profile.avatar_url,
         role: profile.role,
       }
     : null;

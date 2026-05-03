@@ -785,6 +785,46 @@ async function fetchRecordWorkspaceState(record) {
   if (currentPage === "record" && selectedRecordId === record.id) render();
 }
 
+function buildWorkspaceRecordSnapshot(record) {
+  if (!record || typeof record !== "object") return {};
+  const sourceUrl = record.sourceUrl || record.source_url || record.url || record.href || "";
+  const metadata = record.metadata && typeof record.metadata === "object" ? record.metadata : {};
+
+  return {
+    id: record.id,
+    title: record.title || record.name || record.display_title || record.displayTitle || "",
+    name: record.name || "",
+    author: record.author || record.creator || record.contributor || "",
+    creator: record.creator || "",
+    contributor: record.contributor || "",
+    source: record.source || record.source_name || record.publisher || record.archive || "",
+    source_name: record.source_name || record.sourceName || "",
+    publisher: record.publisher || "",
+    archive: record.archive || "",
+    collection: record.collection || "",
+    type: record.type || record.record_type || record.kind || "",
+    record_type: record.record_type || "",
+    year: record.year || record.date || record.published_at || record.period || "",
+    date: record.date || record.published_at || record.period || "",
+    url: sourceUrl,
+    source_url: sourceUrl,
+    sourceUrl,
+    recordUrl: sourceUrl,
+    href: sourceUrl,
+    metadata: {
+      title: metadata.title || record.title || record.name || "",
+      author: metadata.author || record.author || record.creator || "",
+      creator: metadata.creator || record.creator || "",
+      contributor: metadata.contributor || record.contributor || "",
+      source: metadata.source || record.source || record.source_name || "",
+      publisher: metadata.publisher || record.publisher || "",
+      year: metadata.year || record.year || "",
+      date: metadata.date || record.date || record.published_at || "",
+      url: metadata.url || sourceUrl
+    }
+  };
+}
+
 async function postRecordWorkspaceAction(record, payload) {
   if (!record || !record.id) return;
   memberWorkspaceState = {
@@ -808,6 +848,7 @@ async function postRecordWorkspaceAction(record, payload) {
         recordId: record.id,
         recordTitle: record.title,
         recordUrl: record.sourceUrl || record.id,
+        record: buildWorkspaceRecordSnapshot(record),
         ...payload
       })
     });

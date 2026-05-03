@@ -16,13 +16,24 @@ import { useEffect, useRef, useState } from "react";
 export type NavProfile = {
   email: string | null;
   full_name: string | null;
+  display_name: string | null;
+  avatar_url: string | null;
   role: "member" | "curator" | "admin";
 };
 
 const ROLE_RANK = { member: 1, curator: 2, admin: 3 } as const;
 
+function displayName(profile: NavProfile): string {
+  return (
+    profile.display_name?.trim() ||
+    profile.full_name?.trim() ||
+    profile.email ||
+    "Account"
+  );
+}
+
 function initials(profile: NavProfile): string {
-  const source = profile.full_name?.trim() || profile.email || "?";
+  const source = displayName(profile) || "?";
   const parts = source.split(/[\s@._-]+/).filter(Boolean);
   const letters =
     parts.length >= 2
@@ -97,12 +108,17 @@ export default function NavbarClient({
               onClick={() => setMenuOpen((v) => !v)}
               title={profile.email ?? "Account"}
             >
-              {initials(profile)}
+              {profile.avatar_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={profile.avatar_url} alt="" className="nav-avatar-img" />
+              ) : (
+                initials(profile)
+              )}
             </button>
             {menuOpen ? (
               <div className="nav-avatar-menu" role="menu">
                 <div className="nav-avatar-meta">
-                  <strong>{profile.full_name ?? profile.email ?? "Account"}</strong>
+                  <strong>{displayName(profile)}</strong>
                   <span className={`role-badge role-${profile.role}`}>
                     {profile.role === "admin"
                       ? "Admin"

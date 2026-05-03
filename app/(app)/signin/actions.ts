@@ -5,6 +5,7 @@
 // client-side because it needs a browser redirect with a session-bound
 // PKCE code verifier stored in the browser.
 
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { createClient } from "@/src/lib/supabase/server";
@@ -22,8 +23,20 @@ function safeStatusPath(value: FormDataEntryValue | null): string {
   return "/signin";
 }
 
+function formatSignInError(message: string): string {
+  const m = message.trim();
+  if (m === "Invalid login credentials") {
+    return (
+      "Invalid email or password, or no matching user in this Supabase project. " +
+      "Confirm NEXT_PUBLIC_SUPABASE_URL and publishable key match your project, check the account is not banned (Authentication → Users), or use a magic link."
+    );
+  }
+  return m;
+}
+
 export async function signInWithPassword(formData: FormData) {
-  const email = String(formData.get("email") ?? "").trim();
+  const emailRaw = String(formData.get("email") ?? "").trim();
+  const email = emailRaw.toLowerCase();
   const password = String(formData.get("password") ?? "");
   const next = safeNext(formData.get("next"));
   const statusPath = safeStatusPath(formData.get("statusPath"));
@@ -34,18 +47,30 @@ export async function signInWithPassword(formData: FormData) {
     );
   }
 
+  if (
+    !process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() ||
+    !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim()
+  ) {
+    redirect(
+      `${statusPath}?error=${encodeURIComponent(
+        "Server is missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.",
+      )}`
+    );
+  }
+
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    redirect(`${statusPath}?error=${encodeURIComponent(error.message)}`);
+    redirect(`${statusPath}?error=${encodeURIComponent(formatSignInError(error.message))}`);
   }
 
+  revalidatePath("/", "layout");
   redirect(next);
 }
 
 export async function signInWithMagicLink(formData: FormData) {
-  const email = String(formData.get("email") ?? "").trim();
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const next = safeNext(formData.get("next"));
   const statusPath = safeStatusPath(formData.get("statusPath"));
 

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 type Prefs = {
@@ -7,7 +8,6 @@ type Prefs = {
   emailNotifications: boolean;
   archiveUpdates: boolean;
   searchAlerts: boolean;
-  profileVisibility: "private" | "members" | "public";
 };
 
 const DEFAULT_PREFS: Prefs = {
@@ -15,7 +15,6 @@ const DEFAULT_PREFS: Prefs = {
   emailNotifications: true,
   archiveUpdates: true,
   searchAlerts: true,
-  profileVisibility: "members",
 };
 
 const STORAGE_KEY = "workspacePreferencesV1";
@@ -37,7 +36,8 @@ export default function WorkspaceSettingsPanel() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return DEFAULT_PREFS;
-      const parsed = JSON.parse(raw) as Partial<Prefs>;
+      const parsed = JSON.parse(raw) as Partial<Prefs> & { profileVisibility?: unknown };
+      delete parsed.profileVisibility;
       return { ...DEFAULT_PREFS, ...parsed };
     } catch {
       return DEFAULT_PREFS;
@@ -63,10 +63,19 @@ export default function WorkspaceSettingsPanel() {
   }
 
   return (
-    <div className="workspace-settings-grid">
-      <label>
+    <div className="workspace-settings-grid dashboard-form">
+      <p className="member-profile-help workspace-settings-profile-hint">
+        Profile visibility and other account details are saved in{" "}
+        <Link href="/workspace?section=profile" className="workspace-link">
+          Profile
+        </Link>
+        .
+      </p>
+
+      <label className="dashboard-field">
         <span>Appearance</span>
         <select
+          className="dashboard-select"
           value={prefs.appearance}
           onChange={(event) =>
             update("appearance", event.target.value as Prefs["appearance"])
@@ -78,7 +87,7 @@ export default function WorkspaceSettingsPanel() {
         </select>
       </label>
 
-      <label className="workspace-check">
+      <label className="workspace-check workspace-check--settings">
         <input
           type="checkbox"
           checked={prefs.emailNotifications}
@@ -87,7 +96,7 @@ export default function WorkspaceSettingsPanel() {
         <span>Email notifications</span>
       </label>
 
-      <label className="workspace-check">
+      <label className="workspace-check workspace-check--settings">
         <input
           type="checkbox"
           checked={prefs.archiveUpdates}
@@ -96,7 +105,7 @@ export default function WorkspaceSettingsPanel() {
         <span>Archive update notifications</span>
       </label>
 
-      <label className="workspace-check">
+      <label className="workspace-check workspace-check--settings">
         <input
           type="checkbox"
           checked={prefs.searchAlerts}
@@ -105,22 +114,8 @@ export default function WorkspaceSettingsPanel() {
         <span>Saved search alerts</span>
       </label>
 
-      <label>
-        <span>Profile visibility</span>
-        <select
-          value={prefs.profileVisibility}
-          onChange={(event) =>
-            update("profileVisibility", event.target.value as Prefs["profileVisibility"])
-          }
-        >
-          <option value="private">Private</option>
-          <option value="members">Members</option>
-          <option value="public">Public</option>
-        </select>
-      </label>
-
-      <div className="workspace-settings-actions">
-        <button type="button" className="workspace-cta" onClick={savePreferences}>
+      <div className="workspace-settings-actions dashboard-actions">
+        <button type="button" className="admin-button" onClick={savePreferences}>
           Save settings
         </button>
         {saved ? <p className="workspace-inline-note">{saved}</p> : null}

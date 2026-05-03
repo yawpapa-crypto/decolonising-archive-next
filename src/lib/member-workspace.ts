@@ -28,6 +28,13 @@ export type ReadingListItemRow = {
   id: string;
   reading_list_id: string;
   record_id: string;
+  record_title: string | null;
+  record_author: string | null;
+  record_source: string | null;
+  record_source_url: string | null;
+  record_type: string | null;
+  record_year: string | null;
+  record_metadata: Record<string, unknown> | null;
   note: string | null;
   added_at: string;
 };
@@ -42,7 +49,42 @@ export function workspaceRecordTitle(
   recordsById: Map<string, ArchiveRecord>,
   recordId: string,
 ) {
-  return recordsById.get(recordId)?.title ?? recordId;
+  const record = recordsById.get(recordId) as
+    | (ArchiveRecord & Record<string, unknown>)
+    | undefined;
+  const metadata = asRecord(record?.metadata);
+  const data = asRecord(record?.data);
+  const raw = asRecord(record?.raw);
+
+  return (
+    firstWorkspaceText(
+      record?.title,
+      record?.name,
+      record?.label,
+      record?.display_title,
+      record?.displayTitle,
+      record?.record_title,
+      record?.recordTitle,
+      record?.source_title,
+      record?.sourceTitle,
+      metadata.title,
+      data.title,
+      raw.title,
+    ) || `Archive record ${recordId}`
+  );
+}
+
+function asRecord(value: unknown): Record<string, unknown> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  return value as Record<string, unknown>;
+}
+
+function firstWorkspaceText(...values: Array<unknown>) {
+  for (const value of values) {
+    if (typeof value === "string" && value.trim()) return value.trim();
+    if (typeof value === "number") return String(value);
+  }
+  return "";
 }
 
 export async function getMemberWorkspaceData(next = "/workspace") {
@@ -75,7 +117,9 @@ export async function getMemberWorkspaceData(next = "/workspace") {
   const readingListItemsResult = listIds.length
     ? await supabase
         .from("reading_list_items")
-        .select("id, reading_list_id, record_id, note, added_at")
+        .select(
+          "id, reading_list_id, record_id, record_title, record_author, record_source, record_source_url, record_type, record_year, record_metadata, note, added_at",
+        )
         .in("reading_list_id", listIds)
         .order("added_at", { ascending: false })
     : { data: [], error: null };

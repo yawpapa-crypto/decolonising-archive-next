@@ -4,36 +4,71 @@ import {
   formatWorkspaceDate,
   getMemberWorkspaceData,
 } from "@/src/lib/member-workspace";
+import {
+  deleteSavedSearch,
+  updateSavedSearch,
+} from "@/app/(app)/workspace/actions";
 
 export default async function MySearchesPage() {
   const { savedSearches } = await getMemberWorkspaceData("/my/searches");
 
   return (
     <PageShell>
-      <main className="workspace-page">
-        <header className="workspace-header">
-          <p className="workspace-eyebrow">Member workspace</p>
-          <div className="workspace-titlebar">
-            <h1>Saved searches</h1>
-            <Link href="/workspace" className="workspace-link">
-              Workspace
-            </Link>
-          </div>
-        </header>
+      <div className="dashboard-canvas-outer dashboard-shell--member">
+        <main className="workspace-page dashboard-canvas admin-dashboard">
+          <header className="workspace-header admin-header admin-header-card member-my-page-header">
+            <div className="admin-header-main">
+              <p className="admin-kicker">Member workspace</p>
+              <h1>Saved searches</h1>
+              <p className="admin-subtext">
+                Named queries you can run again from the archive home search.
+              </p>
+            </div>
+            <div className="admin-actions">
+              <Link href="/workspace" className="admin-button admin-button-secondary">
+                Back to workspace
+              </Link>
+            </div>
+          </header>
 
-        <section className="workspace-elevated">
+        <section className="workspace-elevated admin-surface">
           <div className="workspace-list">
             {savedSearches.length ? (
               savedSearches.map((search) => (
                 <div className="workspace-list-item horizontal" key={search.id}>
-                  <strong>{search.label}</strong>
-                  <Link
-                    href={`/library?q=${encodeURIComponent(search.query)}`}
-                    className="workspace-link"
-                  >
-                    {search.query}
-                  </Link>
-                  <span>{formatWorkspaceDate(search.created_at)}</span>
+                  <div>
+                    <strong>{search.label}</strong>
+                    <span>{formatWorkspaceDate(search.created_at)}</span>
+                  </div>
+                  <form action={updateSavedSearch} className="workspace-inline-form">
+                    <input type="hidden" name="id" value={search.id} />
+                    <input type="hidden" name="redirectTo" value="/my/searches" />
+                    <input name="label" defaultValue={search.label} placeholder="Label" />
+                    <input
+                      name="query"
+                      defaultValue={search.query}
+                      placeholder="Search query"
+                      required
+                    />
+                    <button type="submit" className="workspace-link">
+                      Save
+                    </button>
+                  </form>
+                  <div className="workspace-actions-inline">
+                    <Link
+                      href={`/library?q=${encodeURIComponent(search.query)}`}
+                      className="workspace-link"
+                    >
+                      Run search
+                    </Link>
+                    <form action={deleteSavedSearch}>
+                      <input type="hidden" name="id" value={search.id} />
+                      <input type="hidden" name="redirectTo" value="/my/searches" />
+                      <button type="submit" className="workspace-link">
+                        Delete
+                      </button>
+                    </form>
+                  </div>
                 </div>
               ))
             ) : (
@@ -41,7 +76,8 @@ export default async function MySearchesPage() {
             )}
           </div>
         </section>
-      </main>
+        </main>
+      </div>
     </PageShell>
   );
 }

@@ -2,7 +2,25 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
 import HashAnalytics from "@/src/components/analytics/HashAnalytics";
 
+function metadataBaseUrl() {
+  const raw = (process.env.NEXT_PUBLIC_SITE_URL || "").trim();
+  const attempts: string[] = [];
+  if (raw) {
+    attempts.push(raw.includes("://") ? raw : `https://${raw}`);
+  }
+  attempts.push("https://ared.design");
+  for (const a of attempts) {
+    try {
+      return new URL(a);
+    } catch {
+      /* try next */
+    }
+  }
+  return new URL("https://ared.design");
+}
+
 export const metadata: Metadata = {
+  metadataBase: metadataBaseUrl(),
   title: "Decolonising Archive",
   description:
     "A growing archive of decolonising knowledge across Africa, the diaspora, and the Global South.",

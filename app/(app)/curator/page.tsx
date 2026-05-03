@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import PageShell from "@/src/components/layout/PageShell";
 import { requireCurator, hasRole } from "@/src/lib/auth";
 import { createClient } from "@/src/lib/supabase/server";
@@ -8,8 +9,12 @@ import {
   createDossier,
   createPathway,
   featureRecord,
-  reviewSubmittedContent,
 } from "./actions";
+import CuratorDossierEditor from "./CuratorDossierEditor";
+import CuratorArchiveNoteEditor from "./CuratorArchiveNoteEditor";
+import CuratorFeaturedRecordEditor from "./CuratorFeaturedRecordEditor";
+import CuratorPathwayEditor from "./CuratorPathwayEditor";
+import CuratorSubmissionReviewEditor from "./CuratorSubmissionReviewEditor";
 
 type SearchParams = Promise<{ updated?: string; error?: string }>;
 
@@ -17,8 +22,10 @@ type DossierRow = {
   id: string;
   title: string;
   summary: string | null;
+  body: string | null;
   status: string;
   created_at: string;
+  updated_at: string | null;
 };
 
 type ArchiveNoteRow = {
@@ -26,8 +33,10 @@ type ArchiveNoteRow = {
   record_id: string | null;
   title: string;
   note: string;
+  note_type: string;
   status: string;
   created_at: string;
+  updated_at: string | null;
 };
 
 type FeaturedRecordRow = {
@@ -36,7 +45,9 @@ type FeaturedRecordRow = {
   reason: string | null;
   placement: string;
   is_active: boolean;
+  editorial_status?: string | null;
   created_at: string;
+  updated_at: string | null;
 };
 
 type PathwayRow = {
@@ -46,6 +57,7 @@ type PathwayRow = {
   description: string | null;
   status: string;
   created_at: string;
+  updated_at: string | null;
 };
 
 type SubmittedContentRow = {
@@ -55,7 +67,9 @@ type SubmittedContentRow = {
   description: string;
   source_url: string | null;
   review_status: string;
+  reviewer_note: string | null;
   created_at: string;
+  updated_at: string | null;
 };
 
 function RecordSelect({ records }: { records: ArchiveRecord[] }) {
@@ -71,12 +85,12 @@ function RecordSelect({ records }: { records: ArchiveRecord[] }) {
   );
 }
 
-function recordTitle(recordsById: Map<string, ArchiveRecord>, recordId: string) {
-  return recordsById.get(recordId)?.title ?? recordId;
+function featuredSlotStatus(row: FeaturedRecordRow) {
+  return row.editorial_status ?? (row.is_active ? "active" : "inactive");
 }
 
-function statusClass(status: string) {
-  return `workspace-status is-${status}`;
+function featuredIsActive(row: FeaturedRecordRow) {
+  return featuredSlotStatus(row) === "active";
 }
 
 export default async function CuratorPage({
@@ -89,7 +103,20 @@ export default async function CuratorPage({
   const isAdmin = hasRole(profile, "admin");
   const supabase = await createClient();
   const records = (await readRecords()).filter((record) => record.published);
-  const recordsById = new Map(records.map((record) => [record.id, record]));
+  const recordOptions = records.slice(0, 120).map((record) => ({
+    id: record.id,
+    title: record.title,
+  }));
+
+  const headerList = await headers();
+  const host =
+    headerList.get("x-forwarded-host") ?? headerList.get("host") ?? "";
+  const proto = headerList.get("x-forwarded-proto") ?? "http";
+  const pathwayLinkBase =
+    host.length > 0
+      ? `${proto}://${host}`
+      : (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/$/, "") ||
+        "http://localhost:3000";
 
   const [
     dossiersResult,
@@ -100,23 +127,31 @@ export default async function CuratorPage({
   ] = await Promise.all([
     supabase
       .from("curator_dossiers")
-      .select("id, title, summary, status, created_at")
+      .select("id, title, summary, body, status, created_at, updated_at")
       .order("created_at", { ascending: false }),
     supabase
       .from("archive_notes")
-      .select("id, record_id, title, note, status, created_at")
+      .select(
+        "id, record_id, title, note, note_type, status, created_at, updated_at",
+      )
       .order("created_at", { ascending: false }),
     supabase
       .from("featured_records")
-      .select("id, record_id, reason, placement, is_active, created_at")
+      .select(
+        "id, record_id, reason, placement, is_active, editorial_status, created_at, updated_at",
+      )
       .order("created_at", { ascending: false }),
     supabase
       .from("themed_pathways")
-      .select("id, title, theme, description, status, created_at")
+      .select(
+        "id, title, theme, description, status, created_at, updated_at",
+      )
       .order("created_at", { ascending: false }),
     supabase
       .from("submitted_content")
-      .select("id, title, content_type, description, source_url, review_status, created_at")
+      .select(
+        "id, title, content_type, description, source_url, review_status, reviewer_note, created_at, updated_at",
+      )
       .order("created_at", { ascending: false }),
   ]);
 
@@ -133,33 +168,66 @@ export default async function CuratorPage({
     notes.filter((item) => item.status === "published").length +
     pathways.filter((item) => item.status === "published").length;
 
+  const draftEditorialCount =
+    dossiers.filter((item) => item.status === "draft").length +
+    notes.filter((item) => item.status === "draft").length +
+    pathways.filter((item) => item.status === "draft").length;
+
+  const reviewEditorialCount =
+    dossiers.filter((item) => item.status === "review").length +
+    notes.filter((item) => item.status === "review").length +
+    pathways.filter((item) => item.status === "review").length;
+
+  const submissionsByStatus = {
+    submitted: submissions.filter((s) => s.review_status === "submitted").length,
+    in_review: submissions.filter((s) => s.review_status === "in_review").length,
+    accepted: submissions.filter((s) => s.review_status === "accepted").length,
+    declined: submissions.filter((s) => s.review_status === "declined").length,
+  };
+
+  const pipelineMax = Math.max(
+    1,
+    draftEditorialCount,
+    reviewEditorialCount,
+    publishedCount,
+    pendingSubmissions.length,
+    submissionsByStatus.submitted + submissionsByStatus.in_review,
+  );
+
+  function barPct(n: number) {
+    return `${Math.round((n / pipelineMax) * 100)}%`;
+  }
+
   return (
     <PageShell>
-      <main className="workspace-page curator-workspace">
-        <header className="workspace-header">
-          <p className="workspace-eyebrow">Editorial tools</p>
-          <div className="workspace-titlebar">
-            <h1>Curator workspace</h1>
-            <span className={`role-badge role-${profile.role}`}>
-              {profile.role === "admin" ? "Admin" : "Curator"}
-            </span>
-          </div>
-          <p className="workspace-sub">
-            Build dossiers, annotate archive records, feature discoveries,
-            shape themed pathways, review member submissions, and watch the
-            editorial pipeline.
-          </p>
-          <div className="workspace-actions">
-            <Link href="/curator/media" className="workspace-cta">
-              Open media library
-            </Link>
-          </div>
-        </header>
+      <div className="dashboard-canvas-outer dashboard-shell--curator">
+        <main className="workspace-page curator-workspace dashboard-canvas">
+          <header className="workspace-page-header dashboard-header">
+            <div className="workspace-page-header-top">
+              <div className="workspace-page-title-block">
+                <p className="workspace-eyebrow">Editorial tools</p>
+                <h1>Curator workspace</h1>
+                <p className="workspace-page-intro">
+                  Build dossiers, annotate archive records, feature discoveries,
+                  shape themed pathways, review member submissions, and watch the
+                  editorial pipeline.
+                </p>
+              </div>
+              <div className="workspace-header-pill-row">
+                <span className={`role-badge role-${profile.role}`}>
+                  {profile.role === "admin" ? "Admin" : "Curator"}
+                </span>
+                <Link href="/curator/media" className="workspace-cta">
+                  Open media library
+                </Link>
+              </div>
+            </div>
+          </header>
 
-        {sp.updated ? <p className="auth-notice">{sp.updated}</p> : null}
-        {sp.error ? <p className="auth-error">{sp.error}</p> : null}
+          {sp.updated ? <p className="auth-notice">{sp.updated}</p> : null}
+          {sp.error ? <p className="auth-error">{sp.error}</p> : null}
 
-        <section className="workspace-metrics" aria-label="Curator overview">
+        <section className="workspace-metrics curator-metrics-band" aria-label="Curator overview">
           <div>
             <span>{dossiers.length}</span>
             <p>Dossiers</p>
@@ -169,7 +237,7 @@ export default async function CuratorPage({
             <p>Archive notes</p>
           </div>
           <div>
-            <span>{featured.filter((item) => item.is_active).length}</span>
+            <span>{featured.filter((item) => featuredIsActive(item)).length}</span>
             <p>Featured</p>
           </div>
           <div>
@@ -179,6 +247,90 @@ export default async function CuratorPage({
           <div>
             <span>{publishedCount}</span>
             <p>Published editorial items</p>
+          </div>
+        </section>
+
+        <section
+          className="curator-pipeline-panel"
+          aria-label="Editorial pipeline snapshot"
+        >
+          <div className="curator-pipeline-panel-inner">
+            <div className="curator-mini-chart-block">
+              <h3 className="curator-mini-chart-title">Editorial mix</h3>
+              <p className="curator-mini-chart-sub">
+                Draft and review load versus published output
+              </p>
+              <ul className="curator-mini-chart">
+                <li>
+                  <span className="curator-mini-chart-label">Drafts</span>
+                  <div className="curator-mini-chart-track">
+                    <div
+                      className="curator-mini-chart-fill is-draft"
+                      style={{ width: barPct(draftEditorialCount) }}
+                    />
+                  </div>
+                  <span className="curator-mini-chart-value">{draftEditorialCount}</span>
+                </li>
+                <li>
+                  <span className="curator-mini-chart-label">In review</span>
+                  <div className="curator-mini-chart-track">
+                    <div
+                      className="curator-mini-chart-fill is-review"
+                      style={{ width: barPct(reviewEditorialCount) }}
+                    />
+                  </div>
+                  <span className="curator-mini-chart-value">{reviewEditorialCount}</span>
+                </li>
+                <li>
+                  <span className="curator-mini-chart-label">Published</span>
+                  <div className="curator-mini-chart-track">
+                    <div
+                      className="curator-mini-chart-fill is-published"
+                      style={{ width: barPct(publishedCount) }}
+                    />
+                  </div>
+                  <span className="curator-mini-chart-value">{publishedCount}</span>
+                </li>
+              </ul>
+            </div>
+            <div className="curator-mini-chart-block">
+              <h3 className="curator-mini-chart-title">Community intake</h3>
+              <p className="curator-mini-chart-sub">
+                Submissions by review stage
+              </p>
+              <ul className="curator-mini-chart">
+                <li>
+                  <span className="curator-mini-chart-label">Queued</span>
+                  <div className="curator-mini-chart-track">
+                    <div
+                      className="curator-mini-chart-fill is-queue"
+                      style={{ width: barPct(pendingSubmissions.length) }}
+                    />
+                  </div>
+                  <span className="curator-mini-chart-value">{pendingSubmissions.length}</span>
+                </li>
+                <li>
+                  <span className="curator-mini-chart-label">Accepted</span>
+                  <div className="curator-mini-chart-track">
+                    <div
+                      className="curator-mini-chart-fill is-accepted"
+                      style={{ width: barPct(submissionsByStatus.accepted) }}
+                    />
+                  </div>
+                  <span className="curator-mini-chart-value">{submissionsByStatus.accepted}</span>
+                </li>
+                <li>
+                  <span className="curator-mini-chart-label">Declined</span>
+                  <div className="curator-mini-chart-track">
+                    <div
+                      className="curator-mini-chart-fill is-declined"
+                      style={{ width: barPct(submissionsByStatus.declined) }}
+                    />
+                  </div>
+                  <span className="curator-mini-chart-value">{submissionsByStatus.declined}</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </section>
 
@@ -197,28 +349,45 @@ export default async function CuratorPage({
                 <textarea name="summary" rows={4} placeholder="Narrative frame" />
               </label>
               <label>
+                <span>Essay / body</span>
+                <textarea name="body" rows={6} placeholder="Long-form essay (optional)" />
+              </label>
+              <label>
                 <span>Status</span>
                 <select name="status" defaultValue="draft">
                   <option value="draft">Draft</option>
                   <option value="review">Review</option>
                   <option value="published">Published</option>
+                  <option value="archived">Archived</option>
                 </select>
               </label>
               <button type="submit" className="workspace-cta">
                 Create dossier
               </button>
             </form>
-            <div className="workspace-list">
+            <div className="curator-editor-stack">
               {dossiers.length ? (
-                dossiers.slice(0, 4).map((dossier) => (
-                  <div className="workspace-list-item" key={dossier.id}>
-                    <strong>{dossier.title}</strong>
-                    <span>{dossier.summary || "No summary yet"}</span>
-                    <span className={statusClass(dossier.status)}>{dossier.status}</span>
-                  </div>
+                dossiers.map((dossier) => (
+                  <CuratorDossierEditor
+                    key={`${dossier.id}-${dossier.updated_at ?? dossier.created_at}`}
+                    dossier={{
+                      id: dossier.id,
+                      title: dossier.title,
+                      summary: dossier.summary,
+                      body: dossier.body ?? null,
+                      status: dossier.status,
+                      updated_at: dossier.updated_at,
+                    }}
+                  />
                 ))
               ) : (
-                <p className="workspace-empty">No dossiers yet.</p>
+                <div className="curator-empty-state">
+                  <p className="curator-empty-title">No dossiers yet</p>
+                  <p className="curator-empty-hint">
+                    Use the form above to start a curatorial thread. Dossiers can move
+                    from draft through review to publication.
+                  </p>
+                </div>
               )}
             </div>
           </article>
@@ -240,25 +409,54 @@ export default async function CuratorPage({
                 <span>Note</span>
                 <textarea name="note" rows={4} placeholder="Curatorial context" required />
               </label>
+              <label>
+                <span>Note type</span>
+                <select name="note_type" defaultValue="context">
+                  <option value="context">Context</option>
+                  <option value="provenance">Provenance</option>
+                  <option value="rights">Rights</option>
+                  <option value="warning">Warning</option>
+                  <option value="citation">Citation</option>
+                  <option value="correction">Correction</option>
+                </select>
+              </label>
+              <label>
+                <span>Status</span>
+                <select name="status" defaultValue="draft">
+                  <option value="draft">Draft</option>
+                  <option value="review">Review</option>
+                  <option value="published">Published</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </label>
               <button type="submit" className="workspace-cta">
                 Save note
               </button>
             </form>
-            <div className="workspace-list">
+            <div className="curator-editor-stack">
               {notes.length ? (
-                notes.slice(0, 4).map((note) => (
-                  <div className="workspace-list-item" key={note.id}>
-                    <strong>{note.title}</strong>
-                    <span>
-                      {note.record_id
-                        ? recordTitle(recordsById, note.record_id)
-                        : "General note"}
-                    </span>
-                    <span>{note.note}</span>
-                  </div>
+                notes.map((note) => (
+                  <CuratorArchiveNoteEditor
+                    key={`${note.id}-${note.updated_at ?? note.created_at}`}
+                    note={{
+                      id: note.id,
+                      record_id: note.record_id,
+                      title: note.title,
+                      note: note.note,
+                      note_type: note.note_type ?? "context",
+                      status: note.status,
+                      updated_at: note.updated_at,
+                    }}
+                  />
                 ))
               ) : (
-                <p className="workspace-empty">No archive notes yet.</p>
+                <div className="curator-empty-state">
+                  <p className="curator-empty-title">No archive notes yet</p>
+                  <p className="curator-empty-hint">
+                    Tie context, provenance, or rights notes to a record ID, or leave
+                    the field empty for a general note.
+                  </p>
+                </div>
               )}
             </div>
           </article>
@@ -287,21 +485,43 @@ export default async function CuratorPage({
                 <span>Reason</span>
                 <input name="reason" placeholder="Why feature this now?" />
               </label>
+              <label>
+                <span>Status</span>
+                <select name="editorial_status" defaultValue="active">
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </label>
               <button type="submit" className="workspace-cta">
                 Feature record
               </button>
             </form>
-            <div className="workspace-list">
+            <div className="curator-editor-stack">
               {featured.length ? (
-                featured.slice(0, 4).map((item) => (
-                  <div className="workspace-list-item" key={item.id}>
-                    <strong>{recordTitle(recordsById, item.record_id)}</strong>
-                    <span>{item.placement}</span>
-                    <span>{item.reason || "No feature note"}</span>
-                  </div>
+                featured.map((item) => (
+                  <CuratorFeaturedRecordEditor
+                    key={`${item.id}-${item.updated_at ?? item.created_at}`}
+                    item={{
+                      id: item.id,
+                      record_id: item.record_id,
+                      reason: item.reason,
+                      placement: item.placement,
+                      is_active: item.is_active,
+                      editorial_status: featuredSlotStatus(item),
+                      updated_at: item.updated_at,
+                    }}
+                    records={recordOptions}
+                  />
                 ))
               ) : (
-                <p className="workspace-empty">Nothing featured yet.</p>
+                <div className="curator-empty-state">
+                  <p className="curator-empty-title">Nothing featured yet</p>
+                  <p className="curator-empty-hint">
+                    Pick a record and placement to surface it on the homepage, library,
+                    or a pathway slot. Status can be active, inactive, or archived.
+                  </p>
+                </div>
               )}
             </div>
           </article>
@@ -323,21 +543,43 @@ export default async function CuratorPage({
                 <span>Description</span>
                 <textarea name="description" rows={4} placeholder="Pathway scope" />
               </label>
+              <label>
+                <span>Status</span>
+                <select name="status" defaultValue="draft">
+                  <option value="draft">Draft</option>
+                  <option value="review">Review</option>
+                  <option value="published">Published</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </label>
               <button type="submit" className="workspace-cta">
                 Build pathway
               </button>
             </form>
-            <div className="workspace-list">
+            <div className="curator-editor-stack">
               {pathways.length ? (
-                pathways.slice(0, 4).map((pathway) => (
-                  <div className="workspace-list-item" key={pathway.id}>
-                    <strong>{pathway.title}</strong>
-                    <span>{pathway.theme}</span>
-                    <span className={statusClass(pathway.status)}>{pathway.status}</span>
-                  </div>
+                pathways.map((pathway) => (
+                  <CuratorPathwayEditor
+                    key={`${pathway.id}-${pathway.updated_at ?? pathway.created_at}`}
+                    pathway={{
+                      id: pathway.id,
+                      title: pathway.title,
+                      theme: pathway.theme,
+                      description: pathway.description,
+                      status: pathway.status,
+                      updated_at: pathway.updated_at,
+                    }}
+                    pathwayLinkBase={pathwayLinkBase}
+                  />
                 ))
               ) : (
-                <p className="workspace-empty">No themed pathways yet.</p>
+                <div className="curator-empty-state">
+                  <p className="curator-empty-title">No themed pathways yet</p>
+                  <p className="curator-empty-hint">
+                    Group records under a shared theme. Pathways can be drafted,
+                    sent to review, published, or archived when the story arc closes.
+                  </p>
+                </div>
               )}
             </div>
           </article>
@@ -349,43 +591,31 @@ export default async function CuratorPage({
                 Member view
               </Link>
             </div>
-            <div className="workspace-list queue">
+            <div className="workspace-list queue curator-submissions-queue">
               {submissions.length ? (
-                submissions.slice(0, 6).map((submission) => (
-                  <div className="workspace-list-item review-item" key={submission.id}>
-                    <div>
-                      <strong>{submission.title}</strong>
-                      <span>{submission.content_type}</span>
-                      <span>{submission.description}</span>
-                      {submission.source_url ? (
-                        <a href={submission.source_url} className="workspace-link">
-                          Source
-                        </a>
-                      ) : null}
-                    </div>
-                    <form action={reviewSubmittedContent} className="workspace-form compact">
-                      <input type="hidden" name="id" value={submission.id} />
-                      <label>
-                        <span>Status</span>
-                        <select name="review_status" defaultValue={submission.review_status}>
-                          <option value="submitted">Submitted</option>
-                          <option value="in_review">In review</option>
-                          <option value="accepted">Accepted</option>
-                          <option value="declined">Declined</option>
-                        </select>
-                      </label>
-                      <label>
-                        <span>Reviewer note</span>
-                        <input name="reviewer_note" placeholder="Decision note" />
-                      </label>
-                      <button type="submit" className="workspace-cta workspace-cta-secondary">
-                        Update
-                      </button>
-                    </form>
-                  </div>
+                submissions.map((submission) => (
+                  <CuratorSubmissionReviewEditor
+                    key={`${submission.id}-${submission.updated_at ?? submission.created_at}`}
+                    submission={{
+                      id: submission.id,
+                      title: submission.title,
+                      content_type: submission.content_type,
+                      description: submission.description,
+                      source_url: submission.source_url,
+                      review_status: submission.review_status,
+                      reviewer_note: submission.reviewer_note,
+                      updated_at: submission.updated_at,
+                    }}
+                  />
                 ))
               ) : (
-                <p className="workspace-empty">Nothing in the queue.</p>
+                <div className="curator-empty-state">
+                  <p className="curator-empty-title">No submissions to review</p>
+                  <p className="curator-empty-hint">
+                    When members suggest records, sources, or corrections, they will
+                    appear here for triage. Nothing is waiting right now.
+                  </p>
+                </div>
               )}
             </div>
           </article>
@@ -411,7 +641,7 @@ export default async function CuratorPage({
               <p>Draft pathways</p>
             </div>
             <div>
-              <span>{featured.filter((item) => item.is_active).length}</span>
+              <span>{featured.filter((item) => featuredIsActive(item)).length}</span>
               <p>Active feature slots</p>
             </div>
           </div>
@@ -434,7 +664,8 @@ export default async function CuratorPage({
             </div>
           </section>
         ) : null}
-      </main>
+        </main>
+      </div>
     </PageShell>
   );
 }

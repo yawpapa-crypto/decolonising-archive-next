@@ -9,7 +9,7 @@ import { headers } from "next/headers";
 import { createClient } from "@/src/lib/supabase/server";
 
 export async function signUpMember(formData: FormData) {
-  const email = String(formData.get("email") ?? "").trim();
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
   const fullName = String(formData.get("full_name") ?? "").trim();
 

@@ -29,10 +29,17 @@ npm install @supabase/ssr
 
 ## Apply the SQL migrations
 
-There are two migrations — apply them in order:
+Apply these migrations in order:
 
 1. `supabase/migrations/0001_auth_and_research.sql` — auth profiles + research tables
-2. `supabase/migrations/0002_media.sql` — curator media library + Storage bucket
+2. `supabase/migrations/0002_workspace_and_curator_tools.sql` — curator editorial tables (dossiers, archive_notes, featured_records, themed_pathways, submitted_content)
+3. `supabase/migrations/0002_reading_list_item_snapshots.sql` — reading list item snapshots
+4. `supabase/migrations/0003_media_links_and_rights.sql` — `media_links` table + `rights_note` on `media_library`
+5. `supabase/migrations/0004_media_library_table_and_links_rls.sql` — **creates the `media_library` table + `media-library` Storage bucket + tightens `media_links` RLS to curator-only**
+
+> ⚠️ Migration 0004 is required — earlier migrations reference `media_library` but never created it. On a fresh database the curator media library page will 500 until 0004 is applied.
+
+> Note: `0002_media.sql` (creates a separate `media` table + `archive-media` bucket) is from an earlier design and is **not** used by the current code. You can skip applying it; if it's already applied it's harmless — both buckets and tables can co-exist.
 
 ### Migration 1 creates:
 

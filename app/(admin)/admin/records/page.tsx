@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 type ArchiveRecord = {
   id: string
@@ -53,6 +53,26 @@ export default function AdminRecordsPage() {
   const [selectedId, setSelectedId] = useState<string>('')
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState('')
+  const skipQueryUrlSync = useRef(true)
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    setQuery(params.get('q') ?? '')
+  }, [])
+
+  useEffect(() => {
+    if (skipQueryUrlSync.current) {
+      skipQueryUrlSync.current = false
+      return
+    }
+    const t = window.setTimeout(() => {
+      const url = new URL(window.location.href)
+      if (query.trim()) url.searchParams.set('q', query.trim())
+      else url.searchParams.delete('q')
+      window.history.replaceState(null, '', `${url.pathname}${url.search}`)
+    }, 280)
+    return () => window.clearTimeout(t)
+  }, [query])
 
   useEffect(() => {
     async function loadRecords() {

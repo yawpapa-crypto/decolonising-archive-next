@@ -1,15 +1,23 @@
 import Link from "next/link";
+import AdminAppsHubSection from "./AdminAppsHubSection";
+import AdminChartsShowcase from "@/src/components/admin/AdminChartsShowcase";
+import AdminFileDropzone from "@/src/components/admin/AdminFileDropzone";
 
 export default function AdminPage() {
   return (
     <div className="admin-dashboard">
-      <div className="admin-header">
-        <div>
-          <p className="admin-kicker">Editorial Studio</p>
-          <h1>Admin Dashboard</h1>
+      <div className="admin-header admin-header-card">
+        <div className="admin-header-main">
+          <p className="admin-kicker">Workspace</p>
+          <h1>Overview</h1>
           <p className="admin-subtext">
-            Manage the archive’s pages, records, collections, and source pathways from one place.
+            A calm control center for the Decolonising Archive. Manage pages, records, collections,
+            and source pathways from one high-contrast, editorial layout.
           </p>
+          <div className="admin-header-meta">
+            <span className="admin-header-chip">Role: ADMIN</span>
+            <span className="admin-header-chip">Live</span>
+          </div>
         </div>
 
         <div className="admin-actions">
@@ -70,6 +78,20 @@ export default function AdminPage() {
           </div>
           <div className="admin-stat-text">Editorial grouping and discovery structure</div>
         </div>
+      </section>
+
+      <AdminChartsShowcase />
+
+      <AdminAppsHubSection />
+
+      <section className="admin-upload-section">
+        <div className="admin-panel-label">File uploads</div>
+        <h2 className="admin-section-title">Drag &amp; drop</h2>
+        <p className="admin-muted">
+          Drop assets here for a quick local preview. Wire this to Supabase Storage or your CDN when
+          you are ready for production uploads.
+        </p>
+        <AdminFileDropzone accept="image/*,.pdf,.doc,.docx" />
       </section>
 
       <section className="admin-toolbar admin-toolbar-modern" aria-label="Dashboard utilities">

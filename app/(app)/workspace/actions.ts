@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { readRecords } from "@/lib/records";
 import { requireMember } from "@/src/lib/auth";
 import { createClient } from "@/src/lib/supabase/server";
 
@@ -9,20 +10,25 @@ function text(formData: FormData, key: string) {
   return String(formData.get(key) ?? "").trim();
 }
 
-function fail(message: string): never {
-  redirect(`/workspace?error=${encodeURIComponent(message)}`);
+function redirectTarget(formData: FormData) {
+  return text(formData, "redirectTo") || "/workspace";
 }
 
-function done(message: string): never {
-  redirect(`/workspace?updated=${encodeURIComponent(message)}`);
+function fail(message: string, redirectTo = "/workspace"): never {
+  redirect(`${redirectTo}?error=${encodeURIComponent(message)}`);
+}
+
+function done(message: string, redirectTo = "/workspace"): never {
+  redirect(`${redirectTo}?updated=${encodeURIComponent(message)}`);
 }
 
 export async function createBookmark(formData: FormData) {
   const profile = await requireMember();
+  const redirectTo = redirectTarget(formData);
   const recordId = text(formData, "record_id");
   const note = text(formData, "note");
 
-  if (!recordId) fail("Choose a record to bookmark.");
+  if (!recordId) fail("Choose a record to bookmark.", redirectTo);
 
   const supabase = await createClient();
   const { error } = await supabase.from("bookmarks").upsert(
@@ -34,15 +40,18 @@ export async function createBookmark(formData: FormData) {
     { onConflict: "user_id,record_id" },
   );
 
-  if (error) fail(error.message);
-  revalidatePath("/workspace");
-  done("Bookmark saved.");
+  if (error) fail(error.message, redirectTo);
+  revalidatePath(redirectTo);
+  done("Bookmark saved.", redirectTo);
 }
 
 export async function deleteBookmark(formData: FormData) {
   const profile = await requireMember();
+  const redirectTo = redirectTarget(formData);
   const id = text(formData, "id");
-  if (!id) fail("Bookmark not found.");
+  const confirm = text(formData, "confirm");
+  if (!id) fail("Bookmark not found.", redirectTo);
+  if (confirm !== "yes") fail("Confirmation required.", redirectTo);
 
   const supabase = await createClient();
   const { error } = await supabase
@@ -51,17 +60,103 @@ export async function deleteBookmark(formData: FormData) {
     .eq("id", id)
     .eq("user_id", profile.id);
 
-  if (error) fail(error.message);
-  revalidatePath("/workspace");
-  done("Bookmark removed.");
+  if (error) fail(error.message, redirectTo);
+  revalidatePath(redirectTo);
+  done("Bookmark removed.", redirectTo);
+}
+
+export async function updateBookmark(formData: FormData) {
+  const profile = await requireMember();
+  const redirectTo = redirectTarget(formData);
+  const id = text(formData, "id");
+  const note = text(formData, "note");
+  if (!id) fail("Bookmark not found.", redirectTo);
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("bookmarks")
+    .update({ note: note || null })
+    .eq("id", id)
+    .eq("user_id", profile.id);
+
+  if (error) fail(error.message, redirectTo);
+  revalidatePath(redirectTo);
+  done("Bookmark updated.", redirectTo);
+}
+
+export async function deleteReadingList(formData: FormData) {
+  const profile = await requireMember();
+  const redirectTo = redirectTarget(formData);
+  const id = text(formData, "id");
+  const confirm = text(formData, "confirm");
+  if (!id) fail("Reading list not found.", redirectTo);
+  if (confirm !== "yes") fail("Confirmation required.", redirectTo);
+
+  const supabase = await createClient();
+  const { error: itemsError } = await supabase
+    .from("reading_list_items")
+    .delete()
+    .eq("reading_list_id", id);
+  if (itemsError) fail(itemsError.message, redirectTo);
+
+  const { error } = await supabase
+    .from("reading_lists")
+    .delete()
+    .eq("id", id)
+    .eq("user_id", profile.id);
+
+  if (error) fail(error.message, redirectTo);
+  revalidatePath(redirectTo);
+  done("Reading list deleted.", redirectTo);
+}
+
+export async function updateReadingList(formData: FormData) {
+  const profile = await requireMember();
+  const redirectTo = redirectTarget(formData);
+  const id = text(formData, "id");
+  const title = text(formData, "title");
+  const description = text(formData, "description");
+  const isPublic = formData.get("is_public") === "on";
+
+  if (!id) fail("Reading list not found.", redirectTo);
+  if (!title) fail("Reading list title is required.", redirectTo);
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("reading_lists")
+    .update({ title, description: description || null, is_public: isPublic })
+    .eq("id", id)
+    .eq("user_id", profile.id);
+
+  if (error) fail(error.message, redirectTo);
+  revalidatePath(redirectTo);
+  done("Reading list updated.", redirectTo);
+}
+
+export async function deleteReadingListItem(formData: FormData) {
+  await requireMember();
+  const redirectTo = redirectTarget(formData);
+  const id = text(formData, "id");
+  if (!id) fail("Reading list item not found.", redirectTo);
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("reading_list_items")
+    .delete()
+    .eq("id", id);
+
+  if (error) fail(error.message, redirectTo);
+  revalidatePath(redirectTo);
+  done("Removed record from list.", redirectTo);
 }
 
 export async function createSavedSearch(formData: FormData) {
   const profile = await requireMember();
+  const redirectTo = redirectTarget(formData);
   const query = text(formData, "query");
   const label = text(formData, "label") || query;
 
-  if (!query) fail("Enter a search query to save.");
+  if (!query) fail("Enter a search query to save.", redirectTo);
 
   const supabase = await createClient();
   const { error } = await supabase.from("saved_searches").insert({
@@ -71,15 +166,18 @@ export async function createSavedSearch(formData: FormData) {
     filters: {},
   });
 
-  if (error) fail(error.message);
-  revalidatePath("/workspace");
-  done("Search saved.");
+  if (error) fail(error.message, redirectTo);
+  revalidatePath(redirectTo);
+  done("Search saved.", redirectTo);
 }
 
 export async function deleteSavedSearch(formData: FormData) {
   const profile = await requireMember();
+  const redirectTo = redirectTarget(formData);
   const id = text(formData, "id");
-  if (!id) fail("Saved search not found.");
+  const confirm = text(formData, "confirm");
+  if (!id) fail("Saved search not found.", redirectTo);
+  if (confirm !== "yes") fail("Confirmation required.", redirectTo);
 
   const supabase = await createClient();
   const { error } = await supabase
@@ -88,18 +186,41 @@ export async function deleteSavedSearch(formData: FormData) {
     .eq("id", id)
     .eq("user_id", profile.id);
 
-  if (error) fail(error.message);
-  revalidatePath("/workspace");
-  done("Saved search removed.");
+  if (error) fail(error.message, redirectTo);
+  revalidatePath(redirectTo);
+  done("Saved search removed.", redirectTo);
+}
+
+export async function updateSavedSearch(formData: FormData) {
+  const profile = await requireMember();
+  const redirectTo = redirectTarget(formData);
+  const id = text(formData, "id");
+  const label = text(formData, "label");
+  const query = text(formData, "query");
+
+  if (!id) fail("Saved search not found.", redirectTo);
+  if (!query) fail("Saved search query is required.", redirectTo);
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("saved_searches")
+    .update({ label: label || query, query })
+    .eq("id", id)
+    .eq("user_id", profile.id);
+
+  if (error) fail(error.message, redirectTo);
+  revalidatePath(redirectTo);
+  done("Saved search updated.", redirectTo);
 }
 
 export async function createReadingList(formData: FormData) {
   const profile = await requireMember();
+  const redirectTo = redirectTarget(formData);
   const title = text(formData, "title");
   const description = text(formData, "description");
   const isPublic = formData.get("is_public") === "on";
 
-  if (!title) fail("Give the reading list a title.");
+  if (!title) fail("Give the reading list a title.", redirectTo);
 
   const supabase = await createClient();
   const { error } = await supabase.from("reading_lists").insert({
@@ -109,18 +230,19 @@ export async function createReadingList(formData: FormData) {
     is_public: isPublic,
   });
 
-  if (error) fail(error.message);
-  revalidatePath("/workspace");
-  done("Reading list created.");
+  if (error) fail(error.message, redirectTo);
+  revalidatePath(redirectTo);
+  done("Reading list created.", redirectTo);
 }
 
 export async function addRecordToReadingList(formData: FormData) {
   const profile = await requireMember();
+  const redirectTo = redirectTarget(formData);
   const readingListId = text(formData, "reading_list_id");
   const recordId = text(formData, "record_id");
 
   if (!readingListId || !recordId) {
-    fail("Choose a reading list and record.");
+    fail("Choose a reading list and record.", redirectTo);
   }
 
   const supabase = await createClient();
@@ -131,37 +253,46 @@ export async function addRecordToReadingList(formData: FormData) {
     .eq("user_id", profile.id)
     .maybeSingle();
 
-  if (listError) fail(listError.message);
-  if (!list) fail("Reading list not found.");
+  if (listError) fail(listError.message, redirectTo);
+  if (!list) fail("Reading list not found.", redirectTo);
 
   const { count } = await supabase
     .from("reading_list_items")
     .select("id", { count: "exact", head: true })
     .eq("reading_list_id", readingListId);
+  const record = (await readRecords()).find((item) => item.id === recordId);
 
   const { error } = await supabase.from("reading_list_items").upsert(
     {
       reading_list_id: readingListId,
       record_id: recordId,
       position: count ?? 0,
+      record_title: record?.title ?? null,
+      record_author: record?.creator ?? null,
+      record_source: record?.source ?? record?.collection ?? null,
+      record_source_url: record?.sourceUrl ?? null,
+      record_type: record?.type ?? null,
+      record_year: null,
+      record_metadata: record ?? {},
     },
     { onConflict: "reading_list_id,record_id" },
   );
 
-  if (error) fail(error.message);
-  revalidatePath("/workspace");
-  done("Record added to reading list.");
+  if (error) fail(error.message, redirectTo);
+  revalidatePath(redirectTo);
+  done("Record added to reading list.", redirectTo);
 }
 
 export async function submitContent(formData: FormData) {
   const profile = await requireMember();
+  const redirectTo = redirectTarget(formData);
   const title = text(formData, "title");
   const contentType = text(formData, "content_type") || "record";
   const description = text(formData, "description");
   const sourceUrl = text(formData, "source_url");
 
   if (!title || !description) {
-    fail("Submitted content needs a title and description.");
+    fail("Submitted content needs a title and description.", redirectTo);
   }
 
   const supabase = await createClient();
@@ -173,27 +304,9 @@ export async function submitContent(formData: FormData) {
     source_url: sourceUrl || null,
   });
 
-  if (error) fail(error.message);
-  revalidatePath("/workspace");
-  done("Content submitted for curator review.");
-}
-
-export async function saveProfileDetails(formData: FormData) {
-  const profile = await requireMember();
-  const fullName = text(formData, "full_name");
-
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("profiles")
-    .update({ full_name: fullName || null })
-    .eq("id", profile.id);
-
-  if (error) fail(error.message);
-
-  // TODO: Persist extended member profile fields (institution, interests, website, bio)
-  // once a dedicated profile-details schema/table is introduced.
-  revalidatePath("/workspace");
-  done("Profile updated.");
+  if (error) fail(error.message, redirectTo);
+  revalidatePath(redirectTo);
+  done("Content submitted for curator review.", redirectTo);
 }
 
 export async function submitSupportRequest(formData: FormData) {

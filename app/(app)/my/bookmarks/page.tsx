@@ -5,6 +5,10 @@ import {
   getMemberWorkspaceData,
   workspaceRecordTitle,
 } from "@/src/lib/member-workspace";
+import {
+  deleteBookmark,
+  updateBookmark,
+} from "@/app/(app)/workspace/actions";
 
 export default async function MyBookmarksPage() {
   const { bookmarks, recordsById } =
@@ -12,39 +16,97 @@ export default async function MyBookmarksPage() {
 
   return (
     <PageShell>
-      <main className="workspace-page">
-        <header className="workspace-header">
-          <p className="workspace-eyebrow">Member workspace</p>
-          <div className="workspace-titlebar">
-            <h1>Bookmarks</h1>
-            <Link href="/workspace" className="workspace-link">
-              Workspace
-            </Link>
-          </div>
-        </header>
+      <div className="dashboard-canvas-outer dashboard-shell--member">
+        <main className="workspace-page dashboard-canvas admin-dashboard">
+          <header className="workspace-header admin-header admin-header-card member-my-page-header">
+            <div className="admin-header-main">
+              <p className="admin-kicker">Member workspace</p>
+              <h1>Bookmarks</h1>
+              <p className="admin-subtext">
+                Records you have saved from the library for quick return and notes.
+              </p>
+            </div>
+            <div className="admin-actions">
+              <Link href="/workspace" className="admin-button admin-button-secondary">
+                Back to workspace
+              </Link>
+            </div>
+          </header>
 
-        <section className="workspace-elevated">
-          <div className="workspace-list">
+        <section className="workspace-elevated admin-surface bookmark-panel">
+          <div className="bookmark-list">
             {bookmarks.length ? (
               bookmarks.map((bookmark) => (
-                <div className="workspace-list-item horizontal" key={bookmark.id}>
-                  <strong>{workspaceRecordTitle(recordsById, bookmark.record_id)}</strong>
-                  <span>{bookmark.note || "No note added"}</span>
-                  <Link
-                    href={`/#/record/${encodeURIComponent(bookmark.record_id)}`}
-                    className="workspace-link"
-                  >
-                    Open record
-                  </Link>
-                  <span>{formatWorkspaceDate(bookmark.created_at)}</span>
-                </div>
+                <article className="bookmark-card" key={bookmark.id}>
+                  <div className="bookmark-card-top">
+                    <div className="bookmark-title-group">
+                      <p className="bookmark-label">Saved record</p>
+                      <h2 className="bookmark-title">
+                        {workspaceRecordTitle(recordsById, bookmark.record_id)}
+                      </h2>
+                    </div>
+                    <time className="bookmark-date" dateTime={bookmark.created_at ?? undefined}>
+                      {formatWorkspaceDate(bookmark.created_at)}
+                    </time>
+                  </div>
+
+                  <form action={updateBookmark} className="bookmark-note-form">
+                    <input type="hidden" name="id" value={bookmark.id} />
+                    <input type="hidden" name="redirectTo" value="/my/bookmarks" />
+
+                    <label className="bookmark-label" htmlFor={`bookmark-note-${bookmark.id}`}>
+                      Private note
+                    </label>
+
+                    <div className="bookmark-note-row">
+                      <input
+                        id={`bookmark-note-${bookmark.id}`}
+                        type="text"
+                        name="note"
+                        placeholder="Add a short note about why this record matters"
+                        defaultValue={bookmark.note ?? ""}
+                        className="bookmark-note-input"
+                      />
+
+                      <button type="submit" className="bookmark-note-save">
+                        Save note
+                      </button>
+                    </div>
+                  </form>
+
+                  <div className="bookmark-actions">
+                    <Link
+                      href={`/#/record/${encodeURIComponent(bookmark.record_id)}`}
+                      className="bookmark-action-link"
+                    >
+                      Open record
+                    </Link>
+
+                    <form action={deleteBookmark}>
+                      <input type="hidden" name="id" value={bookmark.id} />
+                      <button type="submit" className="bookmark-action-link bookmark-action-danger">
+                        Delete
+                      </button>
+                    </form>
+                  </div>
+                </article>
               ))
             ) : (
-              <p className="workspace-empty">No bookmarks yet.</p>
+              <article className="bookmark-empty-state">
+                <h2>No bookmarks yet</h2>
+                <p>
+                  Save records from the library to keep them here for quick return
+                  and note-taking.
+                </p>
+                <Link href="/library" className="admin-button admin-button-secondary">
+                  Browse library
+                </Link>
+              </article>
             )}
           </div>
         </section>
-      </main>
+        </main>
+      </div>
     </PageShell>
   );
 }

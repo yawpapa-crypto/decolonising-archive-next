@@ -15,6 +15,9 @@ export type Profile = {
   id: string;
   email: string | null;
   full_name: string | null;
+  display_name: string | null;
+  preferred_name: string | null;
+  avatar_url: string | null;
   role: Role;
   created_at: string | null;
 };
@@ -40,24 +43,50 @@ export async function getCurrentProfile(): Promise<Profile | null> {
   } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const { data, error } = await supabase
+  // Prefer full row (member profile migration). If 0007 columns are missing,
+  // the query fails — fall back to core columns so role (admin/curator) is never
+  // replaced with a hard-coded "member" from auth metadata.
+  const extended = await supabase
+    .from("profiles")
+    .select("id, email, full_name, display_name, preferred_name, avatar_url, role, created_at")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (!extended.error && extended.data) {
+    return extended.data as Profile;
+  }
+
+  const core = await supabase
     .from("profiles")
     .select("id, email, full_name, role, created_at")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
 
-  if (error || !data) {
-    // Fallback so the app still works if the profile row hasn't been created
-    // yet (e.g. trigger hasn't run, or migration not applied).
+  if (!core.error && core.data) {
+    const row = core.data;
     return {
-      id: user.id,
-      email: user.email ?? null,
-      full_name: (user.user_metadata?.full_name as string | undefined) ?? null,
-      role: "member",
-      created_at: user.created_at ?? null,
+      id: row.id,
+      email: row.email,
+      full_name: row.full_name,
+      display_name: null,
+      preferred_name: null,
+      avatar_url: null,
+      role: row.role as Role,
+      created_at: row.created_at,
     };
   }
-  return data as Profile;
+
+  // No profiles row yet (e.g. trigger lag) — last-resort shape; role defaults to member.
+  return {
+    id: user.id,
+    email: user.email ?? null,
+    full_name: (user.user_metadata?.full_name as string | undefined) ?? null,
+    display_name: null,
+    preferred_name: null,
+    avatar_url: null,
+    role: "member",
+    created_at: user.created_at ?? null,
+  };
 }
 
 export function hasRole(profile: Profile | null, min: Role): boolean {
