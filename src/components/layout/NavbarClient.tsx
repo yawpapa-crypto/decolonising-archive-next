@@ -459,10 +459,27 @@ export default function NavbarClient({
       </div>
       {profile ? (
         <nav className="member-mobile-bottom-nav" aria-label="Member quick navigation">
-          <Link href="/#/library" className="member-mobile-bottom-nav__item" aria-label="Open library">
+          <a
+            href="/#/library"
+            className="member-mobile-bottom-nav__item"
+            aria-label="Open library"
+            onClick={(event) => {
+              event.preventDefault();
+              setOpen(false);
+              setMenuOpen(false);
+
+              if (window.location.pathname !== "/") {
+                window.location.href = "/#/library";
+                return;
+              }
+
+              window.location.hash = "#/library";
+              window.dispatchEvent(new HashChangeEvent("hashchange"));
+            }}
+          >
             <span className="member-mobile-bottom-nav__icon" aria-hidden="true">⌕</span>
             <span>Library</span>
-          </Link>
+          </a>
 
           <Link
             href="/my/bookmarks"
