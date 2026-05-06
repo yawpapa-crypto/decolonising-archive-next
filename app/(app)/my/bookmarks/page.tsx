@@ -9,6 +9,7 @@ import {
   deleteBookmark,
   updateBookmark,
 } from "@/app/(app)/workspace/actions";
+import { getRecordHref, isExternalHref } from "@/src/lib/record-links";
 
 export default async function MyBookmarksPage() {
   const { bookmarks, recordsById } =
@@ -36,13 +37,15 @@ export default async function MyBookmarksPage() {
         <section className="workspace-elevated admin-surface bookmark-panel">
           <div className="bookmark-list">
             {bookmarks.length ? (
-              bookmarks.map((bookmark) => (
+              bookmarks.map((bookmark) => {
+                const openHref = getRecordHref(bookmark);
+                return (
                 <article className="bookmark-card" key={bookmark.id}>
                   <div className="bookmark-card-top">
                     <div className="bookmark-title-group">
                       <p className="bookmark-label">Saved record</p>
                       <h2 className="bookmark-title">
-                        {workspaceRecordTitle(recordsById, bookmark.record_id)}
+                        {bookmark.record_title || workspaceRecordTitle(recordsById, bookmark.record_id)}
                       </h2>
                     </div>
                     <time className="bookmark-date" dateTime={bookmark.created_at ?? undefined}>
@@ -75,12 +78,24 @@ export default async function MyBookmarksPage() {
                   </form>
 
                   <div className="bookmark-actions">
-                    <Link
-                      href={`/#/record/${encodeURIComponent(bookmark.record_id)}`}
-                      className="bookmark-action-link"
-                    >
-                      Open record
-                    </Link>
+                    {openHref ? (
+                      <a
+                        href={openHref}
+                        className="bookmark-action-link"
+                        {...(isExternalHref(openHref)
+                          ? { target: "_blank", rel: "noreferrer" }
+                          : {})}
+                      >
+                        Open record
+                      </a>
+                    ) : (
+                      <span
+                        className="bookmark-action-link bookmark-action-link-disabled"
+                        aria-disabled
+                      >
+                        Record link unavailable
+                      </span>
+                    )}
 
                     <form action={deleteBookmark}>
                       <input type="hidden" name="id" value={bookmark.id} />
@@ -90,7 +105,8 @@ export default async function MyBookmarksPage() {
                     </form>
                   </div>
                 </article>
-              ))
+              );
+              })
             ) : (
               <article className="bookmark-empty-state">
                 <h2>No bookmarks yet</h2>

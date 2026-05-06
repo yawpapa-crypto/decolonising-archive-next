@@ -241,7 +241,7 @@ export async function POST(request: NextRequest) {
   }
   const action = clean(body.action) as WorkspaceAction;
   const recordId = clean(body.recordId);
-  const recordTitle = clean(body.recordTitle, "Archive record");
+  const recordTitle = clean(body.recordTitle, "");
   const recordUrl = clean(body.recordUrl) || recordId;
   const recordSnapshot = buildRecordSnapshot(body, recordId, recordTitle, recordUrl);
 
@@ -258,6 +258,12 @@ export async function POST(request: NextRequest) {
         {
           user_id: profile.id,
           record_id: recordId,
+          record_title: recordTitle || null,
+          record_source: recordSnapshot.record_source || null,
+          record_source_url: recordSnapshot.record_source_url || null,
+          record_type: recordSnapshot.record_type || null,
+          record_year: recordSnapshot.record_year || null,
+          record_metadata: recordSnapshot.record_metadata || null,
           note: clean(body.note) || null,
         },
         { onConflict: "user_id,record_id" },

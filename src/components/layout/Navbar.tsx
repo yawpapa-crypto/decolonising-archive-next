@@ -3,6 +3,7 @@
 // can render without re-fetching.
 
 import { getCurrentProfile } from "@/src/lib/auth";
+import { getMemberNavSummary } from "@/src/lib/member-nav";
 import NavbarClient, { type NavProfile } from "./NavbarClient";
 
 export default async function Navbar() {
@@ -18,5 +19,7 @@ export default async function Navbar() {
       }
     : null;
 
-  return <NavbarClient profile={navProfile} />;
+  const navSummary = profile ? await getMemberNavSummary(profile.id) : null;
+
+  return <NavbarClient profile={navProfile} navSummary={navSummary} />;
 }

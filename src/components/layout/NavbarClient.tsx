@@ -11,7 +11,9 @@
 // plain <a>. Real Next routes use next/link.
 
 import Link from "next/link";
+import { Bell, Bookmark, ListChecks } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import type { MemberNavSummary } from "@/src/lib/member-nav";
 
 export type NavProfile = {
   email: string | null;
@@ -42,10 +44,30 @@ function initials(profile: NavProfile): string {
   return letters.toUpperCase();
 }
 
+function bookmarksAriaLabel(count: number) {
+  return count > 0
+    ? `Open bookmarks, ${count} saved records`
+    : "Open bookmarks";
+}
+
+function readingListsAriaLabel(count: number) {
+  return count > 0
+    ? `Open reading lists, ${count} ${count === 1 ? "list" : "lists"}`
+    : "Open reading lists";
+}
+
+function notificationsAriaLabel(count: number) {
+  return count > 0
+    ? `Open notifications, ${count} new`
+    : "Open notifications";
+}
+
 export default function NavbarClient({
   profile,
+  navSummary = null,
 }: {
   profile: NavProfile | null;
+  navSummary?: MemberNavSummary | null;
 }) {
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -65,6 +87,17 @@ export default function NavbarClient({
   }, []);
 
   useEffect(() => {
+    if (!open) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open]);
+
+  useEffect(() => {
     if (!menuOpen) return;
     const onClick = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
@@ -75,11 +108,62 @@ export default function NavbarClient({
     return () => document.removeEventListener("mousedown", onClick);
   }, [menuOpen]);
 
-  const handleNavClick = () => setOpen(false);
+  const handleNavClick = () => {
+    setOpen(false);
+    setMenuOpen(false);
+  };
 
   const isCuratorOrAbove =
     !!profile && ROLE_RANK[profile.role] >= ROLE_RANK.curator;
   const isAdmin = !!profile && profile.role === "admin";
+
+  const [liveMemberCounts, setLiveMemberCounts] = useState(
+    navSummary ?? {
+      bookmarksCount: 0,
+      readingListsCount: 0,
+      notificationsCount: 0,
+    },
+  );
+
+  useEffect(() => {
+    setLiveMemberCounts(
+      navSummary ?? {
+        bookmarksCount: 0,
+        readingListsCount: 0,
+        notificationsCount: 0,
+      },
+    );
+  }, [navSummary]);
+
+  useEffect(() => {
+    function onMemberNavUpdate(event: Event) {
+      const customEvent = event as CustomEvent<{
+        bookmarksDelta?: number;
+        readingListsDelta?: number;
+        notificationsDelta?: number;
+      }>;
+
+      setLiveMemberCounts((current) => ({
+        bookmarksCount: Math.max(
+          0,
+          current.bookmarksCount + (customEvent.detail?.bookmarksDelta ?? 0),
+        ),
+        readingListsCount: Math.max(
+          0,
+          current.readingListsCount + (customEvent.detail?.readingListsDelta ?? 0),
+        ),
+        notificationsCount: Math.max(
+          0,
+          current.notificationsCount + (customEvent.detail?.notificationsDelta ?? 0),
+        ),
+      }));
+    }
+
+    window.addEventListener("member-nav:update", onMemberNavUpdate);
+    return () => window.removeEventListener("member-nav:update", onMemberNavUpdate);
+  }, []);
+
+  const memberCounts = liveMemberCounts;
 
   return (
     <nav className="nav">
@@ -99,73 +183,159 @@ export default function NavbarClient({
         </div>
 
         {profile ? (
-          <div className="nav-account" ref={menuRef}>
-            <button
-              type="button"
-              className="nav-avatar"
-              aria-haspopup="menu"
-              aria-expanded={menuOpen ? "true" : "false"}
-              onClick={() => setMenuOpen((v) => !v)}
-              title={profile.email ?? "Account"}
+          <div className="nav-end">
+            <div
+              className="member-quick-nav"
+              aria-label="Member quick links"
             >
-              {profile.avatar_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={profile.avatar_url} alt="" className="nav-avatar-img" />
-              ) : (
-                initials(profile)
-              )}
-            </button>
-            {menuOpen ? (
-              <div className="nav-avatar-menu" role="menu">
-                <div className="nav-avatar-meta">
-                  <strong>{displayName(profile)}</strong>
-                  <span className={`role-badge role-${profile.role}`}>
-                    {profile.role === "admin"
-                      ? "Admin"
-                      : profile.role === "curator"
-                        ? "Curator"
-                        : "Member"}
+              <Link
+                href="/my/bookmarks"
+                className="member-quick-nav-link"
+                aria-label={bookmarksAriaLabel(memberCounts.bookmarksCount)}
+                title="Bookmarks"
+                onClick={handleNavClick}
+              >
+                <Bookmark
+                  className="member-quick-nav-icon"
+                  size={18}
+                  strokeWidth={2}
+                  aria-hidden
+                />
+                <span className="sr-only">Bookmarks</span>
+                {memberCounts.bookmarksCount > 0 ? (
+                  <span className="member-quick-nav-badge">
+                    {memberCounts.bookmarksCount > 99
+                      ? "99+"
+                      : memberCounts.bookmarksCount}
                   </span>
+                ) : null}
+              </Link>
+              <Link
+                href="/my/lists"
+                className="member-quick-nav-link"
+                aria-label={readingListsAriaLabel(memberCounts.readingListsCount)}
+                title="Reading lists"
+                onClick={handleNavClick}
+              >
+                <ListChecks
+                  className="member-quick-nav-icon"
+                  size={18}
+                  strokeWidth={2}
+                  aria-hidden
+                />
+                <span className="sr-only">Reading lists</span>
+                {memberCounts.readingListsCount > 0 ? (
+                  <span className="member-quick-nav-badge">
+                    {memberCounts.readingListsCount > 99
+                      ? "99+"
+                      : memberCounts.readingListsCount}
+                  </span>
+                ) : null}
+              </Link>
+              <Link
+                href="/workspace?section=notifications"
+                className="member-quick-nav-link"
+                aria-label={notificationsAriaLabel(memberCounts.notificationsCount)}
+                title="Notifications"
+                onClick={handleNavClick}
+              >
+                <Bell
+                  className="member-quick-nav-icon"
+                  size={18}
+                  strokeWidth={2}
+                  aria-hidden
+                />
+                <span className="sr-only">Notifications</span>
+                {memberCounts.notificationsCount > 0 ? (
+                  <span className="member-quick-nav-badge">
+                    {memberCounts.notificationsCount > 99
+                      ? "99+"
+                      : memberCounts.notificationsCount}
+                  </span>
+                ) : null}
+              </Link>
+            </div>
+
+            <Link
+              href="/workspace"
+              className="member-account-chip"
+              title={`Workspace — ${displayName(profile)}`}
+              onClick={handleNavClick}
+            >
+              <span className="member-account-chip-name">
+                {displayName(profile)}
+              </span>
+              <span className="sr-only">Workspace</span>
+            </Link>
+
+            <div className="nav-account" ref={menuRef}>
+              <button
+                type="button"
+                className="nav-avatar"
+                aria-haspopup="menu"
+                aria-expanded={menuOpen ? "true" : "false"}
+                aria-label={`Account menu for ${displayName(profile)}`}
+                onClick={() => setMenuOpen((v) => !v)}
+              >
+                {profile.avatar_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={profile.avatar_url} alt="" className="nav-avatar-img" />
+                ) : (
+                  initials(profile)
+                )}
+              </button>
+              {menuOpen ? (
+                <div className="nav-avatar-menu" role="menu">
+                  <div className="nav-avatar-meta">
+                    <strong>{displayName(profile)}</strong>
+                    <span className={`role-badge role-${profile.role}`}>
+                      {profile.role === "admin"
+                        ? "Admin"
+                        : profile.role === "curator"
+                          ? "Curator"
+                          : "Member"}
+                    </span>
+                  </div>
+                  <Link
+                    href="/workspace"
+                    className="nav-avatar-link"
+                    role="menuitem"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Member workspace
+                  </Link>
+                  {isCuratorOrAbove ? (
+                    <Link
+                      href="/curator"
+                      className="nav-avatar-link"
+                      role="menuitem"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      Curator tools
+                    </Link>
+                  ) : null}
+                  {isAdmin ? (
+                    <Link
+                      href="/admin"
+                      className="nav-avatar-link"
+                      role="menuitem"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      Admin dashboard
+                    </Link>
+                  ) : null}
+                  <form
+                    action="/auth/signout"
+                    method="post"
+                    className="nav-avatar-signout"
+                  >
+                    <button type="submit" role="menuitem">
+                      Sign out
+                    </button>
+                  </form>
                 </div>
-                <Link
-                  href="/workspace"
-                  className="nav-avatar-link"
-                  role="menuitem"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  Member workspace
-                </Link>
-                {isCuratorOrAbove ? (
-                  <Link
-                    href="/curator"
-                    className="nav-avatar-link"
-                    role="menuitem"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Curator tools
-                  </Link>
-                ) : null}
-                {isAdmin ? (
-                  <Link
-                    href="/admin"
-                    className="nav-avatar-link"
-                    role="menuitem"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Admin dashboard
-                  </Link>
-                ) : null}
-                <form
-                  action="/auth/signout"
-                  method="post"
-                  className="nav-avatar-signout"
-                >
-                  <button type="submit" role="menuitem">
-                    Sign out
-                  </button>
-                </form>
-              </div>
-            ) : null}
+              ) : null}
+            </div>
           </div>
         ) : (
           <Link href="/signin" className="nav-cta">
@@ -186,6 +356,18 @@ export default function NavbarClient({
       </div>
 
       <div id="navMobile" className={`nav-mobile${open ? " open" : ""}`}>
+        <div className="nav-mobile-header">
+          <span>Menu</span>
+          <button
+            type="button"
+            className="nav-mobile-close"
+            aria-label="Close menu"
+            onClick={() => setOpen(false)}
+          >
+            ×
+          </button>
+        </div>
+
         {/* eslint-disable @next/next/no-html-link-for-pages -- hash routes targeting SPA router */}
         <a href="/#/home" className="nav-link" onClick={handleNavClick}>Home</a>
         <a href="/#/library" className="nav-link" onClick={handleNavClick}>Library</a>
@@ -194,6 +376,57 @@ export default function NavbarClient({
         {/* eslint-enable @next/next/no-html-link-for-pages */}
         {profile ? (
           <>
+            <div
+              className="nav-mobile-member"
+              role="group"
+              aria-label="Member shortcuts"
+            >
+              <Link
+                href="/my/bookmarks"
+                className="nav-link nav-mobile-member-link"
+                onClick={handleNavClick}
+                aria-label={bookmarksAriaLabel(memberCounts.bookmarksCount)}
+              >
+                <span>Bookmarks</span>
+                {memberCounts.bookmarksCount > 0 ? (
+                  <span className="member-quick-nav-badge" aria-hidden>
+                    {memberCounts.bookmarksCount > 99
+                      ? "99+"
+                      : memberCounts.bookmarksCount}
+                  </span>
+                ) : null}
+              </Link>
+              <Link
+                href="/my/lists"
+                className="nav-link nav-mobile-member-link"
+                onClick={handleNavClick}
+                aria-label={readingListsAriaLabel(memberCounts.readingListsCount)}
+              >
+                <span>Reading lists</span>
+                {memberCounts.readingListsCount > 0 ? (
+                  <span className="member-quick-nav-badge" aria-hidden>
+                    {memberCounts.readingListsCount > 99
+                      ? "99+"
+                      : memberCounts.readingListsCount}
+                  </span>
+                ) : null}
+              </Link>
+              <Link
+                href="/workspace?section=notifications"
+                className="nav-link nav-mobile-member-link"
+                onClick={handleNavClick}
+                aria-label={notificationsAriaLabel(memberCounts.notificationsCount)}
+              >
+                <span>Notifications</span>
+                {memberCounts.notificationsCount > 0 ? (
+                  <span className="member-quick-nav-badge" aria-hidden>
+                    {memberCounts.notificationsCount > 99
+                      ? "99+"
+                      : memberCounts.notificationsCount}
+                  </span>
+                ) : null}
+              </Link>
+            </div>
             <Link href="/workspace" className="nav-link" onClick={handleNavClick}>
               Workspace
             </Link>
@@ -224,6 +457,67 @@ export default function NavbarClient({
           </>
         )}
       </div>
+      {profile ? (
+        <nav className="member-mobile-bottom-nav" aria-label="Member quick navigation">
+          <Link href="/#/library" className="member-mobile-bottom-nav__item" aria-label="Open library">
+            <span className="member-mobile-bottom-nav__icon" aria-hidden="true">⌕</span>
+            <span>Library</span>
+          </Link>
+
+          <Link
+            href="/my/bookmarks"
+            className="member-mobile-bottom-nav__item"
+            aria-label={bookmarksAriaLabel(memberCounts.bookmarksCount)}
+          >
+            <Bookmark className="member-mobile-bottom-nav__svg" aria-hidden="true" />
+            {memberCounts.bookmarksCount > 0 ? (
+              <span className="member-mobile-bottom-nav__badge" aria-hidden="true">
+                {memberCounts.bookmarksCount > 99 ? "99+" : memberCounts.bookmarksCount}
+              </span>
+            ) : null}
+            <span>Saved</span>
+          </Link>
+
+          <Link
+            href="/my/lists"
+            className="member-mobile-bottom-nav__item"
+            aria-label={readingListsAriaLabel(memberCounts.readingListsCount)}
+          >
+            <ListChecks className="member-mobile-bottom-nav__svg" aria-hidden="true" />
+            {memberCounts.readingListsCount > 0 ? (
+              <span className="member-mobile-bottom-nav__badge" aria-hidden="true">
+                {memberCounts.readingListsCount > 99 ? "99+" : memberCounts.readingListsCount}
+              </span>
+            ) : null}
+            <span>Lists</span>
+          </Link>
+
+          <Link
+            href="/workspace?section=notifications"
+            className="member-mobile-bottom-nav__item"
+            aria-label={notificationsAriaLabel(memberCounts.notificationsCount)}
+          >
+            <Bell className="member-mobile-bottom-nav__svg" aria-hidden="true" />
+            {memberCounts.notificationsCount > 0 ? (
+              <span className="member-mobile-bottom-nav__badge" aria-hidden="true">
+                {memberCounts.notificationsCount > 99 ? "99+" : memberCounts.notificationsCount}
+              </span>
+            ) : null}
+            <span>Alerts</span>
+          </Link>
+
+          <button
+            type="button"
+            className="member-mobile-bottom-nav__item"
+            aria-label="Open menu"
+            onClick={() => setOpen(true)}
+          >
+            <span className="member-mobile-bottom-nav__icon" aria-hidden="true">☰</span>
+            <span>Menu</span>
+          </button>
+        </nav>
+      ) : null}
+
     </nav>
   );
 }

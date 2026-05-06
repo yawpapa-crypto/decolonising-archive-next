@@ -694,6 +694,15 @@ let activeSuggestionIndex = -1;
 let recentSearches = [];
 let recordWorkspaceState = {};
 let cardListComposerState = {};
+
+function dispatchMemberNavUpdate(detail) {
+  try {
+    window.dispatchEvent(new CustomEvent("member-nav:update", { detail }));
+  } catch (error) {
+    console.warn("Could not update member nav counts", error);
+  }
+}
+
 let memberWorkspaceState = {status:"idle", authenticated:null, data:null, message:""};
 let locationSearchHydrated = false;
 
@@ -830,12 +839,12 @@ async function postRecordWorkspaceAction(record, payload) {
   memberWorkspaceState = {
     ...memberWorkspaceState,
     status:"saving",
-    message:"Saving..."
+    message:""
   };
   setRecordWorkspaceState(record.id, {
     ...getRecordWorkspaceState(record.id),
     status:"saving",
-    message:"Saving..."
+    message:""
   });
   render();
   let shouldRefreshRecordState = true;
@@ -875,6 +884,7 @@ async function postRecordWorkspaceAction(record, payload) {
     if (!response.ok || !data.ok) throw new Error(data.error || "Action failed.");
     const isBookmarkToggle = payload.action === "bookmark" && typeof data.bookmarked === "boolean";
     if (isBookmarkToggle) {
+      dispatchMemberNavUpdate({ bookmarksDelta: data.bookmarked ? 1 : -1 });
       const existingData = memberWorkspaceState.data || {};
       const bookmarkRecordIds = Array.isArray(existingData.bookmarkRecordIds)
         ? existingData.bookmarkRecordIds
@@ -960,7 +970,7 @@ function getCurrentSearchFilters() {
 }
 
 async function postSearchWorkspaceAction(payload) {
-  memberWorkspaceState = {...memberWorkspaceState, status:"saving", message:"Saving..."};
+  memberWorkspaceState = {...memberWorkspaceState, status:"saving", message:""};
   render();
   try {
     const response = await fetch("/api/workspace/record-tools", {
@@ -2338,7 +2348,18 @@ function renderRecordWorkspaceTools(record) {
   const data = state.data || {};
   const readingLists = data.readingLists || [];
   const bookmark = data.bookmark;
-  const message = state.message ? `<p class="record-tools-message">${escapeHtml(state.message)}</p>` : "";
+  const messageClass = state.status === "saving"
+    ? "record-tools-message is-loading"
+    : state.status === "error"
+      ? "record-tools-message is-error"
+      : state.message
+        ? "record-tools-message is-success"
+        : "record-tools-message";
+  const message = state.status === "saving"
+    ? `<p class="${messageClass}" aria-label="Saving"></p>`
+    : state.message
+      ? `<p class="${messageClass}">${escapeHtml(state.message)}</p>`
+      : "";
   const defaultSearch = uniqueValues([record.title, record.creator, record.collection, record.region].filter(Boolean)).slice(0, 3).join(" ");
 
   return `
@@ -2447,7 +2468,7 @@ function renderCardWorkspaceActions(record) {
           title="${bookmarked ? "Remove bookmark" : "Save bookmark"}"
           ${isSaving ? "disabled" : ""}
         >
-          ${isSaving ? "…" : bookmarked ? iconBookmarkCheck() : iconBookmarkOutline()}
+          ${isSaving ? `<span class="record-action-spinner" aria-hidden="true"></span>` : bookmarked ? iconBookmarkCheck() : iconBookmarkOutline()}
         </button>
         <button
           class="record-action-icon ${listComposerOpen ? "is-active" : ""}"
@@ -3268,7 +3289,7 @@ function renderSearchSaveAction(effectiveQuery) {
         <span>Save this search</span>
         <input name="label" value="${escapeHtml(defaultLabel)}" aria-label="Saved search label" />
       </label>
-      <button type="submit">${memberWorkspaceState.status === "saving" ? "Saving..." : "Save"}</button>
+      <button type="submit">${memberWorkspaceState.status === "saving" ? `<span class="record-action-spinner" aria-hidden="true"></span>` : "Save"}</button>
       ${message}
     </form>
   `;

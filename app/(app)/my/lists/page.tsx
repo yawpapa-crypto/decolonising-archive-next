@@ -14,6 +14,7 @@ import {
   getMemberWorkspaceData,
   workspaceRecordTitle,
 } from "@/src/lib/member-workspace";
+import { getRecordHref, isExternalHref } from "@/src/lib/record-links";
 import { updateReadingList } from "@/app/(app)/workspace/actions";
 import MemberDashboardShell from "@/app/(app)/workspace/MemberDashboardShell";
 
@@ -158,20 +159,47 @@ export default async function MyListsPage() {
                             <strong className="reading-list-record-title">
                               {item.record_title || workspaceRecordTitle(recordsById, item.record_id)}
                             </strong>
-                            <div className="reading-list-record-actions">
-                              <Link
-                                href={`/#/record/${encodeURIComponent(item.record_id)}`}
-                                className="workspace-link"
-                              >
-                                Open record
-                              </Link>
-                              <CopyRecordLinkButton
-                                recordId={item.record_id}
-                                recordTitle={item.record_title || workspaceRecordTitle(recordsById, item.record_id)}
-                              />
-                            </div>
+                            <div className="reading-list-item-actions">
+                            {(() => {
+                              const title =
+                                item.record_title ||
+                                workspaceRecordTitle(recordsById, item.record_id);
+                              const href = getRecordHref(item);
+                              return (
+                                <>
+                                  <div className="reading-list-record-actions reading-list-record-actions-primary">
+                                    {href ? (
+                                      <a
+                                        href={href}
+                                        className="workspace-link"
+                                        {...(isExternalHref(href)
+                                          ? {
+                                              target: "_blank",
+                                              rel: "noreferrer",
+                                            }
+                                          : {})}
+                                      >
+                                        Open record
+                                      </a>
+                                    ) : (
+                                      <span
+                                        className="workspace-link workspace-link-disabled"
+                                        aria-disabled
+                                      >
+                                        Record link unavailable
+                                      </span>
+                                    )}
+                                    <CopyRecordLinkButton
+                                      recordHref={href}
+                                      recordTitle={title}
+                                    />
+                                  </div>
+                                  <RemoveReadingListItemForm itemId={item.id} />
+                                </>
+                              );
+                            })()}
                           </div>
-                          <RemoveReadingListItemForm itemId={item.id} />
+                          </div>
                         </div>
                       ))
                     ) : (

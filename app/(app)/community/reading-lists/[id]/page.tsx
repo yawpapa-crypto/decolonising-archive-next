@@ -5,6 +5,8 @@ import { requireMember } from "@/src/lib/auth";
 import { createClient } from "@/src/lib/supabase/server";
 import { readRecords } from "@/lib/records";
 import { workspaceRecordTitle } from "@/src/lib/member-workspace";
+import CopyRecordLinkButton from "@/app/(app)/my/lists/CopyRecordLinkButton";
+import { getRecordHref, isExternalHref } from "@/src/lib/record-links";
 
 type PageProps = {
   params: Promise<{
@@ -19,6 +21,7 @@ type ReadingListItemRow = {
   record_source: string | null;
   record_source_url: string | null;
   record_type: string | null;
+  record_metadata: Record<string, unknown> | null;
   added_at: string;
 };
 
@@ -49,7 +52,7 @@ export default async function CommunityReadingListPage({ params }: PageProps) {
   const itemsResult = await supabase
     .from("reading_list_items")
     .select(
-      "id, record_id, record_title, record_source, record_source_url, record_type, added_at",
+      "id, record_id, record_title, record_source, record_source_url, record_type, record_metadata, added_at",
     )
     .eq("reading_list_id", id)
     .order("added_at", { ascending: false });
@@ -83,6 +86,11 @@ export default async function CommunityReadingListPage({ params }: PageProps) {
               items.map((item) => {
                 const title =
                   item.record_title || workspaceRecordTitle(recordsById, item.record_id);
+                const href = getRecordHref(item);
+                const sourceUrl = item.record_source_url?.trim() || "";
+                const showSourceLink =
+                  Boolean(sourceUrl) &&
+                  (!isExternalHref(href || "") || sourceUrl !== href);
                 return (
                   <article className="community-submission-item" key={item.id}>
                     <div>
@@ -96,16 +104,36 @@ export default async function CommunityReadingListPage({ params }: PageProps) {
                         {item.record_source ? <span>{item.record_source}</span> : null}
                         <span>Record {item.record_id}</span>
                       </div>
-                      <div className="community-record-actions">
-                        <Link
-                          href={`/#/record/${encodeURIComponent(item.record_id)}`}
-                          className="community-button community-button-secondary"
-                        >
-                          Open record
-                        </Link>
-                        {item.record_source_url ? (
+                      <div className="community-record-actions community-reading-list-item-actions">
+                        <div className="community-record-actions-row">
+                          {href ? (
+                            <a
+                              href={href}
+                              className="community-button community-button-secondary"
+                              {...(isExternalHref(href)
+                                ? { target: "_blank", rel: "noreferrer" }
+                                : {})}
+                            >
+                              Open record
+                            </a>
+                          ) : (
+                            <span
+                              className="community-button community-button-secondary community-button-disabled"
+                              aria-disabled
+                            >
+                              Record link unavailable
+                            </span>
+                          )}
+                          <CopyRecordLinkButton
+                            recordHref={href}
+                            recordTitle={title}
+                            className="community-button community-button-secondary"
+                            disabledClassName="community-button community-button-secondary community-button-disabled"
+                          />
+                        </div>
+                        {showSourceLink ? (
                           <a
-                            href={item.record_source_url}
+                            href={sourceUrl}
                             className="community-button community-button-secondary"
                             target="_blank"
                             rel="noreferrer"

@@ -21,6 +21,7 @@ import MemberDashboardShell, {
   type MemberDashboardSection,
 } from "./MemberDashboardShell";
 import WorkspaceSettingsPanel from "./WorkspaceSettingsPanel";
+import { getRecordHref, isExternalHref } from "@/src/lib/record-links";
 
 type SearchParams = Promise<{
   denied?: string;
@@ -32,6 +33,12 @@ type SearchParams = Promise<{
 type BookmarkRow = {
   id: string;
   record_id: string;
+  record_title: string | null;
+  record_source: string | null;
+  record_source_url: string | null;
+  record_type: string | null;
+  record_year: string | null;
+  record_metadata: Record<string, unknown> | null;
   note: string | null;
   created_at: string;
 };
@@ -78,8 +85,71 @@ function formatDate(value: string) {
   );
 }
 
+function bookmarkRecordCandidates(recordId: string) {
+  const candidates = [recordId];
+
+  const withoutTrailingDuplicateNumber = recordId.replace(/-\d+$/, "");
+  if (withoutTrailingDuplicateNumber !== recordId) {
+    candidates.push(withoutTrailingDuplicateNumber);
+  }
+
+  return Array.from(new Set(candidates));
+}
+
+function getWorkspaceRecord(
+  recordsById: Map<string, ArchiveRecord>,
+  recordId: string,
+) {
+  for (const candidate of bookmarkRecordCandidates(recordId)) {
+    const record = recordsById.get(candidate);
+    if (record) return record;
+  }
+
+  return undefined;
+}
+
+function readableRecordIdFallback(recordId: string) {
+  const cleaned = recordId
+    .replace(/^live-openalex-https-openalex-org-/i, "OpenAlex ")
+    .replace(/^live-/i, "")
+    .replace(/-/g, " ")
+    .trim();
+
+  return cleaned ? `Untitled record (${cleaned})` : "Untitled record";
+}
+
 function recordTitle(recordsById: Map<string, ArchiveRecord>, recordId: string) {
-  return recordsById.get(recordId)?.title ?? `Archive record ${recordId}`;
+  const record = getWorkspaceRecord(recordsById, recordId) as
+    | (ArchiveRecord & Record<string, unknown>)
+    | undefined;
+
+  const metadata =
+    record?.metadata && typeof record.metadata === "object" && !Array.isArray(record.metadata)
+      ? (record.metadata as Record<string, unknown>)
+      : {};
+
+  const data =
+    record?.data && typeof record.data === "object" && !Array.isArray(record.data)
+      ? (record.data as Record<string, unknown>)
+      : {};
+
+  const raw =
+    record?.raw && typeof record.raw === "object" && !Array.isArray(record.raw)
+      ? (record.raw as Record<string, unknown>)
+      : {};
+
+  const title =
+    record?.title ||
+    (typeof record?.name === "string" ? record.name : "") ||
+    (typeof record?.record_title === "string" ? record.record_title : "") ||
+    (typeof metadata.title === "string" ? metadata.title : "") ||
+    (typeof metadata.display_name === "string" ? metadata.display_name : "") ||
+    (typeof metadata.displayTitle === "string" ? metadata.displayTitle : "") ||
+    (typeof metadata.display_title === "string" ? metadata.display_title : "") ||
+    (typeof data.title === "string" ? data.title : "") ||
+    (typeof raw.title === "string" ? raw.title : "");
+
+  return title?.trim() || readableRecordIdFallback(recordId);
 }
 
 function RecordSelect({ records }: { records: ArchiveRecord[] }) {
@@ -119,7 +189,7 @@ export default async function WorkspacePage({
   ] = await Promise.all([
     supabase
       .from("bookmarks")
-      .select("id, record_id, note, created_at")
+      .select("id, record_id, record_title, record_source, record_source_url, record_type, record_year, record_metadata, note, created_at")
       .order("created_at", { ascending: false }),
     supabase
       .from("saved_searches")
@@ -172,33 +242,45 @@ export default async function WorkspacePage({
     created_at: string;
   }> = [];
 
-  const bookmarkRows = bookmarks.map((bookmark) => (
-    <div className="workspace-list-item member-dashboard-list-item" key={bookmark.id}>
-      <div className="member-dashboard-row-main">
-        <strong>{recordTitle(recordsById, bookmark.record_id)}</strong>
-        <span>{bookmark.note || "No note added"}</span>
+  const bookmarkRows = bookmarks.map((bookmark) => {
+    const openHref = getRecordHref(bookmark);
+    return (
+      <div className="workspace-list-item member-dashboard-list-item" key={bookmark.id}>
+        <div className="member-dashboard-row-main">
+          <strong>{bookmark.record_title || recordTitle(recordsById, bookmark.record_id)}</strong>
+          <span>{bookmark.note || "No note added"}</span>
+        </div>
+        <div className="workspace-actions-inline member-dashboard-actions">
+          {openHref ? (
+            <a
+              href={openHref}
+              className="workspace-link"
+              {...(isExternalHref(openHref)
+                ? { target: "_blank", rel: "noreferrer" }
+                : {})}
+            >
+              Open record
+            </a>
+          ) : (
+            <span className="workspace-link workspace-link-disabled" aria-disabled>
+              Record link unavailable
+            </span>
+          )}
+          <form action={deleteBookmark}>
+            <input type="hidden" name="id" value={bookmark.id} />
+            {redirectInput(currentSection)}
+            <input type="hidden" name="confirm" value="yes" />
+            <ConfirmSubmitButton
+              className="workspace-link workspace-link-danger"
+              message="Remove this bookmark?"
+            >
+              Remove
+            </ConfirmSubmitButton>
+          </form>
+        </div>
       </div>
-      <div className="workspace-actions-inline member-dashboard-actions">
-        <Link
-          href={`/#/record/${encodeURIComponent(bookmark.record_id)}`}
-          className="workspace-link"
-        >
-          Open record
-        </Link>
-        <form action={deleteBookmark}>
-          <input type="hidden" name="id" value={bookmark.id} />
-          {redirectInput(currentSection)}
-          <input type="hidden" name="confirm" value="yes" />
-          <ConfirmSubmitButton
-            className="workspace-link workspace-link-danger"
-            message="Remove this bookmark?"
-          >
-            Remove
-          </ConfirmSubmitButton>
-        </form>
-      </div>
-    </div>
-  ));
+    );
+  });
 
   const searchRows = savedSearches.map((search) => (
     <div className="workspace-list-item member-dashboard-list-item" key={search.id}>

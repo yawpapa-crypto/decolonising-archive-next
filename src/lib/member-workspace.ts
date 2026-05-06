@@ -5,6 +5,12 @@ import { readRecords, type ArchiveRecord } from "@/lib/records";
 export type BookmarkRow = {
   id: string;
   record_id: string;
+  record_title: string | null;
+  record_source: string | null;
+  record_source_url: string | null;
+  record_type: string | null;
+  record_year: string | null;
+  record_metadata: Record<string, unknown> | null;
   note: string | null;
   created_at: string;
 };
@@ -68,10 +74,31 @@ export function workspaceRecordTitle(
       record?.source_title,
       record?.sourceTitle,
       metadata.title,
+      metadata.display_name,
+      metadata.displayTitle,
+      metadata.display_title,
+      metadata.work_title,
+      metadata.workTitle,
       data.title,
+      data.display_name,
+      data.displayTitle,
+      data.display_title,
       raw.title,
-    ) || `Archive record ${recordId}`
+      raw.display_name,
+      raw.displayTitle,
+      raw.display_title,
+    ) || readableRecordIdFallback(recordId)
   );
+}
+
+function readableRecordIdFallback(recordId: string) {
+  const cleaned = recordId
+    .replace(/^live-openalex-https-openalex-org-/i, "OpenAlex ")
+    .replace(/^live-/i, "")
+    .replace(/-/g, " ")
+    .trim();
+
+  return cleaned ? `Untitled record (${cleaned})` : "Untitled record";
 }
 
 function asRecord(value: unknown): Record<string, unknown> {
@@ -97,7 +124,7 @@ export async function getMemberWorkspaceData(next = "/workspace") {
     await Promise.all([
       supabase
         .from("bookmarks")
-        .select("id, record_id, note, created_at")
+        .select("id, record_id, record_title, record_source, record_source_url, record_type, record_year, record_metadata, note, created_at")
         .eq("user_id", profile.id)
         .order("created_at", { ascending: false }),
       supabase

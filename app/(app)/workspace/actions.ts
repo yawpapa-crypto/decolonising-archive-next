@@ -10,6 +10,11 @@ function text(formData: FormData, key: string) {
   return String(formData.get(key) ?? "").trim();
 }
 
+function optionalText(formData: FormData, key: string) {
+  const value = text(formData, key);
+  return value || null;
+}
+
 function redirectTarget(formData: FormData) {
   return text(formData, "redirectTo") || "/workspace";
 }
@@ -27,6 +32,11 @@ export async function createBookmark(formData: FormData) {
   const redirectTo = redirectTarget(formData);
   const recordId = text(formData, "record_id");
   const note = text(formData, "note");
+  const recordTitle = optionalText(formData, "record_title");
+  const recordSource = optionalText(formData, "record_source");
+  const recordSourceUrl = optionalText(formData, "record_source_url");
+  const recordType = optionalText(formData, "record_type");
+  const recordYear = optionalText(formData, "record_year");
 
   if (!recordId) fail("Choose a record to bookmark.", redirectTo);
 
