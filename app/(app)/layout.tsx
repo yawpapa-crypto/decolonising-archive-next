@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
-import HashAnalytics from "@/src/components/analytics/HashAnalytics";
+import RouteAnalytics from "@/src/components/analytics/RouteAnalytics";
 
 function metadataBaseUrl() {
   const raw = (process.env.NEXT_PUBLIC_SITE_URL || "").trim();
@@ -68,7 +68,7 @@ export default function RootLayout({
           </nav>
         </footer>
 
-        <HashAnalytics />
+        <RouteAnalytics />
         <Analytics />
     </>
   );

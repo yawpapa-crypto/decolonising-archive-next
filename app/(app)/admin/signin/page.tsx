@@ -225,9 +225,9 @@ export default async function AdminSigninPage({
             color: "rgba(0,0,0,0.72)",
           }}
         >
-          <Link style={{ color: "inherit", textDecoration: "underline" }} href="/">
+          <a style={{ color: "inherit", textDecoration: "underline" }} href="/">
             Back to public site
-          </Link>
+          </a>
           <span>·</span>
           <Link style={{ color: "inherit", textDecoration: "underline" }} href="/signin">
             Member sign in

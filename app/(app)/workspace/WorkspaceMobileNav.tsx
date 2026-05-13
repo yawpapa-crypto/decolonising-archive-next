@@ -107,6 +107,13 @@ export default function WorkspaceMobileNav({
               </button>
             </div>
             <nav className="workspace-drawer-nav">
+              <Link
+                href="/my/workbench"
+                className="workspace-sidebar-item"
+                onClick={() => setOpen(false)}
+              >
+                <span>Archive Workbench</span>
+              </Link>
               {ITEMS.map((item) => (
                 <Link
                   key={item.id}

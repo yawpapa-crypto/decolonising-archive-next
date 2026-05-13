@@ -7,7 +7,9 @@ type WorkspaceAction =
   | "save_search"
   | "create_reading_list"
   | "add_to_reading_list"
-  | "submit_content";
+  | "submit_content"
+  | "workbench_add_record"
+  | "workbench_create_project";
 
 function clean(value: unknown, fallback = "") {
   return String(value ?? fallback).trim();
@@ -153,7 +155,7 @@ export async function GET(request: NextRequest) {
   const mode = clean(request.nextUrl.searchParams.get("mode"));
   if (mode === "session") {
     const supabase = await createClient();
-    const [bookmarksResult, readingListsResult] = await Promise.all([
+    const [bookmarksResult, readingListsResult, workbenchResult] = await Promise.all([
       supabase
         .from("bookmarks")
         .select("record_id, created_at")
@@ -165,10 +167,30 @@ export async function GET(request: NextRequest) {
         .select("id, title, description, is_public, created_at")
         .eq("user_id", profile.id)
         .order("created_at", { ascending: false }),
+      supabase
+        .from("workbench_projects")
+        .select("id, title, updated_at")
+        .order("updated_at", { ascending: false })
+        .limit(200),
     ]);
 
     if (bookmarksResult.error) return jsonError(bookmarksResult.error.message, 500);
     if (readingListsResult.error) return jsonError(readingListsResult.error.message, 500);
+    if (workbenchResult.error) {
+      return NextResponse.json({
+        ok: true,
+        authenticated: true,
+        profile: {
+          email: profile.email,
+          full_name: profile.full_name,
+          role: profile.role,
+        },
+        bookmarkRecordIds: (bookmarksResult.data ?? []).map((item) => item.record_id),
+        readingLists: readingListsResult.data ?? [],
+        workbenchProjects: [],
+        workbenchProjectsError: workbenchResult.error.message,
+      });
+    }
 
     return NextResponse.json({
       ok: true,
@@ -180,6 +202,7 @@ export async function GET(request: NextRequest) {
       },
       bookmarkRecordIds: (bookmarksResult.data ?? []).map((item) => item.record_id),
       readingLists: readingListsResult.data ?? [],
+      workbenchProjects: workbenchResult.data ?? [],
     });
   }
 
@@ -391,6 +414,59 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       ok: true,
       message: "Sent to curator review.",
+    });
+  }
+
+  if (action === "workbench_add_record") {
+    const projectId = clean(body.projectId);
+    if (!projectId) return jsonError("Choose a Workbench project.");
+
+    const { error } = await supabase.from("workbench_project_records").upsert(
+      {
+        project_id: projectId,
+        record_id: recordId,
+        status: "to_review",
+      },
+      { onConflict: "project_id,record_id" },
+    );
+    if (error) return jsonError(error.message, 500);
+
+    return NextResponse.json({
+      ok: true,
+      message: "Record added to Workbench project.",
+    });
+  }
+
+  if (action === "workbench_create_project") {
+    const title = clean(body.workbenchTitle);
+    if (!title) return jsonError("Project title is required.");
+
+    const { data: project, error: pErr } = await supabase
+      .from("workbench_projects")
+      .insert({
+        owner_id: profile.id,
+        title,
+        project_type: clean(body.project_type) || "custom_project",
+      })
+      .select("id, title")
+      .single();
+
+    if (pErr || !project) return jsonError(pErr?.message ?? "Could not create project.", 500);
+
+    const { error: rErr } = await supabase.from("workbench_project_records").upsert(
+      {
+        project_id: project.id,
+        record_id: recordId,
+        status: "to_review",
+      },
+      { onConflict: "project_id,record_id" },
+    );
+    if (rErr) return jsonError(rErr.message, 500);
+
+    return NextResponse.json({
+      ok: true,
+      message: "Workbench project created and record linked.",
+      workbenchProject: project,
     });
   }
 

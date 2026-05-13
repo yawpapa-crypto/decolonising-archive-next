@@ -2,6 +2,7 @@ import "./globals.css";
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Geist, Geist_Mono } from "next/font/google";
 import AuthHashHandler from "@/src/components/auth/AuthHashHandler";
+import PageLoader from "@/src/components/layout/PageLoader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,6 +23,7 @@ export default function RootLayout({
     <html lang="en" data-scroll-behavior="smooth">
       <body className={`${geistSans.variable} ${geistMono.variable} min-h-full flex flex-col`}>
         <AuthHashHandler />
+        <PageLoader />
         {children}
         <SpeedInsights />
       </body>

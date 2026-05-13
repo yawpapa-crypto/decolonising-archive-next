@@ -289,9 +289,12 @@ export default async function WorkspacePage({
         <span>{search.query}</span>
       </div>
       <div className="workspace-actions-inline member-dashboard-actions">
-        <Link href={`/?q=${encodeURIComponent(search.query)}`} className="workspace-link">
+        <a
+          href={`/?q=${encodeURIComponent(search.query)}`}
+          className="workspace-link"
+        >
           Run search
-        </Link>
+        </a>
         <form action={deleteSavedSearch}>
           <input type="hidden" name="id" value={search.id} />
           {redirectInput(currentSection)}
@@ -366,9 +369,9 @@ export default async function WorkspacePage({
             ) : null}
           </div>
           <div className="member-dashboard-header-actions">
-            <Link href="/library" className="admin-button admin-button-secondary">
+            <a href="/library" className="admin-button admin-button-secondary">
               Browse archive
-            </Link>
+            </a>
             <Link href="/my/lists" className="admin-button">
               Manage lists
             </Link>

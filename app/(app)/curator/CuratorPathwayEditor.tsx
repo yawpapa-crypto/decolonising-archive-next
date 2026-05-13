@@ -43,7 +43,7 @@ export default function CuratorPathwayEditor({
 
   const isDirty = useMemo(() => dirty(draft, pathway), [draft, pathway]);
 
-  const placeholderLink = `${pathwayLinkBase.replace(/\/$/, "")}/#/pathway/${pathway.id}`;
+  const placeholderLink = `${pathwayLinkBase.replace(/\/$/, "")}/pathways/${pathway.id}`;
 
   function runAction(fn: () => Promise<CuratorActionResult>) {
     setFlash(null);

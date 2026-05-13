@@ -67,6 +67,12 @@ export default function MemberDashboardShell({
           <p className="workspace-sidebar-tagline">Decolonising Archive</p>
         </div>
         <nav className="workspace-sidebar-nav member-dashboard-nav" aria-label="Member workspace">
+          <Link
+            href="/my/workbench"
+            className="workspace-sidebar-item member-dashboard-nav-item"
+          >
+            <span>Archive Workbench</span>
+          </Link>
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.id}

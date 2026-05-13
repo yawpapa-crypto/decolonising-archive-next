@@ -21,9 +21,9 @@ export default function AdminPage() {
         </div>
 
         <div className="admin-actions">
-          <Link href="/" className="admin-button admin-button-secondary">
+          <a href="/" className="admin-button admin-button-secondary">
             View site
-          </Link>
+          </a>
           <Link href="/admin/pages" className="admin-button">
             Edit pages
           </Link>
@@ -73,7 +73,7 @@ export default function AdminPage() {
         <div className="admin-stat-card admin-stat-modern">
           <div className="admin-panel-label">Collections</div>
           <div className="admin-stat-row">
-            <div className="admin-stat-number">Themes</div>
+            <div className="admin-stat-number">Knowledge Areas</div>
             <span className="admin-stat-chip">Curated</span>
           </div>
           <div className="admin-stat-text">Editorial grouping and discovery structure</div>
@@ -143,7 +143,7 @@ export default function AdminPage() {
 
         <Link href="/admin/collections" className="admin-panel">
           <div className="admin-panel-label">Collections</div>
-          <h2>Collections and themes</h2>
+          <h2>Collections and knowledge areas</h2>
           <p>Maintain editorial groupings, featured areas, and discovery structure.</p>
         </Link>
 

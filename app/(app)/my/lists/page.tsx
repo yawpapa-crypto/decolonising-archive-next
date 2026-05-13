@@ -209,9 +209,9 @@ export default async function MyListsPage() {
                           Save records from the Library, then return here to export citations
                           as TXT or DOCX.
                         </p>
-                        <Link href="/library" className="workspace-empty-action">
+                        <a href="/library" className="workspace-empty-action">
                           Browse Library
-                        </Link>
+                        </a>
                       </div>
                     )}
                   </div>

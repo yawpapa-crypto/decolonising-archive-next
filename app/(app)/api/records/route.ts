@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/src/lib/supabase";
+import { canPublishRecord, normalizeArchiveRecord } from "@/lib/archive-metadata";
 
 type Entity = { id: string; [key: string]: unknown };
 
@@ -13,7 +14,7 @@ export async function GET() {
     return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
   }
 
-  const records = (data || []).map((row) => row.content);
+  const records = (data || []).map((row) => normalizeArchiveRecord(row.content));
   return NextResponse.json({ ok: true, records });
 }
 
@@ -27,7 +28,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Invalid records payload" }, { status: 400 });
   }
 
-  const payload = (records as Entity[]).map((record) => ({
+  const normalizedRecords = (records as Entity[]).map((record) => {
+    const normalized = normalizeArchiveRecord(record);
+    const publishCheck = canPublishRecord(normalized);
+    if (!publishCheck.ok) {
+      normalized.published = false;
+      if (normalized.status === "Published") normalized.status = "Needs Review";
+      normalized.adminNotes = [
+        normalized.adminNotes,
+        `Missing required publishing metadata: ${publishCheck.missing.join(", ")}`,
+      ].filter(Boolean).join("\n");
+    }
+    return normalized;
+  });
+
+  const payload = normalizedRecords.map((record) => ({
     id: record.id,
     content: record,
     updated_at: new Date().toISOString(),
@@ -41,5 +56,5 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, records: normalizedRecords });
 }

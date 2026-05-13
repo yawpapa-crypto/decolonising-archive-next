@@ -1,52 +1,61 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
+import {
+  ACCESS_TYPES,
+  COMMUNITY_GROUPS,
+  COMMUNITY_REVIEW_STATUSES,
+  CULTURAL_SENSITIVITIES,
+  CURATED_COLLECTIONS,
+  KNOWLEDGE_AREAS,
+  LANGUAGES,
+  LICENCES,
+  PERIODS,
+  RECORD_TYPES,
+  REGIONS,
+  REUSE_PERMISSIONS,
+  RIGHTS_STATUSES,
+  SCRIPTS,
+  SOURCE_TYPES,
+  VERIFICATION_STATUSES,
+  canPublishRecord,
+  getAdminMetadataIssues,
+  normalizeArchiveRecord,
+  type ArchiveRecord,
+} from '@/lib/archive-metadata'
 
-type ArchiveRecord = {
-  id: string
-  title: string
-  type: string
-  creator: string
-  region: string
-  source: string
-  summary: string
-  tags: string[]
-  published: boolean
-  abstract?: string
-  description?: string[]
-  collection?: string
-  institution?: string
-  sourceUrl?: string
-  sourceActionLabel?: string
-  language?: string[]
-  keywords?: string[]
-  notes?: string[]
-  archiveIdentifier?: string
-  recordIdentifier?: string
-}
-
-const blankRecord: ArchiveRecord = {
+const blankRecord: ArchiveRecord = normalizeArchiveRecord({
   id: '',
   title: '',
-  type: '',
-  creator: '',
-  region: '',
-  source: '',
-  summary: '',
-  tags: [],
-  published: true,
-  abstract: '',
-  description: [],
-  collection: '',
-  institution: '',
+  description: '',
+  recordType: [],
+  knowledgeAreas: [],
+  region: [],
+  sourceName: '',
   sourceUrl: '',
-  sourceActionLabel: '',
+  citation: '',
   language: [],
-  keywords: [],
-  notes: [],
-  archiveIdentifier: '',
-  recordIdentifier: '',
-}
+  rightsStatus: 'Rights Unknown',
+  accessType: 'Metadata Only',
+  reusePermission: 'Check Original Source',
+  culturalSensitivity: 'Public',
+  communityReviewStatus: 'Not Required',
+  verificationStatus: 'Provisional',
+  dateAccessed: '',
+  status: 'Draft',
+  published: false,
+})
+
+type MultiField =
+  | 'recordType'
+  | 'knowledgeAreas'
+  | 'curatedCollections'
+  | 'region'
+  | 'country'
+  | 'communityOrCulturalGroup'
+  | 'language'
+  | 'script'
+  | 'period'
 
 export default function AdminRecordsPage() {
   const [records, setRecords] = useState<ArchiveRecord[]>([])
@@ -80,7 +89,7 @@ export default function AdminRecordsPage() {
         const response = await fetch('/api/records', { cache: 'no-store' })
         const data = await response.json()
         if (data?.ok && Array.isArray(data.records)) {
-          setRecords(data.records)
+          setRecords(data.records.map((record: unknown) => normalizeArchiveRecord(record)))
           if (data.records[0]?.id) setSelectedId(data.records[0].id)
         }
       } catch (error) {
@@ -97,18 +106,66 @@ export default function AdminRecordsPage() {
       [
         record.title,
         record.creator,
-        record.region,
-        record.type,
-        record.source,
+        record.region.join(' '),
+        record.recordType.join(' '),
+        record.sourceName,
         record.summary,
-        record.abstract,
-        record.collection,
-        record.institution,
+        record.description,
+        record.curatedCollections?.join(' '),
+        record.knowledgeAreas.join(' '),
+        record.rightsStatus,
+        record.accessType,
+        record.culturalSensitivity,
+        record.verificationStatus,
         (record.tags || []).join(' '),
-        (record.keywords || []).join(' '),
       ].join(' ').toLowerCase().includes(term)
     )
   }, [records, query])
+
+  const reviewStats = useMemo(() => {
+    const counts = {
+      missingRightsStatus: 0,
+      missingSourceUrl: 0,
+      missingCitation: 0,
+      rightsUnknown: 0,
+      culturalReviewNeeded: 0,
+      aiAssisted: 0,
+      provisional: 0,
+      duplicateMetadataTerms: 0,
+      missingLanguage: 0,
+      missingDateAccessed: 0,
+      externalCreativeCommons: 0,
+      externalPublicDomain: 0,
+      externalOpenAccessLicenceMissing: 0,
+      externalRequiresSourceCheck: 0,
+      externalNoRightsMetadata: 0,
+    }
+    records.forEach((record) => {
+      const isExternalRecord = Boolean(
+        record.sourceUrl &&
+        !['Local Bank', 'Decolonising Archive local index', 'African Philosophy Working Library'].includes(record.sourceName || record.source || '')
+      )
+      if (!record.rightsStatus) counts.missingRightsStatus += 1
+      if (!record.sourceUrl) counts.missingSourceUrl += 1
+      if (!record.citation) counts.missingCitation += 1
+      if (record.rightsStatus === 'Rights Unknown') counts.rightsUnknown += 1
+      if (record.culturalSensitivity === 'Community Review Needed') counts.culturalReviewNeeded += 1
+      if (record.aiAssisted || record.verificationStatus === 'AI-Assisted, Needs Review') counts.aiAssisted += 1
+      if (record.verificationStatus === 'Provisional' || record.status === 'Provisional') counts.provisional += 1
+      if (!record.language.length) counts.missingLanguage += 1
+      if (!record.dateAccessed) counts.missingDateAccessed += 1
+      const areaSlugs = record.knowledgeAreas.map((area) => area.toLowerCase())
+      if (new Set(areaSlugs).size !== areaSlugs.length) counts.duplicateMetadataTerms += 1
+      if (isExternalRecord && record.rightsStatus === 'Creative Commons') counts.externalCreativeCommons += 1
+      if (isExternalRecord && record.rightsStatus === 'Public Domain') counts.externalPublicDomain += 1
+      if (isExternalRecord && record.rightsStatus === 'Open Access' && (!record.licence || record.licence === 'Check source')) {
+        counts.externalOpenAccessLicenceMissing += 1
+      }
+      if (isExternalRecord && record.rightsStatus === 'Check source') counts.externalRequiresSourceCheck += 1
+      if (isExternalRecord && !record.rightsStatus && !record.licence && !record.rightsStatementUri) counts.externalNoRightsMetadata += 1
+    })
+    return counts
+  }, [records])
 
   const selectedRecord =
     records.find((record) => record.id === selectedId) ||
@@ -122,22 +179,33 @@ export default function AdminRecordsPage() {
   function updateRecord<K extends keyof ArchiveRecord>(field: K, value: ArchiveRecord[K]) {
     setRecords((current) =>
       current.map((record) =>
-        record.id === selectedRecord?.id ? { ...record, [field]: value } : record
+        record.id === selectedRecord?.id ? normalizeArchiveRecord({ ...record, [field]: value }) : record
       )
     )
   }
 
-  function updateListField(field: 'tags' | 'language' | 'keywords' | 'notes' | 'description', raw: string) {
+  function updateListField(field: MultiField | 'tags' | 'notes' | 'alternativeTitles', raw: string) {
     const values = raw
-      .split(field === 'description' ? '\n' : ',')
+      .split(',')
       .map((item) => item.trim())
       .filter(Boolean)
     updateRecord(field, values)
   }
 
+  function updateDescription(raw: string) {
+    updateRecord('description', raw)
+  }
+
+  function toggleListValue(field: MultiField, value: string) {
+    const current = new Set(selectedRecord?.[field] || [])
+    if (current.has(value)) current.delete(value)
+    else current.add(value)
+    updateRecord(field, Array.from(current) as ArchiveRecord[typeof field])
+  }
+
   function addNewRecord() {
     const newId = `l${String(Date.now()).slice(-6)}`
-    const next = { ...blankRecord, id: newId, title: 'Untitled record' }
+    const next = normalizeArchiveRecord({ ...blankRecord, id: newId, title: 'Untitled record', createdAt: new Date().toISOString() })
     setRecords((current) => [next, ...current])
     setSelectedId(newId)
   }
@@ -152,6 +220,7 @@ export default function AdminRecordsPage() {
       })
       const data = await response.json()
       if (!response.ok || !data?.ok) throw new Error('Save failed')
+      if (Array.isArray(data.records)) setRecords(data.records.map((record: unknown) => normalizeArchiveRecord(record)))
       setStatus('Saved')
       window.setTimeout(() => setStatus(''), 2000)
     } catch (error) {
@@ -159,6 +228,31 @@ export default function AdminRecordsPage() {
       setStatus('Save failed')
     }
   }
+
+  function renderCheckboxGroup(label: string, field: MultiField, options: readonly string[]) {
+    if (!selectedRecord) return null
+    const selected = new Set(selectedRecord[field] || [])
+    return (
+      <div className="admin-field admin-checkbox-group">
+        <span>{label}</span>
+        <div className="admin-checkbox-grid">
+          {options.map((option) => (
+            <label key={option} className="admin-check admin-check-compact">
+              <input
+                type="checkbox"
+                checked={selected.has(option)}
+                onChange={() => toggleListValue(field, option)}
+              />
+              <span>{option}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  const publishCheck = selectedRecord ? canPublishRecord(selectedRecord) : { ok: false, missing: [] }
+  const selectedIssues = selectedRecord ? getAdminMetadataIssues(selectedRecord) : []
 
   return (
     <div className="admin-editor">
@@ -182,6 +276,31 @@ export default function AdminRecordsPage() {
 
       {status ? <p className="admin-save-status">{status}</p> : null}
 
+      <section className="admin-review-dashboard" aria-label="Metadata review dashboard">
+        {[
+          ['Missing rights status', reviewStats.missingRightsStatus],
+          ['Missing source URL', reviewStats.missingSourceUrl],
+          ['Missing citation', reviewStats.missingCitation],
+          ['Rights unknown', reviewStats.rightsUnknown],
+          ['Cultural review needed', reviewStats.culturalReviewNeeded],
+          ['AI-assisted', reviewStats.aiAssisted],
+          ['Provisional', reviewStats.provisional],
+          ['Duplicate metadata terms', reviewStats.duplicateMetadataTerms],
+          ['Missing language', reviewStats.missingLanguage],
+          ['Missing date accessed', reviewStats.missingDateAccessed],
+          ['External Creative Commons licence', reviewStats.externalCreativeCommons],
+          ['External Public Domain', reviewStats.externalPublicDomain],
+          ['External OA, licence missing', reviewStats.externalOpenAccessLicenceMissing],
+          ['External requiring source check', reviewStats.externalRequiresSourceCheck],
+          ['External no rights metadata', reviewStats.externalNoRightsMetadata],
+        ].map(([label, count]) => (
+          <div className="admin-review-stat" key={label}>
+            <strong>{count}</strong>
+            <span>{label}</span>
+          </div>
+        ))}
+      </section>
+
       <div className="admin-records-layout">
         <aside className="admin-records-list">
           <div className="admin-panel-label">Record list</div>
@@ -202,8 +321,8 @@ export default function AdminRecordsPage() {
               >
                 <strong>{record.title}</strong>
                 <div className="admin-record-item-meta">
-                  <span>{record.type}</span>
-                  <span>{record.region}</span>
+                  <span>{record.recordType.join(', ')}</span>
+                  <span>{record.region.join(', ')}</span>
                 </div>
               </button>
             ))}
@@ -216,43 +335,101 @@ export default function AdminRecordsPage() {
               <div className="admin-record-section">
                 <div className="admin-panel-label">Core metadata</div>
                 <label className="admin-field"><span>Title</span><input type="text" value={selectedRecord.title} onChange={(e) => updateRecord('title', e.target.value)} /></label>
-                <label className="admin-field"><span>Creator</span><input type="text" value={selectedRecord.creator} onChange={(e) => updateRecord('creator', e.target.value)} /></label>
+                <label className="admin-field"><span>Creator</span><input type="text" value={selectedRecord.creator || ''} onChange={(e) => updateRecord('creator', e.target.value)} /></label>
+                <label className="admin-field"><span>Alternative titles</span><input type="text" value={(selectedRecord.alternativeTitles || []).join(', ')} onChange={(e) => updateListField('alternativeTitles', e.target.value)} /></label>
+                {renderCheckboxGroup('Record Type', 'recordType', RECORD_TYPES)}
+                {renderCheckboxGroup('Knowledge Area', 'knowledgeAreas', KNOWLEDGE_AREAS)}
+                {renderCheckboxGroup('Region', 'region', REGIONS)}
                 <div className="admin-split-fields">
-                  <label className="admin-field"><span>Type</span><input type="text" value={selectedRecord.type} onChange={(e) => updateRecord('type', e.target.value)} /></label>
-                  <label className="admin-field"><span>Region</span><input type="text" value={selectedRecord.region} onChange={(e) => updateRecord('region', e.target.value)} /></label>
+                  <label className="admin-field"><span>Country</span><input type="text" value={(selectedRecord.country || []).join(', ')} onChange={(e) => updateListField('country', e.target.value)} /></label>
+                  <label className="admin-field"><span>Community / Cultural Group</span><input type="text" value={(selectedRecord.communityOrCulturalGroup || []).join(', ')} onChange={(e) => updateListField('communityOrCulturalGroup', e.target.value)} list="community-options" /></label>
                 </div>
-                <label className="admin-field"><span>Source</span><input type="text" value={selectedRecord.source} onChange={(e) => updateRecord('source', e.target.value)} /></label>
-                <label className="admin-field"><span>Collection</span><input type="text" value={selectedRecord.collection || ''} onChange={(e) => updateRecord('collection', e.target.value)} /></label>
-                <label className="admin-field"><span>Institution</span><input type="text" value={selectedRecord.institution || ''} onChange={(e) => updateRecord('institution', e.target.value)} /></label>
+                <datalist id="community-options">{COMMUNITY_GROUPS.map((group) => <option key={group} value={group} />)}</datalist>
+                {renderCheckboxGroup('Curated Collection', 'curatedCollections', CURATED_COLLECTIONS)}
               </div>
 
               <div className="admin-record-section">
                 <div className="admin-panel-label">Narrative content</div>
-                <label className="admin-field"><span>Abstract</span><textarea rows={4} value={selectedRecord.abstract || ''} onChange={(e) => updateRecord('abstract', e.target.value)} /></label>
-                <label className="admin-field"><span>Summary</span><textarea rows={6} value={selectedRecord.summary} onChange={(e) => updateRecord('summary', e.target.value)} /></label>
-                <label className="admin-field"><span>Description paragraphs</span><textarea rows={8} value={(selectedRecord.description || []).join('\n')} onChange={(e) => updateListField('description', e.target.value)} /></label>
+                <label className="admin-field"><span>Summary</span><textarea rows={4} value={selectedRecord.summary || ''} onChange={(e) => updateRecord('summary', e.target.value)} /></label>
+                <label className="admin-field"><span>Description</span><textarea rows={8} value={selectedRecord.description || ''} onChange={(e) => updateDescription(e.target.value)} /></label>
               </div>
 
               <div className="admin-record-section">
-                <div className="admin-panel-label">Discovery and linking</div>
-                <label className="admin-field"><span>Tags</span><input type="text" value={(selectedRecord.tags || []).join(', ')} onChange={(e) => updateListField('tags', e.target.value)} /></label>
-                <label className="admin-field"><span>Languages</span><input type="text" value={(selectedRecord.language || []).join(', ')} onChange={(e) => updateListField('language', e.target.value)} /></label>
-                <label className="admin-field"><span>Keywords</span><input type="text" value={(selectedRecord.keywords || []).join(', ')} onChange={(e) => updateListField('keywords', e.target.value)} /></label>
-                <label className="admin-field"><span>Source URL</span><input type="text" value={selectedRecord.sourceUrl || ''} onChange={(e) => updateRecord('sourceUrl', e.target.value)} /></label>
-                <label className="admin-field"><span>Source action label</span><input type="text" value={selectedRecord.sourceActionLabel || ''} onChange={(e) => updateRecord('sourceActionLabel', e.target.value)} /></label>
-              </div>
-
-              <div className="admin-record-section">
-                <div className="admin-panel-label">Editorial notes and identifiers</div>
-                <label className="admin-field"><span>Notes</span><textarea rows={5} value={(selectedRecord.notes || []).join('\n')} onChange={(e) => updateListField('notes', e.target.value)} /></label>
+                <div className="admin-panel-label">Language, date and source</div>
+                {renderCheckboxGroup('Language', 'language', LANGUAGES)}
+                {renderCheckboxGroup('Script / Writing System', 'script', SCRIPTS)}
+                {renderCheckboxGroup('Date / Period', 'period', PERIODS)}
                 <div className="admin-split-fields">
-                  <label className="admin-field"><span>Archive identifier</span><input type="text" value={selectedRecord.archiveIdentifier || ''} onChange={(e) => updateRecord('archiveIdentifier', e.target.value)} /></label>
-                  <label className="admin-field"><span>Record identifier</span><input type="text" value={selectedRecord.recordIdentifier || ''} onChange={(e) => updateRecord('recordIdentifier', e.target.value)} /></label>
+                  <label className="admin-field"><span>Date created</span><input type="text" value={selectedRecord.dateCreated || ''} onChange={(e) => updateRecord('dateCreated', e.target.value)} /></label>
+                  <label className="admin-field"><span>Date published</span><input type="text" value={selectedRecord.datePublished || ''} onChange={(e) => updateRecord('datePublished', e.target.value)} /></label>
+                </div>
+                <div className="admin-split-fields">
+                  <label className="admin-field"><span>Date digitised</span><input type="text" value={selectedRecord.dateDigitised || ''} onChange={(e) => updateRecord('dateDigitised', e.target.value)} /></label>
+                  <label className="admin-field"><span>Date accessed</span><input type="date" value={selectedRecord.dateAccessed || ''} onChange={(e) => updateRecord('dateAccessed', e.target.value)} /></label>
+                </div>
+                <label className="admin-field"><span>Source name</span><input type="text" value={selectedRecord.sourceName} onChange={(e) => updateRecord('sourceName', e.target.value)} /></label>
+                <label className="admin-field"><span>Source URL</span><input type="url" value={selectedRecord.sourceUrl} onChange={(e) => updateRecord('sourceUrl', e.target.value)} /></label>
+                <label className="admin-field"><span>Citation</span><textarea rows={3} value={selectedRecord.citation} onChange={(e) => updateRecord('citation', e.target.value)} /></label>
+                <label className="admin-field"><span>Source Type</span><select value={selectedRecord.sourceType || ''} onChange={(e) => updateRecord('sourceType', e.target.value)}><option value="">Select source type</option>{SOURCE_TYPES.map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
+              </div>
+
+              <div className="admin-record-section">
+                <div className="admin-panel-label">Rights and access</div>
+                <div className="admin-split-fields">
+                  <label className="admin-field"><span>Rights Status</span><select value={selectedRecord.rightsStatus} onChange={(e) => updateRecord('rightsStatus', e.target.value)}>{RIGHTS_STATUSES.map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
+                  <label className="admin-field"><span>Licence</span><select value={selectedRecord.licence || ''} onChange={(e) => updateRecord('licence', e.target.value)}><option value="">Select licence</option>{LICENCES.map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
+                </div>
+                <div className="admin-split-fields">
+                  <label className="admin-field"><span>Access Type</span><select value={selectedRecord.accessType} onChange={(e) => updateRecord('accessType', e.target.value)}>{ACCESS_TYPES.map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
+                  <label className="admin-field"><span>Reuse Permission</span><select value={selectedRecord.reusePermission || ''} onChange={(e) => updateRecord('reusePermission', e.target.value)}>{REUSE_PERMISSIONS.map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
+                </div>
+                <label className="admin-field"><span>Rights holder</span><input type="text" value={selectedRecord.rightsHolder || ''} onChange={(e) => updateRecord('rightsHolder', e.target.value)} /></label>
+                <label className="admin-field"><span>Rights statement URI</span><input type="url" value={selectedRecord.rightsStatementUri || ''} onChange={(e) => updateRecord('rightsStatementUri', e.target.value)} /></label>
+                <label className="admin-field"><span>Copyright note</span><textarea rows={3} value={selectedRecord.copyrightNote || ''} onChange={(e) => updateRecord('copyrightNote', e.target.value)} /></label>
+              </div>
+
+              <div className="admin-record-section">
+                <div className="admin-panel-label">Cultural protocol and review</div>
+                <div className="admin-split-fields">
+                  <label className="admin-field"><span>Cultural Sensitivity</span><select value={selectedRecord.culturalSensitivity} onChange={(e) => updateRecord('culturalSensitivity', e.target.value)}>{CULTURAL_SENSITIVITIES.map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
+                  <label className="admin-field"><span>Community Review Status</span><select value={selectedRecord.communityReviewStatus || ''} onChange={(e) => updateRecord('communityReviewStatus', e.target.value)}>{COMMUNITY_REVIEW_STATUSES.map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
+                </div>
+                <label className="admin-field"><span>Traditional owners or knowledge holders</span><input type="text" value={selectedRecord.traditionalOwnersOrKnowledgeHolders || ''} onChange={(e) => updateRecord('traditionalOwnersOrKnowledgeHolders', e.target.value)} /></label>
+                <label className="admin-field"><span>Cultural protocol note</span><textarea rows={3} value={selectedRecord.culturalProtocolNote || ''} onChange={(e) => updateRecord('culturalProtocolNote', e.target.value)} /></label>
+                <label className="admin-field"><span>Reparative description note</span><textarea rows={3} value={selectedRecord.reparativeDescriptionNote || ''} onChange={(e) => updateRecord('reparativeDescriptionNote', e.target.value)} /></label>
+                <div className="admin-split-fields">
+                  <label className="admin-field"><span>Local Contexts Label</span><input type="text" value={selectedRecord.localContextsLabel || ''} onChange={(e) => updateRecord('localContextsLabel', e.target.value)} /></label>
+                  <label className="admin-field"><span>Local Contexts Notice</span><input type="text" value={selectedRecord.localContextsNotice || ''} onChange={(e) => updateRecord('localContextsNotice', e.target.value)} /></label>
                 </div>
                 <label className="admin-check">
-                  <input type="checkbox" checked={selectedRecord.published} onChange={(e) => updateRecord('published', e.target.checked)} />
-                  <span>Published</span>
+                  <input type="checkbox" checked={Boolean(selectedRecord.colonialLanguageWarning)} onChange={(e) => updateRecord('colonialLanguageWarning', e.target.checked)} />
+                  <span>Colonial language warning</span>
                 </label>
+              </div>
+
+              <div className="admin-record-section">
+                <div className="admin-panel-label">Verification and admin review</div>
+                <div className="admin-split-fields">
+                  <label className="admin-field"><span>Verification Status</span><select value={selectedRecord.verificationStatus} onChange={(e) => updateRecord('verificationStatus', e.target.value)}>{VERIFICATION_STATUSES.map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
+                  <label className="admin-field"><span>Status</span><select value={selectedRecord.status || 'Draft'} onChange={(e) => updateRecord('status', e.target.value as ArchiveRecord['status'])}><option>Draft</option><option>Provisional</option><option>Needs Review</option><option>Published</option></select></label>
+                </div>
+                <div className="admin-check-row">
+                  <label className="admin-check"><input type="checkbox" checked={Boolean(selectedRecord.sourceChecked)} onChange={(e) => updateRecord('sourceChecked', e.target.checked)} /><span>Source checked</span></label>
+                  <label className="admin-check"><input type="checkbox" checked={Boolean(selectedRecord.rightsChecked)} onChange={(e) => updateRecord('rightsChecked', e.target.checked)} /><span>Rights checked</span></label>
+                  <label className="admin-check"><input type="checkbox" checked={Boolean(selectedRecord.metadataReviewed)} onChange={(e) => updateRecord('metadataReviewed', e.target.checked)} /><span>Metadata reviewed</span></label>
+                  <label className="admin-check"><input type="checkbox" checked={Boolean(selectedRecord.aiAssisted)} onChange={(e) => updateRecord('aiAssisted', e.target.checked)} /><span>AI-assisted record</span></label>
+                </div>
+                <label className="admin-field"><span>Tags</span><input type="text" value={(selectedRecord.tags || []).join(', ')} onChange={(e) => updateListField('tags', e.target.value)} /></label>
+                <label className="admin-field"><span>Notes</span><textarea rows={5} value={(selectedRecord.notes || []).join('\n')} onChange={(e) => updateListField('notes', e.target.value)} /></label>
+                <div className="admin-split-fields">
+                  <label className="admin-field"><span>Identifier</span><input type="text" value={selectedRecord.identifier || ''} onChange={(e) => updateRecord('identifier', e.target.value)} /></label>
+                  <label className="admin-field"><span>DOI</span><input type="text" value={selectedRecord.doi || ''} onChange={(e) => updateRecord('doi', e.target.value)} /></label>
+                </div>
+                <label className="admin-check">
+                  <input type="checkbox" checked={selectedRecord.status === 'Published'} onChange={(e) => updateRecord('status', e.target.checked ? 'Published' : 'Needs Review')} />
+                  <span>Request public publishing</span>
+                </label>
+                {!publishCheck.ok ? <div className="admin-warning">Cannot publish yet: {publishCheck.missing.join(', ')}</div> : null}
               </div>
             </>
           ) : (
@@ -264,14 +441,20 @@ export default function AdminRecordsPage() {
           <div className="admin-panel-label">Preview</div>
           {selectedRecord ? (
             <div className="admin-preview-card admin-preview-card-sticky">
-              <p className="admin-preview-eyebrow">{selectedRecord.type}</p>
+              <p className="admin-preview-eyebrow">{selectedRecord.recordType.join(', ')}</p>
               <h2>{selectedRecord.title}</h2>
               <p>{selectedRecord.creator}</p>
-              {selectedRecord.abstract ? <p>{selectedRecord.abstract}</p> : null}
-              <p>{selectedRecord.summary}</p>
+              <p>{selectedRecord.summary || selectedRecord.description}</p>
+              <div className="admin-warning-list">
+                {selectedIssues.map((issue) => <span key={issue}>{issue}</span>)}
+              </div>
               <div className="admin-preview-meta">
-                {selectedRecord.region ? <span>{selectedRecord.region}</span> : null}
-                {selectedRecord.source ? <span>{selectedRecord.source}</span> : null}
+                {selectedRecord.region.length ? <span>{selectedRecord.region.join(', ')}</span> : null}
+                {selectedRecord.sourceName ? <span>{selectedRecord.sourceName}</span> : null}
+                <span>{selectedRecord.rightsStatus}</span>
+                <span>{selectedRecord.accessType}</span>
+                <span>{selectedRecord.verificationStatus}</span>
+                {selectedRecord.culturalSensitivity !== 'Public' ? <span>{selectedRecord.culturalSensitivity}</span> : null}
                 {(selectedRecord.tags || []).map((tag) => (
                   <span key={tag}>{tag}</span>
                 ))}

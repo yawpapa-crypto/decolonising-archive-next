@@ -6,14 +6,49 @@
 //
 // The mobile menu mirrors the same options inline.
 //
-// Note on link tags: hash-style routes (/#/home, /#/library, etc.) target the
-// SPA hash router in /assets/js/app.js, NOT Next pages — they must stay as
-// plain <a>. Real Next routes use next/link.
+// Public archive top nav uses plain <a> plus hardNavigateToArchive() so
+// dashboard/member sessions always perform a full document load. Legacy
+// app.js archive routing only handles clicks inside #app (see app.js).
 
 import Link from "next/link";
-import { Bell, Bookmark, ListChecks } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { Bell, Bookmark, Layers, ListChecks } from "lucide-react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type MouseEvent as ReactMouseEvent,
+} from "react";
 import type { MemberNavSummary } from "@/src/lib/member-nav";
+
+/** Next.js client areas: force full document load into the legacy archive shell. */
+function isNonArchiveShellPath(pathname: string) {
+  return (
+    pathname.startsWith("/my") ||
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/auth") ||
+    pathname.startsWith("/workspace") ||
+    pathname.startsWith("/curator") ||
+    pathname.startsWith("/signin") ||
+    pathname.startsWith("/signup") ||
+    pathname.startsWith("/reset-password") ||
+    pathname.startsWith("/community")
+  );
+}
+
+function hardNavigateToArchive(
+  event: ReactMouseEvent<HTMLAnchorElement>,
+  href: string,
+) {
+  if (typeof window === "undefined") return;
+  if (isNonArchiveShellPath(window.location.pathname)) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("app:loading:start"));
+    }
+    window.location.assign(href);
+  }
+}
 
 export type NavProfile = {
   email: string | null;
@@ -78,10 +113,10 @@ export default function NavbarClient({
       setOpen(false);
       setMenuOpen(false);
     };
-    window.addEventListener("hashchange", closeMenu);
+    window.addEventListener("popstate", closeMenu);
     window.addEventListener("resize", closeMenu);
     return () => {
-      window.removeEventListener("hashchange", closeMenu);
+      window.removeEventListener("popstate", closeMenu);
       window.removeEventListener("resize", closeMenu);
     };
   }, []);
@@ -168,18 +203,46 @@ export default function NavbarClient({
   return (
     <nav className="nav">
       <div className="nav-inner">
-        {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- hash route targeting SPA router in /assets/js/app.js */}
-        <a href="/#/home" className="nav-logo" onClick={handleNavClick}>
+        <a
+          href="/home"
+          className="nav-logo"
+          onClick={(e) => {
+            hardNavigateToArchive(e, "/home");
+            handleNavClick();
+          }}
+        >
           DECOLONISING ARCHIVE
         </a>
 
         <div className="nav-links">
-          {/* eslint-disable @next/next/no-html-link-for-pages -- hash routes targeting SPA router */}
-          <a href="/#/home" className="nav-link">Home</a>
-          <a href="/#/library" className="nav-link">Library</a>
-          <a href="/#/sources" className="nav-link">Sources</a>
-          <a href="/#/about" className="nav-link">About</a>
-          {/* eslint-enable @next/next/no-html-link-for-pages */}
+          <a
+            href="/home"
+            className="nav-link"
+            onClick={(e) => hardNavigateToArchive(e, "/home")}
+          >
+            Home
+          </a>
+          <a
+            href="/library"
+            className="nav-link"
+            onClick={(e) => hardNavigateToArchive(e, "/library")}
+          >
+            Library
+          </a>
+          <a
+            href="/sources"
+            className="nav-link"
+            onClick={(e) => hardNavigateToArchive(e, "/sources")}
+          >
+            Sources
+          </a>
+          <a
+            href="/about"
+            className="nav-link"
+            onClick={(e) => hardNavigateToArchive(e, "/about")}
+          >
+            About
+          </a>
         </div>
 
         {profile ? (
@@ -231,6 +294,21 @@ export default function NavbarClient({
                       : memberCounts.readingListsCount}
                   </span>
                 ) : null}
+              </Link>
+              <Link
+                href="/my/workbench"
+                className="member-quick-nav-link"
+                aria-label="Archive Workbench"
+                title="Archive Workbench"
+                onClick={handleNavClick}
+              >
+                <Layers
+                  className="member-quick-nav-icon"
+                  size={18}
+                  strokeWidth={2}
+                  aria-hidden
+                />
+                <span className="sr-only">Archive Workbench</span>
               </Link>
               <Link
                 href="/workspace?section=notifications"
@@ -304,6 +382,14 @@ export default function NavbarClient({
                   >
                     Member workspace
                   </Link>
+                  <Link
+                    href="/my/workbench"
+                    className="nav-avatar-link"
+                    role="menuitem"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Archive Workbench
+                  </Link>
                   {isCuratorOrAbove ? (
                     <Link
                       href="/curator"
@@ -368,12 +454,46 @@ export default function NavbarClient({
           </button>
         </div>
 
-        {/* eslint-disable @next/next/no-html-link-for-pages -- hash routes targeting SPA router */}
-        <a href="/#/home" className="nav-link" onClick={handleNavClick}>Home</a>
-        <a href="/#/library" className="nav-link" onClick={handleNavClick}>Library</a>
-        <a href="/#/sources" className="nav-link" onClick={handleNavClick}>Sources</a>
-        <a href="/#/about" className="nav-link" onClick={handleNavClick}>About</a>
-        {/* eslint-enable @next/next/no-html-link-for-pages */}
+        <a
+          href="/home"
+          className="nav-link"
+          onClick={(e) => {
+            hardNavigateToArchive(e, "/home");
+            handleNavClick();
+          }}
+        >
+          Home
+        </a>
+        <a
+          href="/library"
+          className="nav-link"
+          onClick={(e) => {
+            hardNavigateToArchive(e, "/library");
+            handleNavClick();
+          }}
+        >
+          Library
+        </a>
+        <a
+          href="/sources"
+          className="nav-link"
+          onClick={(e) => {
+            hardNavigateToArchive(e, "/sources");
+            handleNavClick();
+          }}
+        >
+          Sources
+        </a>
+        <a
+          href="/about"
+          className="nav-link"
+          onClick={(e) => {
+            hardNavigateToArchive(e, "/about");
+            handleNavClick();
+          }}
+        >
+          About
+        </a>
         {profile ? (
           <>
             <div
@@ -410,6 +530,14 @@ export default function NavbarClient({
                       : memberCounts.readingListsCount}
                   </span>
                 ) : null}
+              </Link>
+              <Link
+                href="/my/workbench"
+                className="nav-link nav-mobile-member-link"
+                onClick={handleNavClick}
+                aria-label="Archive Workbench"
+              >
+                <span>Workbench</span>
               </Link>
               <Link
                 href="/workspace?section=notifications"
@@ -460,21 +588,13 @@ export default function NavbarClient({
       {profile ? (
         <nav className="member-mobile-bottom-nav" aria-label="Member quick navigation">
           <a
-            href="/#/library"
+            href="/library"
             className="member-mobile-bottom-nav__item"
             aria-label="Open library"
-            onClick={(event) => {
-              event.preventDefault();
+            onClick={(e) => {
+              hardNavigateToArchive(e, "/library");
               setOpen(false);
               setMenuOpen(false);
-
-              if (window.location.pathname !== "/") {
-                window.location.href = "/#/library";
-                return;
-              }
-
-              window.location.hash = "#/library";
-              window.dispatchEvent(new HashChangeEvent("hashchange"));
             }}
           >
             <span className="member-mobile-bottom-nav__icon" aria-hidden="true">⌕</span>

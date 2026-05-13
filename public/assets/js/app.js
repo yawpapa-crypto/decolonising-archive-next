@@ -610,16 +610,16 @@ const INTERNAL_ARCHITECTURE_PATHWAYS = [
   ["Working-library filename import","Local shelf import used to widen book and philosophy discovery in a static environment."],
   ["Static metadata normalisation layer","Normalises heterogeneous fields into a consistent record model."],
   ["Rights and provenance enrichment","Adds rights, custodianship, and provenance context where available."],
-  ["Related search expansion engine","Generates adjacent discovery routes from themes, places, languages, and source pathways."],
+  ["Related search expansion engine","Generates adjacent discovery routes from knowledge areas, places, languages, and source pathways."],
   ["Variant spelling resolver","Supports alternate spellings, transliteration differences, and naming variations."],
   ["Multilingual alias layer","Maps language, community, and regional variants into shared discovery pathways."],
   ["Collection pathway builder","Constructs editorial browse routes from regional, thematic, and format taxonomies."],
-  ["Theme registry","Maintains the expanded intellectual taxonomy that drives discovery and browse."],
+  ["Knowledge area registry","Maintains the expanded intellectual taxonomy that drives discovery and browse."],
   ["Historical geography mapper","Links current countries, territories, and historical geographies in search logic."],
   ["Language family registry","Supports language-aware discovery across multilingual metadata and script traditions."],
   ["Institution lookup cache","Stores source institution descriptors for outbound routing and context."],
   ["Citation enrichment layer","Builds portable citation text for local and imported records."],
-  ["Related-record graph","Connects records by theme, tag, concept, region, and collection."],
+  ["Related-record graph","Connects records by knowledge area, tag, concept, region, and collection."],
   ["Media fallback layer","Ensures missing images or media do not break the detail layout."],
   ["Static search index builder","Bundles search-friendly metadata directly into the shipped HTML."],
   ["Zero-result recovery layer","Uses related searches and source handoffs to recover from dead-end queries."],
@@ -629,7 +629,7 @@ const INTERNAL_ARCHITECTURE_PATHWAYS = [
   ["Record link resolver","Coordinates internal record detail links and outbound source links."],
   ["Query expansion dictionary","Expands core archive terms into nearby intellectual and regional vocabularies."],
   ["Collection coverage estimator","Derives collection scale from record, theme, and source overlap."],
-  ["Taxonomy maintenance pathway","Keeps themes, collections, countries, and languages aligned as the archive grows."]
+  ["Taxonomy maintenance pathway","Keeps knowledge areas, collections, countries, and languages aligned as the archive grows."]
 ].map((item, index) => ({
   id:`si${String(index + 1).padStart(3,"0")}`,
   name:item[0],
@@ -680,12 +680,14 @@ let selectedRecordId = null;
 let citationStyle = "apa";
 let libraryQuery = "";
 let localResults = [];
-let filterType = "";
-let filterRegion = "";
-let filterCat = "";
-let filterTheme = "";
-let filterCollection = "";
-let filterLanguage = "";
+let metadataFilters = {};
+let quickFilters = {
+  openAccess:false,
+  verified:false,
+  hideSensitive:false,
+  metadataOnly:false,
+  needsReview:false
+};
 let sourceMode = true;
 let externalDiscovery = [];
 let debounceTimer = null;
@@ -694,6 +696,8 @@ let activeSuggestionIndex = -1;
 let recentSearches = [];
 let recordWorkspaceState = {};
 let cardListComposerState = {};
+let cardWorkbenchComposerState = {};
+let cardDrawerOpenState = {};
 
 function dispatchMemberNavUpdate(detail) {
   try {
@@ -708,8 +712,331 @@ let locationSearchHydrated = false;
 
 const SOURCE_MAP = new Map(SOURCES.map(source => [source.name, source]));
 
+const METADATA_VOCABULARY = {
+  recordType:["Architecture / Built Work","Archival Document","Artefact","Book","Book Chapter","Exhibition Record","Image","Institutional Record","Journal Article","Manuscript","Oral History","Performance / Sonic Record","Poster","Reference Volume","Teaching Resource","Textile","Website / Digital Resource","Dataset / Metadata Record"],
+  knowledgeAreas:["African Philosophy","Architecture and Space","Craft and Making","Decolonial Theory","Design History","Education and Pedagogy","Environmental Knowledge","Epistemology","Food Systems","Gender and Feminist Thought","Governance and Civic Life","Indigenous Knowledge Systems","Informal Economies","Language and Writing Systems","Material Culture","Music and Performance","Oral Tradition","Political Thought","Spiritual Practice","Textile Knowledge","Visual Culture"],
+  region:["Africa-wide / Pan-African","North Africa","West Africa","Central Africa","East Africa","Southern Africa","Sahel","African Diaspora","Global / Comparative"],
+  language:["English","French","Arabic","Portuguese","Yoruba","Hausa","Swahili","Akan / Twi","Amharic","Other African Language","Multiple Languages","Unknown"],
+  script:["Latin","Arabic","Ajami","Ge'ez","Nsibidi","Tifinagh","N'Ko","Vai","Other","Unknown"],
+  period:["Precolonial","Colonial","Independence Era","Postcolonial","Contemporary","Unknown / Undated"],
+  curatedCollections:["African Philosophy Working Library","Decolonial Theory Canon","African Material Culture","Architecture Beyond Colonialism","Manuscripts & Precolonial Texts","West African Oral Traditions","Liberation Movement Graphics"],
+  rightsStatus:["Public Domain","Creative Commons","Open Access","In Copyright","Permission Granted","Metadata Only","Link Only","Rights Unknown","Restricted / Sensitive","Review Required","Check source"],
+  licence:["CC0","CC BY","CC BY 4.0","CC BY-SA","CC BY-NC","CC BY-NC-SA","CC BY-ND","CC BY-NC-ND","Public Domain Mark","RightsStatements.org URI","All Rights Reserved","Check source","Unknown","Custom / Other"],
+  accessType:["Full Text Available","Download Available","Read Online","Image Available","Thumbnail Only","External Link Only","Metadata Only","Restricted Access","Requires Permission","Community Review Required","Check Source"],
+  reusePermission:["Reuse Allowed with Attribution","Non-Commercial Reuse Only","Educational Use Only","No Reuse Without Permission","Check Original Source","Unknown"],
+  culturalSensitivity:["Public","Context Required","Sensitive","Community Review Needed","Restricted","Do Not Display Media","Takedown / Review Requested"],
+  communityReviewStatus:["Not Required","Not Reviewed","Review Requested","Community Reviewed","Restricted by Community","Do Not Publish"],
+  verificationStatus:["Verified","Source Checked","Rights Checked","External Source","Metadata Reviewed","AI-Assisted, Needs Review","Community Submitted","Unverified","Provisional","Needs Correction","Duplicate Suspected","Takedown Requested"],
+  sourceType:["Museum / Gallery","Library Catalogue","Archive","Journal Database","University Repository","Book Publisher","Community Submission","Government Source","NGO / Cultural Organisation","Researcher Submitted","Web Resource","AI-Assisted Discovery"]
+};
+
+const METADATA_FILTER_GROUPS = [
+  {key:"sourceOrigin", label:"Source Origin", options:["Archive","External Source"]},
+  {key:"recordType", label:"Record Type", options:METADATA_VOCABULARY.recordType},
+  {key:"knowledgeAreas", label:"Knowledge Area", options:METADATA_VOCABULARY.knowledgeAreas},
+  {key:"region", label:"Region", options:METADATA_VOCABULARY.region},
+  {key:"country", label:"Country", dynamic:true},
+  {key:"communityOrCulturalGroup", label:"Community / Cultural Group", dynamic:true},
+  {key:"language", label:"Language", options:METADATA_VOCABULARY.language},
+  {key:"script", label:"Script / Writing System", options:METADATA_VOCABULARY.script},
+  {key:"period", label:"Date / Period", options:METADATA_VOCABULARY.period},
+  {key:"curatedCollections", label:"Curated Collection", options:METADATA_VOCABULARY.curatedCollections},
+  {key:"rightsStatus", label:"Rights Status", options:METADATA_VOCABULARY.rightsStatus},
+  {key:"licence", label:"Licence", options:METADATA_VOCABULARY.licence},
+  {key:"accessType", label:"Access Type", options:METADATA_VOCABULARY.accessType},
+  {key:"reusePermission", label:"Reuse Permission", options:METADATA_VOCABULARY.reusePermission},
+  {key:"culturalSensitivity", label:"Cultural Sensitivity", options:METADATA_VOCABULARY.culturalSensitivity},
+  {key:"communityReviewStatus", label:"Community Review Status", options:METADATA_VOCABULARY.communityReviewStatus},
+  {key:"verificationStatus", label:"Verification Status", options:METADATA_VOCABULARY.verificationStatus},
+  {key:"sourceType", label:"Source Type", options:METADATA_VOCABULARY.sourceType}
+];
+
+const RIGHTS_RISK_STATUSES = new Set(["Rights Unknown","In Copyright","Restricted / Sensitive","Review Required","Check source","Check Source"]);
+const CULTURAL_MEDIA_BLOCKERS = new Set(["Restricted","Do Not Display Media","Community Review Needed","Takedown / Review Requested"]);
+
+function slugMetadataTerm(value) {
+  return String(value || "")
+    .normalize("NFKD")
+    .replace(/['’]/g, "")
+    .replace(/[^a-zA-Z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .toLowerCase();
+}
+
+function canonicalMetadataTerm(value) {
+  const raw = String(value || "").trim();
+  const key = raw.toLowerCase();
+  const map = {
+    "african philosophy":"African Philosophy",
+    "african philosophy working library":"African Philosophy Working Library",
+    "political thought":"Political Thought",
+    "music & performance":"Music and Performance",
+    "music and performance":"Music and Performance",
+    "oral traditions":"Oral Tradition",
+    "oral history":"Oral History",
+    "indigenous epistemologies":"Indigenous Knowledge Systems",
+    "language & script":"Language and Writing Systems",
+    "design & making":"Craft and Making",
+    "visual sovereignty":"Visual Culture",
+    "visual culture":"Visual Culture",
+    "material culture":"Material Culture",
+    "decolonisation":"Decolonial Theory",
+    "decolonial theory":"Decolonial Theory",
+    "philosophy & theory":"African Philosophy",
+    "history & theory":"Decolonial Theory",
+    "architecture":"Architecture / Built Work",
+    "books & texts":"Book",
+    "twi":"Akan / Twi",
+    "akan/twi":"Akan / Twi",
+    "rights reserved":"In Copyright",
+    "author":"In Copyright",
+    "open — community knowledge":"Open Access",
+    "unesco — open record":"Open Access",
+    "community custodianship":"Restricted / Sensitive",
+    "community custodianship — held externally":"Restricted / Sensitive",
+    "archival — conditional access":"Requires Permission"
+  };
+  return map[key] || raw;
+}
+
+function metadataList(value) {
+  if (Array.isArray(value)) return value.map(item => String(item || "").trim()).filter(Boolean);
+  const single = String(value || "").trim();
+  if (!single) return [];
+  return single.split(/\s*(?:,|;|\s\/\s)\s*/).map(item => item.trim()).filter(Boolean);
+}
+
+function uniqueMetadataValues(values) {
+  const seen = new Set();
+  const output = [];
+  metadataList(values).forEach(value => {
+    const canonical = canonicalMetadataTerm(value);
+    const key = slugMetadataTerm(canonical);
+    if (seen.has(key)) return;
+    seen.add(key);
+    output.push(canonical);
+  });
+  return output;
+}
+
+function normalizeRegionValues(values) {
+  const raw = metadataList(values);
+  const output = [];
+  raw.forEach(value => {
+    const lower = value.toLowerCase();
+    if (lower.includes("west")) output.push("West Africa");
+    if (lower.includes("north")) output.push("North Africa");
+    if (lower.includes("east")) output.push("East Africa");
+    if (lower.includes("southern") || lower.includes("south africa")) output.push("Southern Africa");
+    if (lower.includes("central")) output.push("Central Africa");
+    if (lower.includes("sahel")) output.push("Sahel");
+    if (lower.includes("diaspora")) output.push("African Diaspora");
+    if (lower.includes("global") || lower.includes("comparative")) output.push("Global / Comparative");
+    if (lower.includes("pan-africa") || lower.includes("pan africa") || lower.includes("africa / global")) output.push("Africa-wide / Pan-African");
+  });
+  return uniqueMetadataValues(output.length ? output : raw);
+}
+
+function normalizePeriodValues(values) {
+  const raw = metadataList(values);
+  const output = [];
+  raw.forEach(value => {
+    const lower = String(value).toLowerCase();
+    if (lower.includes("pre") || /1[0-7]\d{2}|[1-9]th/.test(lower)) output.push("Precolonial");
+    if (lower.includes("colonial") || /18\d{2}|19[0-4]\d/.test(lower)) output.push("Colonial");
+    if (lower.includes("independence") || /195\d|196\d|197\d/.test(lower)) output.push("Independence Era");
+    if (lower.includes("postcolonial") || /198\d|199\d/.test(lower)) output.push("Postcolonial");
+    if (lower.includes("contemporary") || /20\d{2}|202\d|present/.test(lower)) output.push("Contemporary");
+    if (lower.includes("unknown") || lower.includes("undated")) output.push("Unknown / Undated");
+  });
+  return uniqueMetadataValues(output.length ? output : raw).filter(value => METADATA_VOCABULARY.period.includes(value));
+}
+
+function normalizeLanguageScript(record) {
+  const scripts = metadataList(record.script);
+  const languages = [];
+  metadataList(record.language).forEach(value => {
+    if (String(value).toLowerCase() === "ajami") scripts.push("Ajami");
+    else languages.push(value);
+  });
+  return {
+    language: uniqueMetadataValues(languages.length ? languages : ["Unknown"]),
+    script: uniqueMetadataValues(scripts)
+  };
+}
+
+function canDisplayMedia(record) {
+  return !RIGHTS_RISK_STATUSES.has(record.rightsStatus) && !CULTURAL_MEDIA_BLOCKERS.has(record.culturalSensitivity);
+}
+
+function sourceOriginValue(recordOrMode) {
+  const mode = typeof recordOrMode === "string" ? recordOrMode : getResultMode(recordOrMode);
+  return mode === "local" || mode === "hybrid" ? "Archive" : "External Source";
+}
+
+function sourceOriginLabel(recordOrMode) {
+  return sourceOriginValue(recordOrMode).toUpperCase();
+}
+
+function firstText(...values) {
+  for (const value of values) {
+    if (Array.isArray(value)) {
+      const hit = value.map(item => firstText(item)).find(Boolean);
+      if (hit) return hit;
+      continue;
+    }
+    if (value && typeof value === "object") {
+      const hit = firstText(value.url, value.URL, value.href, value.value, value.name, value.label, value.license, value.licence);
+      if (hit) return hit;
+      continue;
+    }
+    const text = String(value || "").trim();
+    if (text) return text;
+  }
+  return "";
+}
+
+function truthySourceFlag(value) {
+  if (value === true) return true;
+  if (typeof value === "number") return value > 0;
+  return /^(true|yes|open|oa|1)$/i.test(String(value || "").trim());
+}
+
+function collectRightsText(record) {
+  const ext = record.extmetadata || record.externalMetadata || {};
+  return [
+    record.licence,
+    record.license,
+    record.licenceUrl,
+    record.licence_url,
+    record.licenseUrl,
+    record.license_url,
+    record.rights,
+    record.rightsStatus,
+    record.rightsStatement,
+    record.rights_statement,
+    record.rightsUri,
+    record.rights_uri,
+    record.copyright,
+    record.oaStatus,
+    record.oa_status,
+    record.openAccess?.license,
+    record.openAccess?.licenseUrl,
+    record.openAccess?.oa_status,
+    record.openAccess?.is_oa,
+    record.open_access?.license,
+    record.open_access?.license_url,
+    record.open_access?.oa_status,
+    record.open_access?.is_oa,
+    record.primary_location?.license,
+    record.primary_location?.license_url,
+    record.best_oa_location?.license,
+    record.best_oa_location?.license_url,
+    ext.LicenseShortName?.value,
+    ext.License?.value,
+    ext.UsageTerms?.value,
+    ext.Copyrighted?.value,
+    ext.Restrictions?.value
+  ].map(value => firstText(value)).filter(Boolean).join(" ");
+}
+
+function normalizeExternalLicence(record) {
+  const text = collectRightsText(record).toLowerCase();
+  if (!text) return "";
+  if (/creativecommons\.org\/publicdomain\/zero|creativecommons\.org\/publicdomain\/zero\/1\.0|cc0\b/.test(text)) return "CC0";
+  if (/creativecommons\.org\/publicdomain\/mark|public domain mark/.test(text)) return "Public Domain Mark";
+  if (/creativecommons\.org\/licenses\/by-nc-nd|cc[- ]?by[- ]?nc[- ]?nd/.test(text)) return "CC BY-NC-ND";
+  if (/creativecommons\.org\/licenses\/by-nc-sa|cc[- ]?by[- ]?nc[- ]?sa/.test(text)) return "CC BY-NC-SA";
+  if (/creativecommons\.org\/licenses\/by-sa|cc[- ]?by[- ]?sa/.test(text)) return "CC BY-SA";
+  if (/creativecommons\.org\/licenses\/by-nc|cc[- ]?by[- ]?nc/.test(text)) return "CC BY-NC";
+  if (/creativecommons\.org\/licenses\/by-nd|cc[- ]?by[- ]?nd/.test(text)) return "CC BY-ND";
+  if (/creativecommons\.org\/licenses\/by\/4\.0|cc[- ]?by[- ]?4\.0/.test(text)) return "CC BY 4.0";
+  if (/creativecommons\.org\/licenses\/by|cc[- ]?by\b|creative commons attribution/.test(text)) return "CC BY";
+  if (/rightsstatements\.org/.test(text)) return "RightsStatements.org URI";
+  if (/all rights reserved/.test(text)) return "All Rights Reserved";
+  if (/custom|other|publisher licence|publisher license/.test(text)) return "Custom / Other";
+  return "";
+}
+
+function externalUrlBundle(record) {
+  const sourceUrl = safeUrl(record.sourceUrl || record.source_url || record.sourceURL || record.url || record.URL || "");
+  const pdfUrl = safeUrl(record.pdfUrl || record.pdf_url || record.downloadUrl || record.download_url || "");
+  const fullTextUrl = safeUrl(record.fullTextUrl || record.full_text_url || record.fulltextUrl || firstText(record.fullTextUrls, record.source_fulltext_urls) || "");
+  const htmlUrl = safeUrl(record.htmlUrl || record.html_url || record.landingPageUrl || record.landing_page_url || "");
+  return {sourceUrl, pdfUrl, fullTextUrl, htmlUrl};
+}
+
+function normalizeExternalRightsMetadata(record) {
+  const collectedRightsText = collectRightsText(record);
+  const rightsText = /^(external source rights apply|check original source before reuse\.?)$/i.test(collectedRightsText.trim()) ? "" : collectedRightsText;
+  const rightsLower = rightsText.toLowerCase();
+  const licence = normalizeExternalLicence(record);
+  const urls = externalUrlBundle(record);
+  const hasRightsMetadata = Boolean(rightsText || licence);
+  const openAccessFlag = truthySourceFlag(record.is_oa) ||
+    truthySourceFlag(record.openAccess?.is_oa) ||
+    truthySourceFlag(record.open_access?.is_oa) ||
+    /(^|\W)(open access|gold|green|bronze|hybrid|oa)(\W|$)/i.test(firstText(record.oaStatus, record.oa_status, record.openAccess?.oa_status, record.open_access?.oa_status));
+  const publicDomainFlag = truthySourceFlag(record.public_domain) ||
+    truthySourceFlag(record.publicDomain) ||
+    /public domain/.test(rightsLower);
+
+  let rightsStatus = "Check source";
+  if (licence.startsWith("CC ")) rightsStatus = "Creative Commons";
+  else if (licence === "CC0" || licence === "Public Domain Mark" || publicDomainFlag) rightsStatus = "Public Domain";
+  else if (/rightsstatements\.org\/(?:vocab|page)\/inc|\/inc\//.test(rightsLower) || /in copyright|copyrighted|all rights reserved/.test(rightsLower)) rightsStatus = "In Copyright";
+  else if (openAccessFlag) rightsStatus = "Open Access";
+  else if (canonicalMetadataTerm(record.rightsStatus) && !["Unknown","Rights Unknown"].includes(canonicalMetadataTerm(record.rightsStatus))) rightsStatus = canonicalMetadataTerm(record.rightsStatus);
+
+  let accessType = "Metadata Only";
+  const rawAccess = firstText(record.accessType, record.access_type);
+  if (rawAccess && !/^unknown$/i.test(rawAccess)) accessType = canonicalMetadataTerm(rawAccess);
+  else if (urls.pdfUrl) accessType = "Download Available";
+  else if (urls.fullTextUrl) accessType = "Full Text Available";
+  else if (urls.htmlUrl) accessType = "Read Online";
+  else if (urls.sourceUrl) accessType = "External Link Only";
+
+  let verificationStatus = "Unverified";
+  if (licence === "CC0" || licence === "Public Domain Mark" || licence.startsWith("CC ")) verificationStatus = "Rights Checked";
+  else if (hasRightsMetadata || openAccessFlag || publicDomainFlag) verificationStatus = "Source Checked";
+
+  const displayLicence = licence || (rightsStatus === "Open Access" ? "Check source" : "");
+  return {
+    rightsStatus,
+    licence: displayLicence,
+    accessType,
+    verificationStatus,
+    sourceUrl: urls.sourceUrl || urls.htmlUrl || urls.fullTextUrl || urls.pdfUrl || "",
+    pdfUrl: urls.pdfUrl,
+    fullTextUrl: urls.fullTextUrl,
+    htmlUrl: urls.htmlUrl,
+    hasConfirmedReuseRights: rightsStatus === "Creative Commons" || rightsStatus === "Public Domain" || (rightsStatus === "Open Access" && Boolean(licence))
+  };
+}
+
+function inferSourceType(value) {
+  const text = String(value || "").toLowerCase();
+  if (text.includes("museum") || text.includes("gallery")) return "Museum / Gallery";
+  if (text.includes("library") || text.includes("worldcat") || text.includes("open library")) return "Library Catalogue";
+  if (text.includes("archive") || text.includes("praad")) return "Archive";
+  if (text.includes("journal") || text.includes("jstor") || text.includes("doaj")) return "Journal Database";
+  if (text.includes("university") || text.includes("repository")) return "University Repository";
+  if (text.includes("routledge") || text.includes("publisher") || text.includes("press")) return "Book Publisher";
+  if (text.includes("community")) return "Community Submission";
+  if (text.includes("government")) return "Government Source";
+  if (text.includes("ngo") || text.includes("cultural")) return "NGO / Cultural Organisation";
+  return "Web Resource";
+}
+
+function rightsWarning(record) {
+  if (RIGHTS_RISK_STATUSES.has(record.rightsStatus)) return "Rights are unclear or restricted. Metadata and source links are shown instead of hosted full media.";
+  if (CULTURAL_MEDIA_BLOCKERS.has(record.culturalSensitivity)) return "Cultural protocol restricts media display. Use the source link or review channel for context.";
+  if (record.accessType === "Thumbnail Only") return "Thumbnail-only access. Do not reuse media without checking the original source.";
+  return "";
+}
+
 function currentArchiveReturnPath() {
-  return `${window.location.pathname}${window.location.search || ""}${window.location.hash || ""}`;
+  return `${window.location.pathname}${window.location.search || ""}`;
 }
 
 function memberSignInUrl() {
@@ -761,6 +1088,22 @@ function getCardListComposerOpen(recordId) {
 
 function setCardListComposerOpen(recordId, isOpen) {
   cardListComposerState[recordId] = Boolean(isOpen);
+}
+
+function getCardWorkbenchComposerOpen(recordId) {
+  return Boolean(cardWorkbenchComposerState[recordId]);
+}
+
+function setCardWorkbenchComposerOpen(recordId, isOpen) {
+  cardWorkbenchComposerState[recordId] = Boolean(isOpen);
+}
+
+function getCardDrawerOpen(recordId) {
+  return Boolean(cardDrawerOpenState[recordId]);
+}
+
+function setCardDrawerOpen(recordId, isOpen) {
+  cardDrawerOpenState[recordId] = Boolean(isOpen);
 }
 
 async function fetchRecordWorkspaceState(record) {
@@ -931,6 +1274,9 @@ async function postRecordWorkspaceAction(record, payload) {
       if (payload.action === "create_reading_list") {
         setCardListComposerOpen(record.id, false);
       }
+      if (payload.action === "workbench_add_record" || payload.action === "workbench_create_project") {
+        setCardWorkbenchComposerOpen(record.id, false);
+      }
     }
     if (shouldRefreshRecordState) await fetchRecordWorkspaceState(record);
     if (shouldRefreshMemberState) await fetchMemberWorkspaceState(true);
@@ -959,13 +1305,9 @@ async function postRecordWorkspaceAction(record, payload) {
 
 function getCurrentSearchFilters() {
   return {
-    type: filterType || null,
-    region: filterRegion || null,
-    category: filterCat || null,
-    theme: filterTheme || null,
-    collection: filterCollection || null,
-    language: filterLanguage || null,
-    liveSources: Boolean(sourceMode)
+    metadata: metadataFilters,
+    quick: quickFilters,
+    externalSources: Boolean(sourceMode)
   };
 }
 
@@ -1013,7 +1355,7 @@ function hydrateSearchFromLocation() {
   externalDiscovery = [];
   liveStatus = {
     state:"idle",
-    message:"Local-first results loaded. Live fallback is blending API and handoff results.",
+    message:"Archive results loaded. External source discovery is available.",
     sources:[]
   };
   refreshBlendedDiscovery(true);
@@ -1067,6 +1409,16 @@ function iconListPlus() {
     <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
       <path d="M4 7.5h9M4 12h9M4 16.5h7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
       <path d="M17 10v8M13 14h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+    </svg>
+  `;
+}
+
+function iconWorkbenchLayers() {
+  return `
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+      <path d="M4.5 8.5 12 5l7.5 3.5L12 12 4.5 8.5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+      <path d="m4.5 12 7.5 3.5L19.5 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="m4.5 15.5 7.5 3.5 7.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
   `;
 }
@@ -1249,7 +1601,7 @@ function buildWorkingLibraryRecord(filename, index) {
     abstract:`Supplementary working-library record for "${title}" by ${creator}.`,
     description:[
       `This entry extends the static archive dataset beyond the original curated records by indexing a title from the local African Philosophy Working Library. It is designed so searches for underrepresented topics such as African philosophy, politics, religion, literature, music, and gender studies return broader results on the hosted site.`,
-      "The current detail view is built from filename-level metadata. It preserves the title, creator, inferred themes, and discovery links so the record remains useful now, while still allowing richer abstracts, cover images, and catalogue references to be added later."
+      "The current detail view is built from filename-level metadata. It preserves the title, creator, inferred knowledge areas, and discovery links so the record remains useful now, while still allowing richer abstracts, cover images, and catalogue references to be added later."
     ],
     tags: inferImportedTags(title, creator),
     rights:"Private working-library reference",
@@ -1297,6 +1649,15 @@ function normalizeRecord(record) {
   const keywords = uniqueValues([...(merged.keywords || []), ...(merged.tags || [])]);
   const concepts = uniqueValues(merged.concepts || []);
   const themes = uniqueValues(merged.themes || []);
+  const languageScript = normalizeLanguageScript(merged);
+  const recordType = uniqueMetadataValues(merged.recordType || merged.type || merged.cat).filter(value => METADATA_VOCABULARY.recordType.includes(value));
+  const typeFallback = recordType.length ? recordType : [METADATA_VOCABULARY.recordType.includes(canonicalMetadataTerm(merged.type)) ? canonicalMetadataTerm(merged.type) : "Dataset / Metadata Record"];
+  const knowledgeAreas = uniqueMetadataValues([...(merged.knowledgeAreas || []), ...themes, ...concepts, ...(merged.tags || []), merged.cat, merged.type]).filter(value => METADATA_VOCABULARY.knowledgeAreas.includes(value));
+  const regions = normalizeRegionValues(merged.region);
+  const rightsStatus = METADATA_VOCABULARY.rightsStatus.includes(canonicalMetadataTerm(merged.rightsStatus || merged.rights)) ? canonicalMetadataTerm(merged.rightsStatus || merged.rights) : "Rights Unknown";
+  const accessType = METADATA_VOCABULARY.accessType.includes(canonicalMetadataTerm(merged.accessType)) ? canonicalMetadataTerm(merged.accessType) : (sourceUrl ? "External Link Only" : "Metadata Only");
+  const culturalSensitivity = METADATA_VOCABULARY.culturalSensitivity.includes(canonicalMetadataTerm(merged.culturalSensitivity)) ? canonicalMetadataTerm(merged.culturalSensitivity) : "Public";
+  const verificationStatus = METADATA_VOCABULARY.verificationStatus.includes(canonicalMetadataTerm(merged.verificationStatus)) ? canonicalMetadataTerm(merged.verificationStatus) : (merged.aiAssisted ? "AI-Assisted, Needs Review" : "Provisional");
   const externalLinks = dedupeLinks([
     ...(merged.externalLinks || []),
     institutionUrl && merged.institution ? {label:"Institution",url:institutionUrl} : null
@@ -1310,25 +1671,53 @@ function normalizeRecord(record) {
     summary,
     description,
     contributors: uniqueValues(merged.contributors || []),
-    language: uniqueValues(merged.language || []),
+    language: languageScript.language,
+    script: languageScript.script,
     concepts,
-    themes,
+    themes: knowledgeAreas,
+    knowledgeAreas,
+    recordType: typeFallback,
+    type: typeFallback[0],
     tags: uniqueValues(merged.tags || []),
     keywords,
-    images: (merged.images || []).filter(image => safeUrl(image.src || image.url)).map(image => ({
+    images: canDisplayMedia({rightsStatus, culturalSensitivity}) ? (merged.images || []).filter(image => safeUrl(image.src || image.url)).map(image => ({
       src: safeUrl(image.src || image.url),
       alt: image.alt || merged.title,
       caption: image.caption || ""
-    })),
+    })) : [],
     externalLinks,
+    region: regions[0] || "Global / Comparative",
+    regions,
+    country: metadataList(merged.country).join(", "),
+    countries: uniqueMetadataValues([...(merged.countries || []), merged.country]),
+    communityOrCulturalGroup: uniqueMetadataValues(merged.communityOrCulturalGroup || merged.community),
+    community: metadataList(merged.communityOrCulturalGroup || merged.community).join(", "),
     collection: merged.collection || merged.cat || "",
+    curatedCollections: uniqueMetadataValues(merged.curatedCollections || merged.collection).filter(value => METADATA_VOCABULARY.curatedCollections.includes(value)),
+    period: METADATA_VOCABULARY.period.includes(canonicalMetadataTerm(merged.period)) ? canonicalMetadataTerm(merged.period) : (merged.period || ""),
+    periods: normalizePeriodValues(merged.period),
     institution: merged.institution || (record.source === "Local Bank" ? "Decolonising Archive local index" : record.source || ""),
     citation: merged.citation || derivedCitation({...merged, description}),
+    sourceName: merged.sourceName || merged.source || merged.institution || "Archive record",
+    sourceType: canonicalMetadataTerm(merged.sourceType || inferSourceType(merged.source || merged.institution || "")),
+    dateAccessed: merged.dateAccessed || "",
+    rightsStatus,
+    licence: canonicalMetadataTerm(merged.licence || ""),
+    rightsStatementUri: merged.rightsStatementUri || "",
+    rightsHolder: merged.rightsHolder || "",
+    accessType,
+    reusePermission: canonicalMetadataTerm(merged.reusePermission || "Check Original Source"),
+    culturalSensitivity,
+    culturalProtocolNote: merged.culturalProtocolNote || "",
+    localContextsLabel: merged.localContextsLabel || "",
+    localContextsNotice: merged.localContextsNotice || "",
+    communityReviewStatus: canonicalMetadataTerm(merged.communityReviewStatus || "Not Required"),
+    verificationStatus,
+    aiAssisted: Boolean(merged.aiAssisted),
     archiveIdentifier: merged.archiveIdentifier || `DA-${record.id.toUpperCase()}`,
     recordIdentifier: merged.recordIdentifier || record.id.toUpperCase(),
     relatedRecords: uniqueValues(merged.relatedRecords || []),
     sourcePathways: uniqueValues(merged.sourcePathways || defaultSourcePathways(record)),
-    countries: uniqueValues([...(merged.countries || []), record.country]),
     sourceActionLabel: merged.sourceActionLabel || "View source",
     date: merged.date || merged.period || "",
     notes: uniqueValues(merged.notes || [])
@@ -1942,14 +2331,56 @@ function searchLocalRecords(query) {
 
 function filterDisplayedRecords(records) {
   return records.filter(record => {
-    if (filterType && record.type !== filterType) return false;
-    if (filterRegion && record.region !== filterRegion) return false;
-    if (filterCat && record.cat !== filterCat) return false;
-    if (filterTheme && ![...record.themes, ...record.concepts].includes(filterTheme)) return false;
-    if (filterCollection && record.collection !== filterCollection) return false;
-    if (filterLanguage && !(record.language || []).includes(filterLanguage)) return false;
+    const mode = getResultMode(record);
+    if (mode === "live" || mode === "external_handoff") {
+      if (quickFilters.hideSensitive && record.culturalSensitivity !== "Public") return false;
+      if (quickFilters.openAccess && !["Public Domain","Creative Commons","Open Access"].includes(record.rightsStatus)) return false;
+      return true;
+    }
+    for (const [key, selectedValues] of Object.entries(metadataFilters)) {
+      if (!selectedValues || !selectedValues.length) continue;
+      const recordValues = getRecordFacetValues(record, key);
+      if (!selectedValues.some(value => recordValues.includes(value))) return false;
+    }
+    if (quickFilters.openAccess && !["Public Domain","Creative Commons","Open Access"].includes(record.rightsStatus)) return false;
+    if (quickFilters.verified && record.verificationStatus !== "Verified") return false;
+    if (quickFilters.hideSensitive && record.culturalSensitivity !== "Public") return false;
+    if (quickFilters.metadataOnly && record.accessType !== "Metadata Only") return false;
+    if (quickFilters.needsReview && !["Provisional","AI-Assisted, Needs Review","Needs Correction","Duplicate Suspected","Takedown Requested"].includes(record.verificationStatus)) return false;
     return true;
   });
+}
+
+function getRecordFacetValues(record, key) {
+  if (key === "sourceOrigin") return [sourceOriginValue(record)];
+  if (key === "country") return metadataList(record.countries || record.country);
+  if (key === "curatedCollections") return metadataList(record.curatedCollections || record.collection);
+  if (key === "knowledgeAreas") return metadataList(record.knowledgeAreas || record.themes || record.concepts);
+  if (key === "region") return metadataList(record.regions || record.region);
+  if (key === "recordType") return metadataList(record.recordType || record.type);
+  if (key === "period") return metadataList(record.periods || record.period);
+  const direct = record[key];
+  if (Array.isArray(direct)) return direct.filter(Boolean);
+  if (direct) return [direct];
+  return [];
+}
+
+function hasAnyMetadataFilter() {
+  return Object.values(metadataFilters).some(values => values && values.length) ||
+    Object.values(quickFilters).some(Boolean);
+}
+
+function getActiveFilterCount() {
+  const metadataCount = Object.values(metadataFilters).reduce((count, values) => {
+    return count + (Array.isArray(values) ? values.length : 0);
+  }, 0);
+  const quickCount = Object.values(quickFilters).filter(Boolean).length;
+  return metadataCount + quickCount;
+}
+
+function clearMetadataFilters() {
+  metadataFilters = {};
+  quickFilters = {openAccess:false, verified:false, hideSensitive:false, metadataOnly:false, needsReview:false};
 }
 
 function getRelatedRecords(record, limit = 3) {
@@ -2036,9 +2467,9 @@ function buildExternalDiscovery(query) {
     .filter(source => source.actionUrl);
 }
 
-function parseHash() {
+function parseLegacyHashRoute() {
   const raw = window.location.hash.replace(/^#\/?/, "");
-  if (!raw) return {page:"home", recordId:null};
+  if (!raw) return null;
   const parts = raw.split("/").filter(Boolean);
   if (parts[0] === "record" && parts[1]) {
     return {page:"record", recordId:decodeURIComponent(parts.slice(1).join("/"))};
@@ -2047,23 +2478,141 @@ function parseHash() {
   return {page, recordId:null};
 }
 
-function makeHash(page, recordId) {
-  if (page === "record" && recordId) return `#/record/${encodeURIComponent(recordId)}`;
-  return `#/${page}`;
+function normaliseArchivePath(pathname = window.location.pathname) {
+  const trimmed = String(pathname || "/").replace(/\/+$/, "");
+  return trimmed || "/";
 }
 
-function navigate(page, recordId = null) {
-  const nextHash = makeHash(page, recordId);
-  currentPage = page;
-  selectedRecordId = recordId;
-  if (window.location.hash !== nextHash) {
-    window.location.hash = nextHash;
-    if (page === "library") {
-      requestAnimationFrame(() => render());
-    }
+function parseRouteFromPathname(pathname = window.location.pathname) {
+  const path = normaliseArchivePath(pathname);
+  if (path === "/" || path === "/home") return {page:"home", recordId:null};
+  if (path === "/library") return {page:"library", recordId:null};
+  if (path === "/sources") return {page:"sources", recordId:null};
+  if (path === "/about") return {page:"about", recordId:null};
+  const recordMatch = path.match(/^\/records\/(.+)$/);
+  if (recordMatch) {
+    return {page:"record", recordId:decodeURIComponent(recordMatch[1])};
+  }
+  const legacyRecordMatch = path.match(/^\/record\/(.+)$/);
+  if (legacyRecordMatch) {
+    return {page:"record", recordId:decodeURIComponent(legacyRecordMatch[1])};
+  }
+  return {page:"home", recordId:null};
+}
+
+function parseRouteFromLocation() {
+  const legacyRoute = parseLegacyHashRoute();
+  if (legacyRoute) {
+    const cleanPath = makePath(legacyRoute.page, legacyRoute.recordId);
+    window.history.replaceState({archiveRoute:true}, "", `${cleanPath}${window.location.search || ""}`);
+    return legacyRoute;
+  }
+  return parseRouteFromPathname(window.location.pathname);
+}
+
+function makePath(page, recordId) {
+  if (page === "record" && recordId) return `/records/${encodeURIComponent(recordId)}`;
+  if (["home","library","sources","about"].includes(page)) return `/${page}`;
+  return "/home";
+}
+
+function archiveHref(page, recordId = null) {
+  return makePath(page, recordId);
+}
+
+function isArchivePath(pathname) {
+  const route = parseRouteFromPathname(pathname);
+  return route.page !== "home" || ["/", "/home"].includes(normaliseArchivePath(pathname));
+}
+
+function applyRoute(route, options = {}) {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event("app:loading:start"));
+  }
+  currentPage = route.page || "home";
+  selectedRecordId = route.recordId || null;
+  if (currentPage === 'library') hydrateSearchFromLocation();
+  render();
+  if (!options.preserveScroll) {
+    window.scrollTo({top:0, behavior:options.smooth ? 'smooth' : 'auto'});
+  }
+  window.dispatchEvent(new CustomEvent("archive:navigation", {
+    detail:{page:currentPage, recordId:selectedRecordId, path:window.location.pathname}
+  }));
+  if (typeof window !== "undefined") {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.dispatchEvent(new Event("app:loading:end"));
+      });
+    });
+  }
+}
+
+function navigate(page, recordId = null, options = {}) {
+  const nextPath = makePath(page, recordId);
+  const currentPath = normaliseArchivePath(window.location.pathname);
+  if (currentPath !== nextPath || window.location.hash) {
+    window.history.pushState({archiveRoute:true, page, recordId}, "", nextPath);
+  }
+  applyRoute({page, recordId}, {smooth:options.smooth !== false});
+}
+
+function prepareArchivePageNavigation(element) {
+  if (element.dataset.collection) {
+    clearMetadataFilters();
+    metadataFilters.curatedCollections = [element.dataset.collection];
+    libraryQuery = '';
+    localResults = searchLocalRecords(getEffectiveSearchQuery());
+    liveResults = [];
+    externalDiscovery = [];
+    liveStatus = {state:'idle', message:'', sources:[]};
+    refreshBlendedDiscovery(true);
+  }
+}
+
+function handleArchiveNavigationClick(event) {
+  if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  const target = event.target instanceof Element ? event.target : null;
+  if (!target) return;
+
+  const appShell = document.getElementById("app");
+  if (!appShell) return;
+  if (!target.closest("#app")) return;
+
+  const explicitPage = target.closest('[data-page]');
+  if (explicitPage) {
+    const page = explicitPage.dataset.page;
+    if (!page) return;
+    event.preventDefault();
+    event.stopPropagation();
+    prepareArchivePageNavigation(explicitPage);
+    navigate(page);
     return;
   }
-  syncRouteFromHash();
+
+  const anchor = target.closest('a[href]');
+  if (!anchor) return;
+  if (anchor.target && anchor.target !== '_self') return;
+  if (anchor.hasAttribute('download')) return;
+
+  let url;
+  try {
+    url = new URL(anchor.getAttribute('href'), window.location.origin);
+  } catch {
+    return;
+  }
+  if (url.origin !== window.location.origin) return;
+  if (!isArchivePath(url.pathname)) return;
+
+  const route = parseRouteFromPathname(url.pathname);
+  event.preventDefault();
+  event.stopPropagation();
+  const nextUrl = `${makePath(route.page, route.recordId)}${url.search || ""}`;
+  const currentUrl = `${normaliseArchivePath(window.location.pathname)}${window.location.search || ""}`;
+  if (currentUrl !== nextUrl || window.location.hash) {
+    window.history.pushState({archiveRoute:true, page:route.page, recordId:route.recordId}, "", nextUrl);
+  }
+  applyRoute(route, {smooth:true});
 }
 
 
@@ -2435,17 +2984,20 @@ function renderCardWorkspaceActions(record) {
   }
 
   if (memberWorkspaceState.status === "loading" || memberWorkspaceState.authenticated === null) {
-    return `<div class="record-actions" data-stop-card-open="true"><span class="card-member-note">Checking saved state...</span></div>`;
+    return `<div class="record-card-icon-row" data-stop-card-open="true"><span class="record-card-loading" aria-live="polite">…</span></div>`;
   }
 
   if (!memberWorkspaceState.authenticated) {
     return `
-      <div class="record-actions" data-stop-card-open="true">
-        <button class="record-action-icon" type="button" data-member-signin aria-label="Sign in to bookmark" title="Sign in to bookmark">
+      <div class="record-card-icon-row" data-stop-card-open="true">
+        <button class="record-card-icon-btn" type="button" data-member-signin aria-label="Sign in to bookmark" title="Sign in to bookmark">
           ${iconBookmarkOutline()}
         </button>
-        <button class="record-action-icon" type="button" data-member-signin aria-label="Sign in to manage reading lists" title="Sign in to manage reading lists">
+        <button class="record-card-icon-btn" type="button" data-member-signin aria-label="Sign in to manage reading lists" title="Sign in to manage reading lists">
           ${iconListPlus()}
+        </button>
+        <button class="record-card-icon-btn" type="button" data-member-signin aria-label="Sign in for Archive Workbench" title="Sign in for Archive Workbench">
+          ${iconWorkbenchLayers()}
         </button>
       </div>
     `;
@@ -2453,46 +3005,73 @@ function renderCardWorkspaceActions(record) {
 
   const data = memberWorkspaceState.data || {};
   const readingLists = data.readingLists || [];
+  const workbenchProjects = data.workbenchProjects || [];
   const bookmarked = (data.bookmarkRecordIds || []).includes(record.id);
   const isSaving = memberWorkspaceState.status === "saving";
   const listComposerOpen = getCardListComposerOpen(record.id);
-  const message = memberWorkspaceState.message ? `<span class="card-member-message">${escapeHtml(memberWorkspaceState.message)}</span>` : "";
+  const workbenchComposerOpen = getCardWorkbenchComposerOpen(record.id);
+  const message = memberWorkspaceState.message ? `<span class="record-card-message">${escapeHtml(memberWorkspaceState.message)}</span>` : "";
   return `
-    <div class="record-actions-wrap" data-record-id="${escapeHtml(record.id)}" data-stop-card-open="true">
-      <div class="record-actions">
+    <div class="record-card-actions-wrap" data-record-id="${escapeHtml(record.id)}" data-stop-card-open="true">
+      <div class="record-card-icon-row">
         <button
-          class="record-action-icon ${bookmarked ? "is-active" : ""}"
+          class="record-card-icon-btn ${bookmarked ? "is-active" : ""}"
           type="button"
           data-card-bookmark
           aria-label="${bookmarked ? "Remove bookmark" : "Save bookmark"}"
           title="${bookmarked ? "Remove bookmark" : "Save bookmark"}"
           ${isSaving ? "disabled" : ""}
         >
-          ${isSaving ? `<span class="record-action-spinner" aria-hidden="true"></span>` : bookmarked ? iconBookmarkCheck() : iconBookmarkOutline()}
+          ${isSaving ? `<span class="record-card-spinner" aria-hidden="true"></span>` : bookmarked ? iconBookmarkCheck() : iconBookmarkOutline()}
         </button>
         <button
-          class="record-action-icon ${listComposerOpen ? "is-active" : ""}"
+          class="record-card-icon-btn ${listComposerOpen ? "is-active" : ""}"
           type="button"
           data-card-list-toggle
           aria-expanded="${listComposerOpen ? "true" : "false"}"
           aria-label="${listComposerOpen ? "Hide list actions" : "Show list actions"}"
-          title="${listComposerOpen ? "Hide list actions" : "Show list actions"}"
+          title="${listComposerOpen ? "Hide list actions" : "Add to reading list"}"
           ${isSaving ? "disabled" : ""}
         >
           ${iconListPlus()}
         </button>
+        <button
+          class="record-card-icon-btn ${workbenchComposerOpen ? "is-active" : ""}"
+          type="button"
+          data-card-workbench-toggle
+          aria-expanded="${workbenchComposerOpen ? "true" : "false"}"
+          aria-label="${workbenchComposerOpen ? "Hide Workbench" : "Add to Workbench"}"
+          title="${workbenchComposerOpen ? "Hide Workbench" : "Add to Workbench"}"
+          ${isSaving ? "disabled" : ""}
+        >
+          ${iconWorkbenchLayers()}
+        </button>
       </div>
       ${listComposerOpen ? `
-        <div class="record-list-create">
+        <div class="record-card-list-create">
           ${readingLists.length ? `
-            <select class="card-member-select" data-card-reading-list aria-label="Choose reading list">
+            <select class="record-card-select" data-card-reading-list aria-label="Choose reading list">
               <option value="">Reading list</option>
               ${readingLists.map(list => `<option value="${escapeHtml(list.id)}">${escapeHtml(list.title)}</option>`).join("")}
             </select>
-            <button class="record-action-inline" type="button" data-card-add-list ${isSaving ? "disabled" : ""}>Add</button>
+            <button class="record-card-inline-btn" type="button" data-card-add-list ${isSaving ? "disabled" : ""}>Add</button>
           ` : ""}
-          <input class="card-member-input" data-card-new-list type="text" placeholder="New list" aria-label="New reading list title" />
-          <button class="record-action-inline" type="button" data-card-create-list ${isSaving ? "disabled" : ""}>Create</button>
+          <input class="record-card-input" data-card-new-list type="text" placeholder="New list" aria-label="New reading list title" />
+          <button class="record-card-inline-btn" type="button" data-card-create-list ${isSaving ? "disabled" : ""}>Create</button>
+        </div>
+      ` : ""}
+      ${workbenchComposerOpen ? `
+        <div class="record-card-list-create record-card-workbench-panel">
+          ${workbenchProjects.length ? `
+            <select class="record-card-select" data-card-workbench-project aria-label="Choose Workbench project">
+              <option value="">Workbench project</option>
+              ${workbenchProjects.map(p => `<option value="${escapeHtml(p.id)}">${escapeHtml(p.title)}</option>`).join("")}
+            </select>
+            <button class="record-card-inline-btn" type="button" data-card-workbench-add ${isSaving ? "disabled" : ""}>Add</button>
+          ` : `<p class="record-tools-muted">No projects yet.</p>`}
+          <input class="record-card-input" data-card-new-workbench-project type="text" placeholder="New project title" aria-label="New Workbench project title" />
+          <button class="record-card-inline-btn" type="button" data-card-workbench-create ${isSaving ? "disabled" : ""}>Create</button>
+          <a class="record-card-inline-link" href="/my/workbench">Workbench →</a>
         </div>
       ` : ""}
       ${message}
@@ -2516,7 +3095,7 @@ function renderActionList(record) {
     }
 
     if (collection) {
-      return `<a class="action-link" href="#/library" data-page="library" data-collection="${escapeHtml(collection.title)}">
+      return `<a class="action-link" href="${archiveHref("library")}" data-page="library" data-collection="${escapeHtml(collection.title)}">
         <div>
           <span>Browse collection</span>
           <small>${escapeHtml(collection.title)}</small>
@@ -2569,7 +3148,7 @@ function renderActionList(record) {
 function renderHome() {
   const featured = getFeaturedRecords();
   const featuredCollections = getFeaturedCollections();
-  const featuredThemes = getFeaturedThemes();
+  const featuredKnowledgeAreas = getFeaturedThemes();
   const relatedPreview = getRelatedSearchSuggestions("", 14);
   const relatedCount = RELATED_SEARCH_INDEX.length;
   const countryCount = COUNTRY_TERRITORIES.length;
@@ -2580,11 +3159,11 @@ function renderHome() {
     <div class="page active">
       <section class="hero">
         <div class="hero-inner">
-          <div class="hero-eyebrow">${RECORDS.length} locally indexed records · 300,000+ archive horizon · static-hosted discovery architecture</div>
+          <div class="hero-eyebrow">${RECORDS.length} archive-indexed records · 300,000+ archive horizon · static-hosted discovery architecture</div>
           <h1>The archive of<br/><strong>decolonising knowledge</strong></h1>
           <p class="hero-sub">Books, oral histories, artefacts, images, textiles, posters, manuscripts, architectural documentation, and cultural records across Africa, the diaspora, and the Global South.</p>
           <div class="hero-search">
-            <input type="text" id="heroSearch" placeholder="Search by title, creator, theme, region, community…" autocomplete="off"/>
+            <input type="text" id="heroSearch" placeholder="Search by title, creator, knowledge area, region, community…" autocomplete="off"/>
             <button id="heroSearchBtn" type="button">Search</button>
             ${renderSearchSuggestions("heroSuggestions")}
           </div>
@@ -2592,7 +3171,7 @@ function renderHome() {
           <div class="hero-suggestions">
             ${FEATURED_QUERY_SUGGESTIONS.slice(0, 7).map(term => `<span class="suggestion" data-q="${escapeHtml(term)}">${escapeHtml(term)}</span>`).join("")}
           </div>
-          <div class="hero-note">Core browsing runs from a stable local index, while collections, themes, related searches, languages, source pathways, and search-ready handoffs scale well beyond the bundled record count.</div>
+          <div class="hero-note">Core browsing runs from a stable archive index, while collections, knowledge areas, related searches, languages, source pathways, and search-ready handoffs scale well beyond the bundled record count.</div>
         </div>
       </section>
 
@@ -2601,7 +3180,7 @@ function renderHome() {
           ${[
             [relatedCount.toLocaleString(), "Related searches"],
             [COLLECTIONS.length, "Collections"],
-            [THEMES.length, "Themes"],
+            [THEMES.length, "Knowledge Areas"],
             [SOURCES.length, "Source pathways"],
             [searchReadyCount, "Search-ready sources"],
             [countryCount, "Countries & territories"],
@@ -2618,7 +3197,7 @@ function renderHome() {
       <section class="section">
         <div class="section-header">
           <span class="section-title">Featured Records</span>
-          <a href="#/library" class="section-link" data-page="library">Browse all →</a>
+          <a href="${archiveHref("library")}" class="section-link" data-page="library">Browse all →</a>
         </div>
         <div class="card-grid">${featured.map(renderCard).join("")}</div>
       </section>
@@ -2626,7 +3205,7 @@ function renderHome() {
       <section class="section alt">
         <div class="section-header">
           <span class="section-title">Collections</span>
-          <a href="#/library" class="section-link" data-page="library">120+ collection pathways →</a>
+          <a href="${archiveHref("library")}" class="section-link" data-page="library">120+ collection pathways →</a>
         </div>
         <div class="coll-grid">
           ${featuredCollections.map(renderCollectionCard).join("")}
@@ -2635,10 +3214,10 @@ function renderHome() {
 
       <section class="section">
         <div class="section-header">
-          <span class="section-title">Browse by Theme</span>
-          <a href="#/library" class="section-link" data-page="library">220+ themes →</a>
+          <span class="section-title">Browse by Knowledge Area</span>
+          <a href="${archiveHref("library")}" class="section-link" data-page="library">220+ knowledge areas →</a>
         </div>
-        ${renderRelatedSearchTags(featuredThemes)}
+        ${renderRelatedSearchTags(featuredKnowledgeAreas)}
       </section>
 
       <section class="section alt">
@@ -2646,7 +3225,7 @@ function renderHome() {
           <span class="section-title">Related Searches</span>
           <span class="section-link">${relatedCount.toLocaleString()} indexed discovery routes</span>
         </div>
-        <p class="section-copy">Related searches connect themes, regions, communities, institutions, media types, languages, and nearby concepts so users can move laterally when a query is too narrow, too sparse, or phrased differently.</p>
+        <p class="section-copy">Related searches connect knowledge areas, regions, communities, institutions, media types, languages, and nearby concepts so users can move laterally when a query is too narrow, too sparse, or phrased differently.</p>
         ${renderRelatedSearchTags(relatedPreview)}
       </section>
 
@@ -2666,7 +3245,7 @@ function renderHome() {
             <div class="audience-title">Students</div>
             <ul class="audience-list">
               <li>Curated anchor records plus an expanded African philosophy working library</li>
-              <li>Theme-led search, related-search guidance, and collection pathways</li>
+              <li>Knowledge area-led search, related-search guidance, and collection pathways</li>
               <li>Fast loading and mobile-safe browsing</li>
               <li>No sign-in or backend required</li>
             </ul>
@@ -2729,7 +3308,7 @@ function renderSources() {
         <div class="hero-inner">
           <div class="hero-eyebrow">${SOURCES.length} source pathways · ${searchReadyCount} search-ready routes · static-friendly discovery model</div>
           <h1 class="source-hero-title">Archive <strong>source directory</strong></h1>
-          <p class="hero-sub hero-sub-tight">The source directory now reflects a larger archive architecture: African-priority institutions, search-ready discovery layers, internal enrichment pathways, and partner routes for records that cannot simply be fetched live in the browser.</p>
+          <p class="hero-sub hero-sub-tight">The source directory now reflects a larger archive architecture: African-priority institutions, search-ready discovery layers, internal enrichment pathways, and partner routes for records that cannot simply be fetched in the browser.</p>
         </div>
       </section>
 
@@ -2743,7 +3322,7 @@ function renderSources() {
       <section class="section">
         <div class="section-header"><span class="section-title">Access Protocols &amp; Rights</span></div>
         <div class="protocol-grid">
-          <div class="protocol-cell"><strong>Local Index</strong>The core archive runs from a static local dataset so browsing and search remain stable when hosted on any static domain.</div>
+          <div class="protocol-cell"><strong>Archive Index</strong>The core archive runs from a static archive dataset so browsing and search remain stable when hosted on any static domain.</div>
           <div class="protocol-cell"><strong>Search-Ready</strong>Links open the originating archive or discovery interface in a new tab rather than depending on fragile browser-side API aggregation.</div>
           <div class="protocol-cell"><strong>Directory</strong>Institutional homepages, repository directories, and partner routes remain visible even when item-level access is external or rights-limited.</div>
           <div class="protocol-cell"><strong>Partnership</strong>Some collections require institutional access, custodial agreements, or on-site consultation rather than public download.</div>
@@ -2780,6 +3359,7 @@ function renderAbout() {
 
 function render() {
   const app = document.getElementById("app");
+  if (!app) return;
   if (currentPage === "home") app.innerHTML = renderHome();
   if (currentPage === "library") app.innerHTML = renderLibrary();
   if (currentPage === "sources") app.innerHTML = renderSources();
@@ -2790,6 +3370,8 @@ function render() {
 
 let liveResults = [];
 let liveStatus = {state:"idle", message:"", sources:[]};
+/** Populated when the open-access aggregator returns notice copy (DOAB + external disclaimer). */
+let openAccessNotices = null;
 const LIVE_RESULT_CACHE = new Map();
 const TRANSIENT_RESULTS_BY_ID = new Map();
 
@@ -2813,7 +3395,7 @@ const LIVE_SOURCE_ADAPTERS = [
     async search(query, options = {}) {
       const offset = Number(options.offset || 0);
       const limit = Number(options.limit || coreLimit);
-      const response = await fetch(`/api/core-search?q=${encodeURIComponent(query)}&limit=${limit}&offset=${offset}`);
+      const response = await fetchWithTimeout(`/api/core-search?q=${encodeURIComponent(query)}&limit=${limit}&offset=${offset}`, {}, 9000);
       const data = await response.json();
       if (!response.ok || !data.ok) {
         throw new Error(data.detail || data.error || 'CORE search failed');
@@ -2823,6 +3405,31 @@ const LIVE_SOURCE_ADAPTERS = [
       }
       const incomingHits = Number(data.totalHits || 0); if (incomingHits > 0) coreTotalHits = incomingHits;
       return Array.isArray(data.results) ? data.results : [];
+    }
+  },
+  {
+    id:"openAccess",
+    label:"Open access & OER",
+    trust:0.82,
+    async search(query) {
+      const response = await fetchWithTimeout(`/api/external-open-access?q=${encodeURIComponent(query)}`, { headers: { Accept: "application/json" } }, 9000);
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        return {
+          items: [],
+          sourceStatuses: [{ id: "external-open-access", label: "Open access API", state: "fail", message: `HTTP ${response.status}` }],
+          notices: null,
+          openAccessFetchFailed: true,
+        };
+      }
+      const raw = Array.isArray(data.results) ? data.results : [];
+      const items = raw.map((entry) => normalizeLiveRecord(entry));
+      console.log("[EXTERNAL API RESULTS]", raw.length, items.slice(0, 2));
+      return {
+        items,
+        sourceStatuses: Array.isArray(data.sourceStatuses) ? data.sourceStatuses : [],
+        notices: data.notices || null,
+      };
     }
   },
   createHandoffAdapter("britishmuseum", "British Museum", 0.74),
@@ -2858,10 +3465,10 @@ const LIVE_SOURCE_ADAPTERS = [
         ].filter(Boolean),
         period: doc.first_publish_year ? String(doc.first_publish_year) : "",
         type:"Book",
-        cat:"Live Books",
+        cat:"External books",
         region: inferRegionFromText([doc.place, doc.subject, doc.publisher].flat().filter(Boolean).join(" ")),
         country: inferCountryFromText([doc.place, doc.subject].flat().filter(Boolean).join(" ")),
-        collection:"Open Library live discovery",
+        collection:"Open Library external discovery",
         institution:"Open Library",
         source:"Open Library",
         sourceUrl: doc.key ? `https://openlibrary.org${doc.key}` : `https://openlibrary.org/search?q=${encodeURIComponent(query)}`,
@@ -2873,9 +3480,9 @@ const LIVE_SOURCE_ADAPTERS = [
         themes: inferThemesFromText([doc.title, ...(doc.subject || [])].join(" ")),
         images: buildOpenLibraryImages(doc),
         rights:"External source rights apply",
-        provenance:"Live metadata pulled from Open Library search.",
+        provenance:"External metadata pulled from Open Library search.",
         citation: buildSimpleCitation(doc.title || "Untitled", Array.isArray(doc.author_name) ? doc.author_name.join(", ") : (doc.author_name || "Unknown creator"), doc.first_publish_year || "", "Open Library"),
-        notes:["Live-fetched record. Metadata completeness varies by source."],
+        notes:["External-source record. Metadata completeness varies by source."],
         recordIdentifier: doc.key || doc.cover_edition_key || "",
         archiveIdentifier:`OL-${doc.cover_edition_key || doc.key || index}`,
         resultMode:"live",
@@ -2896,17 +3503,20 @@ const LIVE_SOURCE_ADAPTERS = [
       // the field is absent in the response.
       // `mailto` puts us in Crossref's "polite pool" (priority routing /
       // fewer 429s); harmless if you change the address.
-      const json = await fetchJsonWithTimeout(`https://api.crossref.org/works?rows=8&query.bibliographic=${encodeURIComponent(query)}&select=DOI,title,author,issued,abstract,URL,container-title,type,subject,publisher&mailto=archive@ared.design`, {headers:{Accept:"application/json"}}, 6500);
+      const json = await fetchJsonWithTimeout(`https://api.crossref.org/works?rows=8&query.bibliographic=${encodeURIComponent(query)}&select=DOI,title,author,issued,abstract,URL,container-title,type,subject,publisher,license,link&mailto=archive@ared.design`, {headers:{Accept:"application/json"}}, 6500);
       const items = json?.message?.items && Array.isArray(json.message.items) ? json.message.items.slice(0, 8) : [];
       return items.map((item, index) => {
         const authors = Array.isArray(item.author) ? item.author.map(person => [person.given, person.family].filter(Boolean).join(" ").trim()).filter(Boolean) : [];
         const title = Array.isArray(item.title) ? item.title[0] : (item.title || "Untitled record");
         const abstract = stripJats(item.abstract || "");
+        const licenceUrl = item.license?.[0]?.URL || item.license?.[0]?.url || "";
+        const pdfLink = (item.link || []).find(link => /pdf/i.test(`${link["content-type"] || ""} ${link.URL || ""}`))?.URL || "";
+        const htmlLink = (item.link || []).find(link => /html/i.test(`${link["content-type"] || ""} ${link.URL || ""}`))?.URL || "";
         return normalizeLiveRecord({
           id:`live-crossref-${slugify((item.DOI || title) + "-" + index)}`,
           title,
           creator: authors.join(", ") || "Unknown creator",
-          summary: abstract ? abstract.slice(0, 320) : `${Array.isArray(item["container-title"]) && item["container-title"][0] ? item["container-title"][0] : "Scholarly record"} surfaced via live metadata search.`,
+          summary: abstract ? abstract.slice(0, 320) : `${Array.isArray(item["container-title"]) && item["container-title"][0] ? item["container-title"][0] : "Scholarly record"} surfaced via external metadata search.`,
           abstract,
           description:[
             Array.isArray(item.subject) && item.subject.length ? `Subjects: ${item.subject.slice(0, 6).join(", ")}.` : "",
@@ -2917,10 +3527,13 @@ const LIVE_SOURCE_ADAPTERS = [
           cat:"Research & scholarly metadata",
           region: inferRegionFromText([title, ...(item.subject || [])].join(" ")),
           country: inferCountryFromText([title, ...(item.subject || [])].join(" ")),
-          collection:"Crossref live discovery",
+          collection:"Crossref external discovery",
           institution: Array.isArray(item["container-title"]) ? item["container-title"][0] : "Crossref",
           source:"Crossref",
           sourceUrl: item.URL || (item.DOI ? `https://doi.org/${item.DOI}` : `https://search.crossref.org/?q=${encodeURIComponent(query)}`),
+          licence_url: licenceUrl,
+          pdf_url: pdfLink,
+          html_url: htmlLink,
           sourceActionLabel:"Open source record",
           externalLinks: item.DOI ? [{label:"DOI", url:`https://doi.org/${item.DOI}`}] : [],
           language: uniqueValues([mapLanguageCode(item.language)]),
@@ -2929,9 +3542,9 @@ const LIVE_SOURCE_ADAPTERS = [
           themes: inferThemesFromText([title, ...(item.subject || [])].join(" ")),
           images: [],
           rights:"External source rights apply",
-          provenance:"Live metadata pulled from Crossref.",
+          provenance:"External metadata pulled from Crossref.",
           citation: buildSimpleCitation(title, authors.join(", ") || "Unknown creator", item.issued?.["date-parts"]?.[0]?.[0] || "", "Crossref"),
-          notes:["Live-fetched scholarly metadata. Some abstracts are shortened for display."],
+          notes:["External-source scholarly metadata. Some abstracts are shortened for display."],
           recordIdentifier: item.DOI || "",
           archiveIdentifier: item.DOI ? `DOI:${item.DOI}` : `CR-${index}`,
           resultMode:"live",
@@ -2952,7 +3565,7 @@ const LIVE_SOURCE_ADAPTERS = [
         id:`live-loc-${slugify((item.id || item.url || item.title || query) + "-" + index)}`,
         title: item.title || "Untitled record",
         creator: Array.isArray(item.contributor_names) ? item.contributor_names.join(", ") : (item.creator || item.contributor || "Library of Congress"),
-        summary: item.description || item.item?.description || item.subject?.slice?.(0, 3)?.join(", ") || "Live archival result from the Library of Congress.",
+        summary: item.description || item.item?.description || item.subject?.slice?.(0, 3)?.join(", ") || "External archival result from the Library of Congress.",
         abstract: item.description || "",
         description:[
           item.original_format && item.original_format.length ? `Format: ${item.original_format.join(", ")}.` : "",
@@ -2960,13 +3573,16 @@ const LIVE_SOURCE_ADAPTERS = [
         ].filter(Boolean),
         period: item.date || "",
         type: mapLocType(item.format?.[0] || item.original_format?.[0] || ""),
-        cat:"Live cultural heritage",
+        cat:"External cultural heritage",
         region: inferRegionFromText([item.title, ...(item.subject || []), item.description || ""].join(" ")),
         country: inferCountryFromText([item.title, ...(item.subject || [])].join(" ")),
-        collection:"Library of Congress live discovery",
+        collection:"Library of Congress external discovery",
         institution:"Library of Congress",
         source:"Library of Congress",
         sourceUrl: item.url || item.id || `https://www.loc.gov/search/?in=all&q=${encodeURIComponent(query)}`,
+        rights: firstText(item.rights_advisory, item.rights_information, item.item?.rights_advisory, item.item?.rights_information, item.access_restricted, item.reproduction_number) || "External source rights apply",
+        rights_statement: firstText(item.rights_advisory, item.rights_information, item.item?.rights_advisory, item.item?.rights_information),
+        access_type: item.url || item.id ? "External Link Only" : "Metadata Only",
         sourceActionLabel:"View source record",
         externalLinks: item.image_url && item.image_url.length ? [{label:"LoC media", url:item.image_url[0]}] : [],
         language: uniqueValues([mapLanguageCode(item.language?.[0])]),
@@ -2975,9 +3591,9 @@ const LIVE_SOURCE_ADAPTERS = [
         themes: inferThemesFromText([item.title, ...(item.subject || [])].join(" ")),
         images: buildLocImages(item),
         rights:"External source rights apply",
-        provenance:"Live metadata pulled from the Library of Congress JSON search endpoint.",
+        provenance:"External metadata pulled from the Library of Congress JSON search endpoint.",
         citation: buildSimpleCitation(item.title || "Untitled", Array.isArray(item.contributor_names) ? item.contributor_names.join(", ") : "Library of Congress", item.date || "", "Library of Congress"),
-        notes:["Live-fetched record from the Library of Congress."],
+        notes:["External-source record from the Library of Congress."],
         recordIdentifier: item.id || item.url || "",
         archiveIdentifier:`LOC-${index}`,
         resultMode:"live",
@@ -2998,18 +3614,21 @@ const LIVE_SOURCE_ADAPTERS = [
         id:`live-met-${obj.objectID || index}`,
         title: obj.title || "Untitled object",
         creator: obj.artistDisplayName || obj.culture || "Metropolitan Museum of Art",
-        summary: obj.objectName ? `${obj.objectName}${obj.period ? ` · ${obj.period}` : ""}.` : "Live museum object from The Met.",
+        summary: obj.objectName ? `${obj.objectName}${obj.period ? ` · ${obj.period}` : ""}.` : "External museum object from The Met.",
         abstract: obj.creditLine || "",
         description:[obj.medium ? `Medium: ${obj.medium}.` : "", obj.objectDate ? `Date: ${obj.objectDate}.` : "", obj.repository ? `Repository: ${obj.repository}.` : ""].filter(Boolean),
         period: obj.objectDate || obj.period || "",
         type: obj.objectName || "Artefact",
-        cat:"Live museum objects",
+        cat:"External museum objects",
         region: inferRegionFromText([obj.culture, obj.region, obj.department, obj.title].filter(Boolean).join(" ")),
         country: inferCountryFromText([obj.culture, obj.region, obj.title].filter(Boolean).join(" ")),
-        collection:"The Met live discovery",
+        collection:"The Met external discovery",
         institution:"The Metropolitan Museum of Art",
         source:"The Met Collection API",
         sourceUrl: obj.objectURL || `https://www.metmuseum.org/art/collection/search/${obj.objectID}`,
+        public_domain: Boolean(obj.isPublicDomain),
+        rights: obj.isPublicDomain ? "Public domain metadata from The Met Collection API." : "External source rights apply",
+        rights_statement: obj.rightsAndReproduction || obj.creditLine || "",
         sourceActionLabel:"View museum record",
         externalLinks: [],
         language: [],
@@ -3018,9 +3637,9 @@ const LIVE_SOURCE_ADAPTERS = [
         themes: inferThemesFromText([obj.title, obj.objectName, obj.medium].filter(Boolean).join(" ")),
         images: buildMetImages(obj),
         rights:"External source rights apply",
-        provenance:"Live object metadata pulled from The Met Collection API.",
+        provenance:"External object metadata pulled from The Met Collection API.",
         citation: buildSimpleCitation(obj.title || "Untitled object", obj.artistDisplayName || obj.culture || "The Met", obj.objectDate || "", "The Met"),
-        notes:["Live-fetched museum object."],
+        notes:["External-source museum object."],
         recordIdentifier: String(obj.objectID || ""),
         archiveIdentifier:`MET-${obj.objectID || index}`,
         resultMode:"live",
@@ -3036,21 +3655,28 @@ const LIVE_SOURCE_ADAPTERS = [
     async search(query) {
       const json = await fetchJsonWithTimeout(`https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=${encodeURIComponent(query)}&gsrlimit=8&prop=imageinfo|info&iiprop=url|extmetadata&inprop=url&format=json&origin=*`, {}, 7000);
       const pages = json.query?.pages ? Object.values(json.query.pages).slice(0, 8) : [];
-      return pages.map((page, index) => normalizeLiveRecord({
+      return pages.map((page, index) => {
+        const ext = page.imageinfo?.[0]?.extmetadata || {};
+        return normalizeLiveRecord({
         id:`live-wikimedia-${page.pageid || index}`,
         title: page.title ? page.title.replace(/^File:/, "") : "Untitled image",
-        creator: page.imageinfo?.[0]?.extmetadata?.Artist?.value ? stripHtml(page.imageinfo[0].extmetadata.Artist.value) : "Wikimedia Commons contributor",
-        summary: page.imageinfo?.[0]?.extmetadata?.ImageDescription?.value ? stripHtml(page.imageinfo[0].extmetadata.ImageDescription.value).slice(0, 320) : "Live media record from Wikimedia Commons.",
-        abstract: page.imageinfo?.[0]?.extmetadata?.ImageDescription?.value ? stripHtml(page.imageinfo[0].extmetadata.ImageDescription.value) : "",
-        description:[page.imageinfo?.[0]?.extmetadata?.LicenseShortName?.value ? `License: ${stripHtml(page.imageinfo[0].extmetadata.LicenseShortName.value)}.` : ""].filter(Boolean),
+        creator: ext.Artist?.value ? stripHtml(ext.Artist.value) : "Wikimedia Commons contributor",
+        summary: ext.ImageDescription?.value ? stripHtml(ext.ImageDescription.value).slice(0, 320) : "External media record from Wikimedia Commons.",
+        abstract: ext.ImageDescription?.value ? stripHtml(ext.ImageDescription.value) : "",
+        description:[ext.LicenseShortName?.value ? `License: ${stripHtml(ext.LicenseShortName.value)}.` : ""].filter(Boolean),
         type:"Image",
-        cat:"Live images",
+        cat:"External images",
         region: inferRegionFromText(page.title || ""),
         country: inferCountryFromText(page.title || ""),
-        collection:"Wikimedia Commons live discovery",
+        collection:"Wikimedia Commons external discovery",
         institution:"Wikimedia Commons",
         source:"Wikimedia Commons",
         sourceUrl: page.fullurl || `https://commons.wikimedia.org/wiki/${encodeURIComponent(page.title || "")}`,
+        licence: firstText(ext.LicenseShortName?.value, ext.License?.value),
+        licence_url: firstText(ext.LicenseUrl?.value),
+        rights: firstText(ext.UsageTerms?.value, ext.License?.value, ext.LicenseShortName?.value) || "External source rights apply",
+        rights_statement: firstText(ext.UsageTerms?.value),
+        extmetadata: ext,
         sourceActionLabel:"View media record",
         externalLinks: [],
         language: [],
@@ -3059,15 +3685,16 @@ const LIVE_SOURCE_ADAPTERS = [
         themes: inferThemesFromText(page.title || ""),
         images: buildWikimediaImages(page),
         rights:"External source rights apply",
-        provenance:"Live media metadata pulled from Wikimedia Commons.",
+        provenance:"External media metadata pulled from Wikimedia Commons.",
         citation: buildSimpleCitation(page.title ? page.title.replace(/^File:/, "") : "Untitled image", "Wikimedia Commons contributor", "", "Wikimedia Commons"),
-        notes:["Live-fetched image or media file."],
+        notes:["External-source image or media file."],
         recordIdentifier: String(page.pageid || ""),
         archiveIdentifier:`WC-${page.pageid || index}`,
         resultMode:"live",
         trustScore:0.78,
         liveSourceHint:"wikimedia"
-      }));
+        });
+      });
     }
   },
   {
@@ -3075,7 +3702,7 @@ const LIVE_SOURCE_ADAPTERS = [
     label:"OpenAlex",
     trust:0.86,
     async search(query) {
-      const json = await fetchJsonWithTimeout(`https://api.openalex.org/works?per-page=8&search=${encodeURIComponent(query)}&select=id,display_name,publication_year,authorships,primary_location,concepts,abstract_inverted_index,type,open_access,locations_count`, {}, 7000);
+      const json = await fetchJsonWithTimeout(`https://api.openalex.org/works?per-page=8&search=${encodeURIComponent(query)}&select=id,display_name,publication_year,authorships,primary_location,best_oa_location,concepts,abstract_inverted_index,type,open_access,locations_count`, {}, 7000);
       const items = Array.isArray(json.results) ? json.results.slice(0, 8) : [];
       return items.map((item, index) => {
         const authors = Array.isArray(item.authorships) ? item.authorships.map(author => author.author?.display_name).filter(Boolean) : [];
@@ -3086,7 +3713,7 @@ const LIVE_SOURCE_ADAPTERS = [
           id:`live-openalex-${slugify((item.id || title) + "-" + index)}`,
           title,
           creator: authors.join(", ") || "Unknown creator",
-          summary: abstract ? abstract.slice(0, 320) : `${sourceName} surfaced via OpenAlex live metadata.`,
+          summary: abstract ? abstract.slice(0, 320) : `${sourceName} surfaced via OpenAlex external metadata.`,
           abstract,
           description:[item.type ? `Type: ${item.type}.` : "", Array.isArray(item.concepts) && item.concepts.length ? `Concepts: ${item.concepts.slice(0, 5).map(concept => concept.display_name).join(", ")}.` : ""].filter(Boolean),
           period: item.publication_year ? String(item.publication_year) : "",
@@ -3094,10 +3721,17 @@ const LIVE_SOURCE_ADAPTERS = [
           cat:"Research & scholarly metadata",
           region: inferRegionFromText([title, ...(item.concepts || []).map(concept => concept.display_name)].join(" ")),
           country: inferCountryFromText([title, ...(item.concepts || []).map(concept => concept.display_name)].join(" ")),
-          collection:"OpenAlex live discovery",
+          collection:"OpenAlex external discovery",
           institution: sourceName,
           source:"OpenAlex",
           sourceUrl: item.primary_location?.landing_page_url || item.id || `https://api.openalex.org/works?search=${encodeURIComponent(query)}`,
+          licence: firstText(item.primary_location?.license, item.best_oa_location?.license),
+          licence_url: firstText(item.primary_location?.license_url, item.best_oa_location?.license_url),
+          open_access: item.open_access,
+          is_oa: item.open_access?.is_oa,
+          oa_status: item.open_access?.oa_status,
+          full_text_url: item.best_oa_location?.landing_page_url || "",
+          pdf_url: item.best_oa_location?.pdf_url || "",
           sourceActionLabel:"Open source record",
           externalLinks: item.id ? [{label:"OpenAlex", url:item.id}] : [],
           language: [],
@@ -3106,9 +3740,9 @@ const LIVE_SOURCE_ADAPTERS = [
           themes: inferThemesFromText([title, ...(item.concepts || []).map(concept => concept.display_name)].join(" ")),
           images: [],
           rights:"External source rights apply",
-          provenance:"Live scholarly metadata pulled from OpenAlex.",
+          provenance:"External scholarly metadata pulled from OpenAlex.",
           citation: buildSimpleCitation(title, authors.join(", ") || "Unknown creator", item.publication_year || "", sourceName),
-          notes:["Live-fetched research metadata from OpenAlex."],
+          notes:["External-source research metadata from OpenAlex."],
           recordIdentifier: item.id || "",
           archiveIdentifier:`OA-${index}`,
           resultMode:"live",
@@ -3139,9 +3773,14 @@ function buildMetImages(obj){ const images = []; if (obj.primaryImageSmall) imag
 function buildWikimediaImages(page){ const src = page.imageinfo?.[0]?.thumburl || page.imageinfo?.[0]?.url; return src ? [{src, alt:(page.title || 'Wikimedia media').replace(/^File:/,''), caption:'Image from Wikimedia Commons'}] : []; }
 function fetchWithTimeout(url, options = {}, timeout = 5500){ const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), timeout); return fetch(url, {...options, signal:controller.signal}).finally(() => clearTimeout(timer)); }
 async function fetchJsonWithTimeout(url, options = {}, timeout = 5500){ const response = await fetchWithTimeout(url, options, timeout); if (!response.ok) throw new Error(`Request failed: ${response.status}`); return response.json(); }
-function normalizeLiveRecord(record){ return { id: record.id, title: record.title || 'Untitled record', alternateTitle: record.alternateTitle || '', creator: record.creator || 'Unknown creator', contributors: listify(record.contributors), summary: record.summary || '', abstract: record.abstract || '', description: listify(record.description), region: record.region || 'Africa / Global', country: record.country || '', community: record.community || '', period: record.period || '', concepts: uniqueValues(record.concepts || []), themes: uniqueValues(record.themes || []), tags: uniqueValues(record.tags || []), rights: record.rights || 'External source rights apply', provenance: record.provenance || '', source: record.source || 'Live source', cat: record.cat || 'Live results', type: record.type || 'External record', collection: record.collection || '', institution: record.institution || record.source || '', language: uniqueValues(record.language || []), sourceUrl: safeUrl(record.sourceUrl), sourceActionLabel: record.sourceActionLabel || 'View source', externalLinks: (record.externalLinks || []).filter(link => link && safeUrl(link.url)).map(link => ({label:link.label || 'Open link', url:safeUrl(link.url)})), sourcePathways: uniqueValues(record.sourcePathways || ['Live source adapter']), notes: listify(record.notes), archiveIdentifier: record.archiveIdentifier || '', recordIdentifier: record.recordIdentifier || record.id, material: record.material || '', medium: record.medium || '', citation: record.citation || '', relatedRecords: listify(record.relatedRecords), images: (record.images || []).filter(image => safeUrl(image.src || image.url)).map(image => ({src:safeUrl(image.src || image.url), alt:image.alt || record.title, caption:image.caption || ''})), resultMode: record.resultMode || 'live', trustScore: Number(record.trustScore || 0.75), liveSourceHint: record.liveSourceHint || '' }; }
+function normalizeLiveRecord(record){
+  const rights = normalizeExternalRightsMetadata(record);
+  const canUseMedia = rights.hasConfirmedReuseRights;
+  const safeSourceUrl = rights.sourceUrl || safeUrl(record.sourceUrl);
+  return { id: record.id, title: record.title || 'Untitled record', alternateTitle: record.alternateTitle || '', creator: record.creator || 'Unknown creator', contributors: listify(record.contributors), summary: record.summary || '', abstract: record.abstract || '', description: listify(record.description), region: record.region || 'Global / Comparative', country: record.country || '', community: record.community || '', period: record.period || '', concepts: uniqueValues(record.concepts || []), themes: uniqueValues(record.themes || []), tags: uniqueValues(record.tags || []), rights: record.rights || 'Check original source before reuse.', rightsStatus: rights.rightsStatus, licence: rights.licence, accessType: rights.accessType, reusePermission: record.reusePermission || (canUseMedia ? 'Check Original Source' : 'No Reuse Without Permission'), verificationStatus: rights.verificationStatus, culturalSensitivity: record.culturalSensitivity || 'Public', communityReviewStatus: record.communityReviewStatus || 'Not Required', provenance: record.provenance || '', source: record.source || 'External source', sourceName: record.sourceName || record.source || record.institution || 'External source', sourceType: record.sourceType || inferSourceType(record.source || record.institution || ''), cat: record.cat || 'External source results', type: record.type || 'External record', collection: record.collection || '', institution: record.institution || record.source || '', language: uniqueValues(record.language || []), sourceUrl: safeSourceUrl, sourceActionLabel: record.sourceActionLabel || 'View source', externalLinks: (record.externalLinks || []).filter(link => link && safeUrl(link.url)).map(link => ({label:link.label || 'Open link', url:safeUrl(link.url)})), sourcePathways: uniqueValues(record.sourcePathways || ['External source adapter']), notes: listify(record.notes), archiveIdentifier: record.archiveIdentifier || '', recordIdentifier: record.recordIdentifier || record.id, material: record.material || '', medium: record.medium || '', citation: record.citation || '', relatedRecords: listify(record.relatedRecords), images: canUseMedia ? (record.images || []).filter(image => safeUrl(image.src || image.url)).map(image => ({src:safeUrl(image.src || image.url), alt:image.alt || record.title, caption:image.caption || ''})) : [], resultMode: record.resultMode || 'live', trustScore: Number(record.trustScore || 0.75), liveSourceHint: record.liveSourceHint || '', rightsMetadataFound: rights.verificationStatus !== 'Unverified', externalRightsRow: record.externalRightsRow || null, sourceCategoryGroup: record.sourceCategoryGroup || '' };
+}
 function getRecordByIdAny(id){ return RECORDS_BY_ID.get(id) || TRANSIENT_RESULTS_BY_ID.get(id) || null; }
-function resultModeLabel(mode){ return {local:'Local', live:'Live', hybrid:'Hybrid', external_handoff:'External'}[mode] || 'Local'; }
+function resultModeLabel(mode){ return sourceOriginValue(mode); }
 function getResultMode(record){ if (record.resultMode) return record.resultMode; if (record.source && record.source !== 'Local Bank' && record.source !== 'African Philosophy Working Library') return 'hybrid'; return 'local'; }
 
 function buildInstitutionalSearchLinks(query){
@@ -3219,8 +3858,394 @@ function scoreBlendedResult(record, query){
   return base + modeBonus + completeness + Math.round((record.trustScore || 0) * 6);
 }
 function dedupeBlendedResults(items, query){ const seen = new Map(); const ranked = items.filter(Boolean).map(item => ({item, score: scoreBlendedResult(item, query || libraryQuery)})).sort((a,b) => b.score - a.score || a.item.title.localeCompare(b.item.title)); for (const entry of ranked){ const key = normalizeComparable([entry.item.title, entry.item.creator, entry.item.period].join(' ')); if (!seen.has(key)) seen.set(key, entry); } return [...seen.values()].map(entry => entry.item); }
-async function fetchLiveResults(query){ const normalizedQuery = query.trim(); if (!normalizedQuery) return []; console.log('[LIVE] fetchLiveResults start', { query: normalizedQuery }); if (LIVE_RESULT_CACHE.has(normalizedQuery)) { console.log('[LIVE] cache hit', normalizedQuery); return LIVE_RESULT_CACHE.get(normalizedQuery); } liveStatus = {state:'loading', message:`Searching live sources for “${normalizedQuery}”…`, sources:LIVE_SOURCE_ADAPTERS.map(adapter => ({label:adapter.label, state:'loading'}))}; render(); const settled = await Promise.allSettled(LIVE_SOURCE_ADAPTERS.map(adapter => adapter.search(normalizedQuery))); const gathered = []; const statuses = []; settled.forEach((result, index) => { const adapter = LIVE_SOURCE_ADAPTERS[index]; if (result.status === 'fulfilled') { const items = Array.isArray(result.value) ? result.value : []; console.log('[LIVE] adapter success', { adapter: adapter.label, count: items.length }); items.forEach(item => { TRANSIENT_RESULTS_BY_ID.set(item.id, item); gathered.push(item); }); statuses.push({label:adapter.label, state:items.length ? 'ok' : 'empty', count:items.length}); } else { console.warn('[LIVE] adapter failed', { adapter: adapter.label, error: String(result.reason) }); statuses.push({label:adapter.label, state:'fail', count:0}); } }); const fallbacks = makeExternalFallbacks(normalizedQuery); fallbacks.forEach(item => TRANSIENT_RESULTS_BY_ID.set(item.id, item)); const fallbackPool = gathered.length >= 10 ? [] : fallbacks.slice(0, Math.max(4, 12 - gathered.length)); const combined = dedupeBlendedResults([...gathered, ...fallbackPool], normalizedQuery).slice(0, 24); console.log('[LIVE] combined results', { gathered: gathered.length, fallbackPool: fallbackPool.length, combined: combined.length }); LIVE_RESULT_CACHE.set(normalizedQuery, combined); liveStatus = { state:'done', message: gathered.length ? `Showing ${gathered.length} live records and ${combined.filter(item => getResultMode(item) === 'external_handoff').length} source handoffs for “${normalizedQuery}”.` : `Live fallback could not return direct records for “${normalizedQuery}”, so source handoffs are shown instead.`, sources: statuses }; return combined; }
-function maybeFetchLiveResults(query){ const normalizedQuery = query.trim(); console.log('[LIVE] maybeFetchLiveResults', { normalizedQuery, sourceMode }); if (!sourceMode || !normalizedQuery) return Promise.resolve([]); return fetchLiveResults(normalizedQuery).then(results => { console.log('[LIVE] maybeFetchLiveResults success', { count: results.length, liveCount: results.filter(item => getResultMode(item) === 'live').length }); liveResults = results; externalDiscovery = results.filter(item => getResultMode(item) === 'external_handoff'); render(); return results; }).catch(error => { console.warn('[LIVE] maybeFetchLiveResults failed', error); liveStatus = {state:'error', message:'Live fallback failed. The local archive is still available, and external handoffs remain in place.', sources:LIVE_SOURCE_ADAPTERS.map(adapter => ({label:adapter.label, state:'fail'}))}; liveResults = makeExternalFallbacks(normalizedQuery); externalDiscovery = liveResults.filter(item => getResultMode(item) === 'external_handoff'); render(); return liveResults; }); }
+function normalizeAdapterResult(value) {
+  if (Array.isArray(value)) return { items: value, sourceStatuses: [], notices: null, openAccessFetchFailed: false };
+  if (value && typeof value === "object" && Array.isArray(value.items)) {
+    return {
+      items: value.items,
+      sourceStatuses: Array.isArray(value.sourceStatuses) ? value.sourceStatuses : [],
+      notices: value.notices || null,
+      openAccessFetchFailed: Boolean(value.openAccessFetchFailed),
+    };
+  }
+  return { items: [], sourceStatuses: [], notices: null, openAccessFetchFailed: false };
+}
+async function fetchLiveResults(query){
+  const normalizedQuery = query.trim();
+  if (!normalizedQuery) return [];
+  console.log('[LIVE] fetchLiveResults start', { query: normalizedQuery });
+  if (LIVE_RESULT_CACHE.has(normalizedQuery)) {
+    console.log('[LIVE] cache hit', normalizedQuery);
+    const cached = LIVE_RESULT_CACHE.get(normalizedQuery);
+    liveResults = cached;
+    externalDiscovery = cached.filter(item => getResultMode(item) === 'external_handoff');
+    liveStatus = { state: 'done', message: '', sources: liveStatus.sources || [], openAccessWarning: '' };
+    render();
+    return cached;
+  }
+
+  // Reset incremental state
+  openAccessNotices = null;
+  const gathered = [];
+  const statuses = LIVE_SOURCE_ADAPTERS.map(adapter => ({ label: adapter.label, state: 'loading' }));
+  let openAccessWarning = '';
+  const fallbacks = makeExternalFallbacks(normalizedQuery);
+  fallbacks.forEach(item => TRANSIENT_RESULTS_BY_ID.set(item.id, item));
+
+  // Tokenise current query so a slow response that resolves after a new
+  // search doesn't overwrite the visible results.
+  fetchLiveResults._token = (fetchLiveResults._token || 0) + 1;
+  const token = fetchLiveResults._token;
+  const stillCurrent = () => token === fetchLiveResults._token && getEffectiveSearchQuery().trim() === normalizedQuery;
+
+  const publishProgress = (finalised = false) => {
+    if (!stillCurrent()) return;
+    // Build display set: gathered (deduped) + a handful of registry handoffs so the
+    // grid never looks empty while heavier adapters are still pending.
+    const handoffSlots = gathered.length >= 10 ? 0 : Math.max(4, 12 - gathered.length);
+    const fallbackPool = fallbacks.slice(0, handoffSlots);
+    const combined = dedupeBlendedResults([...gathered, ...fallbackPool], normalizedQuery).slice(0, 24);
+    liveResults = combined;
+    externalDiscovery = combined.filter(item => getResultMode(item) === 'external_handoff');
+    liveStatus = {
+      state: finalised ? 'done' : 'loading',
+      message: finalised
+        ? (gathered.length ? `Showing ${gathered.length + combined.filter(item => getResultMode(item) === 'external_handoff').length} external source results for “${normalizedQuery}”.` : `External source discovery could not return direct records for “${normalizedQuery}”, so source handoffs are shown instead.`)
+        : `Searching external sources for “${normalizedQuery}”…`,
+      sources: statuses.slice(),
+      openAccessWarning
+    };
+    render();
+  };
+
+  // Render the loading state immediately so the UI never sits blank.
+  publishProgress(false);
+
+  // Kick all adapters off concurrently, but render after each one resolves
+  // instead of waiting for them all.
+  const tasks = LIVE_SOURCE_ADAPTERS.map((adapter, index) => {
+    return Promise.resolve()
+      .then(() => adapter.search(normalizedQuery))
+      .then(value => {
+        if (!stillCurrent()) return;
+        const { items, sourceStatuses, notices, openAccessFetchFailed } = normalizeAdapterResult(value);
+        items.forEach(item => {
+          TRANSIENT_RESULTS_BY_ID.set(item.id, item);
+          gathered.push(item);
+        });
+        statuses[index] = { label: adapter.label, state: items.length ? 'ok' : 'empty', count: items.length };
+
+        if (adapter.id === 'openAccess') {
+          if (notices) openAccessNotices = notices;
+          if (Array.isArray(sourceStatuses)) {
+            sourceStatuses.forEach(s => {
+              const st = s.state === 'fail' ? 'fail'
+                : (s.state === 'skipped' || s.state === 'unavailable') ? 'fail'
+                : (typeof s.count === 'number' && s.count > 0) ? 'ok' : 'empty';
+              statuses.push({
+                label: s.label || s.id || 'Source',
+                state: st,
+                count: typeof s.count === 'number' ? s.count : undefined
+              });
+            });
+          }
+          if (openAccessFetchFailed) {
+            openAccessWarning = 'The /api/external-open-access request failed (network or HTTP error).';
+          } else if (!items.length && Array.isArray(sourceStatuses) && sourceStatuses.some(s => s.state === 'fail' || s.state === 'unavailable')) {
+            const detail = sourceStatuses.map(s => [s.label || s.id, s.message || s.state].filter(Boolean).join(': ')).filter(Boolean).join(' · ');
+            openAccessWarning = detail || 'External open-access search failed or returned no records.';
+          }
+        }
+        console.log('[LIVE] adapter resolved', { adapter: adapter.label, count: items.length });
+        publishProgress(false);
+      })
+      .catch(error => {
+        if (!stillCurrent()) return;
+        console.warn('[LIVE] adapter failed', { adapter: adapter.label, error: String(error) });
+        statuses[index] = { label: adapter.label, state: 'fail', count: 0 };
+        if (adapter.id === 'openAccess' && !openAccessWarning) {
+          openAccessWarning = `Open access aggregation failed: ${String(error && error.message ? error.message : error)}`;
+        }
+        publishProgress(false);
+      });
+  });
+
+  await Promise.allSettled(tasks);
+  if (!stillCurrent()) {
+    // A newer query has taken over — bail without touching state.
+    return liveResults;
+  }
+
+  const handoffSlots = gathered.length >= 10 ? 0 : Math.max(4, 12 - gathered.length);
+  const fallbackPool = fallbacks.slice(0, handoffSlots);
+  const combined = dedupeBlendedResults([...gathered, ...fallbackPool], normalizedQuery).slice(0, 24);
+  console.log('[LIVE] combined results', { gathered: gathered.length, fallbackPool: fallbackPool.length, combined: combined.length });
+  LIVE_RESULT_CACHE.set(normalizedQuery, combined);
+  publishProgress(true);
+  return combined;
+}
+function maybeFetchLiveResults(query){
+  const normalizedQuery = query.trim();
+  console.log('[LIVE] maybeFetchLiveResults', { normalizedQuery, sourceMode });
+  if (!sourceMode || !normalizedQuery) return Promise.resolve([]);
+  // fetchLiveResults() now drives liveResults / externalDiscovery / liveStatus
+  // and calls render() itself as each adapter resolves — we just await and
+  // return the final combined set.
+  return fetchLiveResults(normalizedQuery).then(results => {
+    console.log('[LIVE] maybeFetchLiveResults success', { count: results.length });
+    return results;
+  }).catch(error => {
+    console.warn('[LIVE] maybeFetchLiveResults failed', error);
+    liveStatus = {
+      state: 'error',
+      message: 'External source discovery failed. Archive records are still available.',
+      openAccessWarning: String(error && error.message ? error.message : error),
+      sources: LIVE_SOURCE_ADAPTERS.map(adapter => ({ label: adapter.label, state: 'fail' }))
+    };
+    liveResults = makeExternalFallbacks(normalizedQuery);
+    externalDiscovery = liveResults.filter(item => getResultMode(item) === 'external_handoff');
+    render();
+    return liveResults;
+  });
+}
+
+function isSeriousRightsIssue(record) {
+  const adminText = String(record.adminNotes || record.copyrightNote || "").toLowerCase();
+  return record.rightsStatus === "Takedown Requested" ||
+    record.communityReviewStatus === "Do Not Publish" ||
+    record.verificationStatus === "Copyright Risk" ||
+    record.verificationStatus === "Takedown Requested" ||
+    record.culturalSensitivity === "Takedown / Review Requested" ||
+    adminText.includes("copyright risk");
+}
+
+function isSensitiveRecord(record) {
+  return record.culturalSensitivity === "Restricted" ||
+    record.culturalSensitivity === "Do Not Display Media" ||
+    record.culturalSensitivity === "Community Review Needed" ||
+    record.rightsStatus === "Restricted / Sensitive";
+}
+
+function isRightsLimited(record) {
+  return record.rightsStatus === "In Copyright" ||
+    record.rightsStatus === "Rights Unknown" ||
+    record.rightsStatus === "Restricted / Sensitive" ||
+    record.rightsStatus === "Check source" ||
+    record.accessType === "Metadata Only" ||
+    record.accessType === "External Link Only";
+}
+
+function metadataDisplayValue(value) {
+  const map = {
+    "In Copyright":"In copyright",
+    "External Link Only":"External link only",
+    "Full Text Available":"Full text available",
+    "Download Available":"Download available",
+    "Read Online":"Read online",
+    "Metadata Only":"Metadata only",
+    "Restricted Access":"Restricted access",
+    "Requires Permission":"Requires permission",
+    "Check Source":"Check source",
+    "Source Checked":"Source checked",
+    "Rights Checked":"Rights checked",
+    "External Source":"External source",
+    "Rights Unknown":"Rights unknown"
+  };
+  return map[value] || value || "";
+}
+
+function getCardTrustState(record) {
+  if (isSeriousRightsIssue(record)) return "danger";
+  if (isSensitiveRecord(record)) return "sensitive";
+  if (record.rightsStatus === "Open Access" || record.rightsStatus === "Public Domain" || record.rightsStatus === "Creative Commons") return "open";
+  return "neutral";
+}
+
+function isPositiveRightsStatus(status) {
+  const s = String(status || "").trim();
+  return s === "Open Access" || s === "Public Domain" || s === "Creative Commons";
+}
+
+function isPositiveAccessStatus(status) {
+  const s = String(status || "").trim();
+  return s === "Full Text Available" || s === "Download Available" || s === "Read Online";
+}
+
+function isPositiveReviewStatus(status) {
+  const s = String(status || "").trim();
+  return s === "Source Checked" || s === "Rights Checked" || s === "Verified" ||
+    s === "Metadata Reviewed" ||
+    s === "Source checked" || s === "Rights checked" || /^verified\b/i.test(s);
+}
+
+function displayCardRecordType(record) {
+  const raw = String(record.type || "Record").trim();
+  if (/^live$/i.test(raw)) return "External record";
+  return raw || "Record";
+}
+
+function renderCardRightsBlock(record) {
+  // Resolve the short summary triplet (Rights · Access · Review). Prefer an
+  // explicit externalRightsRow when present, otherwise fall back to record fields.
+  const er = record.externalRightsRow || {};
+  const rightsRaw = er.rights || record.rightsStatus || "";
+  const accessRaw = er.access || record.accessType || "";
+  const reviewRaw = er.review || record.verificationStatus || "";
+  const mode = getResultMode(record);
+
+  const rights = rightsRaw && rightsRaw !== "Rights Unknown"
+    ? metadataDisplayValue(rightsRaw)
+    : "Check source";
+  const access = accessRaw
+    ? metadataDisplayValue(accessRaw)
+    : (record.sourceUrl ? "External link only" : "Metadata only");
+  let review = reviewRaw ? metadataDisplayValue(reviewRaw) : "Unverified";
+  if (!reviewRaw && mode === "external_handoff") review = "Unverified";
+
+  const licenceLabel = record.licence && record.licence !== "Check source"
+    ? metadataDisplayValue(record.licence)
+    : "";
+  const sensitive = isSensitiveRecord(record);
+  const trustState = getCardTrustState(record);
+
+  // Truncate long summary chunks so the chip stays one row
+  const truncate = (value, max) => {
+    const str = String(value || "");
+    return str.length > max ? str.slice(0, max - 1) + "…" : str;
+  };
+  const summaryBits = [
+    truncate(rights, 32),
+    truncate(access, 32),
+    truncate(review, 28)
+  ];
+  if (sensitive) summaryBits.push("Media hidden");
+  const summary = summaryBits.filter(Boolean).join(" · ");
+
+  // Full long-form panel rows
+  const rowsHtml = [
+    ["Rights status", rights],
+    ["Rights statement", record.rights || ""],
+    licenceLabel ? ["Licence", licenceLabel] : null,
+    ["Access", access],
+    ["Review", review],
+    record.reusePermission ? ["Reuse permission", record.reusePermission] : null,
+    record.culturalSensitivity ? ["Cultural sensitivity", record.culturalSensitivity] : null,
+    sensitive
+      ? ["Media", "Hidden — metadata shown for discovery under cultural or rights protocol."]
+      : null,
+    record.communityReviewStatus ? ["Community review", record.communityReviewStatus] : null,
+    record.provenance ? ["Provenance", record.provenance] : null,
+    record.sourceName ? ["Source", record.sourceName] : null
+  ]
+    .filter(Boolean)
+    .filter(([, value]) => value && String(value).trim() !== "")
+    .map(([label, value]) => `<div class="record-rights-row"><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`)
+    .join("");
+
+  const panelId = `rights-panel-${record.id}`;
+  const stateClass = sensitive ? "is-sensitive" : `is-${trustState}`;
+
+  if (trustState === "danger") {
+    return `<div class="record-rights-compact is-danger" data-stop-card-open="true">
+      <div class="record-rights-headline">Review required before publish or reuse.</div>
+      <button type="button" class="record-rights-toggle" data-rights-toggle aria-expanded="false" aria-controls="${escapeHtml(panelId)}">
+        <span class="record-rights-label">Rights &amp; access</span>
+        <span class="record-rights-summary">${escapeHtml(summary)}</span>
+        <span class="record-rights-chevron" aria-hidden="true">▾</span>
+      </button>
+      <div class="record-rights-panel" id="${escapeHtml(panelId)}" hidden>
+        <dl class="record-rights-dl">${rowsHtml}</dl>
+      </div>
+    </div>`;
+  }
+
+  return `<div class="record-rights-compact ${stateClass}" data-stop-card-open="true">
+    <button type="button" class="record-rights-toggle" data-rights-toggle aria-expanded="false" aria-controls="${escapeHtml(panelId)}">
+      <span class="record-rights-label">Rights &amp; access</span>
+      <span class="record-rights-summary">${escapeHtml(summary)}</span>
+      <span class="record-rights-chevron" aria-hidden="true">▾</span>
+    </button>
+    <div class="record-rights-panel" id="${escapeHtml(panelId)}" hidden>
+      <dl class="record-rights-dl">${rowsHtml}</dl>
+    </div>
+  </div>`;
+}
+
+function renderCardChips(record) {
+  const knowledgePrimary = (record.knowledgeAreas || record.themes || record.concepts || [])[0] || record.cat;
+  const ordered = [];
+  if (record.region) ordered.push(record.region);
+  if (knowledgePrimary) ordered.push(knowledgePrimary);
+  const shown = ordered.slice(0, 2);
+  const pool = uniqueValues([
+    record.region,
+    record.country,
+    knowledgePrimary,
+    record.community,
+    record.collection,
+    ...(record.concepts || []),
+    ...(record.knowledgeAreas || record.themes || []),
+    record.material,
+    record.medium
+  ].filter(Boolean));
+  const shownSet = new Set(shown);
+  const extraCount = pool.filter(value => !shownSet.has(value)).length;
+  if (!shown.length && !extraCount) return "";
+  return `<div class="record-card-chips card-tags">
+    ${shown.map(value => `<span class="kchip">${escapeHtml(value)}</span>`).join('<span class="kchip-dot" aria-hidden="true">·</span>')}
+    ${extraCount ? `<span class="kchip-dot" aria-hidden="true">·</span><span class="kchip is-more">+${extraCount} more</span>` : ""}
+  </div>`;
+}
+
+function recordHasDisplayableImage(record) {
+  if (isSensitiveRecord(record) || isSeriousRightsIssue(record)) return false;
+  if (!canDisplayMedia(record)) return false;
+  const leadImage = getLeadImage(record);
+  return Boolean(leadImage && leadImage.src);
+}
+
+function renderRecordCardThumbStack(record) {
+  if (!recordHasDisplayableImage(record)) return "";
+  const leadImage = getLeadImage(record);
+  const src = escapeHtml(leadImage.src);
+  return `<div class="record-card-thumb-stack">
+    <figure class="record-card-thumb-mini" data-card-hover-preview>
+      <img src="${src}" alt="${escapeHtml(leadImage.alt || record.title || "Cover")}" loading="lazy" decoding="async" />
+    </figure>
+    <div class="record-card-hover-preview" aria-hidden="true">
+      <img src="${src}" alt="" loading="lazy" decoding="async" />
+    </div>
+  </div>`;
+}
+
+function renderExpandedMetadataDrawer(record) {
+  const rows = [
+    ["Record Type", record.type],
+    ["Knowledge Area", (record.knowledgeAreas || record.themes || record.concepts || [])[0] || record.cat],
+    ["Region", record.region],
+    ["Country", record.country],
+    ["Community / Cultural Group", record.community],
+    ["Language", Array.isArray(record.language) ? record.language.join(", ") : record.language],
+    ["Script", Array.isArray(record.script) ? record.script.join(", ") : record.script],
+    ["Rights Status", record.rightsStatus],
+    ["Licence", record.licence],
+    ["Access Type", record.accessType],
+    ["Verification Status", record.verificationStatus],
+    ["Source Name", record.sourceName || record.institution || record.source],
+    ["Date Accessed", record.dateAccessed],
+    ["Citation", record.citation]
+  ].filter(([, value]) => value !== undefined && value !== null && String(value).trim() !== "");
+
+  if (!rows.length) return "";
+
+  return `<dl class="record-card-drawer-grid">
+    ${rows.map(([label, value]) => `<div class="record-card-drawer-row">
+      <dt>${escapeHtml(label)}</dt>
+      <dd>${escapeHtml(value)}</dd>
+    </div>`).join("")}
+  </dl>`;
+}
+
 function renderCard(record) {
   const summary =
     record.abstract ||
@@ -3228,74 +4253,195 @@ function renderCard(record) {
     (Array.isArray(record.description) ? record.description[0] : record.description) ||
     '';
   const mode = getResultMode(record);
-  const leadImage = getLeadImage(record);
-  const externalPrimary = (record.externalLinks || [])[0];
-  const subSource = record.institution || record.source || 'Archive record';
+  const streamOrigin = libraryStreamOriginLabel(record);
+  const streamOriginClass = libraryStreamOriginClass(record);
+  const subSource = record.sourceName || record.institution || record.source || 'Archive record';
   const actionHint = mode === 'external_handoff' ? 'Open source' : 'Open record';
   const sourceUrl = safeUrl(record.sourceUrl);
-  const externalPrimaryUrl = externalPrimary ? safeUrl(externalPrimary.url) : '';
-  return `<article class="card" data-id="${escapeHtml(record.id)}" data-mode="${escapeHtml(mode)}" ${mode === 'external_handoff' && sourceUrl ? `data-url="${escapeHtml(sourceUrl)}"` : ''} role="button" tabindex="0" aria-label="${escapeHtml(actionHint)} ${escapeHtml(record.title)}">
-    ${leadImage ? `<div class="card-thumb"><img src="${escapeHtml(leadImage.src)}" alt="${escapeHtml(leadImage.alt || record.title)}" loading="lazy"/></div>` : ''}
-    <div class="card-meta">
-      <span class="badge">${escapeHtml(record.type)}</span>
-      <span class="result-status ${escapeHtml(mode)}">${escapeHtml(resultModeLabel(mode))}</span>
+  const trustState = getCardTrustState(record);
+  const drawerOpen = getCardDrawerOpen(record.id);
+  const hasThumb = recordHasDisplayableImage(record);
+
+  const creatorLine = record.creator ? `<div class="record-card-creator">${escapeHtml(record.creator)}</div>` : "";
+  const sourceBits = [];
+  if (subSource) sourceBits.push(escapeHtml(subSource));
+  if (record.period) sourceBits.push(escapeHtml(record.period));
+  const sourceLine = sourceBits.length
+    ? `<div class="record-card-source">${sourceBits.join(' <span class="record-card-source-dot" aria-hidden="true">·</span> ')}</div>`
+    : "";
+
+  const primarySourceControl = sourceUrl
+    ? `<a class="archiveAction archiveActionPrimary" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer" data-stop-card-open="true" aria-label="View source (opens in new tab)">
+        <span class="archiveAction__icon archiveAction__iconLeft" aria-hidden="true">→</span>
+        <span class="archiveAction__text">View source</span>
+        <span class="archiveAction__icon archiveAction__iconRight" aria-hidden="true">→</span>
+      </a>`
+    : `<button type="button" class="archiveAction archiveActionOutline" data-card-open-record aria-label="View full record details">View details</button>`;
+
+  const recordTypeLabel = escapeHtml(displayCardRecordType(record).toUpperCase());
+
+  return `<article class="card record-card archive-card archive-record-card${hasThumb ? " has-image has-thumb" : " no-image no-thumb"}" data-id="${escapeHtml(record.id)}" data-mode="${escapeHtml(mode)}" data-origin="${escapeHtml(streamOrigin)}" data-trust="${escapeHtml(trustState)}" ${mode === 'external_handoff' && sourceUrl ? `data-url="${escapeHtml(sourceUrl)}"` : ''} role="button" tabindex="0" aria-label="${escapeHtml(actionHint)} ${escapeHtml(record.title)}">
+    <div class="record-card-body archive-card-body">
+      <div class="record-card-label-row">
+        <span class="record-card-label type-label">${recordTypeLabel}</span>
+        <span class="record-card-label source-label ${streamOriginClass}">${escapeHtml(streamOrigin)}</span>
+      </div>
+      <div class="record-card-main">
+        <div class="record-card-top">
+          <div class="record-card-copy">
+            <h3 class="record-card-title archive-card-title">${escapeHtml(record.title)}</h3>
+            ${creatorLine}
+            ${sourceLine}
+            ${summary ? `<p class="record-card-summary">${escapeHtml(summary)}</p>` : ""}
+            <div class="record-card-divider" aria-hidden="true"></div>
+            ${renderCardRightsBlock(record)}
+            ${renderCardChips(record)}
+          </div>
+          ${renderRecordCardThumbStack(record)}
+        </div>
+      </div>
     </div>
-    <div class="card-title">${escapeHtml(record.title)}</div>
-    <div class="card-creator">${escapeHtml(record.creator)}</div>
-    <div class="card-source">${escapeHtml(subSource)}${record.period ? ` · ${escapeHtml(record.period)}` : ''}</div>
-    <div class="card-summary">${escapeHtml(summary)}</div>
-    <div class="card-footer">
-      ${record.region ? `<span class="chip">${escapeHtml(record.region)}</span>` : ''}
-      ${record.country ? `<span class="chip">${escapeHtml(record.country)}</span>` : ''}
-      ${(record.concepts || [])[0] ? `<span class="chip">${escapeHtml(record.concepts[0])}</span>` : ''}
-    </div>
-    ${(sourceUrl || externalPrimaryUrl) ? `<div class="card-links">
-      ${sourceUrl ? `<a class="card-link" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer" data-stop-card-open="true">View source</a>` : ''}
-      ${externalPrimaryUrl ? `<a class="card-link" href="${escapeHtml(externalPrimaryUrl)}" target="_blank" rel="noopener noreferrer" data-stop-card-open="true">More links</a>` : ''}
-    </div>` : ''}
-    ${renderCardWorkspaceActions(record)}
+    <footer class="record-card-actions cardFooter card-footer" data-stop-card-open="true">
+      <div class="record-card-actions-icons cardFooter__icons card-footer-icons">
+        ${renderCardWorkspaceActions(record)}
+      </div>
+      <div class="record-card-actions-buttons cardFooter__actions card-footer-actions">
+        <button type="button" class="record-card-secondary-btn actionSecondary" data-card-drawer-toggle aria-expanded="${drawerOpen ? "true" : "false"}">${drawerOpen ? "Hide details" : "More details"}</button>
+        ${primarySourceControl}
+      </div>
+    </footer>
+    <section class="record-card-drawer ${drawerOpen ? "is-open" : ""}" aria-hidden="${drawerOpen ? "false" : "true"}">
+      <div class="record-card-drawer-label">Metadata</div>
+      ${renderExpandedMetadataDrawer(record)}
+    </section>
   </article>`;
 }
-function renderRecord() { const record = getRecordByIdAny(selectedRecordId); if (!record) { return `<div class="page active"><div class="detail"><div class="detail-shell"><div class="breadcrumb"><a href="#/home" data-page="home">Archive</a><span>›</span><a href="#/library" data-page="library">Library</a><span>›</span><span>Record</span></div><div class="empty"><h3>Record not found</h3><p>The requested record is not available in the local archive index or current live result cache. Return to the library and continue browsing.</p></div></div></div></div>`; } const {primary, secondary} = getPrimaryNarrative(record); const metadataRows = [['Title', record.title], ['Alternate title', record.alternateTitle], ['Creator', record.creator], ['Contributors', humanList(record.contributors)], ['Institution', record.institution], ['Source', record.source], ['Country', record.country], ['Region', record.region], ['Community', record.community], ['Period', record.period], ['Category', record.cat], ['Record type', record.type], ['Collection', record.collection], ['Material', record.material], ['Medium', record.medium], ['Language', humanList(record.language)]].filter(([,value]) => value); const identifierRows = [['Record ID', record.recordIdentifier], ['Archive ID', record.archiveIdentifier], ['Mode', resultModeLabel(getResultMode(record))]].filter(([,value]) => value); const related = getResultMode(record) === 'local' || getResultMode(record) === 'hybrid' ? getRelatedRecords(record, 3) : []; const leadImage = getLeadImage(record); const gallery = getGalleryImages(record); const mode = getResultMode(record); const badges = [`<span class="badge">${escapeHtml(record.type)}</span>`, record.period ? `<span class="period">${escapeHtml(record.period)}</span>` : '', `<span class="result-status ${escapeHtml(mode)}">${escapeHtml(resultModeLabel(mode))}</span>`, record.source ? `<span class="badge">${escapeHtml(record.source)}</span>` : ''].filter(Boolean).join(''); return `<div class="page active"><div class="detail"><div class="detail-shell"><div class="breadcrumb"><a href="#/home" data-page="home">Archive</a><span>›</span><a href="#/library" data-page="library">Library</a><span>›</span><span>${escapeHtml(record.type)}</span></div><header class="detail-header"><div class="detail-type">${badges}</div><h1>${escapeHtml(record.title)}</h1>${record.alternateTitle ? `<div class="detail-alt">${escapeHtml(record.alternateTitle)}</div>` : ''}<div class="detail-creator">${escapeHtml(record.creator)}</div><div class="detail-subline">${record.institution ? `<span>${escapeHtml(record.institution)}</span>` : ''}${record.collection ? `<span>${escapeHtml(record.collection)}</span>` : ''}${record.country ? `<span>${escapeHtml(record.country)}</span>` : ''}${record.sourceUrl ? `<span class="detail-outbound"><a class="inline-link" href="${escapeHtml(record.sourceUrl)}" target="_blank" rel="noopener noreferrer">Open original source ↗</a></span>` : ''}</div></header>${leadImage ? `<figure class="detail-media" data-media-root><div class="detail-media-main"><img src="${escapeHtml(leadImage.src)}" alt="${escapeHtml(leadImage.alt)}" loading="lazy"/></div>${leadImage.caption ? `<figcaption class="detail-media-caption">${escapeHtml(leadImage.caption)}</figcaption>` : ''}${gallery.length ? `<div class="gallery-grid">${gallery.map(image => `<figure class="gallery-thumb"><img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt)}" loading="lazy"/>${image.caption ? `<figcaption>${escapeHtml(image.caption)}</figcaption>` : ''}</figure>`).join('')}</div>` : ''}</figure>` : ''}<div class="detail-body"><div class="detail-main"><section class="detail-summary"><div class="label">${escapeHtml(primary.label)}</div>${primary.content.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join('')}</section>${secondary.map(section => `<section class="detail-section alt"><h2>${escapeHtml(section.label)}</h2><div class="detail-copy">${section.content.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join('')}</div></section>`).join('')}<section class="detail-section"><h2>Metadata</h2><table class="meta-table">${metadataRows.map(([label, value]) => `<tr><td>${escapeHtml(label)}</td><td>${escapeHtml(value)}</td></tr>`).join('')}</table></section>${renderTagSection('Concepts', record.concepts, 'concept-tag')}${renderTagSection('Themes', record.themes, 'theme-chip')}${renderTagSection('Tags', record.tags)}<section class="provenance-box"><div class="label">Provenance & rights</div>${record.provenance ? `<p>${escapeHtml(record.provenance)}</p>` : ''}${record.rights ? `<p><strong>Rights:</strong> ${escapeHtml(record.rights)}</p>` : ''}</section>${related.length ? `<section class="detail-section"><div class="section-header"><span class="section-title">Related records</span></div><div class="card-grid">${related.map(renderCard).join('')}</div></section>` : ''}</div><aside class="detail-side">${renderRecordWorkspaceTools(record)}${renderActionList(record)}<section class="detail-section alt"><h2>Citation</h2><div class="citation-controls"><label for="citationStyleSelect" class="citation-label">Style</label><select id="citationStyleSelect" class="citation-select"><option value="apa" ${citationStyle === "apa" ? "selected" : ""}>APA 7</option><option value="chicago" ${citationStyle === "chicago" ? "selected" : ""}>Chicago</option><option value="mla" ${citationStyle === "mla" ? "selected" : ""}>MLA 9</option><option value="harvard" ${citationStyle === "harvard" ? "selected" : ""}>Harvard</option></select><button class="citation-copy-btn" id="copyCitationInlineBtn" type="button" title="Copy citation">⎘</button></div><div class="citation" id="citationText">${escapeHtml(generateCitationByStyle(record, citationStyle))}</div></section>${record.notes.length ? `<section class="detail-section"><h2>Notes</h2><div class="note-list">${record.notes.map(note => `<p>${escapeHtml(note)}</p>`).join('')}</div></section>` : ''}<section class="detail-section alt"><h2>Identifiers</h2><table class="meta-table">${identifierRows.map(([label, value]) => `<tr><td>${escapeHtml(label)}</td><td>${escapeHtml(value)}</td></tr>`).join('')}</table></section>${record.externalLinks.length ? `<section class="detail-section"><h2>External References</h2><div class="inline-links">${record.externalLinks.map(link => `<a class="inline-link" href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(link.label)}</a>`).join('')}</div></section>` : ''}</aside></div></div></div></div>`; }
-function renderLiveStatus(){ const effectiveQuery = getEffectiveSearchQuery(); if (!effectiveQuery || !sourceMode) return '';  return `<div class="source-status"><div class="live-status-detail"><div>${escapeHtml(liveStatus.message || 'Live fallback is ready when local results are sparse.')}</div>${liveStatus.sources && liveStatus.sources.length ? `<div class="live-status-meta">${liveStatus.sources.map(source => `<span class="live-status-chip ${source.state === 'ok' ? 'ok' : source.state === 'fail' ? 'fail' : ''}">${escapeHtml(source.label)}${typeof source.count === 'number' ? ` · ${source.count}` : ''}</span>`).join('')}</div>` : ''}</div></div>`; }
-function renderSearchSaveAction(effectiveQuery) {
-  const hasSearch = Boolean(effectiveQuery || libraryQuery || filterType || filterRegion || filterCat || filterTheme || filterCollection || filterLanguage);
-  if (!hasSearch) return "";
-
-  if (memberWorkspaceState.status === "idle") {
-    queueMicrotask(fetchMemberWorkspaceState);
-  }
-
-  if (memberWorkspaceState.status === "loading" || memberWorkspaceState.authenticated === null) {
-    return `<div class="search-save-bar"><span>Checking saved-search tools...</span></div>`;
-  }
-
+function renderRecord() { const record = getRecordByIdAny(selectedRecordId); if (!record) { return `<div class="page active"><div class="detail"><div class="detail-shell"><div class="breadcrumb"><a href="/home" data-page="home">Archive</a><span>›</span><a href="/library" data-page="library">Library</a><span>›</span><span>Record</span></div><div class="empty"><h3>Record not found</h3><p>The requested record is not available in the archive index or current external result cache. Return to the library and continue browsing.</p></div></div></div></div>`; } const {primary, secondary} = getPrimaryNarrative(record); const metadataRows = [['Title', record.title], ['Alternate title', record.alternateTitle], ['Creator', record.creator], ['Contributors', humanList(record.contributors)], ['Institution', record.institution], ['Source', record.source], ['Country', record.country], ['Region', record.region], ['Community', record.community], ['Period', record.period], ['Category', record.cat], ['Record type', record.type], ['Collection', record.collection], ['Material', record.material], ['Medium', record.medium], ['Language', humanList(record.language)], ['Script / Writing System', humanList(record.script)], ['Rights Status', record.rightsStatus], ['Licence', record.licence], ['Access Type', record.accessType], ['Reuse Permission', record.reusePermission], ['Cultural Sensitivity', record.culturalSensitivity], ['Community Review Status', record.communityReviewStatus], ['Verification Status', record.verificationStatus], ['Date Accessed', record.dateAccessed], ['Source Type', record.sourceType]].filter(([,value]) => value); const identifierRows = [['Record ID', record.recordIdentifier], ['Archive ID', record.archiveIdentifier], ['Mode', resultModeLabel(getResultMode(record))]].filter(([,value]) => value); const related = getResultMode(record) === 'local' || getResultMode(record) === 'hybrid' ? getRelatedRecords(record, 3) : []; const leadImage = canDisplayMedia(record) ? getLeadImage(record) : null; const gallery = canDisplayMedia(record) ? getGalleryImages(record) : []; const warning = rightsWarning(record); const mode = getResultMode(record); const badges = [`<span class="badge">${escapeHtml(record.type)}</span>`, record.period ? `<span class="period">${escapeHtml(record.period)}</span>` : '', `<span class="result-status ${escapeHtml(mode)}">${escapeHtml(resultModeLabel(mode))}</span>`, record.source ? `<span class="badge">${escapeHtml(record.source)}</span>` : ''].filter(Boolean).join(''); return `<div class="page active"><div class="detail"><div class="detail-shell"><div class="breadcrumb"><a href="/home" data-page="home">Archive</a><span>›</span><a href="/library" data-page="library">Library</a><span>›</span><span>${escapeHtml(record.type)}</span></div><header class="detail-header"><div class="detail-type">${badges}</div><h1>${escapeHtml(record.title)}</h1>${record.alternateTitle ? `<div class="detail-alt">${escapeHtml(record.alternateTitle)}</div>` : ''}<div class="detail-creator">${escapeHtml(record.creator)}</div><div class="detail-subline">${record.institution ? `<span>${escapeHtml(record.institution)}</span>` : ''}${record.collection ? `<span>${escapeHtml(record.collection)}</span>` : ''}${record.country ? `<span>${escapeHtml(record.country)}</span>` : ''}${record.sourceUrl ? `<span class="detail-outbound"><a class="inline-link" href="${escapeHtml(record.sourceUrl)}" target="_blank" rel="noopener noreferrer">Open original source ↗</a></span>` : ''}</div></header>${warning ? `<section class="provenance-box rights-warning"><div class="label">Rights and cultural protocol</div><p>${escapeHtml(warning)}</p>${record.culturalProtocolNote ? `<p>${escapeHtml(record.culturalProtocolNote)}</p>` : ''}${record.sourceUrl ? `<a class="inline-link" href="${escapeHtml(record.sourceUrl)}" target="_blank" rel="noopener noreferrer">Open original source</a>` : ''}</section>` : ''}${leadImage ? `<figure class="detail-media" data-media-root><div class="detail-media-main"><img src="${escapeHtml(leadImage.src)}" alt="${escapeHtml(leadImage.alt)}" loading="lazy"/></div>${leadImage.caption ? `<figcaption class="detail-media-caption">${escapeHtml(leadImage.caption)}</figcaption>` : ''}${gallery.length ? `<div class="gallery-grid">${gallery.map(image => `<figure class="gallery-thumb"><img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt)}" loading="lazy"/>${image.caption ? `<figcaption>${escapeHtml(image.caption)}</figcaption>` : ''}</figure>`).join('')}</div>` : ''}</figure>` : ''}<div class="detail-body"><div class="detail-main"><section class="detail-summary"><div class="label">${escapeHtml(primary.label)}</div>${primary.content.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join('')}</section>${secondary.map(section => `<section class="detail-section alt"><h2>${escapeHtml(section.label)}</h2><div class="detail-copy">${section.content.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join('')}</div></section>`).join('')}<section class="detail-section"><h2>Metadata</h2><table class="meta-table">${metadataRows.map(([label, value]) => `<tr><td>${escapeHtml(label)}</td><td>${escapeHtml(value)}</td></tr>`).join('')}</table></section>${renderTagSection('Concepts', record.concepts, 'concept-tag')}${renderTagSection('Knowledge Areas', record.knowledgeAreas || record.themes, 'theme-chip')}${renderTagSection('Tags', record.tags)}<section class="provenance-box"><div class="label">Provenance & rights</div>${record.provenance ? `<p>${escapeHtml(record.provenance)}</p>` : ''}${record.rights ? `<p><strong>Rights:</strong> ${escapeHtml(record.rights)}</p>` : ''}</section>${related.length ? `<section class="detail-section"><div class="section-header"><span class="section-title">Related records</span></div><div class="card-grid">${related.map(renderCard).join('')}</div></section>` : ''}</div><aside class="detail-side">${renderRecordWorkspaceTools(record)}${renderActionList(record)}<section class="detail-section alt"><h2>Citation</h2><div class="citation-controls"><label for="citationStyleSelect" class="citation-label">Style</label><select id="citationStyleSelect" class="citation-select"><option value="apa" ${citationStyle === "apa" ? "selected" : ""}>APA 7</option><option value="chicago" ${citationStyle === "chicago" ? "selected" : ""}>Chicago</option><option value="mla" ${citationStyle === "mla" ? "selected" : ""}>MLA 9</option><option value="harvard" ${citationStyle === "harvard" ? "selected" : ""}>Harvard</option></select><button class="citation-copy-btn" id="copyCitationInlineBtn" type="button" title="Copy citation">⎘</button></div><div class="citation" id="citationText">${escapeHtml(generateCitationByStyle(record, citationStyle))}</div></section>${record.notes.length ? `<section class="detail-section"><h2>Notes</h2><div class="note-list">${record.notes.map(note => `<p>${escapeHtml(note)}</p>`).join('')}</div></section>` : ''}<section class="detail-section alt"><h2>Identifiers</h2><table class="meta-table">${identifierRows.map(([label, value]) => `<tr><td>${escapeHtml(label)}</td><td>${escapeHtml(value)}</td></tr>`).join('')}</table></section>${record.externalLinks.length ? `<section class="detail-section"><h2>External References</h2><div class="inline-links">${record.externalLinks.map(link => `<a class="inline-link" href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(link.label)}</a>`).join('')}</div></section>` : ''}</aside></div></div></div></div>`; }
+function renderLiveStatus(){ const effectiveQuery = getEffectiveSearchQuery(); if (!effectiveQuery || !sourceMode) return ''; const alertText = liveStatus.state === "error" ? [liveStatus.message || "External source discovery failed.", liveStatus.openAccessWarning].filter(Boolean).join(" ") : (liveStatus.openAccessWarning || ""); const alertHtml = alertText ? `<div class="live-status-warning" role="alert">${escapeHtml(alertText)}</div>` : ""; return `<div class="source-status">${alertHtml}<div class="live-status-detail"><div>${escapeHtml(liveStatus.message || 'External source discovery is ready when archive results are sparse.')}</div>${liveStatus.sources && liveStatus.sources.length ? `<div class="live-status-meta">${liveStatus.sources.map(source => `<span class="live-status-chip ${source.state === 'ok' ? 'ok' : source.state === 'fail' ? 'fail' : ''}">${escapeHtml(source.label)}${typeof source.count === 'number' ? ` · ${source.count}` : ''}</span>`).join('')}</div>` : ''}</div></div>`; }
+function renderSearchSaveAction(effectiveQuery){
+  if (!effectiveQuery) return "";
+  const defaultLabel = effectiveQuery || libraryQuery || "";
   const message = memberWorkspaceState.message ? `<span class="search-save-message">${escapeHtml(memberWorkspaceState.message)}</span>` : "";
-
-  if (!memberWorkspaceState.authenticated) {
-    return `
-      <div class="search-save-bar">
-        <span>Save this search to your workspace.</span>
-        <button type="button" data-member-signin>Sign in to save search</button>
-      </div>
-    `;
-  }
-
-  const defaultLabel = effectiveQuery || libraryQuery || "Archive search";
   return `
-    <form class="search-save-bar search-save-form" data-save-search>
+    <form class="search-save-action search-save-inline" id="saveSearchForm">
       <input type="hidden" name="query" value="${escapeHtml(effectiveQuery || libraryQuery)}" />
-      <label>
-        <span>Save this search</span>
-        <input name="label" value="${escapeHtml(defaultLabel)}" aria-label="Saved search label" />
-      </label>
-      <button type="submit">${memberWorkspaceState.status === "saving" ? `<span class="record-action-spinner" aria-hidden="true"></span>` : "Save"}</button>
+      <input
+        class="search-save-inline-input"
+        name="label"
+        value="${escapeHtml(defaultLabel)}"
+        aria-label="Saved search label"
+        placeholder="Name this search"
+      />
+      <button class="search-save-inline-button" type="submit">
+        ${memberWorkspaceState.status === "saving" ? `<span class="record-action-spinner" aria-hidden="true"></span>` : "Save this search"}
+      </button>
       ${message}
     </form>
   `;
 }
-function getEffectiveSearchQuery(){ const parts = [libraryQuery, filterType, filterRegion, filterCat, filterTheme, filterCollection, filterLanguage].map(value => (value || '').trim()).filter(Boolean); return uniqueValues(parts).join(' '); }
-function refreshBlendedDiscovery(forceLive = false){ const effectiveQuery = getEffectiveSearchQuery(); externalDiscovery = effectiveQuery ? buildExternalDiscovery(effectiveQuery) : []; if (!sourceMode || !effectiveQuery) { if (!effectiveQuery) { liveResults = []; liveStatus = {state:'idle', message:'', sources:[]}; } return Promise.resolve([]); } if (forceLive || localResults.length < 24 || liveResults.length === 0) { return maybeFetchLiveResults(effectiveQuery); } return Promise.resolve(liveResults); }
+
+function getEffectiveSearchQuery(){ const filterParts = Object.values(metadataFilters).flat().map(value => (value || '').trim()).filter(Boolean); const parts = [libraryQuery, ...filterParts].map(value => (value || '').trim()).filter(Boolean); return uniqueValues(parts).join(' '); }
+function refreshBlendedDiscovery(forceLive = false){ const effectiveQuery = getEffectiveSearchQuery(); externalDiscovery = effectiveQuery ? buildExternalDiscovery(effectiveQuery) : []; if (!sourceMode || !effectiveQuery) { if (!effectiveQuery) { liveResults = []; openAccessNotices = null; liveStatus = {state:'idle', message:'', sources:[]}; } return Promise.resolve([]); } if (forceLive || localResults.length < 24 || liveResults.length === 0) { return maybeFetchLiveResults(effectiveQuery); } return Promise.resolve(liveResults); }
+function renderOpenAccessNoticeStrip() {
+  if (!openAccessNotices) return "";
+  const ext = openAccessNotices.externalRights;
+  const dm = openAccessNotices.doabMetadata;
+  if (!ext && !dm) return "";
+  const parts = [];
+  if (ext) parts.push(`<p class="external-source-notice__p">${escapeHtml(ext)}</p>`);
+  if (dm) parts.push(`<p class="external-source-notice__p external-source-notice__p--doab">${escapeHtml(dm)}</p>`);
+  return `<div class="external-source-notice" role="note">${parts.join("")}</div>`;
+}
+
+function isOpenAccessDiscoveryRecord(item) {
+  if (!item || typeof item !== "object") return false;
+  const src = String(item.source || item.institution || item.sourceName || "").toLowerCase();
+  const coll = String(item.collection || "").toLowerCase();
+  const st = String(item.sourceType || "").toLowerCase();
+  if (item.liveSourceHint === "openAccessPack") return true;
+  if (st === "open_access" || st === "open_access_books" || st === "open_textbook" || st === "oer") return true;
+  if (coll.includes("open access books") || coll.includes("oer")) return true;
+  const needles = ["doab", "openstax", "project gutenberg", "open textbook library", "libretexts", "pressbooks", "jstor open access"];
+  if (needles.some((n) => src.includes(n))) return true;
+  return false;
+}
+
+function dedupeLibraryStreamItems(items) {
+  const seen = new Set();
+  return items.filter((item) => {
+    const key =
+      item.id ||
+      item.recordIdentifier ||
+      item.sourceUrl ||
+      (item.title && item.source ? `${item.title}::${item.source}` : "") ||
+      (item.title ? String(item.title) : "");
+    if (!String(key || "").trim()) return true;
+    const clean = String(key).toLowerCase().trim();
+    if (seen.has(clean)) return false;
+    seen.add(clean);
+    return true;
+  });
+}
+
+function weaveLibraryStreamResults(groups) {
+  const q = getEffectiveSearchQuery() || libraryQuery || "";
+  const pools = groups.map((group) =>
+    [...(group.items || [])].sort(
+      (a, b) => scoreBlendedResult(b, q) - scoreBlendedResult(a, q)
+    )
+  );
+  const pattern = groups.flatMap((group, groupIndex) =>
+    Array.from({ length: Math.max(1, Number(group.weight) || 0) }, () => groupIndex)
+  );
+  const output = [];
+  let safety = 0;
+  while (pools.some((pool) => pool.length) && safety < 10000) {
+    for (const index of pattern) {
+      const item = pools[index]?.shift();
+      if (item) output.push(item);
+    }
+    safety++;
+  }
+  return dedupeLibraryStreamItems(output);
+}
+
+function libraryStreamOriginLabel(record) {
+  const mode = getResultMode(record);
+  const text = [
+    record.liveSourceHint,
+    record.sourceType,
+    record.sourceCategoryGroup,
+    record.collection,
+    record.source,
+    record.institution,
+    record.cat,
+    record.rightsStatus
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+
+  if (text.includes("public domain")) return "Public Domain";
+  if (record.liveSourceHint === "openAccessPack" || isOpenAccessDiscoveryRecord(record)) {
+    return "Open Access";
+  }
+  if (mode === "external_handoff") return "Source Handoff";
+  if (mode === "live") return "External Source";
+  return "Archive";
+}
+
+function libraryStreamOriginClass(record) {
+  const label = libraryStreamOriginLabel(record);
+  const map = {
+    Archive: "is-origin-archive",
+    "External Source": "is-origin-external",
+    "Open Access": "is-origin-open-access",
+    "Source Handoff": "is-origin-handoff",
+    "Public Domain": "is-origin-public-domain"
+  };
+  return map[label] || "is-origin-archive";
+}
+
 function renderLibraryLoader(){
   const shouldShow = currentPage === 'library' && (
     liveStatus.state === 'loading' ||
@@ -3314,8 +4460,125 @@ function renderLibraryLoader(){
   </div>`;
 }
 
-function renderLibrary() { const effectiveQuery = getEffectiveSearchQuery(); const types = uniqueValues(RECORDS.map(record => record.type)).sort(); const regions = uniqueValues(RECORDS.map(record => record.region)).sort(); const cats = uniqueValues(RECORDS.map(record => record.cat)).sort(); const themeOptions = buildFacetOptions(localResults, record => [...record.themes, ...record.concepts], 10); const collectionOptions = buildFacetOptions(localResults, record => [record.collection], 8); const languageOptions = buildFacetOptions(localResults, record => record.language, 8); const displayedLive = sourceMode ? liveResults.filter(item => getResultMode(item) === 'live') : []; const displayedExternal = sourceMode ? liveResults.filter(item => getResultMode(item) === 'external_handoff') : []; const displayedLocal = filterDisplayedRecords(localResults); console.log('[RENDER LIBRARY]', { libraryQuery, effectiveQuery, sourceMode, localResults: localResults.length, liveResults: liveResults.length, displayedLive: sourceMode ? liveResults.filter(item => getResultMode(item) === 'live').length : 0 }); const canLoadMoreCore = sourceMode && displayedLive.length > 0 && (coreTotalHits === 0 || displayedLive.length < coreTotalHits); const relatedSearches = getRelatedSearchSuggestions(effectiveQuery || libraryQuery || filterTheme || filterCollection || filterLanguage, 18); const collectionSuggestions = getCollectionSuggestions(effectiveQuery || libraryQuery || filterTheme || filterCollection, 8); const topThemes = getFeaturedThemes(12); const topSources = SOURCES.filter(source => source.access === "search").slice(0, 6); const hasFilter = filterType || filterRegion || filterCat || filterTheme || filterCollection || filterLanguage || libraryQuery; const localOnlyCount = displayedLocal.length; const liveOnlyCount = displayedLive.length; const handoffCount = displayedExternal.length; const totalDisplayed = displayedLive.length + displayedLocal.length + displayedExternal.length; return `<div class="page active"><div class="library-layout"><aside class="sidebar ${mobileFiltersOpen ? 'mobile-open' : ''}">${hasFilter ? `<button class="clear-btn" id="clearBtn" type="button">Clear all filters</button>` : ''}<div class="sidebar-section"><div class="sidebar-label">Record type</div>${types.map(type => `<label class="filter-opt"><input type="radio" name="type" value="${escapeHtml(type)}" ${filterType === type ? 'checked' : ''}/><span>${escapeHtml(type)}</span></label>`).join('')}</div><div class="sidebar-section"><div class="sidebar-label">Region</div>${regions.map(region => `<label class="filter-opt"><input type="radio" name="region" value="${escapeHtml(region)}" ${filterRegion === region ? 'checked' : ''}/><span>${escapeHtml(region)}</span></label>`).join('')}</div><div class="sidebar-section"><div class="sidebar-label">Category</div>${cats.map(cat => `<label class="filter-opt"><input type="radio" name="cat" value="${escapeHtml(cat)}" ${filterCat === cat ? 'checked' : ''}/><span>${escapeHtml(cat)}</span></label>`).join('')}</div>${collectionOptions.length ? `<div class="sidebar-section"><div class="sidebar-label">Collection</div>${collectionOptions.map(option => `<label class="filter-opt"><input type="radio" name="collection" value="${escapeHtml(option.value)}" ${filterCollection === option.value ? 'checked' : ''}/><span>${escapeHtml(option.value)} (${option.count})</span></label>`).join('')}</div>` : ''}${themeOptions.length ? `<div class="sidebar-section"><div class="sidebar-label">Theme</div>${themeOptions.map(option => `<label class="filter-opt"><input type="radio" name="theme" value="${escapeHtml(option.value)}" ${filterTheme === option.value ? 'checked' : ''}/><span>${escapeHtml(option.value)} (${option.count})</span></label>`).join('')}</div>` : ''}${languageOptions.length ? `<div class="sidebar-section"><div class="sidebar-label">Language</div>${languageOptions.map(option => `<label class="filter-opt"><input type="radio" name="language" value="${escapeHtml(option.value)}" ${filterLanguage === option.value ? 'checked' : ''}/><span>${escapeHtml(option.value)} (${option.count})</span></label>`).join('')}</div>` : ''}</aside><div class="main-results"><div class="search-bar"><input type="text" id="mainSearch" value="${escapeHtml(libraryQuery)}" placeholder="Search the local archive index, live sources, and source handoffs…" autocomplete="off"/><button id="localSearchBtn" type="button">Search</button><button class="secondary ${sourceMode ? 'live-on' : 'live-off'}" id="sourceSearchBtn" type="button">${sourceMode ? 'Live sources on' : 'Live sources off'}</button></div>${renderSearchSuggestions()}${renderRecentSearches('library')}${renderSearchSaveAction(effectiveQuery)}<div class="mobile-filter-bar"><button id="mobileFilterToggle" class="mobile-filter-btn ${mobileFiltersOpen ? 'active' : ''}" type="button">${mobileFiltersOpen ? 'Hide filters' : 'Show filters'}</button>${hasFilter ? `<button id="mobileClearFilters" class="mobile-clear-btn" type="button">Clear all</button>` : ``}</div>${renderLibraryLoader()}<div class="results-meta"><span>${totalDisplayed} total result${totalDisplayed !== 1 ? 's' : ''}${effectiveQuery ? ` for “${escapeHtml(effectiveQuery)}”` : ''}</span><span class="meta-separator" aria-hidden="true">|</span><span>${liveOnlyCount} live</span><span class="meta-separator" aria-hidden="true">|</span><span>${localOnlyCount} local</span><span class="meta-separator" aria-hidden="true">|</span><span>${handoffCount} external</span><span class="meta-separator" aria-hidden="true">|</span><span>${RELATED_SEARCH_INDEX.length.toLocaleString()} related searches</span></div>${renderLiveStatus()}<div class="results-stack">${displayedLive.length ? `<section class="results-section"><div class="results-section-title"><h3>Live results</h3><span>Results from live APIs including CORE</span></div><div class="card-grid">${displayedLive.map(renderCard).join('')}</div>${canLoadMoreCore ? `<div class="load-more-wrap"><button id="loadMoreCoreBtn" class="load-more-btn" type="button">${coreLoadingMore ? 'Loading…' : 'Load more CORE results'}</button></div>` : ``}</section>` : ``}${displayedLocal.length ? `<section class="results-section"><div class="results-section-title"><h3>Local archive results</h3><span>Records from the local archive index</span></div><div class="card-grid">${displayedLocal.map(renderCard).join('')}</div></section>` : `<div class="empty empty-guide"><h3>No local match yet</h3><p>No local archive records matched this search. Try one of these guided paths.</p>${relatedSearches.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Related searches</div>${renderRelatedSearchTags(relatedSearches.slice(0, 8))}</div>` : ``}${topThemes.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Top themes</div>${renderRelatedSearchTags(topThemes.slice(0, 10))}</div>` : ``}${collectionSuggestions.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Collection pathways</div><div class="coll-grid">${collectionSuggestions.slice(0, 4).map(renderCollectionCard).join('')}</div></div>` : ``}${topSources.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Source pathways</div><div class="source-grid">${topSources.map(source => renderSourceCard(source)).join('')}</div></div>` : ``}</div>`}${displayedExternal.length ? `<section class="results-section"><div class="results-section-title"><h3>External results</h3><span>Source handoffs and external discovery links</span></div><div class="card-grid">${displayedExternal.map(renderCard).join('')}</div></section>` : ``}${relatedSearches.length ? `<section class="results-section"><div class="results-section-title"><h3>Related Searches</h3><span>${RELATED_SEARCH_INDEX.length.toLocaleString()} discovery routes</span></div>${renderRelatedSearchTags(relatedSearches)}</section>` : ''}${collectionSuggestions.length ? `<section class="results-section"><div class="results-section-title"><h3>Collection Pathways</h3><span>${COLLECTIONS.length} editorial browse routes</span></div><div class="coll-grid">${collectionSuggestions.map(renderCollectionCard).join('')}</div></section>` : ''}</div></div></div></div>`; }
-function applyLibraryQuery(value, clearSources = true) { const nextQuery = value.trim(); const queryChanged = nextQuery !== libraryQuery; console.log('[APPLY QUERY]', { value: nextQuery, clearSources, queryChanged, beforeLiveResults: liveResults.length }); libraryQuery = nextQuery; localResults = searchLocalRecords(getEffectiveSearchQuery() || libraryQuery); if (clearSources && queryChanged) { liveResults = []; externalDiscovery = []; coreOffset = coreLimit; coreTotalHits = 0; liveStatus = {state:'idle', message: getEffectiveSearchQuery() ? 'Local-first results loaded. Live fallback is blending API and handoff results.' : '', sources:[]}; } refreshBlendedDiscovery(true); }
+function renderFilterSection(label, content, options = {}) {
+  const {accordion = false, open = false} = options;
+  if (accordion) {
+    return `<details class="filter-accordion" ${open ? "open" : ""}><summary>${escapeHtml(label)}</summary><div class="filter-accordion-panel">${content}</div></details>`;
+  }
+  return `<div class="sidebar-section"><div class="sidebar-label">${escapeHtml(label)}</div>${content}</div>`;
+}
+
+function renderMetadataFilterGroup(group, records, options = {}) {
+  const selected = new Set(metadataFilters[group.key] || []);
+  const facetOptions = group.dynamic
+    ? buildFacetOptions(records, record => getRecordFacetValues(record, group.key), 18).map(option => option.value)
+    : group.options;
+  if (!facetOptions.length) return "";
+  const content = facetOptions.map(option => `<label class="filter-opt"><input type="checkbox" data-filter-key="${escapeHtml(group.key)}" value="${escapeHtml(option)}" ${selected.has(option) ? 'checked' : ''}/><span>${escapeHtml(option)}</span></label>`).join('');
+  return renderFilterSection(group.label, content, options);
+}
+
+function renderQuickFilters(options = {}) {
+  const items = [
+    ["openAccess","Show only open access"],
+    ["verified","Show only verified records"],
+    ["hideSensitive","Hide culturally sensitive records"],
+    ["metadataOnly","Show metadata-only records"],
+    ["needsReview","Show records needing review"]
+  ];
+  const content = items.map(([key, label]) => `<label class="filter-opt"><input type="checkbox" data-quick-filter="${escapeHtml(key)}" ${quickFilters[key] ? 'checked' : ''}/><span>${escapeHtml(label)}</span></label>`).join('');
+  return renderFilterSection(options.accordion ? "Quick Filters" : "Quick filters", content, options);
+}
+
+function renderMobileFilterDrawer(totalResults, activeFilterCount) {
+  if (!mobileFiltersOpen) return "";
+  const resultLabel = `${totalResults.toLocaleString()} result${totalResults === 1 ? "" : "s"}`;
+  const groups = [
+    renderQuickFilters({accordion:true, open:true}),
+    ...METADATA_FILTER_GROUPS.map(group => renderMetadataFilterGroup(group, RECORDS, {
+      accordion:true,
+      open: group.key === "sourceOrigin"
+    }))
+  ].join("");
+  return `<button class="mobile-filter-backdrop" id="mobileFilterBackdrop" type="button" aria-label="Close filters"></button><section class="mobile-filter-drawer" id="mobileFilterDrawer" role="dialog" aria-modal="true" aria-labelledby="mobileFilterTitle"><header class="mobile-filter-header"><div><p class="mobile-filter-kicker">${activeFilterCount ? `${activeFilterCount} active` : "Refine results"}</p><h2 id="mobileFilterTitle">Filters</h2></div><div class="mobile-filter-header-actions">${activeFilterCount ? `<button id="mobileFilterClearDrawer" class="mobile-filter-clear-all" type="button">Clear all</button>` : ""}<button id="mobileFilterClose" class="mobile-filter-close" type="button" aria-label="Close filters">&times;</button></div></header><div class="mobile-filter-body">${groups}</div><footer class="mobile-filter-footer"><button id="mobileFilterApply" class="mobile-filter-apply" type="button">Show ${escapeHtml(resultLabel)}</button></footer></section>`;
+}
+
+function renderLibrary() {
+  const effectiveQuery = getEffectiveSearchQuery();
+  const filteredExternalResults = sourceMode ? filterDisplayedRecords(liveResults) : [];
+  const displayedLive = filteredExternalResults.filter(item => getResultMode(item) === "live");
+  const displayedOpenAccess = displayedLive.filter(item => isOpenAccessDiscoveryRecord(item));
+  const displayedLiveOther = displayedLive.filter(item => !isOpenAccessDiscoveryRecord(item));
+  const displayedExternal = filteredExternalResults.filter(item => getResultMode(item) === "external_handoff");
+  const displayedLocal = filterDisplayedRecords(localResults);
+
+  const cArchive = displayedLocal.length;
+  const cExt = displayedLiveOther.length;
+  const cOA = displayedOpenAccess.length;
+  const cHand = displayedExternal.length;
+
+  const blendedResults =
+    sourceMode && effectiveQuery
+      ? weaveLibraryStreamResults([
+          { label: "Archive", weight: 2, items: displayedLocal },
+          { label: "External", weight: 2, items: displayedLiveOther },
+          { label: "Open Access", weight: 1, items: displayedOpenAccess },
+          { label: "Handoff", weight: 1, items: displayedExternal },
+        ])
+      : displayedLocal;
+
+  const totalBlended = blendedResults.length;
+  const canLoadMoreCore =
+    sourceMode &&
+    displayedLiveOther.length > 0 &&
+    (coreTotalHits === 0 || displayedLiveOther.length < coreTotalHits);
+
+  const relatedSearches = getRelatedSearchSuggestions(effectiveQuery || libraryQuery, 18);
+  const collectionSuggestions = getCollectionSuggestions(effectiveQuery || libraryQuery, 8);
+  const topKnowledgeAreas = getFeaturedThemes(12);
+  const topSources = SOURCES.filter(source => source.access === "search").slice(0, 6);
+  const hasFilter = hasAnyMetadataFilter() || libraryQuery;
+  const activeFilterCount = getActiveFilterCount();
+
+  const qEsc = effectiveQuery ? escapeHtml(effectiveQuery) : "";
+  const metaPrimary =
+    sourceMode && effectiveQuery
+      ? `${totalBlended} result${totalBlended !== 1 ? "s" : ""}${effectiveQuery ? ` for “${qEsc}”` : ""} · ${cArchive} archive · ${cExt} external · ${cOA} open access · ${cHand} handoff${cHand !== 1 ? "s" : ""}`
+      : `${totalBlended} result${totalBlended !== 1 ? "s" : ""}${effectiveQuery ? ` for “${qEsc}”` : ""} · `;
+
+  const strip =
+    sourceMode && effectiveQuery
+      ? `<div class="result-source-strip" aria-label="Counts by origin"><span class="result-source-strip__item"><strong>${cArchive}</strong> archive</span><span class="result-source-strip__sep" aria-hidden="true">·</span><span class="result-source-strip__item"><strong>${cExt}</strong> external</span><span class="result-source-strip__sep" aria-hidden="true">·</span><span class="result-source-strip__item"><strong>${cOA}</strong> open access</span><span class="result-source-strip__sep" aria-hidden="true">·</span><span class="result-source-strip__item"><strong>${cHand}</strong> handoff${cHand !== 1 ? "s" : ""}</span></div>`
+      : "";
+
+  const emptyGuide = `<div class="empty empty-guide"><h3>No matching records yet</h3><p>Try a broader search, clear filters, or explore these discovery paths.</p>${relatedSearches.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Related searches</div>${renderRelatedSearchTags(relatedSearches.slice(0, 8))}</div>` : ""}${topKnowledgeAreas.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Top knowledge areas</div>${renderRelatedSearchTags(topKnowledgeAreas.slice(0, 10))}</div>` : ""}${collectionSuggestions.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Curated collection pathways</div><div class="coll-grid">${collectionSuggestions.slice(0, 4).map(renderCollectionCard).join("")}</div></div>` : ""}${topSources.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Source pathways</div><div class="source-grid">${topSources.map(source => renderSourceCard(source)).join("")}</div></div>` : ""}</div>`;
+
+  const blendedSection =
+    totalBlended > 0
+      ? `<section class="results-section blended-results-section"><div class="results-section-title"><h3>Results</h3><span>${totalBlended} blended archive, open access and external source result${totalBlended !== 1 ? "s" : ""}</span></div>${sourceMode && effectiveQuery ? renderOpenAccessNoticeStrip() : ""}${strip}<div class="card-grid results-grid blended-results-grid">${blendedResults.map(renderCard).join("")}</div>${canLoadMoreCore ? `<div class="load-more-wrap"><button id="loadMoreCoreBtn" class="load-more-btn" type="button">${coreLoadingMore ? "Loading…" : "Load more CORE results"}</button></div>` : ""}</section>`
+      : emptyGuide;
+
+  return `<div class="page active"><div class="library-layout"><aside class="sidebar">${hasFilter ? `<button class="clear-btn" id="clearBtn" type="button">Clear all filters</button>` : ""}${renderQuickFilters()}${METADATA_FILTER_GROUPS.map(group => renderMetadataFilterGroup(group, RECORDS)).join("")}</aside><div class="main-results library-blended-discovery"><div class="search-bar"><input type="text" id="mainSearch" value="${escapeHtml(libraryQuery)}" placeholder="Search metadata, provenance, rights, source, and cultural protocol fields…" autocomplete="off"/><button id="localSearchBtn" type="button">Search</button><button class="secondary ${sourceMode ? "live-on" : "live-off"}" id="sourceSearchBtn" type="button">${sourceMode ? "External sources on" : "External sources off"}</button></div>${renderSearchSuggestions()}${renderRecentSearches("library")}${renderSearchSaveAction(effectiveQuery)}<div class="mobile-filter-bar"><button id="mobileFilterToggle" class="mobile-filter-btn ${mobileFiltersOpen ? "active" : ""}" type="button" aria-expanded="${mobileFiltersOpen ? "true" : "false"}" aria-controls="mobileFilterDrawer">Filters${activeFilterCount ? ` (${activeFilterCount})` : ""}</button>${activeFilterCount ? `<button id="mobileClearFilters" class="mobile-clear-btn" type="button">Clear</button>` : ""}</div>${renderMobileFilterDrawer(totalBlended, activeFilterCount)}${renderLibraryLoader()}${renderLiveStatus()}<div class="results-stack">${blendedSection}${relatedSearches.length ? `<section class="results-section"><div class="results-section-title"><h3>Related searches</h3><span>${RELATED_SEARCH_INDEX.length.toLocaleString()} discovery routes</span></div>${renderRelatedSearchTags(relatedSearches)}</section>` : ""}${collectionSuggestions.length ? `<section class="results-section"><div class="results-section-title"><h3>Curated collection pathways</h3><span>${COLLECTIONS.length} editorial browse routes</span></div><div class="coll-grid">${collectionSuggestions.map(renderCollectionCard).join("")}</div></section>` : ""}</div></div></div></div>`;
+}
+
+function applyLibraryQuery(value, clearSources = true) { const nextQuery = value.trim(); const queryChanged = nextQuery !== libraryQuery; console.log('[APPLY QUERY]', { value: nextQuery, clearSources, queryChanged, beforeLiveResults: liveResults.length }); libraryQuery = nextQuery; localResults = searchLocalRecords(getEffectiveSearchQuery() || libraryQuery); if (clearSources && queryChanged) { liveResults = []; openAccessNotices = null; externalDiscovery = []; coreOffset = coreLimit; coreTotalHits = 0; liveStatus = {state:'idle', message: getEffectiveSearchQuery() ? 'Archive results loaded. External source discovery is available.' : '', sources:[]}; } refreshBlendedDiscovery(true); }
+
+function closeMobileFilters() {
+  mobileFiltersOpen = false;
+  render();
+}
+
+function clearMobileFilters() {
+  clearMetadataFilters();
+  localResults = searchLocalRecords(getEffectiveSearchQuery() || libraryQuery);
+  refreshBlendedDiscovery(true);
+  render();
+}
+
+function handleMobileFilterEscape(event) {
+  if (event.key === "Escape" && mobileFiltersOpen) closeMobileFilters();
+}
+
 function bindCardEvents() {
   document.querySelectorAll(".card[data-id]").forEach(card => {
     const open = () => {
@@ -3405,7 +4668,7 @@ async function loadMoreCoreResults() {
   }
 }
 
-function bindEvents() { document.querySelectorAll('[data-page]').forEach(element => { element.addEventListener('click', event => { const page = element.dataset.page; if (!page) return; event.preventDefault(); if (element.dataset.collection) { filterType = ''; filterRegion = ''; filterCat = ''; filterTheme = ''; filterLanguage = ''; filterCollection = element.dataset.collection; libraryQuery = ''; localResults = searchLocalRecords(getEffectiveSearchQuery()); liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'', sources:[]}; refreshBlendedDiscovery(true); } navigate(page); }); }); const hamburger = document.getElementById('hamburger'); const navMobile = document.getElementById('navMobile'); if (hamburger && navMobile) hamburger.addEventListener('click', () => navMobile.classList.toggle('open')); document.querySelectorAll('.suggestion[data-q], .related-search[data-related]').forEach(element => { element.addEventListener('click', () => { applyLibraryQuery(element.dataset.q || element.dataset.related || ''); navigate('library'); }); }); const heroInput = document.getElementById('heroSearch'); const heroButton = document.getElementById('heroSearchBtn'); if (heroInput && heroButton) { const submitHero = () => { const value = heroInput.value.trim(); if (value) pushRecentSearch(value); applyLibraryQuery(value); searchSuggestions = []; activeSuggestionIndex = -1; currentPage = 'library'; selectedRecordId = null; navigate('library'); requestAnimationFrame(() => { render(); const mainSearchAfter = document.getElementById('mainSearch'); if (mainSearchAfter) mainSearchAfter.value = libraryQuery; }); };
+function bindEvents() { document.querySelectorAll('[data-page]').forEach(element => { element.addEventListener('click', event => { const page = element.dataset.page; if (!page) return; event.preventDefault(); if (element.dataset.collection) { clearMetadataFilters(); metadataFilters.curatedCollections = [element.dataset.collection]; libraryQuery = ''; localResults = searchLocalRecords(getEffectiveSearchQuery()); liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'', sources:[]}; refreshBlendedDiscovery(true); } navigate(page); }); }); const hamburger = document.getElementById('hamburger'); const navMobile = document.getElementById('navMobile'); if (hamburger && navMobile) hamburger.addEventListener('click', () => navMobile.classList.toggle('open')); document.querySelectorAll('.suggestion[data-q], .related-search[data-related]').forEach(element => { element.addEventListener('click', () => { applyLibraryQuery(element.dataset.q || element.dataset.related || ''); navigate('library'); }); }); const heroInput = document.getElementById('heroSearch'); const heroButton = document.getElementById('heroSearchBtn'); if (heroInput && heroButton) { const submitHero = () => { const value = heroInput.value.trim(); if (value) pushRecentSearch(value); applyLibraryQuery(value); searchSuggestions = []; activeSuggestionIndex = -1; currentPage = 'library'; selectedRecordId = null; navigate('library'); requestAnimationFrame(() => { render(); const mainSearchAfter = document.getElementById('mainSearch'); if (mainSearchAfter) mainSearchAfter.value = libraryQuery; }); };
 const pickHeroSuggestion = (value) => {
   heroInput.value = value;
   libraryQuery = value;
@@ -3527,6 +4790,27 @@ document.querySelectorAll('[data-member-signin]').forEach(button => {
     redirectToMemberSignIn();
   });
 });
+document.querySelectorAll('[data-card-drawer-toggle]').forEach(button => {
+  button.addEventListener('click', event => {
+    event.preventDefault();
+    event.stopPropagation();
+    const card = button.closest('.record-card');
+    const recordId = card ? card.dataset.id : '';
+    if (!recordId) return;
+    setCardDrawerOpen(recordId, !getCardDrawerOpen(recordId));
+    render();
+  });
+});
+document.querySelectorAll('[data-card-open-record]').forEach(button => {
+  button.addEventListener('click', event => {
+    event.preventDefault();
+    event.stopPropagation();
+    const card = button.closest('.record-card');
+    const recordId = card ? card.dataset.id : '';
+    if (!recordId) return;
+    navigate('record', recordId);
+  });
+});
 document.querySelectorAll('[data-card-bookmark]').forEach(button => {
   button.addEventListener('click', event => {
     event.preventDefault();
@@ -3548,6 +4832,18 @@ document.querySelectorAll('[data-card-list-toggle]').forEach(button => {
     const recordId = container ? String(container.dataset.recordId || "") : "";
     if (!recordId) return;
     setCardListComposerOpen(recordId, !getCardListComposerOpen(recordId));
+    setCardWorkbenchComposerOpen(recordId, false);
+    render();
+  });
+});
+document.querySelectorAll('[data-card-workbench-toggle]').forEach(button => {
+  button.addEventListener('click', event => {
+    event.preventDefault();
+    const container = button.closest('[data-record-id]');
+    const recordId = container ? String(container.dataset.recordId || "") : "";
+    if (!recordId) return;
+    setCardWorkbenchComposerOpen(recordId, !getCardWorkbenchComposerOpen(recordId));
+    setCardListComposerOpen(recordId, false);
     render();
   });
 });
@@ -3582,6 +4878,37 @@ document.querySelectorAll('[data-card-create-list]').forEach(button => {
     });
   });
 });
+document.querySelectorAll('[data-card-workbench-add]').forEach(button => {
+  button.addEventListener('click', event => {
+    event.preventDefault();
+    const container = button.closest('[data-record-id]');
+    const record = container ? getRecordByIdAny(container.dataset.recordId || '') : null;
+    const select = container ? container.querySelector('[data-card-workbench-project]') : null;
+    if (!record || !select || !select.value) return;
+    postRecordWorkspaceAction(record, {
+      action:"workbench_add_record",
+      projectId:select.value
+    });
+  });
+});
+document.querySelectorAll('[data-card-workbench-create]').forEach(button => {
+  button.addEventListener('click', event => {
+    event.preventDefault();
+    const container = button.closest('[data-record-id]');
+    const record = container ? getRecordByIdAny(container.dataset.recordId || '') : null;
+    const input = container ? container.querySelector('[data-card-new-workbench-project]') : null;
+    const title = input ? input.value.trim() : "";
+    if (!record || !title) {
+      memberWorkspaceState = {...memberWorkspaceState, status:"ready", message:"Add a project title first."};
+      render();
+      return;
+    }
+    postRecordWorkspaceAction(record, {
+      action:"workbench_create_project",
+      workbenchTitle:title
+    });
+  });
+});
 document.querySelectorAll('[data-save-search]').forEach(form => {
   form.addEventListener('submit', event => {
     event.preventDefault();
@@ -3596,14 +4923,40 @@ document.querySelectorAll('[data-save-search]').forEach(form => {
     });
   });
 });
-if (mobileFilterToggle) { mobileFilterToggle.addEventListener('click', () => { mobileFiltersOpen = !mobileFiltersOpen; render(); }); } if (mobileClearFilters) { mobileClearFilters.addEventListener('click', () => { filterType = ''; filterRegion = ''; filterCat = ''; filterTheme = ''; filterCollection = ''; filterLanguage = ''; libraryQuery = ''; localResults = [...RECORDS]; liveResults = []; externalDiscovery = []; mobileFiltersOpen = false; liveStatus = {state:'idle', message:'', sources:[]}; render(); }); } if (sourceSearchBtn) { sourceSearchBtn.addEventListener('click', () => { sourceMode = !sourceMode; if (sourceMode) { refreshBlendedDiscovery(true); } else { liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'Live fallback is off. Showing local archive records only.', sources:[]}; } render(); }); } document.querySelectorAll('input[name="type"], input[name="region"], input[name="cat"], input[name="theme"], input[name="collection"], input[name="language"]').forEach(input => { input.addEventListener('change', () => { const checked = document.querySelector('input[name="type"]:checked'); filterType = checked ? checked.value : ''; const checkedRegion = document.querySelector('input[name="region"]:checked'); filterRegion = checkedRegion ? checkedRegion.value : ''; const checkedCat = document.querySelector('input[name="cat"]:checked'); filterCat = checkedCat ? checkedCat.value : ''; const checkedTheme = document.querySelector('input[name="theme"]:checked'); filterTheme = checkedTheme ? checkedTheme.value : ''; const checkedCollection = document.querySelector('input[name="collection"]:checked'); filterCollection = checkedCollection ? checkedCollection.value : ''; const checkedLanguage = document.querySelector('input[name="language"]:checked'); filterLanguage = checkedLanguage ? checkedLanguage.value : ''; localResults = searchLocalRecords(getEffectiveSearchQuery()); if (window.innerWidth <= 640) { mobileFiltersOpen = false; } refreshBlendedDiscovery(true); render(); }); }); const clearBtn = document.getElementById('clearBtn'); if (clearBtn) { clearBtn.addEventListener('click', () => { filterType = ''; filterRegion = ''; filterCat = ''; filterTheme = ''; filterCollection = ''; filterLanguage = ''; libraryQuery = ''; localResults = [...RECORDS]; liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'', sources:[]}; render(); }); } bindCardEvents(); document.querySelectorAll('[data-recent-search]').forEach(button => { button.addEventListener('click', () => { const value = button.dataset.recentSearch || ''; if (!value) return; const variant = button.dataset.recentVariant || 'library'; libraryQuery = value; searchSuggestions = []; activeSuggestionIndex = -1; pushRecentSearch(value); applyLibraryQuery(value, true); if (variant === 'hero') { currentPage = 'library'; selectedRecordId = null; navigate('library'); requestAnimationFrame(() => { render(); const ms = document.getElementById('mainSearch'); if (ms) ms.value = value; }); } else { render(); const ms = document.getElementById('mainSearch'); if (ms) ms.value = value; } }); }); const clearRecentBtnLibrary = document.getElementById('clearRecentSearchesBtn'); if (clearRecentBtnLibrary) { clearRecentBtnLibrary.addEventListener('click', () => { clearRecentSearches(); render(); }); } const clearRecentBtnHero = document.getElementById('clearRecentSearchesBtnHero'); if (clearRecentBtnHero) { clearRecentBtnHero.addEventListener('click', () => { clearRecentSearches(); render(); }); } document.querySelectorAll('[data-media-root] img').forEach(image => { image.addEventListener('error', () => { const mediaRoot = image.closest('[data-media-root]'); if (mediaRoot) mediaRoot.classList.add('hidden'); }, {once:true}); }); }
-function syncRouteFromHash() { const route = parseHash(); currentPage = route.page; selectedRecordId = route.recordId; if (currentPage === 'library') hydrateSearchFromLocation(); if (currentPage === 'record' && selectedRecordId && !getRecordByIdAny(selectedRecordId)) { currentPage = 'library'; selectedRecordId = null; } document.querySelectorAll('.nav-link').forEach(link => { link.classList.toggle('active', link.dataset.page === currentPage); }); render(); window.scrollTo({top:0, behavior:'auto'}); }
+document.removeEventListener('keydown', handleMobileFilterEscape);
+document.addEventListener('keydown', handleMobileFilterEscape);
+if (mobileFilterToggle) { mobileFilterToggle.addEventListener('click', () => { mobileFiltersOpen = !mobileFiltersOpen; render(); }); }
+if (mobileClearFilters) { mobileClearFilters.addEventListener('click', clearMobileFilters); }
+["mobileFilterClose","mobileFilterBackdrop","mobileFilterApply"].forEach(id => {
+  const control = document.getElementById(id);
+  if (control) control.addEventListener('click', closeMobileFilters);
+});
+const mobileFilterClearDrawer = document.getElementById('mobileFilterClearDrawer');
+if (mobileFilterClearDrawer) mobileFilterClearDrawer.addEventListener('click', clearMobileFilters);
+if (sourceSearchBtn) { sourceSearchBtn.addEventListener('click', () => { console.log('[SOURCE MODE TOGGLE]', { nextOn: !sourceMode }); sourceMode = !sourceMode; if (sourceMode) { refreshBlendedDiscovery(true); } else { liveResults = []; openAccessNotices = null; externalDiscovery = []; liveStatus = {state:'idle', message:'External source discovery is off. Showing archive records only.', sources:[]}; } render(); }); } document.querySelectorAll('input[data-filter-key]').forEach(input => { input.addEventListener('change', () => { const key = input.dataset.filterKey; const checkedValues = [...new Set(Array.from(document.querySelectorAll(`input[data-filter-key="${key}"]:checked`)).map(item => item.value))]; if (checkedValues.length) metadataFilters[key] = checkedValues; else delete metadataFilters[key]; localResults = searchLocalRecords(getEffectiveSearchQuery()); refreshBlendedDiscovery(true); render(); }); }); document.querySelectorAll('input[data-quick-filter]').forEach(input => { input.addEventListener('change', () => { const key = input.dataset.quickFilter; quickFilters[key] = input.checked; localResults = searchLocalRecords(getEffectiveSearchQuery()); refreshBlendedDiscovery(true); render(); }); }); const clearBtn = document.getElementById('clearBtn'); if (clearBtn) { clearBtn.addEventListener('click', () => { clearMetadataFilters(); libraryQuery = ''; localResults = [...RECORDS]; liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'', sources:[]}; render(); }); } bindCardEvents(); document.querySelectorAll('[data-recent-search]').forEach(button => { button.addEventListener('click', () => { const value = button.dataset.recentSearch || ''; if (!value) return; const variant = button.dataset.recentVariant || 'library'; libraryQuery = value; searchSuggestions = []; activeSuggestionIndex = -1; pushRecentSearch(value); applyLibraryQuery(value, true); if (variant === 'hero') { currentPage = 'library'; selectedRecordId = null; navigate('library'); requestAnimationFrame(() => { render(); const ms = document.getElementById('mainSearch'); if (ms) ms.value = value; }); } else { render(); const ms = document.getElementById('mainSearch'); if (ms) ms.value = value; } }); }); const clearRecentBtnLibrary = document.getElementById('clearRecentSearchesBtn'); if (clearRecentBtnLibrary) { clearRecentBtnLibrary.addEventListener('click', () => { clearRecentSearches(); render(); }); } const clearRecentBtnHero = document.getElementById('clearRecentSearchesBtnHero'); if (clearRecentBtnHero) { clearRecentBtnHero.addEventListener('click', () => { clearRecentSearches(); render(); }); } document.querySelectorAll('[data-media-root] img').forEach(image => { image.addEventListener('error', () => { const mediaRoot = image.closest('[data-media-root]'); if (mediaRoot) mediaRoot.classList.add('hidden'); }, {once:true}); }); }
+function syncRouteFromPath(options = {}) {
+  const route = parseRouteFromLocation();
+  currentPage = route.page;
+  selectedRecordId = route.recordId;
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.classList.toggle('active', link.getAttribute('href') === makePath(currentPage, selectedRecordId));
+  });
+  applyRoute(route, {preserveScroll: options.preserveScroll || options.scroll === false});
+}
 
-window.addEventListener("hashchange", syncRouteFromHash);
+window.addEventListener("popstate", () => {
+  syncRouteFromPath({preserveScroll:true});
+});
 
 function initArchiveApp() {
+  // One initialisation per full document load. In-app archive routing (capture)
+  // only handles clicks inside #app so navbar/footer are never hijacked after a
+  // Next client transition. Navbar uses hardNavigateToArchive from dashboard routes.
   recentSearches = loadRecentSearches();
   loadSiteContent();
+
+  document.removeEventListener('click', handleArchiveNavigationClick, true);
+  document.addEventListener('click', handleArchiveNavigationClick, true);
 
   // Global outside-click handler for suggestion panels.
   // Registered once, not on every render, to avoid leaking listeners.
@@ -3624,11 +4977,39 @@ function initArchiveApp() {
     if (document.getElementById('heroSuggestions'))   closeSuggestionsPanel('heroSuggestions');
   });
 
-  if (!window.location.hash) {
-    navigate("home");
-    return;
-  }
-  syncRouteFromHash();
+  // Delegated rights-disclosure toggle. Installed once and works after every
+  // re-render. Stops propagation so clicking it never opens the parent card.
+  document.addEventListener('click', event => {
+    const toggle = event.target instanceof Element ? event.target.closest('[data-rights-toggle]') : null;
+    if (!toggle) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const wrap = toggle.closest('.record-rights-compact');
+    if (!wrap) return;
+    const panel = wrap.querySelector('.record-rights-panel');
+    if (!panel) return;
+    const expanded = toggle.getAttribute('aria-expanded') === 'true';
+    if (expanded) {
+      toggle.setAttribute('aria-expanded', 'false');
+      panel.hidden = true;
+      wrap.classList.remove('is-open');
+    } else {
+      toggle.setAttribute('aria-expanded', 'true');
+      panel.hidden = false;
+      wrap.classList.add('is-open');
+    }
+  });
+  // Keyboard accessibility: Space/Enter on the toggle behave like click.
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    const toggle = event.target instanceof Element ? event.target.closest('[data-rights-toggle]') : null;
+    if (!toggle) return;
+    event.preventDefault();
+    event.stopPropagation();
+    toggle.click();
+  });
+
+  syncRouteFromPath({scroll:false});
 }
 
 if (document.readyState === "loading") {

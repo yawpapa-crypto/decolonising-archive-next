@@ -464,9 +464,9 @@ export default async function CuratorPage({
           <article className="workspace-tile workspace-tool">
             <div className="workspace-tile-head">
               <h2>Featured records</h2>
-              <Link href="/library" className="workspace-link">
+              <a href="/library" className="workspace-link">
                 Browse library
-              </Link>
+              </a>
             </div>
             <form action={featureRecord} className="workspace-form">
               <label>

@@ -25,7 +25,7 @@ const defaultContent: SiteContent = {
       'Books, oral histories, artefacts, images, textiles, posters, manuscripts, architectural documentation, and cultural records across Africa, the diaspora, and the Global South.',
     featuredTitle: 'Featured Records',
     collectionsTitle: 'Collections',
-    themesTitle: 'Browse by Theme',
+    themesTitle: 'Browse by Knowledge Area',
   },
 }
 

@@ -114,9 +114,9 @@ export default async function MyBookmarksPage() {
                   Save records from the library to keep them here for quick return
                   and note-taking.
                 </p>
-                <Link href="/library" className="admin-button admin-button-secondary">
+                <a href="/library" className="admin-button admin-button-secondary">
                   Browse library
-                </Link>
+                </a>
               </article>
             )}
           </div>

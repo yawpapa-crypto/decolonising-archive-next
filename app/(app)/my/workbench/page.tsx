@@ -1,0 +1,93 @@
+import WorkbenchOverviewClient, { type WorkbenchRecordOption } from "./WorkbenchOverviewClient";
+import {
+  getWorkbenchOverviewContext,
+  listAllWorkbenchAnnotations,
+  listAllWorkbenchCollaborators,
+  listAllWorkbenchProjectRecords,
+  listAllWorkbenchTasks,
+  listWorkbenchProjects,
+} from "@/lib/workbench-data";
+import { getMemberWorkspaceData, workspaceRecordTitle } from "@/src/lib/member-workspace";
+
+type SearchParams = Promise<{ updated?: string; error?: string }>;
+
+function addRecordOption(
+  map: Map<string, WorkbenchRecordOption>,
+  id: string | null | undefined,
+  title: string | null | undefined,
+) {
+  if (!id || map.has(id)) return;
+  map.set(id, { id, title: title || id });
+}
+
+export default async function WorkbenchOverviewPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const sp = await searchParams;
+  const [overview, projectsRes, tasksRes, projectRecordsRes, annotationsRes, collaboratorsRes, workspace] =
+    await Promise.all([
+      getWorkbenchOverviewContext(),
+      listWorkbenchProjects(),
+      listAllWorkbenchTasks(300),
+      listAllWorkbenchProjectRecords(300),
+      listAllWorkbenchAnnotations(200),
+      listAllWorkbenchCollaborators(200),
+      getMemberWorkspaceData("/my/workbench"),
+    ]);
+
+  const errors = [
+    sp.error,
+    !overview.ok ? overview.error : "",
+    !projectsRes.ok ? projectsRes.error : "",
+    !tasksRes.ok ? tasksRes.error : "",
+    !projectRecordsRes.ok ? projectRecordsRes.error : "",
+    !annotationsRes.ok ? annotationsRes.error : "",
+    !collaboratorsRes.ok ? collaboratorsRes.error : "",
+  ].filter(Boolean);
+
+  const recordOptionMap = new Map<string, WorkbenchRecordOption>();
+  workspace.records.slice(0, 300).forEach((record) => {
+    addRecordOption(recordOptionMap, record.id, workspaceRecordTitle(workspace.recordsById, record.id));
+  });
+  workspace.bookmarks.forEach((bookmark) => {
+    addRecordOption(
+      recordOptionMap,
+      bookmark.record_id,
+      bookmark.record_title || workspaceRecordTitle(workspace.recordsById, bookmark.record_id),
+    );
+  });
+  workspace.readingListItems.forEach((item) => {
+    addRecordOption(
+      recordOptionMap,
+      item.record_id,
+      item.record_title || workspaceRecordTitle(workspace.recordsById, item.record_id),
+    );
+  });
+  if (tasksRes.ok) {
+    tasksRes.tasks.forEach((task) => {
+      task.linked_record_ids?.forEach((id) => {
+        addRecordOption(recordOptionMap, id, workspaceRecordTitle(workspace.recordsById, id));
+      });
+    });
+  }
+  if (projectRecordsRes.ok) {
+    projectRecordsRes.records.forEach((record) => {
+      addRecordOption(recordOptionMap, record.record_id, workspaceRecordTitle(workspace.recordsById, record.record_id));
+    });
+  }
+
+  return (
+    <WorkbenchOverviewClient
+      projects={projectsRes.ok ? projectsRes.projects : []}
+      tasks={tasksRes.ok ? tasksRes.tasks : []}
+      projectRecords={projectRecordsRes.ok ? projectRecordsRes.records : []}
+      annotations={annotationsRes.ok ? annotationsRes.annotations : []}
+      collaborators={collaboratorsRes.ok ? collaboratorsRes.collaborators : []}
+      recordOptions={Array.from(recordOptionMap.values())}
+      initialNotice={sp.updated}
+      initialError={errors.join(" ")}
+    />
+  );
+}
