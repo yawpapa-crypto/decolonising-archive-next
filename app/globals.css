@@ -23312,3 +23312,91 @@ button.workbench-primary,
     transform: scale(1);
   }
 }
+
+/* =========================================================
+   MOBILE LIBRARY FILTER DRAWER FIX
+   Keeps close/filter controls visible on iPhone.
+   ========================================================= */
+
+@media (max-width: 760px) {
+  body.filters-open {
+    overflow: hidden !important;
+  }
+
+  .library-layout .sidebar.mobile-open,
+  .sidebar.mobile-open {
+    position: fixed !important;
+    top: 78px !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 9990 !important;
+
+    width: 100% !important;
+    max-width: none !important;
+    height: auto !important;
+    max-height: none !important;
+
+    padding: 24px 22px calc(150px + env(safe-area-inset-bottom)) !important;
+
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+
+    background:
+      linear-gradient(180deg, rgba(255,255,252,0.98), rgba(250,249,244,0.98)) !important;
+    border-right: 0 !important;
+    border-top: 1px solid rgba(20, 24, 33, 0.08) !important;
+    box-shadow: 0 -20px 60px rgba(20, 24, 33, 0.14) !important;
+  }
+
+  .mobile-filter-bar {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10000 !important;
+
+    display: grid !important;
+    grid-template-columns: 1fr auto !important;
+    gap: 10px !important;
+
+    padding: 12px 0 16px !important;
+    margin: 0 0 18px !important;
+
+    background:
+      linear-gradient(180deg, rgba(255,255,252,0.98), rgba(255,255,252,0.90)) !important;
+    backdrop-filter: blur(12px) !important;
+  }
+
+  .mobile-filter-btn,
+  .mobile-clear-btn,
+  #mobileFilterToggle,
+  #mobileClearFilters,
+  #mobileFilterClose {
+    min-height: 48px !important;
+    border-radius: 999px !important;
+    border: 1px solid rgba(20, 24, 33, 0.10) !important;
+    background: #151922 !important;
+    color: #ffffff !important;
+    font-size: 14px !important;
+    font-weight: 750 !important;
+    letter-spacing: -0.01em !important;
+    box-shadow: 0 14px 34px rgba(20, 24, 33, 0.14) !important;
+  }
+
+  .mobile-clear-btn,
+  #mobileClearFilters {
+    background: #ffffff !important;
+    color: #151922 !important;
+  }
+
+  .sidebar.mobile-open .sidebar-section:last-child {
+    margin-bottom: 80px !important;
+  }
+
+  .bottom-nav,
+  .mobile-bottom-nav,
+  .workspace-mobile-nav {
+    z-index: 9980 !important;
+  }
+}
+
