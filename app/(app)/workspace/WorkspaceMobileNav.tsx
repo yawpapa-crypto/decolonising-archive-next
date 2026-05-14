@@ -3,6 +3,10 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
+  refreshBodyScrollLockPadding,
+  setBodyScrollLock,
+} from "@/lib/body-scroll-lock";
+import {
   Bell,
   Bookmark,
   CircleHelp,
@@ -45,15 +49,18 @@ export default function WorkspaceMobileNav({
   const current = ITEMS.find((item) => item.id === currentSection) ?? ITEMS[0];
 
   useEffect(() => {
+    setBodyScrollLock("workspace", open);
     if (!open) return;
     const close = (event: KeyboardEvent) => {
       if (event.key === "Escape") setOpen(false);
     };
     document.addEventListener("keydown", close);
-    document.body.classList.add("workspace-drawer-open");
+    const onResize = () => refreshBodyScrollLockPadding();
+    window.addEventListener("resize", onResize);
     return () => {
       document.removeEventListener("keydown", close);
-      document.body.classList.remove("workspace-drawer-open");
+      window.removeEventListener("resize", onResize);
+      setBodyScrollLock("workspace", false);
     };
   }, [open]);
 

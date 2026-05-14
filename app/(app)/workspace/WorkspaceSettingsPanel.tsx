@@ -44,6 +44,7 @@ export default function WorkspaceSettingsPanel() {
     }
   });
   const [saved, setSaved] = useState("");
+  const [savingPrefs, setSavingPrefs] = useState(false);
 
   useEffect(() => {
     applyTheme(prefs.appearance);
@@ -56,10 +57,12 @@ export default function WorkspaceSettingsPanel() {
   }
 
   function savePreferences() {
+    setSavingPrefs(true);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
     applyTheme(prefs.appearance);
     setSaved("Settings saved on this device.");
     window.setTimeout(() => setSaved(""), 2200);
+    window.setTimeout(() => setSavingPrefs(false), 350);
   }
 
   return (
@@ -115,8 +118,14 @@ export default function WorkspaceSettingsPanel() {
       </label>
 
       <div className="workspace-settings-actions dashboard-actions">
-        <button type="button" className="admin-button" onClick={savePreferences}>
-          Save settings
+        <button
+          type="button"
+          className="admin-button"
+          disabled={savingPrefs}
+          aria-busy={savingPrefs}
+          onClick={savePreferences}
+        >
+          {savingPrefs ? "Saving…" : "Save settings"}
         </button>
         {saved ? <p className="workspace-inline-note">{saved}</p> : null}
       </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useLocalToast } from "./useLocalToast";
 
 type ReadingListExportAllActionsProps = {
@@ -12,8 +13,11 @@ export default function ReadingListExportAllActions({
   recordCount,
 }: ReadingListExportAllActionsProps) {
   const { showToast, Toast } = useLocalToast();
+  const [copyBusy, setCopyBusy] = useState(false);
 
   const copyAllCitations = async () => {
+    if (copyBusy) return;
+    setCopyBusy(true);
     try {
       const response = await fetch("/api/reading-lists/export-all?format=txt");
 
@@ -27,6 +31,8 @@ export default function ReadingListExportAllActions({
     } catch (error) {
       console.error("Copy all citations failed:", error);
       showToast("Could not copy all citations.");
+    } finally {
+      setCopyBusy(false);
     }
   };
 
@@ -52,14 +58,17 @@ export default function ReadingListExportAllActions({
         <button
           type="button"
           onClick={copyAllCitations}
+          disabled={copyBusy}
+          aria-busy={copyBusy}
           aria-label="Copy citations from all reading lists"
         >
           <span aria-hidden="true" className="export-action-icon">⧉</span>
-          <span>Copy all</span>
+          <span>{copyBusy ? "Copying…" : "Copy all"}</span>
         </button>
 
         <a
           href="/api/reading-lists/export-all?format=txt"
+          data-no-loader="true"
           aria-label="Download all reading lists as plain text"
         >
           <span aria-hidden="true" className="export-action-icon">□</span>
@@ -68,6 +77,7 @@ export default function ReadingListExportAllActions({
 
         <a
           href="/api/reading-lists/export-all?format=docx"
+          data-no-loader="true"
           aria-label="Download all reading lists as Word document"
         >
           <span aria-hidden="true" className="export-action-icon">⇩</span>

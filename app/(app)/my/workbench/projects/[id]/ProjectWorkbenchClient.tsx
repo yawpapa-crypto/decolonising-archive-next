@@ -39,6 +39,7 @@ import {
   type ProjectRecordStatusId,
 } from "@/lib/workbench-types";
 import { getRecordHref, isExternalHref } from "@/src/lib/record-links";
+import PendingSubmitButton from "@/src/components/ui/PendingSubmitButton";
 
 export type WorkbenchArchiveLite = {
   id: string;
@@ -220,6 +221,20 @@ export default function ProjectWorkbenchClient(props: {
     (next: ViewTab) => {
       const p = new URLSearchParams(sp.toString());
       p.set("view", next);
+      if (typeof window !== "undefined") {
+        const labels: Record<ViewTab, string> = {
+          table: "Opening table…",
+          board: "Opening board…",
+          timeline: "Opening timeline…",
+          records: "Opening records…",
+          notes: "Opening notes…",
+        };
+        window.dispatchEvent(
+          new CustomEvent("app:loading:start", {
+            detail: { message: labels[next] },
+          }),
+        );
+      }
       router.push(`/my/workbench/projects/${projectId}?${p.toString()}`, { scroll: false });
     },
     [router, projectId, sp],
@@ -469,6 +484,7 @@ export default function ProjectWorkbenchClient(props: {
           annotations={annotations}
           records={records}
           run={run}
+          notesActionPending={isPending}
         />
       ) : null}
 
@@ -1049,17 +1065,23 @@ function RecordsSection(props: {
                           </option>
                         ))}
                       </select>
-                      <button type="submit" className="workbench-btn workbench-btn-secondary">
+                      <PendingSubmitButton
+                        className="workbench-btn workbench-btn-secondary"
+                        pendingLabel="Updating…"
+                      >
                         Move
-                      </button>
+                      </PendingSubmitButton>
                     </form>
                     <form action={removeProjectRecord} className="workbench-pm-mini-form">
                       <input type="hidden" name="id" value={r.id} />
                       <input type="hidden" name="project_id" value={project.id} />
                       <input type="hidden" name="confirm" value="yes" />
-                      <button type="submit" className="workbench-btn workbench-btn-secondary">
+                      <PendingSubmitButton
+                        className="workbench-btn workbench-btn-secondary"
+                        pendingLabel="Removing…"
+                      >
                         Remove
-                      </button>
+                      </PendingSubmitButton>
                     </form>
                   </td>
                 </tr>
@@ -1085,8 +1107,9 @@ function NotesSection(props: {
   annotations: WorkbenchAnnotationRow[];
   records: WorkbenchProjectRecordRow[];
   run: (fn: () => Promise<{ ok: boolean; error?: string }>) => void;
+  notesActionPending: boolean;
 }) {
-  const { projectId, projectNotes, setProjectNotes, annotations, records, run } = props;
+  const { projectId, projectNotes, setProjectNotes, annotations, records, run, notesActionPending } = props;
   return (
     <section className="workbench-panel workbench-pm-panel">
       <h2>Project notes</h2>
@@ -1100,11 +1123,13 @@ function NotesSection(props: {
       <button
         type="button"
         className="workbench-btn workbench-btn-secondary"
+        disabled={notesActionPending}
+        aria-busy={notesActionPending}
         onClick={() =>
           run(() => saveWorkbenchProjectNotes({ projectId, notes: projectNotes }))
         }
       >
-        Save project notes
+        {notesActionPending ? "Saving…" : "Save project notes"}
       </button>
 
       <h3 className="workbench-pm-subh">Record annotations</h3>
@@ -1142,9 +1167,12 @@ function NotesSection(props: {
           <span>Tags</span>
           <input className="workbench-input" name="tags" placeholder="Theory, Citation" />
         </label>
-        <button type="submit" className="workbench-btn workbench-btn-secondary">
+        <PendingSubmitButton
+          className="workbench-btn workbench-btn-secondary"
+          pendingLabel="Adding…"
+        >
           Add annotation
-        </button>
+        </PendingSubmitButton>
       </form>
     </section>
   );
@@ -1198,9 +1226,12 @@ function AdminForms(props: {
           <label>
             <input type="checkbox" name="is_curated_public" defaultChecked={project.is_curated_public} /> Curated public intent
           </label>
-          <button type="submit" className="workbench-btn workbench-btn-secondary">
+          <PendingSubmitButton
+            className="workbench-btn workbench-btn-secondary"
+            pendingLabel="Saving…"
+          >
             Save settings
-          </button>
+          </PendingSubmitButton>
         </form>
       </section>
       <section className="workbench-panel">
@@ -1220,9 +1251,12 @@ function AdminForms(props: {
               ))}
             </select>
           </label>
-          <button type="submit" className="workbench-btn workbench-btn-secondary">
+          <PendingSubmitButton
+            className="workbench-btn workbench-btn-secondary"
+            pendingLabel="Importing…"
+          >
             Import
-          </button>
+          </PendingSubmitButton>
         </form>
       </section>
       <section className="workbench-panel">
@@ -1241,9 +1275,12 @@ function AdminForms(props: {
               <option value="viewer">Viewer</option>
             </select>
           </label>
-          <button type="submit" className="workbench-btn workbench-btn-secondary">
+          <PendingSubmitButton
+            className="workbench-btn workbench-btn-secondary"
+            pendingLabel="Sending…"
+          >
             Invite
-          </button>
+          </PendingSubmitButton>
         </form>
         <ul className="workbench-list">
           {collaborators.map((c) => (
@@ -1256,16 +1293,16 @@ function AdminForms(props: {
       <section className="workbench-panel">
         <h2>Exports</h2>
         <div className="workbench-pm-export-row">
-          <a className="workbench-btn workbench-btn-secondary" href={`/api/workbench/export?projectId=${project.id}&format=txt`}>
+          <a className="workbench-btn workbench-btn-secondary" data-no-loader="true" href={`/api/workbench/export?projectId=${project.id}&format=txt`}>
             Citations
           </a>
-          <a className="workbench-btn workbench-btn-secondary" href={`/api/workbench/export?projectId=${project.id}&format=md`}>
+          <a className="workbench-btn workbench-btn-secondary" data-no-loader="true" href={`/api/workbench/export?projectId=${project.id}&format=md`}>
             Markdown
           </a>
-          <a className="workbench-btn workbench-btn-secondary" href={`/api/workbench/export?projectId=${project.id}&format=csv`}>
+          <a className="workbench-btn workbench-btn-secondary" data-no-loader="true" href={`/api/workbench/export?projectId=${project.id}&format=csv`}>
             CSV
           </a>
-          <a className="workbench-btn workbench-btn-secondary" href={`/api/workbench/export?projectId=${project.id}&format=json`}>
+          <a className="workbench-btn workbench-btn-secondary" data-no-loader="true" href={`/api/workbench/export?projectId=${project.id}&format=json`}>
             JSON
           </a>
         </div>

@@ -8,6 +8,8 @@ import {
   deleteSavedSearch,
   updateSavedSearch,
 } from "@/app/(app)/workspace/actions";
+import ConfirmSubmitButton from "@/app/(app)/workspace/ConfirmSubmitButton";
+import PendingSubmitButton from "@/src/components/ui/PendingSubmitButton";
 
 export default async function MySearchesPage() {
   const { savedSearches } = await getMemberWorkspaceData("/my/searches");
@@ -50,9 +52,9 @@ export default async function MySearchesPage() {
                       placeholder="Search query"
                       required
                     />
-                    <button type="submit" className="workspace-link">
+                    <PendingSubmitButton className="workspace-link" pendingLabel="Saving…">
                       Save
-                    </button>
+                    </PendingSubmitButton>
                   </form>
                   <div className="workspace-actions-inline">
                     <Link
@@ -64,9 +66,13 @@ export default async function MySearchesPage() {
                     <form action={deleteSavedSearch}>
                       <input type="hidden" name="id" value={search.id} />
                       <input type="hidden" name="redirectTo" value="/my/searches" />
-                      <button type="submit" className="workspace-link">
+                      <ConfirmSubmitButton
+                        className="workspace-link"
+                        message="Delete this saved search?"
+                        pendingLabel="Deleting…"
+                      >
                         Delete
-                      </button>
+                      </ConfirmSubmitButton>
                     </form>
                   </div>
                 </div>

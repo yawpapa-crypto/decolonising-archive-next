@@ -18,9 +18,19 @@ const NAV = [
 export default function WorkbenchShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
+  const isProjectsIndexRoute = pathname === "/my/workbench/projects";
+  const isProjectDetailRoute = pathname.startsWith("/my/workbench/projects/");
+
   return (
     <div className="dashboard-canvas-outer dashboard-shell--member workbench-member-canvas">
-      <div className="workbench-shell">
+      <div
+        className={[
+          "workbench-shell",
+          "workbench-shell--stable",
+          isProjectsIndexRoute ? "is-projects-index-route" : "",
+          isProjectDetailRoute ? "is-project-detail-route" : "",
+        ].filter(Boolean).join(" ")}
+      >
         <aside className="workbench-sidebar" aria-label="Archive Workbench">
           <p className="workbench-sidebar-title">Archive Workbench</p>
           <nav className="workbench-nav">

@@ -6,64 +6,136 @@ import {
 } from "@/src/lib/member-workspace";
 import { getRecordHref, isExternalHref } from "@/src/lib/record-links";
 import { deleteBookmark, updateBookmark } from "@/app/(app)/workspace/actions";
+import ConfirmSubmitButton from "@/app/(app)/workspace/ConfirmSubmitButton";
+import PendingSubmitButton from "@/src/components/ui/PendingSubmitButton";
+
+const REDIRECT = "/my/workbench/saved-records";
 
 export default async function WorkbenchSavedRecordsPage() {
-  const { bookmarks, recordsById } = await getMemberWorkspaceData("/my/workbench/saved-records");
+  const { bookmarks, recordsById } =
+    await getMemberWorkspaceData("/my/workbench/saved-records");
 
   return (
-    <>
-      <p className="workbench-kicker">Saved records</p>
-      <h1 className="workbench-page-title">Bookmarks</h1>
-      <p className="workbench-lede">
-        Records saved from the library. Add them to a Workbench project from the library card
-        or from each project page.
-      </p>
-      <section className="workbench-panel">
-        <ul className="workbench-list">
-          {bookmarks.map((b) => {
-            const openHref = getRecordHref(b);
+    <section className="saved-records-page">
+      <header className="saved-records-header">
+        <div className="saved-records-header-text">
+          <p className="saved-records-eyebrow">Saved records</p>
+          <h1>Bookmarks</h1>
+          <p className="saved-records-intro">
+            Records saved from the library. Add them to a Workbench project from
+            the library card or from each project page.
+          </p>
+        </div>
+        <div className="saved-records-header-aside">
+          <Link href="/my/workbench" className="saved-records-back">
+            Back to overview
+          </Link>
+        </div>
+      </header>
+
+      <div className="saved-records-grid">
+        {bookmarks.length ? (
+          bookmarks.map((bookmark) => {
+            const openHref = getRecordHref(bookmark);
             return (
-              <li key={b.id}>
-                <strong>{b.record_title || workspaceRecordTitle(recordsById, b.record_id)}</strong>
-                <div style={{ fontSize: 12, color: "#525252", marginTop: 4 }}>
-                  {formatWorkspaceDate(b.created_at)}
+              <article className="saved-record-card" key={bookmark.id}>
+                <div className="saved-record-card-top">
+                  <h2 className="saved-record-title">
+                    {bookmark.record_title ||
+                      workspaceRecordTitle(recordsById, bookmark.record_id)}
+                  </h2>
+                  <time
+                    className="saved-record-date"
+                    dateTime={bookmark.created_at ?? undefined}
+                  >
+                    {formatWorkspaceDate(bookmark.created_at)}
+                  </time>
                 </div>
-                <form action={updateBookmark} style={{ marginTop: 10 }}>
-                  <input type="hidden" name="id" value={b.id} />
-                  <input type="hidden" name="redirectTo" value="/my/workbench/saved-records" />
-                  <input className="workbench-input" name="note" defaultValue={b.note ?? ""} placeholder="Note" />
-                  <button type="submit" className="workbench-btn workbench-btn-secondary" style={{ marginTop: 8 }}>
+
+                <form
+                  action={updateBookmark}
+                  className="saved-record-note-form"
+                >
+                  <input type="hidden" name="id" value={bookmark.id} />
+                  <input type="hidden" name="redirectTo" value={REDIRECT} />
+                  <label
+                    className="saved-record-note-label"
+                    htmlFor={`saved-record-note-wb-${bookmark.id}`}
+                  >
+                    Private note
+                  </label>
+                  <input
+                    id={`saved-record-note-wb-${bookmark.id}`}
+                    type="text"
+                    name="note"
+                    placeholder="Add a short note"
+                    defaultValue={bookmark.note ?? ""}
+                    className="saved-record-note-input"
+                  />
+                  <PendingSubmitButton
+                    className="saved-record-note-save"
+                    pendingLabel="Saving…"
+                  >
                     Save note
-                  </button>
+                  </PendingSubmitButton>
                 </form>
-                <div style={{ marginTop: 8, display: "flex", gap: 12, flexWrap: "wrap" }}>
+
+                <div className="saved-record-actions">
                   {openHref ? (
                     <a
-                      className="workbench-link"
                       href={openHref}
-                      {...(isExternalHref(openHref) ? { target: "_blank", rel: "noreferrer" } : {})}
+                      className="saved-record-action saved-record-action-primary"
+                      {...(isExternalHref(openHref)
+                        ? { target: "_blank", rel: "noreferrer" }
+                        : {})}
                     >
                       Open record
                     </a>
-                  ) : null}
-                  <Link className="workbench-link" href="/my/workbench/projects">
-                    Add to project →
+                  ) : (
+                    <span
+                      className="saved-record-action saved-record-action-disabled"
+                      aria-disabled
+                    >
+                      Record link unavailable
+                    </span>
+                  )}
+
+                  <Link
+                    href="/my/workbench/projects"
+                    className="saved-record-action"
+                  >
+                    Add to project
                   </Link>
-                  <form action={deleteBookmark} style={{ display: "inline" }}>
-                    <input type="hidden" name="id" value={b.id} />
+
+                  <form action={deleteBookmark}>
+                    <input type="hidden" name="id" value={bookmark.id} />
                     <input type="hidden" name="confirm" value="yes" />
-                    <input type="hidden" name="redirectTo" value="/my/workbench/saved-records" />
-                    <button type="submit" className="workbench-link" style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}>
+                    <input type="hidden" name="redirectTo" value={REDIRECT} />
+                    <ConfirmSubmitButton
+                      className="saved-record-action saved-record-action-danger"
+                      message="Remove this bookmark?"
+                      pendingLabel="Removing…"
+                    >
                       Remove
-                    </button>
+                    </ConfirmSubmitButton>
                   </form>
                 </div>
-              </li>
+              </article>
             );
-          })}
-        </ul>
-        {!bookmarks.length ? <p>No bookmarks yet.</p> : null}
-      </section>
-    </>
+          })
+        ) : (
+          <article className="saved-records-empty">
+            <h2 className="saved-records-empty-title">No bookmarks yet</h2>
+            <p className="saved-records-empty-copy">
+              Save records from the library to keep them here for quick return
+              and note-taking.
+            </p>
+            <a href="/library" className="saved-records-empty-cta">
+              Browse library
+            </a>
+          </article>
+        )}
+      </div>
+    </section>
   );
 }

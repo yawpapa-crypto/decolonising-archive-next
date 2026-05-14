@@ -13,6 +13,7 @@ import {
   submitSupportRequest,
 } from "./actions";
 import ConfirmSubmitButton from "./ConfirmSubmitButton";
+import PendingSubmitButton from "@/src/components/ui/PendingSubmitButton";
 import MemberProfileEditor from "./MemberProfileEditor";
 import { getMemberProfileRow } from "./member-profile-actions";
 import { buildFallbackMemberProfile } from "@/src/lib/member-profile";
@@ -273,6 +274,7 @@ export default async function WorkspacePage({
             <ConfirmSubmitButton
               className="workspace-link workspace-link-danger"
               message="Remove this bookmark?"
+              pendingLabel="Removing…"
             >
               Remove
             </ConfirmSubmitButton>
@@ -302,6 +304,7 @@ export default async function WorkspacePage({
           <ConfirmSubmitButton
             className="workspace-link workspace-link-danger"
             message="Delete this saved search? This cannot be undone."
+            pendingLabel="Deleting…"
           >
             Remove
           </ConfirmSubmitButton>
@@ -425,9 +428,12 @@ export default async function WorkspacePage({
                       <span>Private note</span>
                       <input name="note" placeholder="Why this record matters" />
                     </label>
-                    <button type="submit" className="admin-button">
+                    <PendingSubmitButton
+                      className="admin-button"
+                      pendingLabel="Saving bookmark…"
+                    >
                       Save bookmark
-                    </button>
+                    </PendingSubmitButton>
                   </form>
                   <div className="member-dashboard-list">
                     {bookmarkRows.length ? (
@@ -457,9 +463,12 @@ export default async function WorkspacePage({
                       <span>Query</span>
                       <input name="query" placeholder="Search terms" required />
                     </label>
-                    <button type="submit" className="admin-button">
+                    <PendingSubmitButton
+                      className="admin-button"
+                      pendingLabel="Saving search…"
+                    >
                       Save search
-                    </button>
+                    </PendingSubmitButton>
                   </form>
                   <div className="member-dashboard-list">
                     {searchRows.length ? (
@@ -493,9 +502,12 @@ export default async function WorkspacePage({
                       <input type="checkbox" name="is_public" />
                       <span>Make public</span>
                     </label>
-                    <button type="submit" className="admin-button">
+                    <PendingSubmitButton
+                      className="admin-button"
+                      pendingLabel="Creating list…"
+                    >
                       Create list
-                    </button>
+                    </PendingSubmitButton>
                   </form>
                   <div className="member-dashboard-list">
                     {readingListRows.length ? (
@@ -541,9 +553,9 @@ export default async function WorkspacePage({
                     <span>Source URL</span>
                     <input name="source_url" placeholder="https://..." />
                   </label>
-                  <button type="submit" className="admin-button">
+                  <PendingSubmitButton className="admin-button" pendingLabel="Submitting…">
                     Submit for review
-                  </button>
+                  </PendingSubmitButton>
                 </form>
                 <div className="member-dashboard-list">
                   {submissions.length ? (
@@ -583,7 +595,9 @@ export default async function WorkspacePage({
                   <span>Private note</span>
                   <input name="note" placeholder="Why this record matters" />
                 </label>
-                <button type="submit" className="admin-button">Save bookmark</button>
+                <PendingSubmitButton className="admin-button" pendingLabel="Saving bookmark…">
+                  Save bookmark
+                </PendingSubmitButton>
               </form>
               <div className="member-dashboard-list">
                 {bookmarkRows.length ? bookmarkRows : <p className="member-dashboard-empty">No bookmarks yet.</p>}
@@ -606,7 +620,9 @@ export default async function WorkspacePage({
                   <span>Query</span>
                   <input name="query" placeholder="Search terms" required />
                 </label>
-                <button type="submit" className="admin-button">Save search</button>
+                <PendingSubmitButton className="admin-button" pendingLabel="Saving search…">
+                  Save search
+                </PendingSubmitButton>
               </form>
               <div className="member-dashboard-list">
                 {searchRows.length ? searchRows : <p className="member-dashboard-empty">No saved searches yet.</p>}
@@ -636,7 +652,9 @@ export default async function WorkspacePage({
                   <input type="checkbox" name="is_public" />
                   <span>Make public</span>
                 </label>
-                <button type="submit" className="admin-button">Create list</button>
+                <PendingSubmitButton className="admin-button" pendingLabel="Creating list…">
+                  Create list
+                </PendingSubmitButton>
               </form>
               <div className="member-dashboard-list">
                 {readingListRows.length ? readingListRows : <p className="member-dashboard-empty">No reading lists yet.</p>}
@@ -672,7 +690,9 @@ export default async function WorkspacePage({
                   <span>Source URL</span>
                   <input name="source_url" placeholder="https://..." />
                 </label>
-                <button type="submit" className="admin-button">Submit for review</button>
+                <PendingSubmitButton className="admin-button" pendingLabel="Submitting…">
+                  Submit for review
+                </PendingSubmitButton>
               </form>
             </article>
           ) : null}
@@ -750,7 +770,9 @@ export default async function WorkspacePage({
                   <span>Message</span>
                   <textarea name="message" rows={5} required />
                 </label>
-                <button type="submit" className="admin-button">Submit support request</button>
+                <PendingSubmitButton className="admin-button" pendingLabel="Sending…">
+                  Submit support request
+                </PendingSubmitButton>
               </form>
             </article>
           ) : null}

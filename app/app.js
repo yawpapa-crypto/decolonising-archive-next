@@ -2526,6 +2526,18 @@ function isArchivePath(pathname) {
 }
 
 function applyRoute(route, options = {}) {
+  if (typeof window !== "undefined") {
+    const page = route.page || "home";
+    let message = "Loading archive…";
+    if (page === "library") message = "Opening library…";
+    else if (page === "home") message = "Opening home…";
+    else if (page === "sources") message = "Opening sources…";
+    else if (page === "about") message = "Opening about…";
+    else if (page === "record") message = "Opening record…";
+    window.dispatchEvent(
+      new CustomEvent("app:loading:start", { detail: { message } }),
+    );
+  }
   currentPage = route.page || "home";
   selectedRecordId = route.recordId || null;
   if (currentPage === 'library') hydrateSearchFromLocation();
@@ -2536,6 +2548,13 @@ function applyRoute(route, options = {}) {
   window.dispatchEvent(new CustomEvent("archive:navigation", {
     detail:{page:currentPage, recordId:selectedRecordId, path:window.location.pathname}
   }));
+  if (typeof window !== "undefined") {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.dispatchEvent(new Event("app:loading:end"));
+      });
+    });
+  }
 }
 
 function navigate(page, recordId = null, options = {}) {
@@ -2564,6 +2583,10 @@ function handleArchiveNavigationClick(event) {
   if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
   const target = event.target instanceof Element ? event.target : null;
   if (!target) return;
+
+  const appShell = document.getElementById("app");
+  if (!appShell) return;
+  if (!target.closest("#app")) return;
 
   const explicitPage = target.closest('[data-page]');
   if (explicitPage) {
@@ -2863,7 +2886,7 @@ function renderRecordWorkspaceTools(record) {
 
   if (state.status === "loading" || state.authenticated === null) {
     return `
-      <section class="detail-section record-workspace-tools">
+      <section class="record-sidebar-card record-workspace-tools">
         <h2>My workspace</h2>
         <p class="record-tools-muted">Loading your saved tools...</p>
       </section>
@@ -2872,10 +2895,10 @@ function renderRecordWorkspaceTools(record) {
 
   if (!state.authenticated) {
     return `
-      <section class="detail-section record-workspace-tools">
+      <section class="record-sidebar-card record-workspace-tools">
         <h2>My workspace</h2>
         <p class="record-tools-muted">Sign in to bookmark this record, save related searches, and create reading lists.</p>
-        <a class="record-tools-primary" href="${escapeHtml(memberSignInUrl())}">Sign in to save</a>
+        <a class="record-primary-button" href="${escapeHtml(memberSignInUrl())}">Sign in to save</a>
       </section>
     `;
   }
@@ -2883,14 +2906,15 @@ function renderRecordWorkspaceTools(record) {
   const data = state.data || {};
   const readingLists = data.readingLists || [];
   const bookmark = data.bookmark;
-  const messageClass = state.status === "saving"
+  const saving = state.status === "saving";
+  const messageClass = saving
     ? "record-tools-message is-loading"
     : state.status === "error"
       ? "record-tools-message is-error"
       : state.message
         ? "record-tools-message is-success"
         : "record-tools-message";
-  const message = state.status === "saving"
+  const message = saving
     ? `<p class="${messageClass}" aria-label="Saving"></p>`
     : state.message
       ? `<p class="${messageClass}">${escapeHtml(state.message)}</p>`
@@ -2898,7 +2922,7 @@ function renderRecordWorkspaceTools(record) {
   const defaultSearch = uniqueValues([record.title, record.creator, record.collection, record.region].filter(Boolean)).slice(0, 3).join(" ");
 
   return `
-    <section class="detail-section record-workspace-tools">
+    <section class="record-sidebar-card record-workspace-tools">
       <h2>My workspace</h2>
       ${message}
       <div class="record-tools-stack">
@@ -2907,22 +2931,22 @@ function renderRecordWorkspaceTools(record) {
             <strong>${bookmark ? "Bookmarked" : "Bookmark record"}</strong>
             ${bookmark ? `<span>Saved</span>` : ""}
           </div>
-          <label>
+          <label class="record-field">
             <span>Private note</span>
-            <textarea name="note" rows="3" placeholder="Why this record matters">${escapeHtml(bookmark?.note || "")}</textarea>
+            <textarea class="record-input record-textarea" name="note" rows="3" placeholder="Why this record matters">${escapeHtml(bookmark?.note || "")}</textarea>
           </label>
-          <button type="submit">${bookmark ? "Update bookmark" : "Save bookmark"}</button>
+          <button class="record-primary-button" type="submit" ${saving ? "disabled" : ""} aria-busy="${saving ? "true" : "false"}">${saving ? "Saving…" : bookmark ? "Update bookmark" : "Save bookmark"}</button>
         </form>
 
         <form class="record-tool-form" data-record-tool="save_search">
           <div class="record-tool-heading">
             <strong>Save search</strong>
           </div>
-          <label>
+          <label class="record-field">
             <span>Search query</span>
-            <input name="query" value="${escapeHtml(defaultSearch)}" />
+            <input class="record-input" name="query" value="${escapeHtml(defaultSearch)}" />
           </label>
-          <button type="submit">Save search</button>
+          <button class="record-primary-button" type="submit" ${saving ? "disabled" : ""} aria-busy="${saving ? "true" : "false"}">${saving ? "Saving…" : "Save search"}</button>
         </form>
 
         <form class="record-tool-form" data-record-tool="add_to_reading_list">
@@ -2931,35 +2955,33 @@ function renderRecordWorkspaceTools(record) {
             <span>${readingLists.length} list${readingLists.length === 1 ? "" : "s"}</span>
           </div>
           ${readingLists.length ? `
-            <label>
+            <label class="record-field">
               <span>Add to existing</span>
-              <select name="readingListId" required>
+              <select class="record-select" name="readingListId" required>
                 <option value="">Choose list</option>
                 ${readingLists.map(list => `<option value="${escapeHtml(list.id)}">${escapeHtml(list.title)}</option>`).join("")}
               </select>
             </label>
-            <button type="submit" ${state.status === "saving" ? "disabled" : ""}>Add to list</button>
+            <button class="record-primary-button" type="submit" ${saving ? "disabled" : ""} aria-busy="${saving ? "true" : "false"}">${saving ? "Adding…" : "Add to list"}</button>
           ` : `
             <p class="record-tools-muted">No reading lists yet.</p>
           `}
         </form>
-
-        <form class="record-tool-form" data-record-tool="create_reading_list">
-          <div class="record-tool-heading">
-            <strong>Create list with this record</strong>
-          </div>
-          <label>
-            <span>List title</span>
-            <input name="title" placeholder="Research list title" />
-          </label>
-          <label class="record-tool-check">
-            <input type="checkbox" name="isPublic" />
-            <span>Public list</span>
-          </label>
-          <button type="submit" ${state.status === "saving" ? "disabled" : ""}>Create list</button>
-        </form>
-
       </div>
+    </section>
+    <section class="record-sidebar-card record-create-list-card">
+      <h2>Create list with this record</h2>
+      <form class="record-create-list-form" data-record-tool="create_reading_list">
+        <label class="record-field">
+          <span>List title</span>
+          <input class="record-input" name="title" placeholder="Research list title" />
+        </label>
+        <label class="record-checkbox-row">
+          <input type="checkbox" name="isPublic" />
+          <span>Public list</span>
+        </label>
+        <button class="record-primary-button" type="submit" ${saving ? "disabled" : ""} aria-busy="${saving ? "true" : "false"}">${saving ? "Creating…" : "Create list"}</button>
+      </form>
     </section>
   `;
 }
@@ -3040,10 +3062,10 @@ function renderCardWorkspaceActions(record) {
               <option value="">Reading list</option>
               ${readingLists.map(list => `<option value="${escapeHtml(list.id)}">${escapeHtml(list.title)}</option>`).join("")}
             </select>
-            <button class="record-card-inline-btn" type="button" data-card-add-list ${isSaving ? "disabled" : ""}>Add</button>
+            <button class="record-card-inline-btn" type="button" data-card-add-list ${isSaving ? "disabled" : ""} aria-busy="${isSaving ? "true" : "false"}">${isSaving ? "Adding…" : "Add"}</button>
           ` : ""}
           <input class="record-card-input" data-card-new-list type="text" placeholder="New list" aria-label="New reading list title" />
-          <button class="record-card-inline-btn" type="button" data-card-create-list ${isSaving ? "disabled" : ""}>Create</button>
+          <button class="record-card-inline-btn" type="button" data-card-create-list ${isSaving ? "disabled" : ""} aria-busy="${isSaving ? "true" : "false"}">${isSaving ? "Creating…" : "Create"}</button>
         </div>
       ` : ""}
       ${workbenchComposerOpen ? `
@@ -3053,10 +3075,10 @@ function renderCardWorkspaceActions(record) {
               <option value="">Workbench project</option>
               ${workbenchProjects.map(p => `<option value="${escapeHtml(p.id)}">${escapeHtml(p.title)}</option>`).join("")}
             </select>
-            <button class="record-card-inline-btn" type="button" data-card-workbench-add ${isSaving ? "disabled" : ""}>Add</button>
+            <button class="record-card-inline-btn" type="button" data-card-workbench-add ${isSaving ? "disabled" : ""} aria-busy="${isSaving ? "true" : "false"}">${isSaving ? "Adding…" : "Add"}</button>
           ` : `<p class="record-tools-muted">No projects yet.</p>`}
           <input class="record-card-input" data-card-new-workbench-project type="text" placeholder="New project title" aria-label="New Workbench project title" />
-          <button class="record-card-inline-btn" type="button" data-card-workbench-create ${isSaving ? "disabled" : ""}>Create</button>
+          <button class="record-card-inline-btn" type="button" data-card-workbench-create ${isSaving ? "disabled" : ""} aria-busy="${isSaving ? "true" : "false"}">${isSaving ? "Creating…" : "Create"}</button>
           <a class="record-card-inline-link" href="/my/workbench">Workbench →</a>
         </div>
       ` : ""}
@@ -3071,22 +3093,22 @@ function renderActionList(record) {
 
   const items = actions.map(action => {
     if (action.url) {
-      return `<a class="action-link" href="${escapeHtml(action.url)}" target="_blank" rel="noopener noreferrer">
-        <div>
-          <span>${escapeHtml(action.label)}</span>
+      return `<a class="record-link-row" href="${escapeHtml(action.url)}" target="_blank" rel="noopener noreferrer">
+        <span>
+          <strong>${escapeHtml(action.label)}</strong>
           ${action.note ? `<small>${escapeHtml(action.note)}</small>` : ""}
-        </div>
-        <span>↗</span>
+        </span>
+        <span class="record-link-icon">↗</span>
       </a>`;
     }
 
     if (collection) {
-      return `<a class="action-link" href="${archiveHref("library")}" data-page="library" data-collection="${escapeHtml(collection.title)}">
-        <div>
-          <span>Browse collection</span>
+      return `<a class="record-link-row" href="${archiveHref("library")}" data-page="library" data-collection="${escapeHtml(collection.title)}">
+        <span>
+          <strong>Browse collection</strong>
           <small>${escapeHtml(collection.title)}</small>
-        </div>
-        <span>→</span>
+        </span>
+        <span class="record-link-icon">→</span>
       </a>`;
     }
 
@@ -3094,39 +3116,39 @@ function renderActionList(record) {
   }).filter(Boolean);
 
   items.push(`
-    <a class="action-link" href="javascript:void(0)" id="copyCitationBtn">
-      <div>
-        <span>Copy citation</span>
+    <a class="record-link-row" href="javascript:void(0)" id="copyCitationBtn">
+      <span>
+        <strong>Copy citation</strong>
         <small id="copyCitationNote">Copy archive citation text</small>
-      </div>
-      <span>⎘</span>
+      </span>
+      <span class="record-link-icon">⎘</span>
     </a>
   `);
 
   items.push(`
-    <a class="action-link" href="javascript:void(0)" id="downloadRisBtn">
-      <div>
-        <span>Download RIS</span>
+    <a class="record-link-row" href="javascript:void(0)" id="downloadRisBtn">
+      <span>
+        <strong>Download RIS</strong>
         <small>Export for Zotero, EndNote, or Mendeley</small>
-      </div>
-      <span>↓</span>
+      </span>
+      <span class="record-link-icon">↓</span>
     </a>
   `);
 
   items.push(`
-    <a class="action-link" href="javascript:void(0)" id="downloadBibBtn">
-      <div>
-        <span>Download BibTeX</span>
+    <a class="record-link-row" href="javascript:void(0)" id="downloadBibBtn">
+      <span>
+        <strong>Download BibTeX</strong>
         <small>Export for LaTeX and reference managers</small>
-      </div>
-      <span>↓</span>
+      </span>
+      <span class="record-link-icon">↓</span>
     </a>
   `);
 
   return `
-    <section class="detail-section">
+    <section class="record-sidebar-card record-links-card">
       <h2>Links &amp; Access</h2>
-      <div class="action-list">${items.join("")}</div>
+      <div class="record-link-list">${items.join("")}</div>
     </section>
   `;
 }
@@ -3352,6 +3374,7 @@ function render() {
   if (currentPage === "about") app.innerHTML = renderAbout();
   if (currentPage === "record") app.innerHTML = renderRecord();
   bindEvents();
+  syncLibraryFilterBodyLock();
 }
 
 let liveResults = [];
@@ -4302,7 +4325,176 @@ function renderCard(record) {
     </section>
   </article>`;
 }
-function renderRecord() { const record = getRecordByIdAny(selectedRecordId); if (!record) { return `<div class="page active"><div class="detail"><div class="detail-shell"><div class="breadcrumb"><a href="/home" data-page="home">Archive</a><span>›</span><a href="/library" data-page="library">Library</a><span>›</span><span>Record</span></div><div class="empty"><h3>Record not found</h3><p>The requested record is not available in the archive index or current external result cache. Return to the library and continue browsing.</p></div></div></div></div>`; } const {primary, secondary} = getPrimaryNarrative(record); const metadataRows = [['Title', record.title], ['Alternate title', record.alternateTitle], ['Creator', record.creator], ['Contributors', humanList(record.contributors)], ['Institution', record.institution], ['Source', record.source], ['Country', record.country], ['Region', record.region], ['Community', record.community], ['Period', record.period], ['Category', record.cat], ['Record type', record.type], ['Collection', record.collection], ['Material', record.material], ['Medium', record.medium], ['Language', humanList(record.language)], ['Script / Writing System', humanList(record.script)], ['Rights Status', record.rightsStatus], ['Licence', record.licence], ['Access Type', record.accessType], ['Reuse Permission', record.reusePermission], ['Cultural Sensitivity', record.culturalSensitivity], ['Community Review Status', record.communityReviewStatus], ['Verification Status', record.verificationStatus], ['Date Accessed', record.dateAccessed], ['Source Type', record.sourceType]].filter(([,value]) => value); const identifierRows = [['Record ID', record.recordIdentifier], ['Archive ID', record.archiveIdentifier], ['Mode', resultModeLabel(getResultMode(record))]].filter(([,value]) => value); const related = getResultMode(record) === 'local' || getResultMode(record) === 'hybrid' ? getRelatedRecords(record, 3) : []; const leadImage = canDisplayMedia(record) ? getLeadImage(record) : null; const gallery = canDisplayMedia(record) ? getGalleryImages(record) : []; const warning = rightsWarning(record); const mode = getResultMode(record); const badges = [`<span class="badge">${escapeHtml(record.type)}</span>`, record.period ? `<span class="period">${escapeHtml(record.period)}</span>` : '', `<span class="result-status ${escapeHtml(mode)}">${escapeHtml(resultModeLabel(mode))}</span>`, record.source ? `<span class="badge">${escapeHtml(record.source)}</span>` : ''].filter(Boolean).join(''); return `<div class="page active"><div class="detail"><div class="detail-shell"><div class="breadcrumb"><a href="/home" data-page="home">Archive</a><span>›</span><a href="/library" data-page="library">Library</a><span>›</span><span>${escapeHtml(record.type)}</span></div><header class="detail-header"><div class="detail-type">${badges}</div><h1>${escapeHtml(record.title)}</h1>${record.alternateTitle ? `<div class="detail-alt">${escapeHtml(record.alternateTitle)}</div>` : ''}<div class="detail-creator">${escapeHtml(record.creator)}</div><div class="detail-subline">${record.institution ? `<span>${escapeHtml(record.institution)}</span>` : ''}${record.collection ? `<span>${escapeHtml(record.collection)}</span>` : ''}${record.country ? `<span>${escapeHtml(record.country)}</span>` : ''}${record.sourceUrl ? `<span class="detail-outbound"><a class="inline-link" href="${escapeHtml(record.sourceUrl)}" target="_blank" rel="noopener noreferrer">Open original source ↗</a></span>` : ''}</div></header>${warning ? `<section class="provenance-box rights-warning"><div class="label">Rights and cultural protocol</div><p>${escapeHtml(warning)}</p>${record.culturalProtocolNote ? `<p>${escapeHtml(record.culturalProtocolNote)}</p>` : ''}${record.sourceUrl ? `<a class="inline-link" href="${escapeHtml(record.sourceUrl)}" target="_blank" rel="noopener noreferrer">Open original source</a>` : ''}</section>` : ''}${leadImage ? `<figure class="detail-media" data-media-root><div class="detail-media-main"><img src="${escapeHtml(leadImage.src)}" alt="${escapeHtml(leadImage.alt)}" loading="lazy"/></div>${leadImage.caption ? `<figcaption class="detail-media-caption">${escapeHtml(leadImage.caption)}</figcaption>` : ''}${gallery.length ? `<div class="gallery-grid">${gallery.map(image => `<figure class="gallery-thumb"><img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt)}" loading="lazy"/>${image.caption ? `<figcaption>${escapeHtml(image.caption)}</figcaption>` : ''}</figure>`).join('')}</div>` : ''}</figure>` : ''}<div class="detail-body"><div class="detail-main"><section class="detail-summary"><div class="label">${escapeHtml(primary.label)}</div>${primary.content.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join('')}</section>${secondary.map(section => `<section class="detail-section alt"><h2>${escapeHtml(section.label)}</h2><div class="detail-copy">${section.content.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join('')}</div></section>`).join('')}<section class="detail-section"><h2>Metadata</h2><table class="meta-table">${metadataRows.map(([label, value]) => `<tr><td>${escapeHtml(label)}</td><td>${escapeHtml(value)}</td></tr>`).join('')}</table></section>${renderTagSection('Concepts', record.concepts, 'concept-tag')}${renderTagSection('Knowledge Areas', record.knowledgeAreas || record.themes, 'theme-chip')}${renderTagSection('Tags', record.tags)}<section class="provenance-box"><div class="label">Provenance & rights</div>${record.provenance ? `<p>${escapeHtml(record.provenance)}</p>` : ''}${record.rights ? `<p><strong>Rights:</strong> ${escapeHtml(record.rights)}</p>` : ''}</section>${related.length ? `<section class="detail-section"><div class="section-header"><span class="section-title">Related records</span></div><div class="card-grid">${related.map(renderCard).join('')}</div></section>` : ''}</div><aside class="detail-side">${renderRecordWorkspaceTools(record)}${renderActionList(record)}<section class="detail-section alt"><h2>Citation</h2><div class="citation-controls"><label for="citationStyleSelect" class="citation-label">Style</label><select id="citationStyleSelect" class="citation-select"><option value="apa" ${citationStyle === "apa" ? "selected" : ""}>APA 7</option><option value="chicago" ${citationStyle === "chicago" ? "selected" : ""}>Chicago</option><option value="mla" ${citationStyle === "mla" ? "selected" : ""}>MLA 9</option><option value="harvard" ${citationStyle === "harvard" ? "selected" : ""}>Harvard</option></select><button class="citation-copy-btn" id="copyCitationInlineBtn" type="button" title="Copy citation">⎘</button></div><div class="citation" id="citationText">${escapeHtml(generateCitationByStyle(record, citationStyle))}</div></section>${record.notes.length ? `<section class="detail-section"><h2>Notes</h2><div class="note-list">${record.notes.map(note => `<p>${escapeHtml(note)}</p>`).join('')}</div></section>` : ''}<section class="detail-section alt"><h2>Identifiers</h2><table class="meta-table">${identifierRows.map(([label, value]) => `<tr><td>${escapeHtml(label)}</td><td>${escapeHtml(value)}</td></tr>`).join('')}</table></section>${record.externalLinks.length ? `<section class="detail-section"><h2>External References</h2><div class="inline-links">${record.externalLinks.map(link => `<a class="inline-link" href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(link.label)}</a>`).join('')}</div></section>` : ''}</aside></div></div></div></div>`; }
+function renderRecord() {
+  const record = getRecordByIdAny(selectedRecordId);
+  if (!record) {
+    return `<div class="page active">
+        <div class="detail record-detail-page">
+          <div class="detail-shell record-detail-shell">
+            <div class="breadcrumb record-detail-breadcrumb">
+              <a href="/home" data-page="home">Archive</a>
+              <span>›</span>
+              <a href="/library" data-page="library">Library</a>
+              <span>›</span>
+              <span>Record</span>
+            </div>
+            <div class="empty">
+              <h3>Record not found</h3>
+              <p>The requested record is not available in the archive index or current external result cache. Return to the library and continue browsing.</p>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  const {primary, secondary} = getPrimaryNarrative(record);
+  const identifierRows = [
+    ['Record ID', record.recordIdentifier],
+    ['Archive ID', record.archiveIdentifier],
+    ['Mode', resultModeLabel(getResultMode(record))],
+  ].filter(([, value]) => value);
+  const narrativeMetadataRows = [
+    ['Provenance', record.provenance],
+    ['Rights statement', record.rights],
+  ].filter(([, value]) => value);
+  const metadataRows = [
+    ['Title', record.title],
+    ['Alternate title', record.alternateTitle],
+    ['Creator', record.creator],
+    ['Contributors', humanList(record.contributors)],
+    ['Institution', record.institution],
+    ['Source', record.source],
+    ['Country', record.country],
+    ['Region', record.region],
+    ['Community', record.community],
+    ['Period', record.period],
+    ['Category', record.cat],
+    ['Record type', record.type],
+    ['Collection', record.collection],
+    ['Material', record.material],
+    ['Medium', record.medium],
+    ['Language', humanList(record.language)],
+    ['Script / Writing System', humanList(record.script)],
+    ['Rights Status', record.rightsStatus],
+    ['Licence', record.licence],
+    ['Access Type', record.accessType],
+    ['Reuse Permission', record.reusePermission],
+    ['Cultural Sensitivity', record.culturalSensitivity],
+    ['Community Review Status', record.communityReviewStatus],
+    ['Verification Status', record.verificationStatus],
+    ['Date Accessed', record.dateAccessed],
+    ['Source Type', record.sourceType],
+  ].filter(([, value]) => value);
+  const recordDetailMetadataRows = [
+    ...metadataRows,
+    ...narrativeMetadataRows,
+    ...identifierRows,
+  ].filter(([, value]) => value);
+  const related = getResultMode(record) === 'local' || getResultMode(record) === 'hybrid'
+    ? getRelatedRecords(record, 3)
+    : [];
+  const leadImage = canDisplayMedia(record) ? getLeadImage(record) : null;
+  const gallery = canDisplayMedia(record) ? getGalleryImages(record) : [];
+  const warning = rightsWarning(record);
+  const mode = getResultMode(record);
+  const badges = [
+    `<span class="badge">${escapeHtml(record.type || 'Record')}</span>`,
+    record.period ? `<span class="period">${escapeHtml(record.period)}</span>` : '',
+    `<span class="result-status ${escapeHtml(mode)}">${escapeHtml(resultModeLabel(mode))}</span>`,
+    record.source ? `<span class="badge">${escapeHtml(record.source)}</span>` : '',
+  ].filter(Boolean).join('');
+  const citation = generateCitationByStyle(record, citationStyle);
+  const relatedSection = related.length
+    ? `<section class="record-related-section">
+        <div class="section-header">
+          <span class="section-title">Related Records</span>
+        </div>
+        <div class="card-grid related-records record-related-grid">${related.map(renderCard).join('')}</div>
+      </section>`
+    : '';
+
+  return `<div class="page active">
+    <div class="detail record-detail-page">
+      <div class="detail-shell record-detail-shell">
+        <div class="breadcrumb record-detail-breadcrumb">
+          <a href="/home" data-page="home">Archive</a>
+          <span>›</span>
+          <a href="/library" data-page="library">Library</a>
+          <span>›</span>
+          <span>${escapeHtml(record.type || 'Record')}</span>
+        </div>
+
+        <header class="detail-header record-detail-header">
+          <div class="detail-type">${badges}</div>
+          <h1 class="record-detail-title">${escapeHtml(record.title)}</h1>
+          ${record.alternateTitle ? `<div class="detail-alt record-alternate-title">${escapeHtml(record.alternateTitle)}</div>` : ''}
+          <div class="detail-creator record-subtitle">${escapeHtml(record.creator)}</div>
+          <div class="detail-subline">
+            ${record.institution ? `<span>${escapeHtml(record.institution)}</span>` : ''}
+            ${record.collection ? `<span>${escapeHtml(record.collection)}</span>` : ''}
+            ${record.country ? `<span>${escapeHtml(record.country)}</span>` : ''}
+            ${record.sourceUrl ? `<span class="detail-outbound"><a class="inline-link" href="${escapeHtml(record.sourceUrl)}" target="_blank" rel="noopener noreferrer">Open original source ↗</a></span>` : ''}
+          </div>
+        </header>
+
+        ${warning ? `<section class="provenance-box rights-warning record-rights-box rights-alert">
+          <div class="label">Rights and cultural protocol</div>
+          <p>${escapeHtml(warning)}</p>
+          ${record.culturalProtocolNote ? `<p>${escapeHtml(record.culturalProtocolNote)}</p>` : ''}
+          ${record.sourceUrl ? `<a class="inline-link" href="${escapeHtml(record.sourceUrl)}" target="_blank" rel="noopener noreferrer">Open original source</a>` : ''}
+        </section>` : ''}
+
+        ${leadImage ? `<figure class="detail-media" data-media-root>
+          <div class="detail-media-main"><img src="${escapeHtml(leadImage.src)}" alt="${escapeHtml(leadImage.alt)}" loading="lazy"/></div>
+          ${leadImage.caption ? `<figcaption class="detail-media-caption">${escapeHtml(leadImage.caption)}</figcaption>` : ''}
+          ${gallery.length ? `<div class="gallery-grid">${gallery.map(image => `<figure class="gallery-thumb"><img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt)}" loading="lazy"/>${image.caption ? `<figcaption>${escapeHtml(image.caption)}</figcaption>` : ''}</figure>`).join('')}</div>` : ''}
+        </figure>` : ''}
+
+        <div class="detail-body record-detail-layout">
+          <main class="detail-main record-detail-main">
+            <section class="detail-summary">
+              <div class="label">${escapeHtml(primary.label)}</div>
+              ${primary.content.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join('')}
+            </section>
+            ${secondary.map(section => `<section class="detail-section alt"><h2>${escapeHtml(section.label)}</h2><div class="detail-copy">${section.content.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join('')}</div></section>`).join('')}
+            <section class="detail-section">
+              <h2>Metadata</h2>
+              <table class="meta-table record-metadata metadata-table">${recordDetailMetadataRows.map(([label, value]) => `<tr><td>${escapeHtml(label)}</td><td>${escapeHtml(value)}</td></tr>`).join('')}</table>
+            </section>
+            ${renderTagSection('Concepts', record.concepts, 'concept-tag')}
+            ${renderTagSection('Knowledge Areas', record.knowledgeAreas || record.themes, 'theme-chip')}
+            ${renderTagSection('Tags', record.tags)}
+          </main>
+
+          <aside class="detail-side record-detail-sidebar">
+            ${renderRecordWorkspaceTools(record)}
+            ${renderActionList(record)}
+            <section class="record-sidebar-card record-citation-card">
+              <h2>Citation</h2>
+              <div class="record-citation-controls">
+                <label class="record-field record-citation-style-field">
+                  <span>Style</span>
+                  <select id="citationStyleSelect" class="record-select">
+                    <option value="apa" ${citationStyle === 'apa' ? 'selected' : ''}>APA 7</option>
+                    <option value="chicago" ${citationStyle === 'chicago' ? 'selected' : ''}>Chicago</option>
+                    <option value="mla" ${citationStyle === 'mla' ? 'selected' : ''}>MLA 9</option>
+                    <option value="harvard" ${citationStyle === 'harvard' ? 'selected' : ''}>Harvard</option>
+                  </select>
+                </label>
+                <button class="record-icon-button" id="copyCitationInlineBtn" type="button" aria-label="Copy citation" title="Copy citation">⎘</button>
+              </div>
+              <blockquote class="record-citation-text" id="citationText">${escapeHtml(citation)}</blockquote>
+            </section>
+            ${record.notes.length ? `<section class="record-sidebar-card record-notes-card"><h2>Notes</h2><div class="note-list">${record.notes.map(note => `<p>${escapeHtml(note)}</p>`).join('')}</div></section>` : ''}
+            ${record.externalLinks.length ? `<section class="record-sidebar-card record-external-references-card"><h2>External References</h2><div class="inline-links">${record.externalLinks.map(link => `<a class="inline-link" href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(link.label)}</a>`).join('')}</div></section>` : ''}
+          </aside>
+        </div>
+
+        ${relatedSection}
+      </div>
+    </div>
+  </div>`;
+}
 function renderLiveStatus(){ const effectiveQuery = getEffectiveSearchQuery(); if (!effectiveQuery || !sourceMode) return ''; const alertText = liveStatus.state === "error" ? [liveStatus.message || "External source discovery failed.", liveStatus.openAccessWarning].filter(Boolean).join(" ") : (liveStatus.openAccessWarning || ""); const alertHtml = alertText ? `<div class="live-status-warning" role="alert">${escapeHtml(alertText)}</div>` : ""; return `<div class="source-status">${alertHtml}<div class="live-status-detail"><div>${escapeHtml(liveStatus.message || 'External source discovery is ready when archive results are sparse.')}</div>${liveStatus.sources && liveStatus.sources.length ? `<div class="live-status-meta">${liveStatus.sources.map(source => `<span class="live-status-chip ${source.state === 'ok' ? 'ok' : source.state === 'fail' ? 'fail' : ''}">${escapeHtml(source.label)}${typeof source.count === 'number' ? ` · ${source.count}` : ''}</span>`).join('')}</div>` : ''}</div></div>`; }
 function renderSearchSaveAction(effectiveQuery){
   if (!effectiveQuery) return "";
@@ -4428,6 +4620,22 @@ function libraryStreamOriginClass(record) {
   return map[label] || "is-origin-archive";
 }
 
+function renderLibraryResultsSection({ className, eyebrow, title, description, countLabel, bodyHtml, loadMoreHtml = "" }) {
+  if (!bodyHtml) return "";
+  return `<section class="library-results-section ${className}">
+    <header class="library-results-section-header">
+      <div>
+        <p class="library-results-eyebrow">${escapeHtml(eyebrow)}</p>
+        <h2>${escapeHtml(title)}</h2>
+        ${description ? `<p>${escapeHtml(description)}</p>` : ""}
+      </div>
+      <span class="library-results-count">${escapeHtml(countLabel)}</span>
+    </header>
+    ${bodyHtml}
+    ${loadMoreHtml}
+  </section>`;
+}
+
 function renderLibraryLoader(){
   const shouldShow = currentPage === 'library' && (
     liveStatus.state === 'loading' ||
@@ -4492,28 +4700,13 @@ function renderMobileFilterDrawer(totalResults, activeFilterCount) {
 function renderLibrary() {
   const effectiveQuery = getEffectiveSearchQuery();
   const filteredExternalResults = sourceMode ? filterDisplayedRecords(liveResults) : [];
-  const displayedLive = filteredExternalResults.filter(item => getResultMode(item) === "live");
-  const displayedOpenAccess = displayedLive.filter(item => isOpenAccessDiscoveryRecord(item));
-  const displayedLiveOther = displayedLive.filter(item => !isOpenAccessDiscoveryRecord(item));
-  const displayedExternal = filteredExternalResults.filter(item => getResultMode(item) === "external_handoff");
-  const displayedLocal = filterDisplayedRecords(localResults);
+  const liveResultsGroup = filteredExternalResults.filter(item => getResultMode(item) === "live");
+  const localArchiveResults = filterDisplayedRecords(localResults);
+  const externalResults = filteredExternalResults.filter(item => getResultMode(item) === "external_handoff");
 
-  const cArchive = displayedLocal.length;
-  const cExt = displayedLiveOther.length;
-  const cOA = displayedOpenAccess.length;
-  const cHand = displayedExternal.length;
-
-  const blendedResults =
-    sourceMode && effectiveQuery
-      ? weaveLibraryStreamResults([
-          { label: "Archive", weight: 2, items: displayedLocal },
-          { label: "External", weight: 2, items: displayedLiveOther },
-          { label: "Open Access", weight: 1, items: displayedOpenAccess },
-          { label: "Handoff", weight: 1, items: displayedExternal },
-        ])
-      : displayedLocal;
-
-  const totalBlended = blendedResults.length;
+  const totalGroupedResults = liveResultsGroup.length + localArchiveResults.length + externalResults.length;
+  const displayedOpenAccess = liveResultsGroup.filter(item => isOpenAccessDiscoveryRecord(item));
+  const displayedLiveOther = liveResultsGroup.filter(item => !isOpenAccessDiscoveryRecord(item));
   const canLoadMoreCore =
     sourceMode &&
     displayedLiveOther.length > 0 &&
@@ -4527,24 +4720,65 @@ function renderLibrary() {
   const activeFilterCount = getActiveFilterCount();
 
   const qEsc = effectiveQuery ? escapeHtml(effectiveQuery) : "";
-  const metaPrimary =
-    sourceMode && effectiveQuery
-      ? `${totalBlended} result${totalBlended !== 1 ? "s" : ""}${effectiveQuery ? ` for “${qEsc}”` : ""} · ${cArchive} archive · ${cExt} external · ${cOA} open access · ${cHand} handoff${cHand !== 1 ? "s" : ""}`
-      : `${totalBlended} result${totalBlended !== 1 ? "s" : ""}${effectiveQuery ? ` for “${qEsc}”` : ""} · `;
-
-  const strip =
-    sourceMode && effectiveQuery
-      ? `<div class="result-source-strip" aria-label="Counts by origin"><span class="result-source-strip__item"><strong>${cArchive}</strong> archive</span><span class="result-source-strip__sep" aria-hidden="true">·</span><span class="result-source-strip__item"><strong>${cExt}</strong> external</span><span class="result-source-strip__sep" aria-hidden="true">·</span><span class="result-source-strip__item"><strong>${cOA}</strong> open access</span><span class="result-source-strip__sep" aria-hidden="true">·</span><span class="result-source-strip__item"><strong>${cHand}</strong> handoff${cHand !== 1 ? "s" : ""}</span></div>`
-      : "";
 
   const emptyGuide = `<div class="empty empty-guide"><h3>No matching records yet</h3><p>Try a broader search, clear filters, or explore these discovery paths.</p>${relatedSearches.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Related searches</div>${renderRelatedSearchTags(relatedSearches.slice(0, 8))}</div>` : ""}${topKnowledgeAreas.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Top knowledge areas</div>${renderRelatedSearchTags(topKnowledgeAreas.slice(0, 10))}</div>` : ""}${collectionSuggestions.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Curated collection pathways</div><div class="coll-grid">${collectionSuggestions.slice(0, 4).map(renderCollectionCard).join("")}</div></div>` : ""}${topSources.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Source pathways</div><div class="source-grid">${topSources.map(source => renderSourceCard(source)).join("")}</div></div>` : ""}</div>`;
 
-  const blendedSection =
-    totalBlended > 0
-      ? `<section class="results-section blended-results-section"><div class="results-section-title"><h3>Results</h3><span>${totalBlended} blended archive, open access and external source result${totalBlended !== 1 ? "s" : ""}</span></div>${sourceMode && effectiveQuery ? renderOpenAccessNoticeStrip() : ""}${strip}<div class="card-grid results-grid blended-results-grid">${blendedResults.map(renderCard).join("")}</div>${canLoadMoreCore ? `<div class="load-more-wrap"><button id="loadMoreCoreBtn" class="load-more-btn" type="button">${coreLoadingMore ? "Loading…" : "Load more CORE results"}</button></div>` : ""}</section>`
-      : emptyGuide;
+  const liveSection = renderLibraryResultsSection({
+    className: "library-results-live",
+    eyebrow: "Live results",
+    title: "Live discovery results",
+    description: "Open web, publication and catalogue results returned from external discovery sources.",
+    countLabel: `${liveResultsGroup.length} result${liveResultsGroup.length !== 1 ? "s" : ""}`,
+    bodyHtml: liveResultsGroup.length
+      ? `${sourceMode && effectiveQuery ? renderOpenAccessNoticeStrip() : ""}<div class="library-results-grid card-grid results-grid">${liveResultsGroup.map(renderCard).join("")}</div>`
+      : "",
+    loadMoreHtml: canLoadMoreCore ? `<div class="load-more-wrap"><button id="loadMoreCoreBtn" class="library-results-load-more load-more-btn" type="button">${coreLoadingMore ? "Loading…" : "Load more CORE results"}</button></div>` : ""
+  });
 
-  return `<div class="page active"><div class="library-layout"><aside class="sidebar">${hasFilter ? `<button class="clear-btn" id="clearBtn" type="button">Clear all filters</button>` : ""}${renderQuickFilters()}${METADATA_FILTER_GROUPS.map(group => renderMetadataFilterGroup(group, RECORDS)).join("")}</aside><div class="main-results library-blended-discovery"><div class="search-bar"><input type="text" id="mainSearch" value="${escapeHtml(libraryQuery)}" placeholder="Search metadata, provenance, rights, source, and cultural protocol fields…" autocomplete="off"/><button id="localSearchBtn" type="button">Search</button><button class="secondary ${sourceMode ? "live-on" : "live-off"}" id="sourceSearchBtn" type="button">${sourceMode ? "External sources on" : "External sources off"}</button></div>${renderSearchSuggestions()}${renderRecentSearches("library")}${renderSearchSaveAction(effectiveQuery)}<div class="mobile-filter-bar"><button id="mobileFilterToggle" class="mobile-filter-btn ${mobileFiltersOpen ? "active" : ""}" type="button" aria-expanded="${mobileFiltersOpen ? "true" : "false"}" aria-controls="mobileFilterDrawer">Filters${activeFilterCount ? ` (${activeFilterCount})` : ""}</button>${activeFilterCount ? `<button id="mobileClearFilters" class="mobile-clear-btn" type="button">Clear</button>` : ""}</div>${renderMobileFilterDrawer(totalBlended, activeFilterCount)}${renderLibraryLoader()}${renderLiveStatus()}<div class="results-stack">${blendedSection}${relatedSearches.length ? `<section class="results-section"><div class="results-section-title"><h3>Related searches</h3><span>${RELATED_SEARCH_INDEX.length.toLocaleString()} discovery routes</span></div>${renderRelatedSearchTags(relatedSearches)}</section>` : ""}${collectionSuggestions.length ? `<section class="results-section"><div class="results-section-title"><h3>Curated collection pathways</h3><span>${COLLECTIONS.length} editorial browse routes</span></div><div class="coll-grid">${collectionSuggestions.map(renderCollectionCard).join("")}</div></section>` : ""}</div></div></div></div>`;
+  const localSection = renderLibraryResultsSection({
+    className: "library-results-local",
+    eyebrow: "Local archive results",
+    title: "Archive records",
+    description: "Records held, created or described inside Decolonising Archive.",
+    countLabel: `${localArchiveResults.length} result${localArchiveResults.length !== 1 ? "s" : ""}`,
+    bodyHtml: localArchiveResults.length ? `<div class="library-results-grid card-grid results-grid">${localArchiveResults.map(renderCard).join("")}</div>` : ""
+  });
+
+  const externalSection = renderLibraryResultsSection({
+    className: "library-results-external",
+    eyebrow: "External results",
+    title: "External source records",
+    description: "Institutional catalogues, archive pathways and source handoffs for further discovery.",
+    countLabel: `${externalResults.length} result${externalResults.length !== 1 ? "s" : ""}`,
+    bodyHtml: externalResults.length ? `<div class="library-results-grid card-grid results-grid">${externalResults.map(renderCard).join("")}</div>` : ""
+  });
+
+  const relatedSection = renderLibraryResultsSection({
+    className: "library-results-related",
+    eyebrow: "Related searches",
+    title: "Related searches",
+    countLabel: `${relatedSearches.length} discovery route${relatedSearches.length !== 1 ? "s" : ""}`,
+    bodyHtml: relatedSearches.length ? renderRelatedSearchTags(relatedSearches) : ""
+  });
+
+  const collectionsSection = renderLibraryResultsSection({
+    className: "library-results-collections",
+    eyebrow: "Collection matches",
+    title: "Collection matches",
+    countLabel: `${collectionSuggestions.length} collection match${collectionSuggestions.length !== 1 ? "es" : ""}`,
+    bodyHtml: collectionSuggestions.length ? `<div class="coll-grid">${collectionSuggestions.map(renderCollectionCard).join("")}</div>` : ""
+  });
+
+  const groupedResults = [
+    liveSection,
+    localSection,
+    externalSection,
+    relatedSection,
+    collectionsSection
+  ].filter(Boolean).join("");
+  const resultsBody = totalGroupedResults > 0 || groupedResults ? groupedResults : emptyGuide;
+
+  return `<div class="page active"><div class="library-layout"><aside class="sidebar">${hasFilter ? `<button class="clear-btn" id="clearBtn" type="button">Clear all filters</button>` : ""}${renderQuickFilters()}${METADATA_FILTER_GROUPS.map(group => renderMetadataFilterGroup(group, RECORDS)).join("")}</aside><div class="main-results library-blended-discovery"><div class="search-bar"><input type="text" id="mainSearch" value="${escapeHtml(libraryQuery)}" placeholder="Search metadata, provenance, rights, source, and cultural protocol fields…" autocomplete="off"/><button id="localSearchBtn" type="button">Search</button><button class="secondary ${sourceMode ? "live-on" : "live-off"}" id="sourceSearchBtn" type="button">${sourceMode ? "External sources on" : "External sources off"}</button></div>${renderSearchSuggestions()}${renderRecentSearches("library")}${renderSearchSaveAction(effectiveQuery)}<div class="mobile-filter-bar"><button id="mobileFilterToggle" class="mobile-filter-btn ${mobileFiltersOpen ? "active" : ""}" type="button" aria-expanded="${mobileFiltersOpen ? "true" : "false"}" aria-controls="mobileFilterDrawer">Filters${activeFilterCount ? ` (${activeFilterCount})` : ""}</button>${activeFilterCount ? `<button id="mobileClearFilters" class="mobile-clear-btn" type="button">Clear</button>` : ""}</div>${renderMobileFilterDrawer(totalGroupedResults, activeFilterCount)}${renderLibraryLoader()}${renderLiveStatus()}<div class="results-stack library-results-stack" aria-label="${totalGroupedResults} search result${totalGroupedResults !== 1 ? "s" : ""}${effectiveQuery ? ` for “${qEsc}”` : ""}">${resultsBody}</div></div></div></div>`;
 }
 
 function applyLibraryQuery(value, clearSources = true) { const nextQuery = value.trim(); const queryChanged = nextQuery !== libraryQuery; console.log('[APPLY QUERY]', { value: nextQuery, clearSources, queryChanged, beforeLiveResults: liveResults.length }); libraryQuery = nextQuery; localResults = searchLocalRecords(getEffectiveSearchQuery() || libraryQuery); if (clearSources && queryChanged) { liveResults = []; openAccessNotices = null; externalDiscovery = []; coreOffset = coreLimit; coreTotalHits = 0; liveStatus = {state:'idle', message: getEffectiveSearchQuery() ? 'Archive results loaded. External source discovery is available.' : '', sources:[]}; } refreshBlendedDiscovery(true); }
@@ -4552,6 +4786,24 @@ function applyLibraryQuery(value, clearSources = true) { const nextQuery = value
 function closeMobileFilters() {
   mobileFiltersOpen = false;
   render();
+}
+
+function syncLibraryFilterBodyLock() {
+  const body = document.body;
+  if (!body) return;
+  if (currentPage === "library" && mobileFiltersOpen) {
+    body.classList.add("filters-open");
+  } else {
+    body.classList.remove("filters-open");
+  }
+  const locked =
+    body.classList.contains("menu-open") ||
+    body.classList.contains("filters-open") ||
+    body.classList.contains("workspace-drawer-open") ||
+    body.classList.contains("modal-open") ||
+    body.classList.contains("drawer-open");
+  const gap = window.innerWidth - document.documentElement.clientWidth;
+  body.style.paddingRight = locked && gap > 0 ? `${gap}px` : "";
 }
 
 function clearMobileFilters() {
@@ -4935,6 +5187,9 @@ window.addEventListener("popstate", () => {
 });
 
 function initArchiveApp() {
+  // One initialisation per full document load. In-app archive routing (capture)
+  // only handles clicks inside #app so navbar/footer are never hijacked after a
+  // Next client transition. Navbar uses hardNavigateToArchive from dashboard routes.
   recentSearches = loadRecentSearches();
   loadSiteContent();
 
@@ -4993,6 +5248,7 @@ function initArchiveApp() {
   });
 
   syncRouteFromPath({scroll:false});
+  window.addEventListener("resize", syncLibraryFilterBodyLock);
 }
 
 if (document.readyState === "loading") {

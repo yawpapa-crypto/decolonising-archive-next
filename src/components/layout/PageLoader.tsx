@@ -6,6 +6,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 const LOADER_TIMEOUT_MS = 8000;
 const LOADER_EXIT_MS = 200;
 
+const DEFAULT_LABEL = "Loading archive…";
+
+type LoadingStartDetail = { message?: string };
+
 function shouldTrackAnchor(anchor: HTMLAnchorElement): boolean {
   const href = anchor.getAttribute("href");
   if (!href || href === "#") return false;
@@ -23,14 +27,46 @@ function shouldTrackAnchor(anchor: HTMLAnchorElement): boolean {
   }
 }
 
+function labelFromHref(href: string): string {
+  try {
+    const url = new URL(href, window.location.href);
+    const path = url.pathname;
+    if (path === "/" || path === "/home") return "Opening home…";
+    if (path.startsWith("/library")) return "Opening library…";
+    if (path.startsWith("/sources")) return "Opening sources…";
+    if (path.startsWith("/about")) return "Opening about…";
+    if (path.startsWith("/records/")) return "Opening record…";
+    if (path.startsWith("/workspace")) return "Opening workspace…";
+    if (path.startsWith("/my/workbench")) return "Opening workbench…";
+    if (path.startsWith("/my/")) return "Loading your workspace…";
+    if (path.startsWith("/curator")) return "Opening curator tools…";
+    if (path.startsWith("/admin")) return "Opening admin…";
+    if (path.startsWith("/auth")) return "Loading…";
+    return "Loading…";
+  } catch {
+    return DEFAULT_LABEL;
+  }
+}
+
 export default function PageLoader() {
   const pathname = usePathname();
   const [active, setActive] = useState(false);
   const [exiting, setExiting] = useState(false);
+  const [label, setLabel] = useState(DEFAULT_LABEL);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const timeoutRef = useRef<number | null>(null);
   const exitRef = useRef<number | null>(null);
   const prevPathRef = useRef<string | null>(null);
   const overlayShownRef = useRef(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReducedMotion(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   const clearHardTimeout = useCallback(() => {
     if (timeoutRef.current !== null) {
@@ -53,6 +89,7 @@ export default function PageLoader() {
       overlayShownRef.current = false;
       setActive(false);
       setExiting(false);
+      setLabel(DEFAULT_LABEL);
       exitRef.current = null;
     }, LOADER_EXIT_MS);
   }, [clearExitTimer]);
@@ -64,9 +101,10 @@ export default function PageLoader() {
     beginExit();
   }, [beginExit, clearHardTimeout]);
 
-  const startLoading = useCallback(() => {
+  const startLoading = useCallback((message: string = DEFAULT_LABEL) => {
     clearHardTimeout();
     clearExitTimer();
+    setLabel(message);
     overlayShownRef.current = true;
     setExiting(false);
     setActive(true);
@@ -76,6 +114,7 @@ export default function PageLoader() {
       overlayShownRef.current = false;
       setActive(false);
       setExiting(false);
+      setLabel(DEFAULT_LABEL);
     }, LOADER_TIMEOUT_MS);
   }, [clearHardTimeout, clearExitTimer]);
 
@@ -87,17 +126,28 @@ export default function PageLoader() {
     if (prevPathRef.current === pathname) return;
     prevPathRef.current = pathname;
     clearHardTimeout();
-    if (overlayShownRef.current) {
-      overlayShownRef.current = false;
+    if (!overlayShownRef.current) return;
+    overlayShownRef.current = false;
+    queueMicrotask(() => {
       beginExit();
-    }
+    });
   }, [pathname, beginExit, clearHardTimeout]);
 
   useEffect(() => {
-    const onStart = () => startLoading();
+    const onStart = (event: Event) => {
+      const detail =
+        event instanceof CustomEvent
+          ? (event.detail as LoadingStartDetail | undefined)
+          : undefined;
+      const message =
+        typeof detail?.message === "string" && detail.message.trim()
+          ? detail.message.trim()
+          : DEFAULT_LABEL;
+      startLoading(message);
+    };
     const onEnd = () => stopLoading();
 
-    window.addEventListener("app:loading:start", onStart);
+    window.addEventListener("app:loading:start", onStart as EventListener);
     window.addEventListener("app:loading:end", onEnd);
 
     const onClickCapture = (event: MouseEvent) => {
@@ -115,11 +165,12 @@ export default function PageLoader() {
       const cur = `${window.location.pathname}${window.location.search}${window.location.hash}`;
       if (next === cur) return;
 
-      startLoading();
+      startLoading(labelFromHref(anchor.href));
     };
 
     const onBeforeUnload = () => {
-      startLoading();
+      setLabel("Leaving site…");
+      startLoading("Leaving site…");
     };
 
     const onPageShow = () => {
@@ -131,7 +182,7 @@ export default function PageLoader() {
     window.addEventListener("pageshow", onPageShow);
 
     return () => {
-      window.removeEventListener("app:loading:start", onStart);
+      window.removeEventListener("app:loading:start", onStart as EventListener);
       window.removeEventListener("app:loading:end", onEnd);
       document.removeEventListener("click", onClickCapture, true);
       window.removeEventListener("beforeunload", onBeforeUnload);
@@ -143,13 +194,21 @@ export default function PageLoader() {
 
   if (!active && !exiting) return null;
 
+  const overlayClass = [
+    "page-loader-overlay",
+    exiting ? "page-loader-overlay--exit" : "",
+    reducedMotion ? "page-loader-overlay--reduced-motion" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <div
-      className={`page-loader-overlay${exiting ? " page-loader-overlay--exit" : ""}`}
+      className={overlayClass}
       role="status"
       aria-live="polite"
       aria-busy={active && !exiting}
-      aria-label="Loading page"
+      aria-label={label}
     >
       <div className="page-loader-card">
         <div className="page-loader-mark" aria-hidden="true">
@@ -157,7 +216,7 @@ export default function PageLoader() {
             <span />
           </div>
         </div>
-        <p className="page-loader-label">Loading archive…</p>
+        <p className="page-loader-label">{label}</p>
       </div>
     </div>
   );

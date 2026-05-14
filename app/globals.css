@@ -1072,6 +1072,167 @@ body:has(footer.site-disclaimer) footer.site-footer {
 .load-more-btn:hover { background: #f3f3f3 }
 .load-more-btn:disabled { opacity: .6; cursor: not-allowed }
 
+.library-results-stack {
+  gap: clamp(26px, 4vw, 44px);
+}
+
+.library-results-section {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+  padding: clamp(18px, 2.4vw, 26px);
+  border: 1px solid rgba(20, 24, 33, 0.08);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(8, 119, 109, 0.035), transparent 34%),
+    rgba(255, 255, 255, 0.76);
+  box-shadow:
+    0 14px 34px rgba(20, 24, 33, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+}
+
+.library-results-section-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(20, 24, 33, 0.08);
+}
+
+.library-results-section-header h2 {
+  margin: 4px 0 0;
+  color: #151922;
+  font-size: clamp(20px, 2.1vw, 28px);
+  line-height: 1.05;
+  font-weight: 780;
+  letter-spacing: -0.04em;
+}
+
+.library-results-section-header p:not(.library-results-eyebrow) {
+  max-width: 680px;
+  margin: 8px 0 0;
+  color: rgba(20, 24, 33, 0.58);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.library-results-eyebrow {
+  margin: 0;
+  color: rgba(20, 24, 33, 0.46);
+  font-size: 10.5px;
+  line-height: 1;
+  font-weight: 850;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.library-results-count {
+  justify-self: end;
+  min-height: 30px;
+  padding: 8px 11px;
+  border: 1px solid rgba(20, 24, 33, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.84);
+  color: rgba(20, 24, 33, 0.62);
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 740;
+  white-space: nowrap;
+}
+
+.library-results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+  min-width: 0;
+}
+
+.library-results-live {
+  border-color: rgba(0, 115, 234, 0.14);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(0, 115, 234, 0.06), transparent 34%),
+    rgba(255, 255, 255, 0.78);
+}
+
+.library-results-local {
+  border-color: rgba(8, 119, 109, 0.14);
+}
+
+.library-results-external {
+  border-color: rgba(20, 24, 33, 0.10);
+}
+
+.library-results-related,
+.library-results-collections {
+  background: rgba(255, 254, 250, 0.72);
+}
+
+.library-results-related .related-searches,
+.library-results-related .related-search-row,
+.library-results-related .related-tag-row {
+  margin-top: 0;
+}
+
+.library-results-collections .coll-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.library-results-load-more {
+  width: fit-content;
+  min-height: 42px;
+  border-radius: 999px;
+  border-color: rgba(20, 24, 33, 0.16);
+  background: #151922;
+  color: #fff;
+  font-weight: 760;
+}
+
+.library-results-load-more:hover {
+  background: #2a3039;
+  color: #fff;
+}
+
+@media (min-width: 1180px) {
+  .library-results-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 980px) {
+  .library-results-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .library-results-section {
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .library-results-section-header {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .library-results-count {
+    justify-self: start;
+  }
+
+  .library-results-grid,
+  .library-results-collections .coll-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .library-results-load-more {
+    width: 100%;
+  }
+}
+
 
 /* =========================
    THEME GRID
@@ -3335,7 +3496,7 @@ footer span, footer a { font-size: 11px; color: var(--grey-500); overflow-wrap: 
 /* ── Small phone (~400px and below) ────────────────────────────────────── */
 @media (max-width: 400px) {
   .recent-search-chip {
-    max-width: calc(100vw - 80px);
+    max-width: calc(100% - 80px);
   }
 }
 
@@ -5611,9 +5772,6 @@ html[data-theme="dark"] .workspace-page {
 }
 
 @media (max-width: 780px) {
-  body.workspace-drawer-open {
-    overflow: hidden;
-  }
   .workspace-app-shell {
     flex-direction: column;
   }
@@ -5704,7 +5862,8 @@ html[data-theme="dark"] .workspace-page {
   .workspace-drawer {
     position: absolute;
     inset: 0 auto 0 0;
-    width: min(86vw, 330px);
+    width: min(86%, 330px);
+    max-width: 100%;
     background: var(--dash-bg-sidebar);
     border-right: 1px solid var(--dash-border);
     display: flex;
@@ -10965,7 +11124,8 @@ button.workspace-link-danger:hover {
     bottom: calc(0.75rem + env(safe-area-inset-bottom));
     z-index: 100;
     transform: translateX(-50%);
-    width: min(calc(100vw - 1.1rem), 28rem);
+    width: min(calc(100% - 1.1rem), 28rem);
+    max-width: 100%;
     min-height: 4.15rem;
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -11056,7 +11216,8 @@ button.workspace-link-danger:hover {
 
 @media (max-width: 380px) {
   .member-mobile-bottom-nav {
-    width: calc(100vw - 0.7rem);
+    width: calc(100% - 0.7rem);
+    max-width: 100%;
     padding: 0.36rem;
   }
 
@@ -11176,7 +11337,8 @@ button.workspace-link-danger:hover {
     top: 0 !important;
     left: 0 !important;
     bottom: 0 !important;
-    width: min(82vw, 21rem) !important;
+    width: min(21rem, calc(100% - 12px)) !important;
+    max-width: 100% !important;
     height: 100dvh !important;
     z-index: 180 !important;
     display: flex !important;
@@ -12900,14 +13062,46 @@ button.workspace-link-danger:hover {
 
   .workbench-shell .workbench-nav a {
     flex: 0 0 auto;
+    height: 38px;
+    padding: 0 14px;
+    border-radius: 999px;
+    border: 1px solid var(--wb-line);
+    background: #fff;
+  }
+
+  .workbench-shell .workbench-nav a.is-active {
+    box-shadow: none;
+    border-color: rgba(0, 115, 234, 0.45);
   }
 
   .workbench-main {
     padding: 16px;
   }
 
+  .workbench-shell .workbench-board-header {
+    align-items: stretch;
+  }
+
+  .workbench-shell .workbench-board-title-row {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    row-gap: 6px;
+  }
+
   .workbench-shell .workbench-board-header h1 {
-    font-size: 32px;
+    font-size: clamp(1.35rem, 4.2vw, 2rem);
+    line-height: 1.12;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .workbench-shell .workbench-board-header > div:first-child > p {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .workbench-shell .workbench-board-project-select {
+    max-width: 100%;
   }
 
   .workbench-shell .workbench-board-actions {
@@ -12920,6 +13114,7 @@ button.workspace-link-danger:hover {
     overflow-x: auto;
     padding-bottom: 10px;
     -webkit-overflow-scrolling: touch;
+    gap: 8px;
   }
 
   .workbench-shell .workbench-board-toolbar label,
@@ -12930,11 +13125,15 @@ button.workspace-link-danger:hover {
   }
 
   .workbench-shell .workbench-board-toolbar input[type="text"] {
-    min-width: 200px;
+    min-width: 0;
+    flex: 1 1 140px;
+    max-width: min(280px, 52vw);
   }
 
   .workbench-shell .workbench-modal {
-    width: calc(100vw - 24px);
+    width: min(100%, calc(100% - 24px));
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .workbench-shell .workbench-project-form {
@@ -15970,7 +16169,7 @@ form.search-save-inline button.search-save-inline-button::after,
   .mobile-filter-backdrop {
     position: fixed;
     inset: 0;
-    z-index: 90;
+    z-index: 155;
     display: block;
     border: 0;
     background: rgba(20, 24, 33, 0.32);
@@ -15980,10 +16179,11 @@ form.search-save-inline button.search-save-inline-button::after,
   .mobile-filter-drawer {
     position: fixed;
     inset: auto 0 0 0;
-    z-index: 100;
+    z-index: 160;
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
-    max-height: 86vh;
+    max-height: calc(86vh - env(safe-area-inset-bottom, 0px));
+    padding-bottom: max(12px, env(safe-area-inset-bottom, 0px));
     background: #fffefa;
     border-radius: 24px 24px 0 0;
     border: 1px solid rgba(20, 24, 33, 0.08);
@@ -16069,7 +16269,7 @@ form.search-save-inline button.search-save-inline-button::after,
     position: sticky;
     bottom: 0;
     z-index: 2;
-    padding: 14px 16px 16px;
+    padding: 14px 16px max(16px, env(safe-area-inset-bottom, 0px));
     border-top: 1px solid rgba(20, 24, 33, 0.10);
   }
 
@@ -23161,12 +23361,16 @@ button.workbench-primary,
   display: grid;
   place-items: center;
   padding: 24px;
+  padding-bottom: max(24px, env(safe-area-inset-bottom, 0px));
   background:
     radial-gradient(circle at 50% 38%, rgba(8, 119, 109, 0.1), transparent 38%),
     rgba(250, 250, 246, 0.82);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   animation: pageLoaderFadeIn 220ms ease both;
+  overscroll-behavior: contain;
+  touch-action: none;
+  pointer-events: auto;
 }
 
 .page-loader-overlay--exit {
@@ -23319,10 +23523,6 @@ button.workbench-primary,
    ========================================================= */
 
 @media (max-width: 760px) {
-  body.filters-open {
-    overflow: hidden !important;
-  }
-
   .library-layout .sidebar.mobile-open,
   .sidebar.mobile-open {
     position: fixed !important;
@@ -23400,3 +23600,3752 @@ button.workbench-primary,
   }
 }
 
+
+/* =========================================================
+   EMERGENCY WORKBENCH MOBILE FIX
+   Fixes vertical title, cramped hero, toolbar and footer on mobile.
+   Put LAST.
+   ========================================================= */
+
+@media (max-width: 760px) {
+  html,
+  body {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .dashboard-canvas-outer.workbench-member-canvas {
+    width: 100% !important;
+    padding: 0 0 calc(118px + env(safe-area-inset-bottom)) !important;
+    overflow-x: hidden !important;
+    background: #f7faf9 !important;
+  }
+
+  .workbench-shell {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+
+  .workbench-main {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 12px 10px 36px !important;
+    background: transparent !important;
+    overflow: visible !important;
+  }
+
+  .workbench-board-page {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Top workbench navigation */
+  .workbench-sidebar {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 50 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 10px 10px 12px !important;
+    border: 0 !important;
+    border-bottom: 1px solid rgba(20, 24, 33, 0.08) !important;
+    background: rgba(247, 250, 249, 0.94) !important;
+    backdrop-filter: blur(14px) !important;
+    overflow: hidden !important;
+  }
+
+  .workbench-sidebar-title {
+    display: none !important;
+  }
+
+  .workbench-nav {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding: 0 2px !important;
+    scrollbar-width: none !important;
+  }
+
+  .workbench-nav::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .workbench-nav a {
+    flex: 0 0 auto !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: max-content !important;
+    width: auto !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    padding: 0 14px !important;
+    border-radius: 999px !important;
+    border: 1px solid rgba(20, 24, 33, 0.08) !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    color: rgba(20, 24, 33, 0.72) !important;
+    font-size: 12px !important;
+    line-height: 1 !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    letter-spacing: -0.01em !important;
+    box-shadow: 0 8px 18px rgba(20, 24, 33, 0.035) !important;
+  }
+
+  .workbench-nav a::before,
+  .workbench-nav a::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  .workbench-nav a.is-active {
+    background: rgba(47, 128, 237, 0.13) !important;
+    border-color: rgba(47, 128, 237, 0.22) !important;
+    color: #123f86 !important;
+  }
+
+  /* Hero/header card, force single column */
+  .workbench-board-header {
+    display: block !important;
+    grid-template-columns: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    margin: 10px 0 18px !important;
+    padding: 20px 16px !important;
+    border-radius: 24px !important;
+    border: 1px solid rgba(20, 24, 33, 0.08) !important;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(245, 197, 66, 0.10), transparent 38%),
+      rgba(255, 255, 255, 0.9) !important;
+    box-shadow: 0 18px 46px rgba(20, 24, 33, 0.07) !important;
+    overflow: hidden !important;
+  }
+
+  .workbench-board-header > div {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .workbench-board-title-row {
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .workbench-board-title-row h1 {
+    display: block !important;
+    width: auto !important;
+    max-width: calc(100% - 52px) !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    color: #151922 !important;
+    font-size: clamp(29px, 8.4vw, 36px) !important;
+    line-height: 1.03 !important;
+    font-weight: 780 !important;
+    letter-spacing: -0.045em !important;
+
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    text-wrap: balance !important;
+  }
+
+  .workbench-board-title-menu {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    margin: 0 !important;
+    border-radius: 14px !important;
+  }
+
+  .workbench-board-header > div:first-child > p {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 12px 0 0 !important;
+    color: rgba(20, 24, 33, 0.58) !important;
+    font-size: 13.5px !important;
+    line-height: 1.48 !important;
+    font-weight: 450 !important;
+    letter-spacing: -0.01em !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+  }
+
+  .workbench-board-project-select {
+    display: grid !important;
+    gap: 8px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-top: 18px !important;
+  }
+
+  .workbench-board-project-select span {
+    font-size: 9.5px !important;
+    letter-spacing: 0.13em !important;
+  }
+
+  .workbench-board-project-select select {
+    width: 100% !important;
+    height: 46px !important;
+    border-radius: 15px !important;
+    font-size: 13px !important;
+  }
+
+  /* Header action buttons */
+  .workbench-board-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 18px 0 0 !important;
+    justify-self: auto !important;
+  }
+
+  .workbench-board-actions button {
+    width: 100% !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    padding: 0 8px !important;
+    border-radius: 15px !important;
+    font-size: 11.5px !important;
+    font-weight: 750 !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+  }
+
+  .workbench-board-actions button:last-child {
+    grid-column: 1 / -1 !important;
+  }
+
+  /* Tabs */
+  .workbench-board-tabs {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 22px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 0 14px !important;
+    padding: 0 2px 13px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    border-bottom: 1px solid rgba(20, 24, 33, 0.08) !important;
+    scrollbar-width: none !important;
+  }
+
+  .workbench-board-tabs::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .workbench-board-tabs button {
+    flex: 0 0 auto !important;
+    min-height: 32px !important;
+    padding: 0 !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Toolbar */
+  .workbench-board-toolbar {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 0 22px !important;
+    padding: 12px !important;
+    border-radius: 24px !important;
+    border: 1px solid rgba(20, 24, 33, 0.075) !important;
+    background: rgba(255, 255, 255, 0.88) !important;
+    box-shadow: 0 14px 36px rgba(20, 24, 33, 0.055) !important;
+    overflow: visible !important;
+  }
+
+  .workbench-board-toolbar label {
+    display: grid !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: 6px !important;
+  }
+
+  .workbench-board-toolbar label span {
+    font-size: 9px !important;
+    letter-spacing: 0.13em !important;
+  }
+
+  .workbench-board-toolbar input,
+  .workbench-board-toolbar select {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 42px !important;
+    border-radius: 14px !important;
+    font-size: 12.5px !important;
+  }
+
+  .workbench-board-toolbar button,
+  .workbench-hide-menu summary {
+    width: 100% !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    border-radius: 14px !important;
+    font-size: 12.5px !important;
+  }
+
+  .workbench-board-new-task {
+    order: -2 !important;
+    background: #08776d !important;
+    border-color: #08776d !important;
+    color: #ffffff !important;
+  }
+
+  .workbench-board-toolbar label:first-of-type {
+    order: -1 !important;
+  }
+
+  .workbench-hide-menu {
+    width: 100% !important;
+  }
+
+  /* Empty state */
+  .workbench-board-empty {
+    width: 100% !important;
+    margin: 22px 0 0 !important;
+    padding: 22px 18px !important;
+    border-radius: 24px !important;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(8, 119, 109, 0.06), transparent 36%),
+      rgba(255, 255, 255, 0.88) !important;
+    box-shadow: 0 14px 36px rgba(20, 24, 33, 0.055) !important;
+    color: rgba(20, 24, 33, 0.64) !important;
+    font-size: 13px !important;
+    line-height: 1.45 !important;
+  }
+
+  .workbench-board-empty strong {
+    display: block !important;
+    margin-bottom: 8px !important;
+    color: #151922 !important;
+    font-size: 20px !important;
+    line-height: 1.15 !important;
+    font-weight: 780 !important;
+    letter-spacing: -0.03em !important;
+  }
+
+  .workbench-board-empty button {
+    width: 100% !important;
+    min-height: 46px !important;
+    margin-top: 14px !important;
+    border-radius: 14px !important;
+  }
+
+  /* Tables and groups */
+  .workbench-task-group,
+  .workbench-table-group {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-top: 24px !important;
+    overflow-x: auto !important;
+    padding-bottom: 8px !important;
+  }
+
+  .workbench-table-header,
+  .workbench-table-row {
+    min-width: 960px !important;
+  }
+
+  /* Footer compression on Workbench mobile */
+  .site-disclaimer {
+    padding: 34px 18px calc(118px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .site-disclaimer p {
+    font-size: 12px !important;
+    line-height: 1.55 !important;
+  }
+
+  .site-disclaimer-links,
+  .site-footer-nav {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 8px !important;
+  }
+
+  .site-disclaimer-links a,
+  .site-footer-nav a {
+    min-height: 34px !important;
+    padding: 0 12px !important;
+    border-radius: 999px !important;
+    font-size: 11px !important;
+  }
+}
+
+
+
+/* =========================================================
+   SAVED RECORDS / BOOKMARKS (my/bookmarks)
+   Selectors use only .saved-records-* and .saved-record-* prefixes.
+   ========================================================= */
+
+.saved-records-page {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 0 calc(1.25rem + env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
+}
+
+.saved-records-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(20, 24, 33, 0.1);
+}
+
+.saved-records-header-text {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+.saved-records-header-aside {
+  flex: 0 0 auto;
+}
+
+.saved-records-eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(20, 24, 33, 0.5);
+}
+
+.saved-records-header h1 {
+  margin: 0 0 0.45rem;
+  font-size: clamp(1.45rem, 2.2vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: #111;
+}
+
+.saved-records-intro {
+  margin: 0;
+  max-width: 52ch;
+  font-size: 14px;
+  line-height: 1.55;
+  color: rgba(20, 24, 33, 0.6);
+}
+
+.saved-records-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(20, 24, 33, 0.14);
+  background: #fff;
+  color: #111;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.saved-records-back:hover {
+  border-color: rgba(20, 24, 33, 0.28);
+  background: #f7f7f5;
+}
+
+.saved-records-back:focus-visible {
+  outline: 2px solid #111;
+  outline-offset: 2px;
+}
+
+.saved-records-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem 1.1rem;
+  align-items: stretch;
+}
+
+.saved-record-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  min-width: 0;
+  padding: 1rem 1.05rem 1.1rem;
+  border: 1px solid rgba(20, 24, 33, 0.1);
+  border-radius: 14px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.saved-record-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.65rem 1rem;
+}
+
+.saved-record-title {
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: #111;
+  overflow-wrap: anywhere;
+}
+
+.saved-record-date {
+  flex: 0 0 auto;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(20, 24, 33, 0.45);
+  white-space: nowrap;
+}
+
+.saved-record-note-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0;
+  padding-top: 0.35rem;
+  border-top: 1px solid rgba(20, 24, 33, 0.06);
+}
+
+.saved-record-note-label {
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(20, 24, 33, 0.48);
+}
+
+.saved-record-note-input {
+  width: 100%;
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px solid rgba(20, 24, 33, 0.12);
+  border-radius: 8px;
+  font-size: 13px;
+  background: #fafaf8;
+  color: #111;
+  box-sizing: border-box;
+}
+
+.saved-record-note-input:focus-visible {
+  outline: 2px solid #111;
+  outline-offset: 1px;
+  border-color: rgba(20, 24, 33, 0.28);
+  background: #fff;
+}
+
+.saved-record-note-save {
+  align-self: flex-start;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(20, 24, 33, 0.18);
+  background: #111;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.saved-record-note-save:hover {
+  background: #222;
+}
+
+.saved-record-note-save:focus-visible {
+  outline: 2px solid #111;
+  outline-offset: 2px;
+}
+
+.saved-record-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.5rem;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 0.35rem;
+}
+
+.saved-record-actions form {
+  display: inline;
+  margin: 0;
+}
+
+.saved-record-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-size: 12px;
+  font-weight: 650;
+  text-decoration: none;
+  background: transparent;
+  color: #111;
+  cursor: pointer;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.saved-record-action-primary {
+  border-color: rgba(20, 24, 33, 0.16);
+  background: #fff;
+}
+
+.saved-record-action-primary:hover {
+  border-color: rgba(20, 24, 33, 0.35);
+  background: #f7f7f5;
+}
+
+.saved-record-action-primary:focus-visible {
+  outline: 2px solid #111;
+  outline-offset: 2px;
+}
+
+.saved-record-action-danger {
+  border-color: rgba(180, 35, 24, 0.35);
+  color: #9a1c30;
+  background: rgba(180, 35, 24, 0.05);
+}
+
+.saved-record-action-danger:hover {
+  background: rgba(180, 35, 24, 0.1);
+}
+
+.saved-record-action-danger:focus-visible {
+  outline: 2px solid #9a1c30;
+  outline-offset: 2px;
+}
+
+.saved-record-actions > a.saved-record-action {
+  text-decoration: none;
+  border-color: rgba(20, 24, 33, 0.12);
+  background: #f6f6f3;
+}
+
+.saved-record-actions > a.saved-record-action:hover {
+  background: #ecece8;
+  border-color: rgba(20, 24, 33, 0.22);
+}
+
+.saved-record-action-disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  border-color: rgba(20, 24, 33, 0.1);
+  color: rgba(20, 24, 33, 0.45);
+}
+
+.saved-records-empty {
+  grid-column: 1 / -1;
+  padding: 2rem 1.25rem;
+  border: 1px dashed rgba(20, 24, 33, 0.16);
+  border-radius: 14px;
+  background: rgba(250, 250, 246, 0.65);
+  text-align: center;
+}
+
+.saved-records-empty-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+  font-weight: 650;
+  color: #111;
+}
+
+.saved-records-empty-copy {
+  margin: 0 0 1rem;
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(20, 24, 33, 0.58);
+}
+
+.saved-records-empty-cta {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  padding: 0 18px;
+  border-radius: 10px;
+  border: 1px solid rgba(20, 24, 33, 0.18);
+  background: #111;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.saved-records-empty-cta:hover {
+  background: #222;
+}
+
+.saved-records-empty-cta:focus-visible {
+  outline: 2px solid #111;
+  outline-offset: 2px;
+}
+
+@media (max-width: 1024px) {
+  .saved-records-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .saved-records-page {
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .saved-records-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .saved-records-back {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .saved-records-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .saved-record-note-save {
+    align-self: stretch;
+    width: 100%;
+  }
+
+  .saved-record-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .saved-record-actions .saved-record-action {
+    width: 100%;
+  }
+
+  .saved-record-actions form {
+    display: block;
+    width: 100%;
+  }
+
+  .saved-record-actions form .saved-record-action {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   WORKBENCH SIDEBAR — MONOCHROME GLASS RAIL
+   Black/white premium treatment. Put LAST.
+   ========================================================= */
+
+@media (min-width: 761px) {
+  .workbench-sidebar {
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.72), rgba(246,247,246,0.52)),
+      radial-gradient(circle at 50% 0%, rgba(255,255,255,0.88), transparent 44%) !important;
+    backdrop-filter: blur(24px) saturate(1.08) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(1.08) !important;
+    border-right: 1px solid rgba(20, 24, 33, 0.075) !important;
+    box-shadow:
+      inset -1px 0 0 rgba(255,255,255,0.55),
+      18px 0 60px rgba(20,24,33,0.035) !important;
+  }
+
+  /* DA mark */
+  .workbench-sidebar-title::before {
+    background:
+      linear-gradient(145deg, #151922, #30343b) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255,255,255,0.24) !important;
+    box-shadow:
+      0 18px 42px rgba(20,24,33,0.18),
+      inset 0 1px 0 rgba(255,255,255,0.22),
+      inset 0 -10px 20px rgba(0,0,0,0.16) !important;
+  }
+
+  .workbench-sidebar-title {
+    color: rgba(20,24,33,0.52) !important;
+  }
+
+  /* Rail buttons */
+  .workbench-nav a {
+    color: transparent !important;
+    background: transparent !important;
+  }
+
+  .workbench-nav a::before {
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.92), rgba(247,247,244,0.76)) !important;
+    color: rgba(20,24,33,0.62) !important;
+    border: 1px solid rgba(20,24,33,0.075) !important;
+    box-shadow:
+      0 16px 36px rgba(20,24,33,0.055),
+      inset 0 1px 0 rgba(255,255,255,0.95),
+      inset 0 -8px 20px rgba(20,24,33,0.025) !important;
+    backdrop-filter: blur(18px) !important;
+    -webkit-backdrop-filter: blur(18px) !important;
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease,
+      border-color 180ms ease,
+      background 180ms ease,
+      color 180ms ease !important;
+  }
+
+  .workbench-nav a:hover::before {
+    transform: translateY(-2px) scale(1.015) !important;
+    color: #151922 !important;
+    border-color: rgba(20,24,33,0.14) !important;
+    background:
+      linear-gradient(145deg, #ffffff, rgba(250,250,248,0.88)) !important;
+    box-shadow:
+      0 22px 48px rgba(20,24,33,0.09),
+      inset 0 1px 0 rgba(255,255,255,0.98),
+      inset 0 -8px 20px rgba(20,24,33,0.025) !important;
+  }
+
+  /* Active state, black and white only */
+  .workbench-nav a.is-active {
+    background: transparent !important;
+    color: transparent !important;
+  }
+
+  .workbench-nav a.is-active::before {
+    background:
+      linear-gradient(145deg, #151922, #2a2f38) !important;
+    color: #ffffff !important;
+    border-color: rgba(20,24,33,0.82) !important;
+    box-shadow:
+      0 22px 54px rgba(20,24,33,0.20),
+      inset 0 1px 0 rgba(255,255,255,0.16),
+      inset 0 -12px 24px rgba(0,0,0,0.22) !important;
+  }
+
+  /* Remove coloured active stripe from earlier styles */
+  .workbench-nav a.is-active::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  /* Expanded sidebar text should stay monochrome */
+  .workbench-shell:has(.workbench-sidebar:hover) .workbench-nav a,
+  .workbench-shell:has(.workbench-sidebar:focus-within) .workbench-nav a {
+    color: rgba(20,24,33,0.66) !important;
+  }
+
+  .workbench-shell:has(.workbench-sidebar:hover) .workbench-nav a.is-active,
+  .workbench-shell:has(.workbench-sidebar:focus-within) .workbench-nav a.is-active {
+    color: #151922 !important;
+  }
+
+  /* Tooltips */
+  .workbench-sidebar:not(:hover) .workbench-nav a::after {
+    background: rgba(20,24,33,0.92) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    box-shadow: 0 18px 44px rgba(20,24,33,0.18) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+  }
+}
+
+/* Mobile Workbench nav, monochrome pill treatment */
+@media (max-width: 760px) {
+  .workbench-sidebar {
+    background: rgba(250,250,248,0.86) !important;
+    backdrop-filter: blur(18px) saturate(1.05) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(1.05) !important;
+    border-bottom: 1px solid rgba(20,24,33,0.08) !important;
+  }
+
+  .workbench-nav a {
+    background: rgba(255,255,255,0.84) !important;
+    color: rgba(20,24,33,0.68) !important;
+    border-color: rgba(20,24,33,0.08) !important;
+    box-shadow:
+      0 10px 24px rgba(20,24,33,0.045),
+      inset 0 1px 0 rgba(255,255,255,0.95) !important;
+  }
+
+  .workbench-nav a.is-active {
+    background: #151922 !important;
+    color: #ffffff !important;
+    border-color: #151922 !important;
+    box-shadow:
+      0 16px 34px rgba(20,24,33,0.18),
+      inset 0 1px 0 rgba(255,255,255,0.14) !important;
+  }
+}
+
+
+
+
+/* =========================================================
+   WORKBENCH DESKTOP REFINEMENT
+   Tightens hero, toolbar and summary rhythm. Put LAST.
+   ========================================================= */
+
+@media (min-width: 761px) {
+  .workbench-board-page {
+    max-width: 1440px !important;
+    margin: 0 auto !important;
+  }
+
+  .workbench-board-header {
+    min-height: 0 !important;
+    padding: 56px 64px !important;
+    border-radius: 34px !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 420px !important;
+    gap: 48px !important;
+    align-items: start !important;
+  }
+
+  .workbench-board-title-row {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 16px !important;
+  }
+
+  .workbench-board-title-row h1 {
+    max-width: 720px !important;
+    font-size: clamp(52px, 5vw, 82px) !important;
+    line-height: 0.94 !important;
+    letter-spacing: -0.07em !important;
+  }
+
+  .workbench-board-title-menu {
+    position: static !important;
+    flex: 0 0 46px !important;
+    width: 46px !important;
+    height: 46px !important;
+    margin-top: 8px !important;
+    border-radius: 18px !important;
+  }
+
+  .workbench-board-header > div:first-child > p {
+    max-width: 620px !important;
+    margin-top: 24px !important;
+    font-size: 18px !important;
+    line-height: 1.45 !important;
+  }
+
+  .workbench-board-project-select {
+    max-width: 430px !important;
+    margin-top: 34px !important;
+  }
+
+  .workbench-board-project-select select {
+    height: 58px !important;
+    border-radius: 18px !important;
+    font-size: 16px !important;
+    padding-inline: 22px !important;
+  }
+
+  .workbench-board-actions {
+    align-self: start !important;
+    justify-self: end !important;
+    width: 100% !important;
+    max-width: 390px !important;
+    margin-top: 10px !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+  }
+
+  .workbench-board-actions button {
+    height: 58px !important;
+    min-height: 58px !important;
+    border-radius: 18px !important;
+    font-size: 14px !important;
+    box-shadow:
+      0 12px 28px rgba(20, 24, 33, 0.045),
+      inset 0 1px 0 rgba(255, 255, 255, 0.94) !important;
+  }
+
+  .workbench-board-actions button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow:
+      0 20px 42px rgba(20, 24, 33, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.96) !important;
+  }
+
+  .workbench-board-tabs {
+    margin-top: 44px !important;
+    margin-bottom: 22px !important;
+  }
+
+  .workbench-board-toolbar {
+    padding: 18px !important;
+    border-radius: 28px !important;
+    gap: 12px !important;
+    align-items: end !important;
+  }
+
+  .workbench-board-toolbar label span {
+    margin-bottom: 7px !important;
+  }
+
+  .workbench-board-toolbar input,
+  .workbench-board-toolbar select,
+  .workbench-board-toolbar button,
+  .workbench-hide-menu summary {
+    height: 52px !important;
+    min-height: 52px !important;
+    border-radius: 17px !important;
+  }
+
+  .workbench-summary-strip {
+    margin-top: 34px !important;
+    margin-bottom: 34px !important;
+    gap: 18px !important;
+  }
+
+  .workbench-summary-strip article {
+    min-height: 132px !important;
+    padding: 26px 28px !important;
+    border-radius: 28px !important;
+  }
+
+  .workbench-summary-strip article strong {
+    font-size: 54px !important;
+    letter-spacing: -0.07em !important;
+  }
+}
+
+/* Laptop refinement */
+@media (min-width: 761px) and (max-width: 1180px) {
+  .workbench-board-header {
+    grid-template-columns: 1fr !important;
+    padding: 44px !important;
+  }
+
+  .workbench-board-actions {
+    justify-self: start !important;
+    max-width: 520px !important;
+    margin-top: 22px !important;
+  }
+
+  .workbench-board-title-row h1 {
+    font-size: clamp(46px, 7vw, 70px) !important;
+  }
+}
+
+
+/* =========================================================
+   WORKBENCH PROJECTS PAGE
+   Explicit scoped styling only.
+   ========================================================= */
+
+.workbench-projects-page {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.workbench-projects-page .workbench-flash {
+  margin: 0 0 12px;
+}
+
+.workbench-projects-header {
+  margin-bottom: 28px;
+}
+
+.workbench-projects-eyebrow {
+  margin: 0 0 8px;
+  color: rgba(20,24,33,0.44);
+  font-size: 11px;
+  font-weight: 820;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.workbench-projects-header-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.workbench-projects-header h1 {
+  margin: 0;
+  color: #151922;
+  font-size: clamp(38px, 4vw, 64px);
+  line-height: 0.96;
+  font-weight: 780;
+  letter-spacing: -0.06em;
+}
+
+.workbench-projects-header p {
+  max-width: 760px;
+  margin: 14px 0 0;
+  color: rgba(20,24,33,0.58);
+  font-size: 17px;
+  line-height: 1.45;
+  letter-spacing: -0.015em;
+}
+
+.workbench-projects-new-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 46px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 999px;
+  background: #151922;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 760;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow:
+    0 16px 36px rgba(20,24,33,0.16),
+    inset 0 1px 0 rgba(255,255,255,0.14);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.workbench-projects-new-button:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 20px 44px rgba(20,24,33,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.16);
+}
+
+.workbench-project-submit {
+  min-height: 48px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 16px;
+  background: #151922;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 760;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  box-shadow:
+    0 16px 36px rgba(20,24,33,0.16),
+    inset 0 1px 0 rgba(255,255,255,0.14);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.workbench-project-submit:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 20px 44px rgba(20,24,33,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.16);
+}
+
+.workbench-project-form-card,
+.workbench-project-list-card {
+  margin-top: 26px;
+  padding: 28px;
+  border: 1px solid rgba(20,24,33,0.08);
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(8,119,109,0.045), transparent 34%),
+    rgba(255,255,255,0.86);
+  box-shadow:
+    0 18px 52px rgba(20,24,33,0.055),
+    inset 0 1px 0 rgba(255,255,255,0.92);
+}
+
+.workbench-project-form-heading,
+.workbench-project-list-header {
+  margin-bottom: 22px;
+}
+
+.workbench-project-form-heading h2,
+.workbench-project-list-header h2 {
+  margin: 0;
+  color: #151922;
+  font-size: 28px;
+  line-height: 1.05;
+  font-weight: 760;
+  letter-spacing: -0.04em;
+}
+
+.workbench-project-form-heading p,
+.workbench-project-list-header p {
+  max-width: 680px;
+  margin: 8px 0 0;
+  color: rgba(20,24,33,0.54);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.workbench-project-form {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 16px 18px;
+  align-items: end;
+}
+
+.workbench-field {
+  grid-column: span 3;
+  display: grid;
+  gap: 7px;
+}
+
+.workbench-field-wide {
+  grid-column: span 6;
+}
+
+.workbench-field span,
+.workbench-checkbox-field span {
+  color: rgba(20,24,33,0.48);
+  font-size: 10px;
+  font-weight: 820;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.workbench-field input,
+.workbench-field select,
+.workbench-field textarea {
+  width: 100%;
+  min-width: 0;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid rgba(20,24,33,0.10);
+  border-radius: 16px;
+  background: #fff;
+  color: #151922;
+  font-size: 14px;
+  font-weight: 560;
+  letter-spacing: -0.01em;
+  outline: none;
+  box-shadow:
+    0 8px 18px rgba(20,24,33,0.028),
+    inset 0 1px 0 rgba(255,255,255,0.95);
+}
+
+.workbench-field select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23151922' d='M1.4 0L6 4.6 10.6 0 12 1.4l-6 6-6-6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+
+.workbench-field textarea {
+  height: 92px;
+  padding-top: 13px;
+  line-height: 1.4;
+  resize: vertical;
+}
+
+.workbench-field input:focus,
+.workbench-field select:focus,
+.workbench-field textarea:focus {
+  border-color: rgba(20,24,33,0.34);
+  box-shadow:
+    0 0 0 4px rgba(20,24,33,0.075),
+    0 8px 18px rgba(20,24,33,0.035);
+}
+
+.workbench-checkbox-field {
+  grid-column: span 6;
+  min-height: 48px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border: 1px solid rgba(20,24,33,0.08);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.72);
+}
+
+.workbench-checkbox-field input {
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.workbench-checkbox-field input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #151922;
+}
+
+.workbench-checkbox-field span {
+  color: rgba(20,24,33,0.66);
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+
+.workbench-project-submit {
+  grid-column: 10 / span 3;
+  justify-self: end;
+  width: auto;
+  min-width: min(220px, 100%);
+}
+
+.workbench-project-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.workbench-project-list-card .workbench-empty {
+  margin: 0;
+}
+
+.workbench-project-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px;
+  border: 1px solid rgba(20,24,33,0.075);
+  border-radius: 24px;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.94), rgba(250,250,248,0.78));
+  color: #151922;
+  text-decoration: none;
+  box-shadow:
+    0 12px 30px rgba(20,24,33,0.04),
+    inset 0 1px 0 rgba(255,255,255,0.92);
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.workbench-project-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(20,24,33,0.14);
+  box-shadow:
+    0 20px 46px rgba(20,24,33,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.96);
+}
+
+.workbench-project-card h3 {
+  margin: 0;
+  color: #151922;
+  font-size: 20px;
+  line-height: 1.1;
+  font-weight: 760;
+  letter-spacing: -0.035em;
+}
+
+.workbench-project-card p {
+  margin: 7px 0 0;
+  color: rgba(20,24,33,0.54);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.workbench-project-card > span {
+  flex: 0 0 auto;
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: #151922;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 740;
+}
+
+@media (max-width: 1180px) {
+  .workbench-project-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .workbench-projects-page {
+    padding-bottom: calc(120px + env(safe-area-inset-bottom));
+  }
+
+  .workbench-projects-header-row {
+    display: grid;
+    gap: 18px;
+  }
+
+  .workbench-projects-header h1 {
+    font-size: 34px;
+  }
+
+  .workbench-projects-header p {
+    font-size: 14px;
+  }
+
+  .workbench-projects-new-button {
+    width: 100%;
+  }
+
+  .workbench-project-form-card,
+  .workbench-project-list-card {
+    padding: 18px;
+    border-radius: 24px;
+  }
+
+  .workbench-project-form {
+    grid-template-columns: 1fr;
+    gap: 13px;
+  }
+
+  .workbench-project-submit {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .workbench-project-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .workbench-field,
+  .workbench-field-wide,
+  .workbench-checkbox-field {
+    grid-column: 1 / -1;
+  }
+
+  .workbench-project-card {
+    display: grid;
+    padding: 18px;
+  }
+
+  .workbench-project-card > span {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+
+/* =========================================================
+   WORKBENCH PROJECT ROUTES — CLEAN ROUTE-SCOPED POLISH
+   No :has selectors. No broad global matching.
+   Styles project index + project detail safely.
+   ========================================================= */
+
+/* ---------- Project index page ---------- */
+
+.workbench-shell.is-projects-index-route .workbench-main {
+  max-width: 1360px !important;
+  margin: 0 auto !important;
+  padding: 48px 56px 80px !important;
+}
+
+.workbench-shell.is-projects-index-route .workbench-main > p:first-child {
+  margin: 0 0 10px !important;
+  color: rgba(20, 24, 33, 0.44) !important;
+  font-size: 11px !important;
+  line-height: 1 !important;
+  font-weight: 820 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+}
+
+.workbench-shell.is-projects-index-route .workbench-main > h1 {
+  margin: 0 !important;
+  max-width: 760px !important;
+  color: #151922 !important;
+  font-size: clamp(42px, 4.2vw, 72px) !important;
+  line-height: 0.95 !important;
+  font-weight: 780 !important;
+  letter-spacing: -0.065em !important;
+}
+
+.workbench-shell.is-projects-index-route .workbench-main > h1 + p {
+  max-width: 780px !important;
+  margin: 18px 0 30px !important;
+  color: rgba(20, 24, 33, 0.58) !important;
+  font-size: 18px !important;
+  line-height: 1.45 !important;
+  letter-spacing: -0.015em !important;
+}
+
+/* New research project button */
+.workbench-shell.is-projects-index-route .workbench-main > button {
+  min-height: 46px !important;
+  padding: 0 20px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: #151922 !important;
+  color: #ffffff !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  font-weight: 760 !important;
+  letter-spacing: -0.01em !important;
+  box-shadow:
+    0 16px 36px rgba(20, 24, 33, 0.16),
+    inset 0 1px 0 rgba(255,255,255,0.14) !important;
+  cursor: pointer !important;
+}
+
+/* Cards/sections on project index */
+.workbench-shell.is-projects-index-route .workbench-main > section,
+.workbench-shell.is-projects-index-route .workbench-main > form {
+  width: 100% !important;
+  margin-top: 30px !important;
+  padding: 30px !important;
+  border: 1px solid rgba(20, 24, 33, 0.08) !important;
+  border-radius: 30px !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(8,119,109,0.045), transparent 34%),
+    rgba(255, 255, 255, 0.86) !important;
+  box-shadow:
+    0 18px 52px rgba(20, 24, 33, 0.055),
+    inset 0 1px 0 rgba(255,255,255,0.92) !important;
+}
+
+.workbench-shell.is-projects-index-route .workbench-main > section h2,
+.workbench-shell.is-projects-index-route .workbench-main > form h2 {
+  margin: 0 0 20px !important;
+  color: #151922 !important;
+  font-size: 30px !important;
+  line-height: 1.05 !important;
+  font-weight: 760 !important;
+  letter-spacing: -0.045em !important;
+}
+
+/* New project form, scoped to project index only */
+.workbench-shell.is-projects-index-route .workbench-main > form {
+  display: grid !important;
+  grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  align-items: end !important;
+}
+
+.workbench-shell.is-projects-index-route .workbench-main > form h2 {
+  grid-column: 1 / -1 !important;
+}
+
+.workbench-shell.is-projects-index-route .workbench-main > form label {
+  grid-column: span 3 !important;
+  display: grid !important;
+  gap: 8px !important;
+  color: rgba(20, 24, 33, 0.50) !important;
+  font-size: 10px !important;
+  line-height: 1 !important;
+  font-weight: 820 !important;
+  letter-spacing: 0.13em !important;
+  text-transform: uppercase !important;
+}
+
+.workbench-shell.is-projects-index-route .workbench-main > form label:nth-of-type(3) {
+  grid-column: span 6 !important;
+}
+
+.workbench-shell.is-projects-index-route .workbench-main > form label:nth-of-type(6) {
+  grid-column: span 6 !important;
+  min-height: 48px !important;
+  padding: 0 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  border: 1px solid rgba(20, 24, 33, 0.08) !important;
+  border-radius: 16px !important;
+  background: rgba(255,255,255,0.72) !important;
+  color: rgba(20, 24, 33, 0.66) !important;
+  font-size: 13px !important;
+  font-weight: 650 !important;
+  letter-spacing: -0.01em !important;
+  text-transform: none !important;
+}
+
+.workbench-shell.is-projects-index-route .workbench-main > form input,
+.workbench-shell.is-projects-index-route .workbench-main > form select,
+.workbench-shell.is-projects-index-route .workbench-main > form textarea {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 48px !important;
+  padding: 0 14px !important;
+  border: 1px solid rgba(20, 24, 33, 0.10) !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  color: #151922 !important;
+  font-size: 14px !important;
+  line-height: 48px !important;
+  font-weight: 560 !important;
+  letter-spacing: -0.01em !important;
+  outline: none !important;
+  box-shadow:
+    0 8px 18px rgba(20,24,33,0.028),
+    inset 0 1px 0 rgba(255,255,255,0.95) !important;
+}
+
+.workbench-shell.is-projects-index-route .workbench-main > form textarea {
+  height: 96px !important;
+  min-height: 96px !important;
+  padding: 13px 14px !important;
+  line-height: 1.4 !important;
+  resize: vertical !important;
+}
+
+.workbench-shell.is-projects-index-route .workbench-main > form input[type="checkbox"] {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  padding: 0 !important;
+  accent-color: #151922 !important;
+}
+
+.workbench-shell.is-projects-index-route .workbench-main > form input:focus,
+.workbench-shell.is-projects-index-route .workbench-main > form select:focus,
+.workbench-shell.is-projects-index-route .workbench-main > form textarea:focus {
+  border-color: rgba(20, 24, 33, 0.34) !important;
+  box-shadow:
+    0 0 0 4px rgba(20,24,33,0.075),
+    0 8px 18px rgba(20,24,33,0.035) !important;
+}
+
+.workbench-shell.is-projects-index-route .workbench-main > form button[type="submit"],
+.workbench-shell.is-projects-index-route .workbench-main > form button:last-child {
+  grid-column: span 3 !important;
+  min-height: 48px !important;
+  height: 48px !important;
+  padding: 0 20px !important;
+  border: 0 !important;
+  border-radius: 16px !important;
+  background: #151922 !important;
+  color: #ffffff !important;
+  font-size: 14px !important;
+  font-weight: 760 !important;
+  letter-spacing: -0.01em !important;
+  box-shadow:
+    0 14px 30px rgba(20, 24, 33, 0.16),
+    inset 0 1px 0 rgba(255,255,255,0.14) !important;
+}
+
+/* Project list section */
+.workbench-shell.is-projects-index-route .workbench-main > section {
+  display: grid !important;
+  gap: 16px !important;
+}
+
+.workbench-shell.is-projects-index-route .workbench-main > section a {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 18px !important;
+  width: 100% !important;
+  padding: 22px !important;
+  border: 1px solid rgba(20, 24, 33, 0.075) !important;
+  border-radius: 24px !important;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.94), rgba(250,250,248,0.78)) !important;
+  color: #151922 !important;
+  text-decoration: none !important;
+  box-shadow:
+    0 12px 30px rgba(20,24,33,0.04),
+    inset 0 1px 0 rgba(255,255,255,0.92) !important;
+}
+
+.workbench-shell.is-projects-index-route .workbench-main > section a::after {
+  content: "Open project →" !important;
+  flex: 0 0 auto !important;
+  min-height: 38px !important;
+  padding: 0 14px !important;
+  border-radius: 999px !important;
+  background: #151922 !important;
+  color: #ffffff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  font-size: 12px !important;
+  font-weight: 740 !important;
+}
+
+.workbench-shell.is-projects-index-route .workbench-main > section a:hover {
+  transform: translateY(-2px) !important;
+  border-color: rgba(20,24,33,0.14) !important;
+  box-shadow:
+    0 20px 46px rgba(20,24,33,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.96) !important;
+}
+
+.workbench-shell.is-projects-index-route .workbench-main > section p,
+.workbench-shell.is-projects-index-route .workbench-main > section small {
+  color: rgba(20,24,33,0.54) !important;
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+}
+
+/* ---------- Project detail page refinement ---------- */
+
+.workbench-shell.is-project-detail-route .workbench-board-header {
+  min-height: 0 !important;
+  padding: 54px 64px !important;
+  border-radius: 34px !important;
+}
+
+.workbench-shell.is-project-detail-route .workbench-board-title-row h1 {
+  max-width: 760px !important;
+  font-size: clamp(48px, 4.4vw, 76px) !important;
+  line-height: 0.96 !important;
+  letter-spacing: -0.065em !important;
+}
+
+.workbench-shell.is-project-detail-route .workbench-board-header > div:first-child > p {
+  max-width: 620px !important;
+  margin-top: 22px !important;
+  font-size: 17px !important;
+  line-height: 1.45 !important;
+}
+
+.workbench-shell.is-project-detail-route .workbench-board-project-select {
+  max-width: 430px !important;
+  margin-top: 30px !important;
+}
+
+.workbench-shell.is-project-detail-route .workbench-board-project-select select {
+  height: 56px !important;
+  border-radius: 18px !important;
+}
+
+.workbench-shell.is-project-detail-route .workbench-board-actions {
+  max-width: 390px !important;
+  gap: 14px !important;
+}
+
+.workbench-shell.is-project-detail-route .workbench-board-actions button {
+  min-height: 56px !important;
+  border-radius: 18px !important;
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 760px) {
+  .workbench-shell.is-projects-index-route .workbench-main {
+    padding: 16px 12px calc(120px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .workbench-shell.is-projects-index-route .workbench-main > h1 {
+    font-size: 34px !important;
+    line-height: 1 !important;
+  }
+
+  .workbench-shell.is-projects-index-route .workbench-main > h1 + p {
+    margin-bottom: 20px !important;
+    font-size: 14px !important;
+  }
+
+  .workbench-shell.is-projects-index-route .workbench-main > button {
+    width: 100% !important;
+  }
+
+  .workbench-shell.is-projects-index-route .workbench-main > section,
+  .workbench-shell.is-projects-index-route .workbench-main > form {
+    margin-top: 18px !important;
+    padding: 18px !important;
+    border-radius: 24px !important;
+  }
+
+  .workbench-shell.is-projects-index-route .workbench-main > form {
+    grid-template-columns: 1fr !important;
+    gap: 13px !important;
+  }
+
+  .workbench-shell.is-projects-index-route .workbench-main > form h2,
+  .workbench-shell.is-projects-index-route .workbench-main > form label,
+  .workbench-shell.is-projects-index-route .workbench-main > form label:nth-of-type(3),
+  .workbench-shell.is-projects-index-route .workbench-main > form label:nth-of-type(6),
+  .workbench-shell.is-projects-index-route .workbench-main > form button[type="submit"] {
+    grid-column: 1 / -1 !important;
+  }
+
+  .workbench-shell.is-projects-index-route .workbench-main > form button[type="submit"] {
+    width: 100% !important;
+  }
+
+  .workbench-shell.is-projects-index-route .workbench-main > section a {
+    display: grid !important;
+    padding: 18px !important;
+  }
+
+  .workbench-shell.is-projects-index-route .workbench-main > section a::after {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .workbench-shell.is-project-detail-route .workbench-board-header {
+    padding: 22px 16px !important;
+    border-radius: 24px !important;
+  }
+
+  .workbench-shell.is-project-detail-route .workbench-board-title-row h1 {
+    font-size: clamp(30px, 8.4vw, 36px) !important;
+    line-height: 1.03 !important;
+    letter-spacing: -0.045em !important;
+  }
+
+  .workbench-shell.is-project-detail-route .workbench-board-actions {
+    max-width: none !important;
+  }
+
+  .workbench-shell.is-project-detail-route .workbench-board-actions button {
+    min-height: 42px !important;
+    border-radius: 15px !important;
+  }
+}
+
+
+/* =========================================================
+   WORKBENCH PROJECT DETAIL — PANEL + FORM POLISH
+   Scoped to project detail routes only. Put LAST.
+   ========================================================= */
+
+.workbench-shell.is-project-detail-route .workbench-main {
+  max-width: 1360px !important;
+  margin: 0 auto !important;
+}
+
+/* Main content cards inside project detail */
+.workbench-shell.is-project-detail-route .workbench-board-page > section,
+.workbench-shell.is-project-detail-route .workbench-board-page > div:not(.workbench-board-header):not(.workbench-board-tabs):not(.workbench-board-toolbar):not(.workbench-summary-strip),
+.workbench-shell.is-project-detail-route .project-detail-card,
+.workbench-shell.is-project-detail-route .workbench-panel {
+  border-radius: 26px !important;
+}
+
+/* Make the active project view containers feel like cards */
+.workbench-shell.is-project-detail-route .workbench-board-page section,
+.workbench-shell.is-project-detail-route .workbench-board-page details,
+.workbench-shell.is-project-detail-route .workbench-board-page fieldset {
+  border-color: rgba(20,24,33,0.075) !important;
+}
+
+/* Details / project settings accordion */
+.workbench-shell.is-project-detail-route details {
+  margin-top: 18px !important;
+  border: 1px solid rgba(20,24,33,0.075) !important;
+  border-radius: 24px !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(8,119,109,0.035), transparent 32%),
+    rgba(255,255,255,0.82) !important;
+  box-shadow:
+    0 12px 34px rgba(20,24,33,0.04),
+    inset 0 1px 0 rgba(255,255,255,0.92) !important;
+  overflow: hidden !important;
+}
+
+.workbench-shell.is-project-detail-route details > summary {
+  min-height: 54px !important;
+  padding: 0 22px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  cursor: pointer !important;
+  color: rgba(20,24,33,0.70) !important;
+  font-size: 13px !important;
+  font-weight: 760 !important;
+  letter-spacing: -0.01em !important;
+  border-bottom: 1px solid rgba(20,24,33,0.055) !important;
+  background: rgba(255,255,255,0.50) !important;
+}
+
+.workbench-shell.is-project-detail-route details[open] > summary {
+  color: #151922 !important;
+}
+
+/* All raw forms inside detail pages */
+.workbench-shell.is-project-detail-route form {
+  display: grid !important;
+  grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+  align-items: end !important;
+  width: 100% !important;
+}
+
+.workbench-shell.is-project-detail-route label {
+  display: grid !important;
+  gap: 7px !important;
+  min-width: 0 !important;
+  color: rgba(20,24,33,0.48) !important;
+  font-size: 10px !important;
+  line-height: 1 !important;
+  font-weight: 820 !important;
+  letter-spacing: 0.13em !important;
+  text-transform: uppercase !important;
+}
+
+.workbench-shell.is-project-detail-route input,
+.workbench-shell.is-project-detail-route select,
+.workbench-shell.is-project-detail-route textarea {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 44px !important;
+  padding: 0 13px !important;
+  border: 1px solid rgba(20,24,33,0.10) !important;
+  border-radius: 14px !important;
+  background: #ffffff !important;
+  color: #151922 !important;
+  font-size: 13px !important;
+  line-height: 44px !important;
+  font-weight: 560 !important;
+  letter-spacing: -0.01em !important;
+  outline: none !important;
+  box-shadow:
+    0 7px 16px rgba(20,24,33,0.026),
+    inset 0 1px 0 rgba(255,255,255,0.95) !important;
+}
+
+.workbench-shell.is-project-detail-route textarea {
+  min-height: 86px !important;
+  height: 86px !important;
+  padding: 12px 13px !important;
+  line-height: 1.42 !important;
+  resize: vertical !important;
+}
+
+.workbench-shell.is-project-detail-route input:focus,
+.workbench-shell.is-project-detail-route select:focus,
+.workbench-shell.is-project-detail-route textarea:focus {
+  border-color: rgba(20,24,33,0.32) !important;
+  box-shadow:
+    0 0 0 4px rgba(20,24,33,0.07),
+    0 8px 18px rgba(20,24,33,0.035) !important;
+}
+
+.workbench-shell.is-project-detail-route input[type="checkbox"] {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  padding: 0 !important;
+  accent-color: #151922 !important;
+}
+
+/* Buttons */
+.workbench-shell.is-project-detail-route button,
+.workbench-shell.is-project-detail-route .workbench-board-page a[role="button"] {
+  min-height: 40px !important;
+  padding: 0 15px !important;
+  border: 1px solid rgba(20,24,33,0.10) !important;
+  border-radius: 14px !important;
+  background: rgba(255,255,255,0.92) !important;
+  color: #151922 !important;
+  font-size: 12.5px !important;
+  line-height: 1 !important;
+  font-weight: 740 !important;
+  letter-spacing: -0.01em !important;
+  box-shadow:
+    0 8px 18px rgba(20,24,33,0.035),
+    inset 0 1px 0 rgba(255,255,255,0.90) !important;
+  cursor: pointer !important;
+}
+
+.workbench-shell.is-project-detail-route button:hover {
+  transform: translateY(-1px) !important;
+  box-shadow:
+    0 14px 28px rgba(20,24,33,0.07),
+    inset 0 1px 0 rgba(255,255,255,0.95) !important;
+}
+
+/* Primary green buttons, e.g. New task */
+.workbench-shell.is-project-detail-route .workbench-board-new-task,
+.workbench-shell.is-project-detail-route button[type="submit"] {
+  background: #151922 !important;
+  border-color: #151922 !important;
+  color: #ffffff !important;
+}
+
+/* Active tabs should stay clean */
+.workbench-shell.is-project-detail-route .workbench-board-tabs button.is-active {
+  color: #08776d !important;
+}
+
+.workbench-shell.is-project-detail-route .workbench-board-tabs button.is-active::after {
+  background: #10c084 !important;
+}
+
+/* Toolbar: stop vertical raw form feel */
+.workbench-shell.is-project-detail-route .workbench-board-toolbar {
+  display: grid !important;
+  grid-template-columns: auto minmax(180px, 1.2fr) repeat(5, minmax(130px, 1fr)) auto !important;
+  gap: 12px !important;
+  align-items: end !important;
+  padding: 18px !important;
+  border-radius: 28px !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(8,119,109,0.04), transparent 35%),
+    rgba(255,255,255,0.86) !important;
+  border: 1px solid rgba(20,24,33,0.075) !important;
+  box-shadow:
+    0 16px 44px rgba(20,24,33,0.05),
+    inset 0 1px 0 rgba(255,255,255,0.92) !important;
+}
+
+.workbench-shell.is-project-detail-route .workbench-board-toolbar label {
+  min-width: 0 !important;
+}
+
+.workbench-shell.is-project-detail-route .workbench-board-toolbar input,
+.workbench-shell.is-project-detail-route .workbench-board-toolbar select {
+  height: 48px !important;
+  border-radius: 16px !important;
+}
+
+.workbench-shell.is-project-detail-route .workbench-board-toolbar button,
+.workbench-shell.is-project-detail-route .workbench-hide-menu summary {
+  height: 48px !important;
+  min-height: 48px !important;
+  border-radius: 16px !important;
+}
+
+.workbench-shell.is-project-detail-route .workbench-board-toolbar .workbench-board-new-task {
+  min-width: 118px !important;
+  background: #10b981 !important;
+  border-color: #10b981 !important;
+}
+
+/* Tables */
+.workbench-shell.is-project-detail-route .workbench-table-header,
+.workbench-shell.is-project-detail-route .workbench-table-row {
+  border-color: rgba(20,24,33,0.07) !important;
+}
+
+.workbench-shell.is-project-detail-route .workbench-table-header {
+  background: rgba(248,249,247,0.88) !important;
+}
+
+.workbench-shell.is-project-detail-route .workbench-table-header > div {
+  color: rgba(20,24,33,0.46) !important;
+  font-size: 10px !important;
+  font-weight: 820 !important;
+  letter-spacing: 0.13em !important;
+  text-transform: uppercase !important;
+}
+
+.workbench-shell.is-project-detail-route .workbench-table-row {
+  background: rgba(255,255,255,0.82) !important;
+}
+
+.workbench-shell.is-project-detail-route .workbench-table-row:hover {
+  background: rgba(255,255,255,0.96) !important;
+}
+
+/* Generic view panels, linked records, notes, timeline */
+.workbench-shell.is-project-detail-route .workbench-board-page > div,
+.workbench-shell.is-project-detail-route .workbench-board-page > section {
+  border-radius: 26px !important;
+}
+
+.workbench-shell.is-project-detail-route .workbench-board-page h2,
+.workbench-shell.is-project-detail-route .workbench-board-page h3 {
+  color: #151922 !important;
+  letter-spacing: -0.035em !important;
+}
+
+/* Empty state rows */
+.workbench-shell.is-project-detail-route .workbench-board-page p:has(strong),
+.workbench-shell.is-project-detail-route .workbench-board-empty,
+.workbench-shell.is-project-detail-route .empty-state {
+  border-radius: 18px !important;
+}
+
+/* Board view columns */
+.workbench-shell.is-project-detail-route [class*="board"] [class*="column"],
+.workbench-shell.is-project-detail-route [class*="kanban"] [class*="column"] {
+  border: 1px solid rgba(20,24,33,0.07) !important;
+  border-radius: 22px !important;
+  background: rgba(255,255,255,0.78) !important;
+  box-shadow:
+    0 10px 26px rgba(20,24,33,0.035),
+    inset 0 1px 0 rgba(255,255,255,0.92) !important;
+  padding: 16px !important;
+}
+
+/* Project settings/admin blocks */
+.workbench-shell.is-project-detail-route details form,
+.workbench-shell.is-project-detail-route details section,
+.workbench-shell.is-project-detail-route details > div {
+  padding: 22px !important;
+}
+
+.workbench-shell.is-project-detail-route details h2,
+.workbench-shell.is-project-detail-route details h3 {
+  margin: 0 0 16px !important;
+  font-size: 24px !important;
+  line-height: 1.1 !important;
+  font-weight: 760 !important;
+}
+
+/* Settings form specific, based on current raw order */
+.workbench-shell.is-project-detail-route details form label:nth-of-type(1) {
+  grid-column: span 3 !important;
+}
+
+.workbench-shell.is-project-detail-route details form label:nth-of-type(2) {
+  grid-column: span 4 !important;
+}
+
+.workbench-shell.is-project-detail-route details form label:nth-of-type(3),
+.workbench-shell.is-project-detail-route details form label:nth-of-type(4),
+.workbench-shell.is-project-detail-route details form label:nth-of-type(5) {
+  grid-column: span 2 !important;
+}
+
+.workbench-shell.is-project-detail-route details form label:nth-of-type(6) {
+  grid-column: span 6 !important;
+}
+
+.workbench-shell.is-project-detail-route details form label:has(input[type="checkbox"]) {
+  grid-column: span 4 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-height: 44px !important;
+  padding: 0 13px !important;
+  border: 1px solid rgba(20,24,33,0.08) !important;
+  border-radius: 14px !important;
+  background: rgba(255,255,255,0.70) !important;
+  color: rgba(20,24,33,0.66) !important;
+  font-size: 13px !important;
+  letter-spacing: -0.01em !important;
+  text-transform: none !important;
+}
+
+.workbench-shell.is-project-detail-route details form button[type="submit"] {
+  grid-column: span 2 !important;
+}
+
+/* Import, collaborators and exports rows */
+.workbench-shell.is-project-detail-route details section form,
+.workbench-shell.is-project-detail-route .workbench-board-page section form {
+  align-items: end !important;
+}
+
+.workbench-shell.is-project-detail-route details section button,
+.workbench-shell.is-project-detail-route details section a {
+  white-space: nowrap !important;
+}
+
+/* Export buttons */
+.workbench-shell.is-project-detail-route button[name*="export"],
+.workbench-shell.is-project-detail-route a[href*="export"],
+.workbench-shell.is-project-detail-route .export-button {
+  border-radius: 999px !important;
+}
+
+/* Mobile */
+@media (max-width: 760px) {
+  .workbench-shell.is-project-detail-route .workbench-main {
+    padding: 16px 12px calc(120px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .workbench-shell.is-project-detail-route .workbench-board-toolbar {
+    grid-template-columns: 1fr !important;
+    padding: 12px !important;
+    border-radius: 24px !important;
+  }
+
+  .workbench-shell.is-project-detail-route .workbench-board-toolbar .workbench-board-new-task {
+    width: 100% !important;
+  }
+
+  .workbench-shell.is-project-detail-route form,
+  .workbench-shell.is-project-detail-route details form {
+    grid-template-columns: 1fr !important;
+  }
+
+  .workbench-shell.is-project-detail-route label,
+  .workbench-shell.is-project-detail-route details form label,
+  .workbench-shell.is-project-detail-route details form label:nth-of-type(1),
+  .workbench-shell.is-project-detail-route details form label:nth-of-type(2),
+  .workbench-shell.is-project-detail-route details form label:nth-of-type(3),
+  .workbench-shell.is-project-detail-route details form label:nth-of-type(4),
+  .workbench-shell.is-project-detail-route details form label:nth-of-type(5),
+  .workbench-shell.is-project-detail-route details form label:nth-of-type(6),
+  .workbench-shell.is-project-detail-route details form label:has(input[type="checkbox"]),
+  .workbench-shell.is-project-detail-route details form button[type="submit"] {
+    grid-column: 1 / -1 !important;
+  }
+
+  .workbench-shell.is-project-detail-route button,
+  .workbench-shell.is-project-detail-route .workbench-board-page a[role="button"] {
+    width: 100% !important;
+  }
+
+  .workbench-shell.is-project-detail-route details > summary {
+    padding: 0 16px !important;
+  }
+
+  .workbench-shell.is-project-detail-route details form,
+  .workbench-shell.is-project-detail-route details section,
+  .workbench-shell.is-project-detail-route details > div {
+    padding: 16px !important;
+  }
+
+  .workbench-shell.is-project-detail-route .workbench-table-header,
+  .workbench-shell.is-project-detail-route .workbench-table-row {
+    min-width: 900px !important;
+  }
+}
+
+
+/* =========================================================
+   GLOBAL MOBILE STABILITY PASS
+   Prevents horizontal shake, layout drift and viewport jumps.
+   Put LAST.
+   ========================================================= */
+
+@media (max-width: 760px) {
+  html {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    scroll-behavior: auto !important;
+    -webkit-text-size-adjust: 100% !important;
+  }
+
+  body {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+    overscroll-behavior-x: none !important;
+    touch-action: pan-y !important;
+  }
+
+  #app,
+  #__next,
+  main,
+  .app-shell,
+  .site-shell,
+  .archive-shell,
+  .page-shell,
+  .dashboard-canvas-outer,
+  .workbench-member-canvas,
+  .workbench-shell,
+  .workbench-main,
+  .library-layout,
+  .library-main,
+  .results-shell,
+  .records-grid,
+  .featured-records,
+  .collections-grid {
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: clip !important;
+  }
+
+  /* Avoid 100vw causing iPhone horizontal drift */
+  [style*="100vw"],
+  .full-bleed,
+  .hero,
+  .site-hero,
+  .archive-hero,
+  .page-hero {
+    max-width: 100% !important;
+  }
+
+  /* Any wide table/grid should scroll inside itself, not move the page */
+  table,
+  .table,
+  .workbench-table,
+  .workbench-table-group,
+  .workbench-task-group,
+  .workbench-board-table,
+  .linked-records-table,
+  .records-table,
+  .data-table {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-x: contain !important;
+  }
+
+  /* Forms must not force viewport width */
+  input,
+  select,
+  textarea,
+  button {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Images and media should never widen the viewport */
+  img,
+  svg,
+  video,
+  canvas,
+  iframe {
+    max-width: 100% !important;
+  }
+
+  /* Prevent cards from drifting outside mobile viewport */
+  .record-card,
+  .archive-card,
+  .collection-card,
+  .saved-record-card,
+  .workbench-project-card,
+  .workbench-board-header,
+  .workbench-board-toolbar,
+  .workbench-board-empty,
+  .site-disclaimer,
+  .footer,
+  .site-footer {
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* Stabilise bottom nav on iPhone */
+  .bottom-nav,
+  .mobile-bottom-nav,
+  .workspace-mobile-nav {
+    position: fixed !important;
+    left: max(12px, env(safe-area-inset-left)) !important;
+    right: max(12px, env(safe-area-inset-right)) !important;
+    bottom: max(12px, env(safe-area-inset-bottom)) !important;
+    width: auto !important;
+    max-width: none !important;
+    transform: translateZ(0) !important;
+    will-change: auto !important;
+    backface-visibility: hidden !important;
+    contain: layout paint !important;
+  }
+
+  /* Give every page enough bottom space so fixed nav does not collide */
+  main,
+  .archive-shell,
+  .library-main,
+  .workbench-main,
+  .dashboard-canvas-outer,
+  .workbench-member-canvas {
+    padding-bottom: calc(110px + env(safe-area-inset-bottom)) !important;
+  }
+
+  /* Anchor scroll under fixed header without touching every element */
+  html {
+    scroll-padding-top: max(84px, env(safe-area-inset-top, 0px)) !important;
+  }
+
+  .record-card,
+  .archive-card,
+  .collection-card,
+  .workbench-board-header,
+  .workbench-board-toolbar,
+  .workbench-summary-strip article,
+  .saved-record-card,
+  .workbench-project-card {
+    will-change: auto !important;
+    backface-visibility: hidden !important;
+  }
+
+  /* Stop hover transforms from creating jitter on touch devices */
+  @media (hover: none) {
+    a:hover,
+    button:hover,
+    .record-card:hover,
+    .archive-card:hover,
+    .collection-card:hover,
+    .saved-record-card:hover,
+    .workbench-project-card:hover,
+    .member-mobile-bottom-nav__item:hover {
+      transform: none !important;
+    }
+  }
+
+  /* Keep sticky areas stable */
+  .site-header,
+  .mobile-header,
+  .workbench-sidebar,
+  .library-mobile-controls,
+  .mobile-filter-bar {
+    transform: translateZ(0) !important;
+    backface-visibility: hidden !important;
+    contain: layout paint !important;
+  }
+
+  /* Prevent open overlays from horizontal layout shift (scrollbar gutter via JS) */
+  body.filters-open,
+  body.menu-open,
+  body.workspace-drawer-open,
+  body.drawer-open,
+  body.modal-open {
+    overflow: hidden !important;
+  }
+
+  /* Drawers scroll internally */
+  .sidebar.mobile-open,
+  .mobile-drawer,
+  .mobile-filter-body,
+  .filter-drawer,
+  .menu-drawer,
+  .modal-panel,
+  .workspace-drawer {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Avoid tiny text causing iOS zoom/layout jump on focus */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /* But keep compact visual sizing through height/padding */
+  .workbench-board-toolbar input,
+  .workbench-board-toolbar select,
+  .record-card-actions-wrap input,
+  .record-card-actions-wrap select,
+  .saved-record-note-input {
+    font-size: 16px !important;
+  }
+}
+
+/* =========================================================
+   PENDING SUBMITS + PAGE LOADER REDUCED-MOTION + MOBILE TAP
+   Subtle pressed state (no transform jump). Scoped utilities.
+   ========================================================= */
+
+.pending-submit-button__row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 1.15em;
+}
+
+.pending-submit-button__spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(21, 25, 34, 0.22);
+  border-top-color: rgba(21, 25, 34, 0.72);
+  border-radius: 50%;
+  animation: pendingSubmitSpin 0.65s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pendingSubmitSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.page-loader-overlay--reduced-motion,
+.page-loader-overlay--reduced-motion.page-loader-overlay--exit {
+  animation: none !important;
+}
+
+.page-loader-overlay--reduced-motion .page-loader-spinner::before,
+.page-loader-overlay--reduced-motion .page-loader-spinner span {
+  animation: none !important;
+}
+
+.page-loader-overlay--reduced-motion .page-loader-spinner span {
+  opacity: 0.85;
+  height: 42px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pending-submit-button__spinner {
+    animation: none;
+    border-top-color: rgba(21, 25, 34, 0.45);
+  }
+}
+
+@media (max-width: 760px) {
+  button:not(:disabled):active,
+  .pending-submit-button:active:not(:disabled),
+  .admin-button:active:not(:disabled),
+  .workbench-btn:active:not(:disabled),
+  .saved-record-action:active,
+  .saved-record-note-save:active:not(:disabled),
+  .member-mobile-bottom-nav__item:active,
+  .card:active {
+    filter: brightness(0.93);
+  }
+}
+
+/* Respect reduced motion and lower mobile instability */
+@media (max-width: 760px) and (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ================================================================
+   WORKBENCH — FINAL ACCESSIBILITY + RESPONSIVE POLISH
+   ----------------------------------------------------------------
+   Surgical polish layer. Every selector is scoped to .workbench-shell
+   so nothing here can affect public archive pages, the Library,
+   record detail, About, or Sources. We do NOT redefine card
+   visuals, panel layouts, sidebar geometry, or board composition —
+   those are owned by the earlier "ARCHIVE WORKBENCH" and
+   "WORKBENCH PROJECT" blocks above and continue to win.
+   This block only addresses:
+     - focus-visible state consistency
+     - iOS 16px input minimum to prevent zoom on focus
+     - 44px minimum interactive size for buttons/inputs
+     - safe-area-inset-bottom padding on mobile main column
+     - horizontal-overflow protection inside the shell
+     - reduced-motion respect on hover transforms
+     - duplicated footer suppression inside Workbench
+   ================================================================ */
+
+.workbench-shell {
+  --wb-focus: rgba(20, 24, 33, 0.55);
+  --wb-focus-ring: 0 0 0 3px rgba(20, 24, 33, 0.18);
+  --wb-tap-min: 44px;
+}
+
+/* --- Horizontal overflow guard (no page shake on mobile) --- */
+.workbench-shell,
+.workbench-shell .workbench-main {
+  max-width: 100vw;
+  overflow-x: clip;
+}
+.workbench-shell .workbench-kanban-scroll,
+.workbench-shell .workbench-board-table-scroll,
+.workbench-shell .workbench-pm-board-wrap,
+.workbench-shell .workbench-board-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+/* --- Focus-visible polish (consistent across all controls) --- */
+.workbench-shell button:focus-visible,
+.workbench-shell a:focus-visible,
+.workbench-shell input:focus-visible,
+.workbench-shell select:focus-visible,
+.workbench-shell textarea:focus-visible,
+.workbench-shell [role="button"]:focus-visible {
+  outline: 2px solid var(--wb-focus);
+  outline-offset: 2px;
+  box-shadow: var(--wb-focus-ring);
+}
+.workbench-shell .workbench-nav a:focus-visible {
+  outline-offset: 0;
+}
+
+/* --- iOS input zoom prevention + tap target minimum --- */
+@media (max-width: 760px) {
+  .workbench-shell input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  .workbench-shell select,
+  .workbench-shell textarea {
+    font-size: 16px !important;
+  }
+  .workbench-shell button,
+  .workbench-shell a.workbench-btn,
+  .workbench-shell a.workbench-link[role="button"],
+  .workbench-shell .workbench-nav a,
+  .workbench-shell input[type="submit"],
+  .workbench-shell input[type="button"] {
+    min-height: var(--wb-tap-min);
+  }
+  /* Checkboxes/radios should remain compact but tappable */
+  .workbench-shell input[type="checkbox"],
+  .workbench-shell input[type="radio"] {
+    min-width: 20px;
+    min-height: 20px;
+  }
+}
+
+/* --- Mobile safe-area bottom padding so iOS notch / nav bar
+       doesn't sit on top of last visible row of the workbench --- */
+@media (max-width: 760px) {
+  .workbench-shell .workbench-main {
+    padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* --- Suppress the public site disclaimer/footer inside Workbench
+       (user spec: "no duplicated footer/legal areas inside Workbench") */
+body:has(.workbench-shell) footer.site-disclaimer {
+  display: none !important;
+}
+body:has(.workbench-shell) footer.site-footer {
+  display: none !important;
+}
+
+/* --- Reduced motion: kill hover transforms so transitions don't
+       reflow controls on accessibility-sensitive setups --- */
+@media (prefers-reduced-motion: reduce) {
+  .workbench-shell *,
+  .workbench-shell *::before,
+  .workbench-shell *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+  .workbench-shell .workbench-btn:hover,
+  .workbench-shell .workbench-modal-btn:hover,
+  .workbench-shell .workbench-project-card:hover,
+  .workbench-shell .saved-record-card:hover {
+    transform: none !important;
+  }
+}
+
+/* --- Subtle baseline consistency for raw browser-default fields
+       that don't already have explicit polish (defensive: only
+       affects elements without an existing .workbench-input /
+       .workbench-field-prefixed container) --- */
+.workbench-shell .workbench-field input,
+.workbench-shell .workbench-field select,
+.workbench-shell .workbench-field textarea,
+.workbench-shell .workbench-form-grid input,
+.workbench-shell .workbench-form-grid select,
+.workbench-shell .workbench-form-grid textarea {
+  font-family: inherit;
+  color: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-clip: padding-box;
+}
+.workbench-shell .workbench-field select,
+.workbench-shell .workbench-form-grid select {
+  background-image: linear-gradient(45deg, transparent 50%, rgba(20, 24, 33, 0.55) 50%),
+    linear-gradient(135deg, rgba(20, 24, 33, 0.55) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 34px;
+}
+
+/* --- Icon-only buttons: ensure they're hit-target sized and
+       expose an accessible name fallback when title is provided --- */
+.workbench-shell button[aria-label]:not([aria-label=""]) {
+  /* purely declarative; no visual change. Acts as a documentation
+     anchor for the audit. */
+}
+.workbench-shell .workbench-pm-icon-btn,
+.workbench-shell .workbench-task-delete,
+.workbench-shell .workbench-task-edit,
+.workbench-shell .workbench-modal-close,
+.workbench-shell .workbench-board-actions button[aria-label="More actions"] {
+  min-width: var(--wb-tap-min);
+  min-height: var(--wb-tap-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- Toolbar / form alignment polish: prevent misaligned text
+       baselines in toolbars when buttons + selects sit side by side --- */
+.workbench-shell .workbench-board-toolbar,
+.workbench-shell .workbench-board-actions,
+.workbench-shell .workbench-add-group,
+.workbench-shell .workbench-pm-export-row {
+  align-items: center;
+}
+
+/* --- Modal accessibility: backdrop locks scroll, body is focus
+       trapped via inert/aria-modal at the React layer (existing).
+       Here we just ensure the body has a max-height + scroll so
+       small viewports don't lose the close affordance. --- */
+.workbench-shell .workbench-modal {
+  max-height: min(92vh, 920px);
+  display: flex;
+  flex-direction: column;
+}
+.workbench-shell .workbench-modal-body {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* --- Long titles + long body copy: prevent overflow into adjacent
+       columns. Uses word-break safely (no break-all). --- */
+.workbench-shell .workbench-page-title,
+.workbench-shell .workbench-board-header h1,
+.workbench-shell .workbench-kanban-card,
+.workbench-shell .saved-record-card h3,
+.workbench-shell .workbench-project-card h3 {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* --- Mobile: prevent action rows on saved-record / project cards
+       from spilling outside the card border --- */
+@media (max-width: 640px) {
+  .workbench-shell .saved-record-card,
+  .workbench-shell .workbench-project-card {
+    overflow: hidden;
+  }
+  .workbench-shell .saved-record-card form,
+  .workbench-shell .saved-record-card .saved-record-actions {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+}
+
+/* --- Empty state polish: consistent rhythm where existing CSS
+       hadn't already specified it --- */
+.workbench-shell .workbench-empty,
+.workbench-shell .workbench-board-empty,
+.workbench-shell .workbench-board-card--empty {
+  text-wrap: pretty;
+}
+
+/* --- Mobile sidebar safeguards: ensure horizontal pill nav (when
+       earlier CSS converts the sidebar to horizontal at narrow
+       widths) wraps gracefully and doesn't push the page wider --- */
+@media (max-width: 760px) {
+  .workbench-shell .workbench-sidebar,
+  .workbench-shell .workbench-nav {
+    max-width: 100%;
+  }
+  .workbench-shell .workbench-nav {
+    flex-wrap: wrap;
+  }
+}
+/* ================================================================
+   END WORKBENCH FINAL POLISH
+   ================================================================ */
+
+/* =========================================================
+   RECORD DETAIL STRUCTURAL POLISH
+   Explicit classes only.
+   ========================================================= */
+
+.record-detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
+  gap: 28px;
+  align-items: start;
+}
+
+.record-detail-main {
+  min-width: 0;
+}
+
+.record-detail-sidebar {
+  min-width: 0;
+  display: grid;
+  gap: 18px;
+  position: sticky;
+  top: 92px;
+}
+
+.record-sidebar-card {
+  padding: 22px;
+  border: 1px solid rgba(20, 24, 33, 0.08);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(8, 119, 109, 0.035), transparent 34%),
+    rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 14px 34px rgba(20, 24, 33, 0.045),
+    inset 0 1px 0 rgba(255, 255, 255, 0.94);
+}
+
+.record-sidebar-card h2 {
+  margin: 0 0 18px;
+  color: rgba(20, 24, 33, 0.50);
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 850;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.record-create-list-card h2 {
+  color: #151922;
+  font-size: 20px;
+  line-height: 1.1;
+  font-weight: 780;
+  letter-spacing: -0.035em;
+  text-transform: none;
+}
+
+.record-create-list-form {
+  display: grid;
+  gap: 16px;
+}
+
+.record-field {
+  display: grid;
+  gap: 8px;
+}
+
+.record-field span,
+.record-checkbox-row span {
+  color: rgba(20, 24, 33, 0.50);
+  font-size: 10.5px;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.record-input,
+.record-select {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid rgba(20, 24, 33, 0.10);
+  border-radius: 16px;
+  background: #fff;
+  color: #151922;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  box-shadow:
+    0 8px 18px rgba(20, 24, 33, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.96);
+}
+
+.record-textarea {
+  min-height: 92px;
+  height: auto;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+.record-input:focus,
+.record-select:focus {
+  border-color: rgba(20, 24, 33, 0.32);
+  box-shadow:
+    0 0 0 4px rgba(20, 24, 33, 0.07),
+    0 8px 18px rgba(20, 24, 33, 0.035);
+}
+
+.record-checkbox-row {
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid rgba(20, 24, 33, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.74);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.record-checkbox-row input {
+  width: 18px;
+  height: 18px;
+  accent-color: #151922;
+}
+
+.record-checkbox-row span {
+  color: rgba(20, 24, 33, 0.66);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+
+.record-primary-button {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #151922;
+  border-radius: 16px;
+  background: #151922;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 780;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-decoration: none;
+  box-shadow:
+    0 16px 34px rgba(20, 24, 33, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.record-primary-button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.record-link-list {
+  display: grid;
+  gap: 10px;
+}
+
+.record-link-row {
+  min-height: 62px;
+  padding: 13px 16px;
+  border: 1px solid rgba(20, 24, 33, 0.085);
+  border-radius: 18px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(247, 247, 244, 0.88));
+  color: #151922;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+  text-decoration: none;
+  box-shadow:
+    0 10px 22px rgba(20, 24, 33, 0.045),
+    inset 0 1px 0 rgba(255, 255, 255, 0.96);
+}
+
+.record-link-row:hover {
+  border-color: rgba(20, 24, 33, 0.18);
+  transform: translateY(-1px);
+  box-shadow:
+    0 16px 34px rgba(20, 24, 33, 0.075),
+    inset 0 1px 0 rgba(255, 255, 255, 0.98);
+}
+
+.record-link-row strong {
+  display: block;
+  color: #151922;
+  font-size: 15px;
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.record-link-row small {
+  display: block;
+  margin-top: 4px;
+  color: rgba(20, 24, 33, 0.50);
+  font-size: 12.5px;
+  line-height: 1.35;
+  font-weight: 620;
+}
+
+.record-link-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: rgba(20, 24, 33, 0.06);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #151922;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.record-citation-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 46px;
+  gap: 10px;
+  align-items: end;
+  margin-bottom: 14px;
+}
+
+.record-citation-style-field {
+  min-width: 0;
+}
+
+.record-icon-button {
+  width: 46px;
+  height: 46px;
+  border: 1px solid #151922;
+  border-radius: 16px;
+  background: #151922;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow:
+    0 12px 26px rgba(20, 24, 33, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.record-citation-text {
+  margin: 0;
+  padding: 18px;
+  border: 1px solid rgba(20, 24, 33, 0.085);
+  border-left: 4px solid #151922;
+  border-radius: 18px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(248, 248, 245, 0.88));
+  color: rgba(20, 24, 33, 0.70);
+  font-size: 15px;
+  line-height: 1.58;
+  font-style: italic;
+  box-shadow:
+    0 10px 24px rgba(20, 24, 33, 0.045),
+    inset 0 1px 0 rgba(255, 255, 255, 0.94);
+}
+
+.record-related-section {
+  margin-top: 28px;
+  padding: 24px;
+  border: 1px solid rgba(20, 24, 33, 0.08);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(8, 119, 109, 0.035), transparent 34%),
+    rgba(255, 255, 255, 0.86);
+  box-shadow:
+    0 14px 38px rgba(20, 24, 33, 0.045),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+}
+
+.record-related-section .record-related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .record-primary-button:active,
+  .record-icon-button:active,
+  .record-link-row:active {
+    transform: scale(0.985);
+    opacity: 0.88;
+  }
+}
+
+@media (max-width: 760px) {
+  .record-detail-layout {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .record-detail-sidebar {
+    position: static;
+  }
+
+  .record-sidebar-card,
+  .record-related-section {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .record-citation-controls {
+    grid-template-columns: 1fr 46px;
+  }
+
+  .record-input,
+  .record-select {
+    font-size: 16px;
+  }
+
+  .record-related-section {
+    margin-top: 20px;
+    margin-bottom: calc(120px + env(safe-area-inset-bottom));
+  }
+
+  .record-related-section .record-related-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   LIBRARY GROUPED RESULTS OVERRIDES
+   Kept last so broad legacy grid rules do not flatten section groups.
+   ========================================================= */
+
+.library-blended-discovery .library-results-section {
+  display: grid;
+}
+
+.library-blended-discovery .library-results-section .library-results-grid.card-grid.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.library-blended-discovery .library-results-collections .coll-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+@media (min-width: 1180px) {
+  .library-blended-discovery .library-results-section .library-results-grid.card-grid.results-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 980px) {
+  .library-blended-discovery .library-results-section .library-results-grid.card-grid.results-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .library-blended-discovery .library-results-section .library-results-grid.card-grid.results-grid,
+  .library-blended-discovery .library-results-collections .coll-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   RECORD DETAIL — OLD MAIN SECTION PREMIUM POLISH
+   Softens legacy wireframe sections on record pages.
+   Put LAST.
+   ========================================================= */
+
+.record-detail-enhanced main,
+.record-detail-main,
+.record-detail-page main,
+.record-page main,
+.archive-record-page main {
+  min-width: 0 !important;
+}
+
+/* Legacy main content boxes */
+.record-detail-enhanced main section,
+.record-detail-main section,
+.record-detail-page main section,
+.record-page main section,
+.archive-record-page main section,
+.record-detail-enhanced .record-main section,
+.record-detail-enhanced .record-content section {
+  border: 1px solid rgba(20, 24, 33, 0.075) !important;
+  border-radius: 24px !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(8,119,109,0.03), transparent 34%),
+    rgba(255,255,255,0.88) !important;
+  box-shadow:
+    0 14px 34px rgba(20,24,33,0.04),
+    inset 0 1px 0 rgba(255,255,255,0.94) !important;
+  padding: 22px !important;
+  margin: 0 0 18px !important;
+  overflow: hidden !important;
+}
+
+/* Remove old hard black borders from legacy boxes */
+.record-detail-enhanced main section *,
+.record-detail-main section *,
+.record-detail-page main section *,
+.record-page main section *,
+.archive-record-page main section * {
+  border-color: rgba(20,24,33,0.08) !important;
+}
+
+/* Section headings */
+.record-detail-enhanced main section h2,
+.record-detail-enhanced main section h3,
+.record-detail-main section h2,
+.record-detail-main section h3,
+.record-detail-page main section h2,
+.record-detail-page main section h3,
+.record-page main section h2,
+.record-page main section h3,
+.archive-record-page main section h2,
+.archive-record-page main section h3 {
+  margin: 0 0 14px !important;
+  color: rgba(20,24,33,0.46) !important;
+  font-size: 10.5px !important;
+  line-height: 1 !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.15em !important;
+  text-transform: uppercase !important;
+}
+
+/* Main body text */
+.record-detail-enhanced main section p,
+.record-detail-main section p,
+.record-detail-page main section p,
+.record-page main section p,
+.archive-record-page main section p {
+  max-width: 760px !important;
+  margin: 0 !important;
+  color: rgba(20,24,33,0.72) !important;
+  font-size: 14.5px !important;
+  line-height: 1.62 !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* Paragraph spacing inside description-like sections */
+.record-detail-enhanced main section p + p,
+.record-detail-main section p + p,
+.record-detail-page main section p + p,
+.record-page main section p + p,
+.archive-record-page main section p + p {
+  margin-top: 14px !important;
+}
+
+/* Rights / cultural protocol box */
+.record-detail-enhanced main section:first-of-type,
+.record-detail-main section:first-of-type,
+.record-detail-page main section:first-of-type,
+.record-page main section:first-of-type,
+.archive-record-page main section:first-of-type {
+  background:
+    linear-gradient(135deg, rgba(20,24,33,0.035), rgba(245,241,230,0.70)) !important;
+  border-color: rgba(20,24,33,0.10) !important;
+}
+
+/* Metadata tables */
+.record-detail-enhanced main table,
+.record-detail-main table,
+.record-detail-page main table,
+.record-page main table,
+.archive-record-page main table {
+  width: 100% !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  background: transparent !important;
+}
+
+.record-detail-enhanced main tr,
+.record-detail-main tr,
+.record-detail-page main tr,
+.record-page main tr,
+.archive-record-page main tr {
+  border: 0 !important;
+}
+
+.record-detail-enhanced main th,
+.record-detail-main th,
+.record-detail-page main th,
+.record-page main th,
+.archive-record-page main th {
+  width: 34% !important;
+  padding: 13px 0 !important;
+  border-bottom: 1px solid rgba(20,24,33,0.065) !important;
+  color: rgba(20,24,33,0.40) !important;
+  font-size: 9.5px !important;
+  line-height: 1.25 !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.13em !important;
+  text-align: left !important;
+  text-transform: uppercase !important;
+  vertical-align: top !important;
+}
+
+.record-detail-enhanced main td,
+.record-detail-main td,
+.record-detail-page main td,
+.record-page main td,
+.archive-record-page main td {
+  padding: 13px 0 !important;
+  border-bottom: 1px solid rgba(20,24,33,0.065) !important;
+  color: rgba(20,24,33,0.74) !important;
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+  font-weight: 560 !important;
+  vertical-align: top !important;
+}
+
+/* Remove final table line */
+.record-detail-enhanced main tr:last-child th,
+.record-detail-enhanced main tr:last-child td,
+.record-detail-main tr:last-child th,
+.record-detail-main tr:last-child td,
+.record-detail-page main tr:last-child th,
+.record-detail-page main tr:last-child td,
+.record-page main tr:last-child th,
+.record-page main tr:last-child td,
+.archive-record-page main tr:last-child th,
+.archive-record-page main tr:last-child td {
+  border-bottom: 0 !important;
+}
+
+/* Chips: concepts, knowledge areas, tags */
+.record-detail-enhanced main a,
+.record-detail-enhanced main .tag,
+.record-detail-enhanced main .chip,
+.record-detail-enhanced main .pill,
+.record-detail-main .tag,
+.record-detail-main .chip,
+.record-detail-main .pill,
+.record-detail-page main .tag,
+.record-detail-page main .chip,
+.record-detail-page main .pill,
+.record-page main .tag,
+.record-page main .chip,
+.record-page main .pill,
+.archive-record-page main .tag,
+.archive-record-page main .chip,
+.archive-record-page main .pill {
+  min-height: 30px !important;
+  padding: 0 11px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(20,24,33,0.09) !important;
+  background: rgba(255,255,255,0.86) !important;
+  color: rgba(20,24,33,0.70) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 11px !important;
+  line-height: 1 !important;
+  font-weight: 720 !important;
+  text-decoration: none !important;
+  box-shadow: 0 6px 14px rgba(20,24,33,0.025) !important;
+}
+
+/* Dark concept chips should be cleaner */
+.record-detail-enhanced main .tag.is-dark,
+.record-detail-enhanced main .chip.is-dark,
+.record-detail-enhanced main .pill.is-dark,
+.record-detail-enhanced main a[style*="black"],
+.record-detail-main a[style*="black"],
+.record-detail-page main a[style*="black"],
+.record-page main a[style*="black"],
+.archive-record-page main a[style*="black"] {
+  background: #151922 !important;
+  border-color: #151922 !important;
+  color: #ffffff !important;
+}
+
+/* Provenance / rights section */
+.record-detail-enhanced main section:last-of-type,
+.record-detail-main section:last-of-type,
+.record-detail-page main section:last-of-type,
+.record-page main section:last-of-type,
+.archive-record-page main section:last-of-type {
+  background:
+    radial-gradient(circle at 0% 100%, rgba(8,119,109,0.035), transparent 34%),
+    rgba(250,248,241,0.72) !important;
+}
+
+/* Header area refinement */
+.record-detail-header,
+.record-header,
+.archive-record-header {
+  padding-bottom: 8px !important;
+}
+
+.record-detail-header h1,
+.record-header h1,
+.archive-record-header h1 {
+  margin-top: 14px !important;
+  margin-bottom: 12px !important;
+}
+
+.record-detail-header small,
+.record-header small,
+.archive-record-header small,
+.record-detail-header p,
+.record-header p,
+.archive-record-header p {
+  color: rgba(20,24,33,0.56) !important;
+}
+
+/* Top badges in header */
+.record-detail-header .pill,
+.record-header .pill,
+.archive-record-header .pill,
+.record-detail-header .record-badge,
+.record-header .record-badge,
+.archive-record-header .record-badge {
+  margin-right: 6px !important;
+  margin-bottom: 6px !important;
+}
+
+/* Duplicate sidebar sections, keep them consistent if present */
+.record-detail-sidebar .record-create-list-card + .record-links-card,
+.record-detail-aside .record-create-list-card + .record-links-card {
+  margin-top: 0 !important;
+}
+
+/* Mobile refinement */
+@media (max-width: 760px) {
+  .record-detail-enhanced main section,
+  .record-detail-main section,
+  .record-detail-page main section,
+  .record-page main section,
+  .archive-record-page main section {
+    padding: 18px !important;
+    border-radius: 22px !important;
+    margin-bottom: 14px !important;
+  }
+
+  .record-detail-enhanced main section p,
+  .record-detail-main section p,
+  .record-detail-page main section p,
+  .record-page main section p,
+  .archive-record-page main section p {
+    font-size: 14px !important;
+    line-height: 1.58 !important;
+  }
+
+  .record-detail-enhanced main table,
+  .record-detail-main table,
+  .record-detail-page main table,
+  .record-page main table,
+  .archive-record-page main table {
+    display: block !important;
+    overflow-x: hidden !important;
+  }
+
+  .record-detail-enhanced main tbody,
+  .record-detail-enhanced main tr,
+  .record-detail-enhanced main th,
+  .record-detail-enhanced main td,
+  .record-detail-main tbody,
+  .record-detail-main tr,
+  .record-detail-main th,
+  .record-detail-main td,
+  .record-detail-page main tbody,
+  .record-detail-page main tr,
+  .record-detail-page main th,
+  .record-detail-page main td,
+  .record-page main tbody,
+  .record-page main tr,
+  .record-page main th,
+  .record-page main td,
+  .archive-record-page main tbody,
+  .archive-record-page main tr,
+  .archive-record-page main th,
+  .archive-record-page main td {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .record-detail-enhanced main th,
+  .record-detail-main th,
+  .record-detail-page main th,
+  .record-page main th,
+  .archive-record-page main th {
+    padding: 12px 0 4px !important;
+    border-bottom: 0 !important;
+  }
+
+  .record-detail-enhanced main td,
+  .record-detail-main td,
+  .record-detail-page main td,
+  .record-page main td,
+  .archive-record-page main td {
+    padding: 0 0 12px !important;
+    border-bottom: 1px solid rgba(20,24,33,0.065) !important;
+  }
+}
+
+
+
+/* =========================================================
+   LIBRARY FINAL GRID OVERRIDE
+   Keep cards at 3 columns desktop, 2 tablet, 1 mobile.
+   Does not change result logic, counts, providers, or order.
+   ========================================================= */
+
+.library-blended-discovery .library-results-grid,
+.library-blended-discovery .library-results-grid.card-grid,
+.library-blended-discovery .library-results-grid.results-grid,
+.library-blended-discovery .library-results-section .library-results-grid,
+.library-blended-discovery .library-results-section .library-results-grid.card-grid.results-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(280px, 1fr)) !important;
+  gap: 22px !important;
+  align-items: stretch !important;
+}
+
+.library-blended-discovery .record-card,
+.library-blended-discovery .archive-card,
+.library-blended-discovery .result-card,
+.library-blended-discovery .library-card {
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.library-blended-discovery .record-card *,
+.library-blended-discovery .archive-card *,
+.library-blended-discovery .result-card *,
+.library-blended-discovery .library-card * {
+  min-width: 0 !important;
+}
+
+@media (max-width: 1180px) {
+  .library-blended-discovery .library-results-grid,
+  .library-blended-discovery .library-results-grid.card-grid,
+  .library-blended-discovery .library-results-grid.results-grid,
+  .library-blended-discovery .library-results-section .library-results-grid,
+  .library-blended-discovery .library-results-section .library-results-grid.card-grid.results-grid {
+    grid-template-columns: repeat(2, minmax(260px, 1fr)) !important;
+    gap: 18px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .library-blended-discovery .library-results-grid,
+  .library-blended-discovery .library-results-grid.card-grid,
+  .library-blended-discovery .library-results-grid.results-grid,
+  .library-blended-discovery .library-results-section .library-results-grid,
+  .library-blended-discovery .library-results-section .library-results-grid.card-grid.results-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+}
+
+/* =========================================================
+   FRONTEND AUDIT REFINEMENT PASS — explicit, low-risk polish
+   Scoped to existing library, record-detail and Workbench classes.
+   ========================================================= */
+
+:root {
+  --surface: #fffefa;
+  --surface-soft: #f7f5ef;
+  --ink: #151922;
+  --muted: rgba(20, 24, 33, 0.62);
+  --line: rgba(20, 24, 33, 0.10);
+  --accent: #08776d;
+  --radius-card: 22px;
+  --radius-control: 14px;
+  --shadow-soft: 0 10px 28px rgba(20, 24, 33, 0.055);
+  --shadow-card: 0 18px 44px rgba(20, 24, 33, 0.075);
+  --focus-ring: 0 0 0 4px rgba(8, 119, 109, 0.14);
+}
+
+.library-blended-discovery .library-results-section {
+  border-radius: var(--radius-card);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(8, 119, 109, 0.035), transparent 34%),
+    rgba(255, 254, 250, 0.82);
+  box-shadow: var(--shadow-soft);
+}
+
+.library-blended-discovery .library-results-section-header h2 {
+  letter-spacing: -0.025em;
+}
+
+.library-blended-discovery .library-results-load-more:focus-visible,
+.library-blended-discovery .mobile-filter-btn:focus-visible,
+.library-blended-discovery .mobile-clear-btn:focus-visible,
+.library-blended-discovery .mobile-filter-clear-all:focus-visible,
+.library-blended-discovery .mobile-filter-close:focus-visible,
+.library-blended-discovery .mobile-filter-apply:focus-visible,
+.record-detail-page .record-primary-button:focus-visible,
+.record-detail-page .record-icon-button:focus-visible,
+.record-detail-page .record-link-row:focus-visible,
+.record-detail-page .record-input:focus-visible,
+.record-detail-page .record-select:focus-visible,
+.workbench-shell button:focus-visible,
+.workbench-shell a:focus-visible,
+.workbench-shell input:focus-visible,
+.workbench-shell select:focus-visible,
+.workbench-shell textarea:focus-visible {
+  outline: 0 !important;
+  box-shadow: var(--focus-ring), var(--shadow-soft) !important;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .library-blended-discovery button:active,
+  .library-blended-discovery .record-card:active,
+  .record-detail-page button:active,
+  .record-detail-page .record-link-row:active,
+  .workbench-shell button:active,
+  .workbench-shell a:active {
+    transform: scale(0.985);
+  }
+}
+
+@media (max-width: 900px) {
+  .library-blended-discovery .mobile-filter-bar {
+    top: var(--site-header-height, 64px);
+    margin: 0 0 16px;
+    padding: 10px 0;
+    background: rgba(247, 245, 239, 0.94);
+  }
+
+  .library-blended-discovery .mobile-filter-drawer {
+    max-height: min(86vh, 720px);
+    border-radius: 24px 24px 0 0;
+  }
+
+  .library-blended-discovery .mobile-filter-body {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  .library-blended-discovery input,
+  .library-blended-discovery select,
+  .library-blended-discovery textarea,
+  .record-detail-page input,
+  .record-detail-page select,
+  .record-detail-page textarea {
+    font-size: 16px !important;
+  }
+}
+
+.record-detail-page .record-sidebar-card {
+  border-color: var(--line);
+  border-radius: var(--radius-card);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(8, 119, 109, 0.026), transparent 34%),
+    rgba(255, 254, 250, 0.9);
+}
+
+.record-detail-page .record-primary-button:hover:not(:disabled),
+.record-detail-page .record-icon-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card);
+}
+
+.record-detail-page .record-link-row {
+  border-color: var(--line);
+}
+
+.record-detail-page .record-link-row:hover {
+  border-color: rgba(20, 24, 33, 0.18);
+}
+
+.record-detail-page .record-citation-text {
+  border-left-color: var(--accent);
+}
+
+.workbench-shell.workbench-shell--stable {
+  grid-template-columns: 264px minmax(0, 1fr) !important;
+  transition: none !important;
+}
+
+.workbench-shell.workbench-shell--stable .workbench-sidebar {
+  align-items: stretch !important;
+  background: #f4f7ff !important;
+}
+
+.workbench-shell.workbench-shell--stable .workbench-sidebar-title {
+  justify-content: flex-start !important;
+  gap: 12px !important;
+  color: rgba(31, 36, 48, 0.54) !important;
+  font-size: 10.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+}
+
+.workbench-shell.workbench-shell--stable .workbench-sidebar-title::after {
+  content: none !important;
+}
+
+.workbench-shell.workbench-shell--stable .workbench-nav {
+  justify-items: stretch !important;
+}
+
+.workbench-shell.workbench-shell--stable .workbench-nav a {
+  width: 100% !important;
+  justify-self: stretch !important;
+  color: rgba(31, 36, 48, 0.72) !important;
+  padding-right: 14px !important;
+}
+
+.workbench-shell.workbench-shell--stable .workbench-nav a.is-active {
+  color: #123f86 !important;
+}
+
+.workbench-shell.workbench-shell--stable .workbench-sidebar:not(:hover) .workbench-nav a::after {
+  display: none !important;
+}
+
+.workbench-shell .workbench-board-toolbar,
+.workbench-shell .workbench-pm-toolbar {
+  scrollbar-gutter: stable;
+}
+
+.workbench-shell .workbench-board-empty,
+.workbench-shell .workbench-empty {
+  border-radius: 18px !important;
+  background: rgba(255, 255, 255, 0.86) !important;
+}
+
+.workbench-shell button:disabled,
+.workbench-shell input:disabled,
+.workbench-shell select:disabled,
+.workbench-shell textarea:disabled,
+.record-detail-page button:disabled,
+.library-blended-discovery button:disabled {
+  opacity: 0.62 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+@media (max-width: 1180px) {
+  .workbench-shell.workbench-shell--stable {
+    grid-template-columns: 240px minmax(0, 1fr) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .workbench-shell.workbench-shell--stable {
+    grid-template-columns: 1fr !important;
+  }
+
+  .workbench-shell.workbench-shell--stable .workbench-nav {
+    flex-wrap: nowrap !important;
+  }
+
+  .workbench-shell.workbench-shell--stable .workbench-nav a {
+    width: auto !important;
+    min-width: max-content !important;
+    min-height: 44px !important;
+    padding: 0 16px !important;
+    color: rgba(31, 36, 48, 0.72) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .workbench-shell .workbench-main {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .workbench-shell .workbench-board-actions,
+  .workbench-shell .workbench-summary-strip {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .workbench-shell .workbench-board-toolbar {
+    display: grid !important;
+    grid-template-columns: minmax(190px, 1fr) !important;
+    overflow-x: auto !important;
+  }
+
+  .workbench-shell input,
+  .workbench-shell select,
+  .workbench-shell textarea {
+    font-size: 16px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .library-blended-discovery *,
+  .record-detail-page *,
+  .workbench-shell * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

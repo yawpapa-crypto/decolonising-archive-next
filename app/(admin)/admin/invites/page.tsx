@@ -1,6 +1,7 @@
 import { createClient } from "@/src/lib/supabase/server";
 import { createAdminInvite } from "./actions";
 import CopyInviteLinkButton from "./CopyInviteLinkButton";
+import PendingSubmitButton from "@/src/components/ui/PendingSubmitButton";
 
 type SearchParams = Promise<{
   error?: string;
@@ -98,9 +99,9 @@ export default async function AdminInvitesPage({
               <input type="date" name="expires_at" />
             </label>
           </div>
-          <button type="submit" className="admin-button">
+          <PendingSubmitButton className="admin-button" pendingLabel="Creating…">
             Create invite
-          </button>
+          </PendingSubmitButton>
         </form>
       </section>
 

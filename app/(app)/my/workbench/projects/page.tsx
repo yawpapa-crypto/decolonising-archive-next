@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { listWorkbenchProjectsSummary } from "@/lib/workbench-data";
 import { createWorkbenchProject } from "@/lib/workbench-actions";
+import PendingSubmitButton from "@/src/components/ui/PendingSubmitButton";
 import { WORKBENCH_PROJECT_TYPES, projectTypeLabel } from "@/lib/workbench-types";
 
 type SearchParams = Promise<{ new?: string; updated?: string; error?: string }>;
@@ -15,13 +16,27 @@ export default async function WorkbenchProjectsPage({
   const showNew = sp.new === "1";
 
   return (
-    <>
-      <p className="workbench-kicker">Projects</p>
-      <h1 className="workbench-page-title">Research projects</h1>
-      <p className="workbench-lede">
-        Each project links archive records to workflow stages, reviews, tasks, and
-        exports.
-      </p>
+    <section className="workbench-projects-page">
+      <header className="workbench-projects-header">
+        <p className="workbench-projects-eyebrow">Projects</p>
+        <div className="workbench-projects-header-row">
+          <div>
+            <h1>Research projects</h1>
+            <p>
+              Each project links archive records to workflow stages, reviews,
+              tasks, and exports.
+            </p>
+          </div>
+          {showNew ? null : (
+            <Link
+              href="/my/workbench/projects?new=1"
+              className="workbench-projects-new-button"
+            >
+              New research project
+            </Link>
+          )}
+        </div>
+      </header>
 
       {sp.updated ? (
         <p className="workbench-flash" role="status">
@@ -34,23 +49,32 @@ export default async function WorkbenchProjectsPage({
         </p>
       ) : null}
 
-      {!ok ? (
-        <section className="workbench-panel">
-          <p className="workbench-flag">{error}</p>
-        </section>
-      ) : null}
+      {!ok ? <p className="workbench-flag">{error}</p> : null}
 
       {showNew ? (
-        <section className="workbench-panel">
-          <h2>New project</h2>
-          <form action={createWorkbenchProject} className="workbench-form-grid">
-            <label>
+        <section className="workbench-project-form-card">
+          <div className="workbench-project-form-heading">
+            <h2>New project</h2>
+            <p>
+              Create a research board for saved records, review tasks, notes and
+              exports.
+            </p>
+          </div>
+
+          <form className="workbench-project-form" action={createWorkbenchProject}>
+            <label className="workbench-field">
               <span>Title</span>
-              <input className="workbench-input" name="title" required placeholder="Project title" />
+              <input
+                name="title"
+                required
+                placeholder="Project title"
+                autoComplete="off"
+              />
             </label>
-            <label>
+
+            <label className="workbench-field">
               <span>Type</span>
-              <select className="workbench-select" name="project_type" defaultValue="custom_project">
+              <select name="project_type" defaultValue="custom_project">
                 {WORKBENCH_PROJECT_TYPES.map((t) => (
                   <option key={t.id} value={t.id}>
                     {t.label}
@@ -58,61 +82,77 @@ export default async function WorkbenchProjectsPage({
                 ))}
               </select>
             </label>
-            <label>
+
+            <label className="workbench-field workbench-field-wide">
               <span>Description</span>
-              <textarea className="workbench-textarea" name="description" rows={3} />
+              <textarea name="description" rows={4} placeholder="Optional" />
             </label>
-            <label>
-              <span>Deadline (optional)</span>
-              <input className="workbench-input" type="date" name="deadline" />
+
+            <label className="workbench-field">
+              <span>Deadline</span>
+              <input type="date" name="deadline" />
             </label>
-            <label>
+
+            <label className="workbench-field">
               <span>Visibility</span>
-              <select className="workbench-select" name="visibility" defaultValue="private">
+              <select name="visibility" defaultValue="private">
                 <option value="private">Private</option>
                 <option value="shared">Shared with collaborators</option>
                 <option value="public">Public (signed-in members)</option>
               </select>
             </label>
-            <label className="workbench-form-grid" style={{ gap: 6 }}>
-              <span style={{ fontSize: 13 }}>
-                <input type="checkbox" name="with_milestones" /> Add default research milestones (PhD / Masters templates only)
+
+            <label className="workbench-checkbox-field">
+              <input type="checkbox" name="with_milestones" />
+              <span>
+                Add default research milestones (PhD / Masters templates only)
               </span>
             </label>
-            <button type="submit" className="workbench-btn">
+
+            <PendingSubmitButton
+              className="workbench-project-submit"
+              pendingLabel="Creating…"
+            >
               Create project
-            </button>
+            </PendingSubmitButton>
           </form>
         </section>
-      ) : (
-        <p>
-          <Link className="workbench-btn" href="/my/workbench/projects?new=1">
-            New research project
-          </Link>
-        </p>
-      )}
+      ) : null}
 
-      <section className="workbench-panel" style={{ marginTop: 24 }}>
-        <h2>Your projects</h2>
+      <section className="workbench-project-list-card">
+        <div className="workbench-project-list-header">
+          <h2>Your projects</h2>
+          <p>
+            Select a project to manage linked records, reviews and tasks.
+          </p>
+        </div>
+
         {projects.length ? (
-          <ul className="workbench-list">
+          <div className="workbench-project-grid">
             {projects.map((p) => (
-              <li key={p.id}>
-                <Link className="workbench-link" href={`/my/workbench/projects/${p.id}`}>
-                  <strong>{p.title}</strong>
-                </Link>
-                <div style={{ fontSize: 12, color: "#525252", marginTop: 4 }}>
-                  {projectTypeLabel(p.project_type)} · {p.record_count} records ·{" "}
-                  {p.status}
-                  {p.deadline ? ` · deadline ${p.deadline}` : ""}
+              <Link
+                key={p.id}
+                href={`/my/workbench/projects/${p.id}`}
+                className="workbench-project-card"
+              >
+                <div>
+                  <h3>{p.title}</h3>
+                  <p>
+                    {projectTypeLabel(p.project_type)} · {p.record_count} records
+                    · {p.status}
+                    {p.deadline ? ` · deadline ${p.deadline}` : ""}
+                  </p>
                 </div>
-              </li>
+                <span>Open project →</span>
+              </Link>
             ))}
-          </ul>
+          </div>
         ) : (
-          <p>Create your first project to begin linking archive records.</p>
+          <p className="workbench-empty">
+            Create your first project to begin linking archive records.
+          </p>
         )}
       </section>
-    </>
+    </section>
   );
 }

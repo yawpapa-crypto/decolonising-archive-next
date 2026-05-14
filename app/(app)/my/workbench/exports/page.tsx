@@ -22,24 +22,28 @@ export default async function WorkbenchExportsPage() {
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 8 }}>
                 <a
                   className="workbench-link"
+                  data-no-loader="true"
                   href={`/api/workbench/export?projectId=${p.id}&format=txt`}
                 >
                   Citations (.txt)
                 </a>
                 <a
                   className="workbench-link"
+                  data-no-loader="true"
                   href={`/api/workbench/export?projectId=${p.id}&format=md`}
                 >
                   Bibliography (.md)
                 </a>
                 <a
                   className="workbench-link"
+                  data-no-loader="true"
                   href={`/api/workbench/export?projectId=${p.id}&format=csv`}
                 >
                   CSV
                 </a>
                 <a
                   className="workbench-link"
+                  data-no-loader="true"
                   href={`/api/workbench/export?projectId=${p.id}&format=json`}
                 >
                   JSON

@@ -17,6 +17,7 @@ import {
 import { getRecordHref, isExternalHref } from "@/src/lib/record-links";
 import { updateReadingList } from "@/app/(app)/workspace/actions";
 import MemberDashboardShell from "@/app/(app)/workspace/MemberDashboardShell";
+import PendingSubmitButton from "@/src/components/ui/PendingSubmitButton";
 
 export default async function MyListsPage() {
   const { profile, readingLists, readingListItems, recordsById } =
@@ -144,9 +145,12 @@ export default async function MyListsPage() {
                       <span>Public</span>
                     </label>
                     <input type="hidden" name="redirectTo" value="/my/lists" />
-                    <button type="submit" className="admin-button admin-button-secondary">
+                    <PendingSubmitButton
+                      className="admin-button admin-button-secondary"
+                      pendingLabel="Saving…"
+                    >
                       Save list
-                    </button>
+                    </PendingSubmitButton>
                   </form>
 
                   <ReadingListExportActions listId={list.id} listTitle={list.title} />

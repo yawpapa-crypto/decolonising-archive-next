@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useLocalToast } from "./useLocalToast";
 
 type ReadingListExportActionsProps = {
@@ -12,8 +13,11 @@ export default function ReadingListExportActions({
   listTitle,
 }: ReadingListExportActionsProps) {
   const { showToast, Toast } = useLocalToast();
+  const [copyBusy, setCopyBusy] = useState(false);
 
   const copyCitations = async () => {
+    if (copyBusy) return;
+    setCopyBusy(true);
     try {
       const response = await fetch(`/api/reading-lists/${listId}/export?format=txt`);
 
@@ -27,6 +31,8 @@ export default function ReadingListExportActions({
     } catch (error) {
       console.error("Copy citations failed:", error);
       showToast("Could not copy citations.");
+    } finally {
+      setCopyBusy(false);
     }
   };
 
@@ -37,14 +43,17 @@ export default function ReadingListExportActions({
       <button
         type="button"
         onClick={copyCitations}
+        disabled={copyBusy}
+        aria-busy={copyBusy}
         aria-label={`Copy citations for ${listTitle}`}
       >
         <span aria-hidden="true" className="export-action-icon">⧉</span>
-        <span>Copy</span>
+        <span>{copyBusy ? "Copying…" : "Copy"}</span>
       </button>
 
       <a
         href={`/api/reading-lists/${listId}/export?format=txt`}
+        data-no-loader="true"
         aria-label={`Download ${listTitle} as plain text`}
       >
         <span aria-hidden="true" className="export-action-icon">□</span>
@@ -53,6 +62,7 @@ export default function ReadingListExportActions({
 
       <a
         href={`/api/reading-lists/${listId}/export?format=docx`}
+        data-no-loader="true"
         aria-label={`Download ${listTitle} as Word document`}
       >
         <span aria-hidden="true" className="export-action-icon">⇩</span>

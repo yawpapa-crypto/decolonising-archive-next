@@ -4,6 +4,7 @@ import {
   deleteReadingList,
   deleteReadingListItem,
 } from "@/app/(app)/workspace/actions";
+import ConfirmSubmitButton from "@/app/(app)/workspace/ConfirmSubmitButton";
 
 type DeleteReadingListFormProps = {
   listId: string;
@@ -15,20 +16,17 @@ type RemoveReadingListItemFormProps = {
 
 export function DeleteReadingListForm({ listId }: DeleteReadingListFormProps) {
   return (
-    <form
-      action={deleteReadingList}
-      onSubmit={(event) => {
-        if (!window.confirm("Delete this reading list? This cannot be undone.")) {
-          event.preventDefault();
-        }
-      }}
-    >
+    <form action={deleteReadingList}>
       <input type="hidden" name="id" value={listId} />
       <input type="hidden" name="redirectTo" value="/my/lists" />
       <input type="hidden" name="confirm" value="yes" />
-      <button type="submit" className="workspace-link workspace-link-danger">
+      <ConfirmSubmitButton
+        className="workspace-link workspace-link-danger"
+        message="Delete this reading list? This cannot be undone."
+        pendingLabel="Deleting…"
+      >
         Delete list
-      </button>
+      </ConfirmSubmitButton>
     </form>
   );
 }
@@ -37,19 +35,16 @@ export function RemoveReadingListItemForm({
   itemId,
 }: RemoveReadingListItemFormProps) {
   return (
-    <form
-      action={deleteReadingListItem}
-      onSubmit={(event) => {
-        if (!window.confirm("Remove this record from the reading list?")) {
-          event.preventDefault();
-        }
-      }}
-    >
+    <form action={deleteReadingListItem}>
       <input type="hidden" name="id" value={itemId} />
       <input type="hidden" name="redirectTo" value="/my/lists" />
-      <button type="submit" className="workspace-link workspace-link-danger">
+      <ConfirmSubmitButton
+        className="workspace-link workspace-link-danger"
+        message="Remove this record from the reading list?"
+        pendingLabel="Removing…"
+      >
         Remove
-      </button>
+      </ConfirmSubmitButton>
     </form>
   );
 }

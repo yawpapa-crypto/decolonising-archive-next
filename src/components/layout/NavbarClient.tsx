@@ -11,6 +11,11 @@
 // app.js archive routing only handles clicks inside #app (see app.js).
 
 import Link from "next/link";
+import {
+  refreshBodyScrollLockPadding,
+  setBodyScrollLock,
+} from "@/lib/body-scroll-lock";
+import { archiveLoadingMessage } from "@/src/lib/loading-messages";
 import { Bell, Bookmark, Layers, ListChecks } from "lucide-react";
 import {
   useEffect,
@@ -43,9 +48,11 @@ function hardNavigateToArchive(
   if (isNonArchiveShellPath(window.location.pathname)) {
     event.preventDefault();
     event.stopPropagation();
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new Event("app:loading:start"));
-    }
+    window.dispatchEvent(
+      new CustomEvent("app:loading:start", {
+        detail: { message: archiveLoadingMessage(href) },
+      }),
+    );
     window.location.assign(href);
   }
 }
@@ -130,6 +137,17 @@ export default function NavbarClient({
 
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open]);
+
+  useEffect(() => {
+    setBodyScrollLock("menu", open);
+    if (!open) return;
+    const onResize = () => refreshBodyScrollLockPadding();
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      setBodyScrollLock("menu", false);
+    };
   }, [open]);
 
   useEffect(() => {
