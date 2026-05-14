@@ -763,7 +763,7 @@ export default function WorkbenchOverviewClient(props: {
       ) : null}
 
       {!projects.length ? (
-        <div className="workbench-board-empty" role="status">
+        <div className="workbench-board-empty empty-state" role="status">
           <strong>No research project yet</strong>
           Create a project to start tracking source checks, rights review, cultural review and publication tasks.
           <button type="button" className="workbench-board-new-task" onClick={() => setProjectOpen(true)}>Create research project</button>

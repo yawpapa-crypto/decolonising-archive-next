@@ -11645,7 +11645,8 @@ button.workspace-link-danger:hover {
 
 @media (prefers-reduced-motion: reduce) {
   .record-action-spinner,
-  .record-tools-message.is-loading::before {
+  .record-tools-message.is-loading::before,
+  .record-card-spinner {
     animation: none !important;
   }
 }
@@ -26091,6 +26092,15 @@ button.workbench-primary,
     animation: none;
     border-top-color: rgba(21, 25, 34, 0.45);
   }
+
+  .skeleton::after,
+  .loading-skeleton::after,
+  .card-skeleton::after,
+  .result-skeleton::after,
+  .record-skeleton::after {
+    animation: none !important;
+    transform: none !important;
+  }
 }
 
 @media (max-width: 760px) {
@@ -26101,9 +26111,27 @@ button.workbench-primary,
   .saved-record-action:active,
   .saved-record-note-save:active:not(:disabled),
   .member-mobile-bottom-nav__item:active,
+  .record-card-icon-btn:active:not(:disabled),
   .card:active {
     filter: brightness(0.93);
   }
+}
+
+.pending-submit-button:disabled,
+.pending-submit-button[disabled] {
+  opacity: 0.52;
+  cursor: not-allowed;
+}
+
+.pending-submit-button[aria-busy="true"]:not(:disabled) {
+  opacity: 0.88;
+  cursor: wait;
+}
+
+.saved-record-note-save:disabled,
+.saved-record-action-danger:disabled {
+  opacity: 0.52;
+  cursor: not-allowed;
 }
 
 /* Respect reduced motion and lower mobile instability */
@@ -27148,6 +27176,7 @@ body:has(.workbench-shell) footer.site-footer {
 .library-blended-discovery .mobile-filter-clear-all:focus-visible,
 .library-blended-discovery .mobile-filter-close:focus-visible,
 .library-blended-discovery .mobile-filter-apply:focus-visible,
+.library-blended-discovery .record-card-icon-btn:focus-visible,
 .record-detail-page .record-primary-button:focus-visible,
 .record-detail-page .record-icon-button:focus-visible,
 .record-detail-page .record-link-row:focus-visible,
@@ -27170,6 +27199,18 @@ body:has(.workbench-shell) footer.site-footer {
   .workbench-shell button:active,
   .workbench-shell a:active {
     transform: scale(0.985);
+  }
+}
+
+@media (hover: none) and (pointer: coarse) and (prefers-reduced-motion: reduce) {
+  .library-blended-discovery button:active,
+  .library-blended-discovery .record-card:active,
+  .record-detail-page button:active,
+  .record-detail-page .record-link-row:active,
+  .workbench-shell button:active,
+  .workbench-shell a:active {
+    transform: none;
+    filter: brightness(0.94);
   }
 }
 
@@ -27207,6 +27248,12 @@ body:has(.workbench-shell) footer.site-footer {
   background:
     radial-gradient(circle at 100% 0%, rgba(8, 119, 109, 0.026), transparent 34%),
     rgba(255, 254, 250, 0.9);
+}
+
+.record-detail-page .record-icon-button.copied {
+  background: rgba(8, 119, 109, 0.14);
+  border-color: rgba(8, 119, 109, 0.35);
+  color: rgba(12, 66, 58, 0.95);
 }
 
 .record-detail-page .record-primary-button:hover:not(:disabled),
@@ -27349,3 +27396,654 @@ body:has(.workbench-shell) footer.site-footer {
     scroll-behavior: auto !important;
   }
 }
+
+/* =========================================================
+   LIGHTWEIGHT INTERACTION POLISH
+   Safe UX layer only: hover, focus, tap, disabled, loading.
+   Does not change layout, data, grids, routing, or logic.
+   Put LAST.
+   ========================================================= */
+
+:root {
+  --ui-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ui-fast: 120ms;
+  --ui-med: 180ms;
+  --ui-ring: 0 0 0 4px rgba(20, 24, 33, 0.08);
+  --ui-ring-accent: 0 0 0 4px rgba(8, 119, 109, 0.12);
+}
+
+/* 1. Base interactive elements */
+a,
+button,
+summary,
+[role="button"],
+input,
+select,
+textarea {
+  transition:
+    background-color var(--ui-med) var(--ui-ease),
+    border-color var(--ui-med) var(--ui-ease),
+    color var(--ui-med) var(--ui-ease),
+    box-shadow var(--ui-med) var(--ui-ease),
+    opacity var(--ui-med) var(--ui-ease),
+    transform var(--ui-fast) var(--ui-ease);
+}
+
+/* 2. Clear keyboard focus without changing layout */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none !important;
+  box-shadow: var(--ui-ring-accent) !important;
+  border-color: rgba(8, 119, 109, 0.42) !important;
+}
+
+/* 3. Desktop hover, subtle lift only */
+@media (hover: hover) and (pointer: fine) {
+  a:hover,
+  button:hover,
+  summary:hover,
+  [role="button"]:hover {
+    opacity: 0.96;
+  }
+
+  .record-card:hover,
+  .archive-card:hover,
+  .result-card:hover,
+  .library-card:hover,
+  .collection-card:hover,
+  .saved-record-card:hover,
+  .workbench-project-card:hover,
+  .record-link-row:hover,
+  .record-sidebar-card:hover,
+  .workbench-card:hover,
+  .workbench-panel:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 18px 42px rgba(20, 24, 33, 0.075),
+      inset 0 1px 0 rgba(255, 255, 255, 0.94);
+  }
+}
+
+/* 4. Mobile tap feedback, so taps feel registered */
+@media (hover: none) and (pointer: coarse) {
+  a,
+  button,
+  summary,
+  [role="button"] {
+    -webkit-tap-highlight-color: rgba(20, 24, 33, 0.08);
+  }
+
+  a:active,
+  button:active,
+  summary:active,
+  [role="button"]:active,
+  .record-card:active,
+  .archive-card:active,
+  .result-card:active,
+  .library-card:active,
+  .collection-card:active,
+  .saved-record-card:active,
+  .workbench-project-card:active,
+  .record-link-row:active {
+    transform: scale(0.985);
+    opacity: 0.86;
+  }
+
+  /* Mobile tap targets, only where naturally interactive */
+  button,
+  [role="button"],
+  summary,
+  .record-card a,
+  .archive-card a,
+  .result-card a,
+  .library-card a,
+  .bottom-nav a,
+  .mobile-bottom-nav a,
+  .workspace-mobile-nav a {
+    min-height: 44px;
+  }
+}
+
+/* 5. Inputs feel more intentional */
+input,
+select,
+textarea {
+  caret-color: #151922;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(20, 24, 33, 0.38);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: rgba(8, 119, 109, 0.38);
+  box-shadow: var(--ui-ring-accent);
+}
+
+/* 6. Disabled states */
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed !important;
+  opacity: 0.52 !important;
+  filter: grayscale(0.2);
+  box-shadow: none !important;
+}
+
+/* 7. Loading/saving states if elements already use common flags/classes */
+button[aria-busy="true"],
+button[data-loading="true"],
+button.is-loading,
+.is-saving,
+.is-loading,
+[data-saving="true"],
+[data-loading="true"] {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.76;
+}
+
+button[aria-busy="true"]::after,
+button[data-loading="true"]::after,
+button.is-loading::after,
+.is-saving::after,
+.is-loading::after,
+[data-saving="true"]::after,
+[data-loading="true"]::after {
+  content: "";
+  width: 13px;
+  height: 13px;
+  margin-left: 8px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 999px;
+  display: inline-block;
+  vertical-align: -2px;
+  animation: uiSpin 720ms linear infinite;
+}
+
+@keyframes uiSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 8. Buttons: subtle pressed behaviour */
+button:active,
+[role="button"]:active {
+  transform: scale(0.985);
+}
+
+/* 9. Details/accordion polish */
+details > summary {
+  list-style: none;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+details > summary::after {
+  content: "+";
+  margin-left: auto;
+  color: rgba(20, 24, 33, 0.46);
+  font-weight: 800;
+  transition: transform var(--ui-med) var(--ui-ease);
+}
+
+details[open] > summary::after {
+  transform: rotate(45deg);
+}
+
+/* 10. Small chip hover feedback */
+.pill,
+.chip,
+.tag,
+.record-chip,
+.record-tag,
+.filter-chip,
+.related-search-chip {
+  transition:
+    background-color var(--ui-med) var(--ui-ease),
+    border-color var(--ui-med) var(--ui-ease),
+    color var(--ui-med) var(--ui-ease),
+    box-shadow var(--ui-med) var(--ui-ease),
+    transform var(--ui-fast) var(--ui-ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .pill:hover,
+  .chip:hover,
+  .tag:hover,
+  .record-chip:hover,
+  .record-tag:hover,
+  .filter-chip:hover,
+  .related-search-chip:hover {
+    transform: translateY(-1px);
+    border-color: rgba(20, 24, 33, 0.16);
+    box-shadow: 0 8px 18px rgba(20, 24, 33, 0.045);
+  }
+}
+
+/* 11. Smooth scroll only where safe */
+html {
+  scroll-behavior: smooth;
+}
+
+/* 12. Prevent motion sickness / reduce jank */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* 13. Mobile stability, no sideways interaction drift */
+@media (max-width: 760px) {
+  html,
+  body {
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  .record-card,
+  .archive-card,
+  .result-card,
+  .library-card,
+  .collection-card,
+  .saved-record-card,
+  .workbench-project-card {
+    backface-visibility: hidden;
+    transform: translateZ(0);
+  }
+}
+
+/* 14. Footer/legal links feel tappable but quiet */
+.site-footer a,
+.site-footer-nav a,
+.site-disclaimer-links a,
+.footer-links a,
+.legal-links a {
+  transition:
+    background-color var(--ui-med) var(--ui-ease),
+    border-color var(--ui-med) var(--ui-ease),
+    color var(--ui-med) var(--ui-ease),
+    transform var(--ui-fast) var(--ui-ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .site-footer a:hover,
+  .site-footer-nav a:hover,
+  .site-disclaimer-links a:hover,
+  .footer-links a:hover,
+  .legal-links a:hover {
+    transform: translateY(-1px);
+  }
+}
+
+/* 15. Make selected/active nav feel intentional */
+[aria-current="page"],
+.is-active,
+.active {
+  transition:
+    background-color var(--ui-med) var(--ui-ease),
+    color var(--ui-med) var(--ui-ease),
+    border-color var(--ui-med) var(--ui-ease),
+    box-shadow var(--ui-med) var(--ui-ease);
+}
+
+
+/* =========================================================
+   MICRO-INTERACTION POLISH SET 02
+   Tiny product-feel improvements only.
+   No layout, grid, data, routing or provider changes.
+   Put LAST.
+   ========================================================= */
+
+:root {
+  --micro-ink: #151922;
+  --micro-muted: rgba(20, 24, 33, 0.56);
+  --micro-line: rgba(20, 24, 33, 0.09);
+  --micro-soft: rgba(255, 255, 255, 0.82);
+  --micro-glass: rgba(255, 255, 255, 0.68);
+  --micro-success: #08776d;
+  --micro-danger: #9d2f22;
+}
+
+/* 1. Calm page entrance, lightweight */
+@media (prefers-reduced-motion: no-preference) {
+  main,
+  .archive-shell,
+  .library-main,
+  .record-detail-page,
+  .workbench-main {
+    animation: microPageIn 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+@keyframes microPageIn {
+  from {
+    opacity: 0.001;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 2. Premium scrollbars, desktop only */
+@media (hover: hover) and (pointer: fine) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(20, 24, 33, 0.22) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: rgba(20, 24, 33, 0.18);
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-clip: content-box;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: rgba(20, 24, 33, 0.30);
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+}
+
+/* 3. Make filter-selected states clearer without changing layout */
+[aria-pressed="true"],
+button.is-selected,
+button.selected,
+.filter-chip.is-active,
+.filter-chip.active,
+.filter-opt.is-active,
+.filter-opt.active,
+.filter-option.is-active,
+.filter-option.active {
+  background: var(--micro-ink) !important;
+  border-color: var(--micro-ink) !important;
+  color: #ffffff !important;
+  box-shadow:
+    0 12px 26px rgba(20, 24, 33, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+}
+
+/* 4. Better success/saved feedback if classes already exist */
+.is-saved,
+.is-success,
+[data-state="saved"],
+[data-status="success"],
+button[aria-label*="Saved"],
+button[title*="Saved"] {
+  border-color: rgba(8, 119, 109, 0.20) !important;
+  background: rgba(8, 119, 109, 0.09) !important;
+  color: var(--micro-success) !important;
+}
+
+.is-error,
+[data-state="error"],
+[data-status="error"] {
+  border-color: rgba(157, 47, 34, 0.20) !important;
+  background: rgba(157, 47, 34, 0.08) !important;
+  color: var(--micro-danger) !important;
+}
+
+/* 5. Empty states feel designed, not abandoned */
+.empty-state,
+.no-results,
+.workbench-board-empty,
+.library-empty,
+.search-empty,
+.record-empty,
+.empty.empty-guide,
+.saved-records-empty,
+.workbench-project-list-card .workbench-empty {
+  border: 1px solid rgba(20, 24, 33, 0.08) !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(8, 119, 109, 0.04), transparent 34%),
+    rgba(255, 255, 255, 0.82) !important;
+  box-shadow:
+    0 14px 34px rgba(20, 24, 33, 0.045),
+    inset 0 1px 0 rgba(255, 255, 255, 0.90) !important;
+}
+
+.empty-state strong,
+.no-results strong,
+.workbench-board-empty strong,
+.library-empty strong,
+.search-empty strong,
+.record-empty strong,
+.empty.empty-guide strong,
+.saved-records-empty strong,
+.workbench-project-list-card .workbench-empty strong {
+  color: var(--micro-ink) !important;
+  letter-spacing: -0.025em;
+}
+
+/* 6. Skeleton shimmer support if loading placeholder classes exist */
+.skeleton,
+.loading-skeleton,
+.card-skeleton,
+.result-skeleton,
+.record-skeleton {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  background: rgba(20, 24, 33, 0.06);
+}
+
+.skeleton::after,
+.loading-skeleton::after,
+.card-skeleton::after,
+.result-skeleton::after,
+.record-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background:
+    linear-gradient(
+      110deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.55) 45%,
+      transparent 75%
+    );
+  animation: microShimmer 1.15s ease-in-out infinite;
+}
+
+@keyframes microShimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* 7. Slightly more refined glass controls where already card-like */
+.glass,
+.glass-panel,
+.page-loader-card,
+.record-sidebar-card,
+.workbench-card,
+.workbench-panel,
+.site-disclaimer,
+.library-toolbar,
+.search-toolbar {
+  backdrop-filter: blur(16px) saturate(1.04);
+  -webkit-backdrop-filter: blur(16px) saturate(1.04);
+}
+
+/* 8. Cards get cleaner internal rhythm without layout change */
+.record-card > * + *,
+.archive-card > * + *,
+.result-card > * + *,
+.library-card > * + *,
+.collection-card > * + *,
+.saved-record-card > *,
+.workbench-project-card > * {
+  min-width: 0;
+}
+
+/* 9. Better inline links inside long text */
+main p a,
+.record-detail-page p a,
+.archive-record-page p a,
+.site-disclaimer p a,
+.about-page p a {
+  color: var(--micro-ink);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(20, 24, 33, 0.28);
+}
+
+main p a:hover,
+.record-detail-page p a:hover,
+.archive-record-page p a:hover,
+.site-disclaimer p a:hover,
+.about-page p a:hover {
+  text-decoration-color: rgba(20, 24, 33, 0.72);
+}
+
+/* 10. Modal/drawer backdrop feels calmer if present */
+.modal-backdrop,
+.drawer-backdrop,
+.workbench-modal-backdrop,
+.mobile-drawer-backdrop {
+  background: rgba(20, 24, 33, 0.24) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+/* 11. Better close buttons if present */
+.close-button,
+.modal-close,
+.drawer-close,
+.workbench-modal-close,
+.mobile-filter-close {
+  border-radius: 999px !important;
+  border: 1px solid rgba(20, 24, 33, 0.10) !important;
+  background: rgba(255, 255, 255, 0.86) !important;
+  color: var(--micro-ink) !important;
+  box-shadow:
+    0 10px 24px rgba(20, 24, 33, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
+}
+
+/* 12. Sticky bars feel less jumpy */
+.site-header,
+.mobile-header,
+.library-mobile-controls,
+.mobile-filter-bar,
+.workbench-sidebar {
+  will-change: auto;
+  backface-visibility: hidden;
+}
+
+/* 13. Subtle button hierarchy correction */
+button.secondary,
+.button-secondary,
+.btn-secondary,
+.workbench-button-secondary {
+  background: rgba(255, 255, 255, 0.86) !important;
+  color: var(--micro-ink) !important;
+  border-color: rgba(20, 24, 33, 0.10) !important;
+}
+
+button.danger,
+.button-danger,
+.btn-danger,
+.workbench-button-danger {
+  background: rgba(157, 47, 34, 0.075) !important;
+  color: var(--micro-danger) !important;
+  border-color: rgba(157, 47, 34, 0.16) !important;
+}
+
+/* 14. Mobile: clearer feedback without jumpiness */
+@media (max-width: 760px) {
+  main,
+  .archive-shell,
+  .library-main,
+  .record-detail-page,
+  .workbench-main {
+    animation-duration: 160ms;
+  }
+
+  .empty-state,
+  .no-results,
+  .workbench-board-empty,
+  .library-empty,
+  .search-empty,
+  .record-empty {
+    border-radius: 22px !important;
+  }
+
+  /* Make mobile active state visible but not dramatic */
+  a:active,
+  button:active,
+  summary:active,
+  [role="button"]:active {
+    box-shadow: inset 0 0 0 999px rgba(20, 24, 33, 0.045) !important;
+  }
+
+  /* Mobile form fields should feel stable */
+  input,
+  select,
+  textarea {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}
+
+/* 15. Reduced motion: keep it calm */
+@media (prefers-reduced-motion: reduce) {
+  main,
+  .archive-shell,
+  .library-main,
+  .record-detail-page,
+  .workbench-main {
+    animation: none !important;
+  }
+
+  .skeleton::after,
+  .loading-skeleton::after,
+  .card-skeleton::after,
+  .result-skeleton::after,
+  .record-skeleton::after {
+    animation: none !important;
+  }
+}
+

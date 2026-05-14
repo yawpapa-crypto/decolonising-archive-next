@@ -98,7 +98,11 @@ export default async function MyBookmarksPage() {
                             href={openHref}
                             className="saved-record-action saved-record-action-primary"
                             {...(isExternalHref(openHref)
-                              ? { target: "_blank", rel: "noreferrer" }
+                              ? {
+                                  target: "_blank",
+                                  rel: "noopener noreferrer",
+                                  "aria-label": "Open record in new tab",
+                                }
                               : {})}
                           >
                             Open record
@@ -133,7 +137,7 @@ export default async function MyBookmarksPage() {
                   );
                 })
               ) : (
-                <article className="saved-records-empty">
+                <article className="saved-records-empty empty-state" role="status">
                   <h2 className="saved-records-empty-title">No bookmarks yet</h2>
                   <p className="saved-records-empty-copy">
                     Save records from the library to keep them here for quick

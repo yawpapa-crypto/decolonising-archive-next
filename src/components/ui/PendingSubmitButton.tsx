@@ -30,7 +30,7 @@ export default function PendingSubmitButton({
       type="submit"
       className={["pending-submit-button", className].filter(Boolean).join(" ")}
       disabled={!!busy}
-      aria-busy={pending}
+      aria-busy={pending ? true : undefined}
       data-pending={pending ? "true" : undefined}
     >
       {pending ? (

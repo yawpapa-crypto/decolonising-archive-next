@@ -30,7 +30,7 @@ export default function ConfirmSubmitButton({
       type="submit"
       className={["pending-submit-button", className].filter(Boolean).join(" ")}
       disabled={!!disabled || pending}
-      aria-busy={pending}
+      aria-busy={pending ? true : undefined}
       data-pending={pending ? "true" : undefined}
       onClick={(event) => {
         onClick?.(event);

@@ -148,7 +148,7 @@ export default async function WorkbenchProjectsPage({
             ))}
           </div>
         ) : (
-          <p className="workbench-empty">
+          <p className="workbench-empty empty-state" role="status">
             Create your first project to begin linking archive records.
           </p>
         )}
