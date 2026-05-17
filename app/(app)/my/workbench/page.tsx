@@ -8,6 +8,7 @@ import {
   listWorkbenchProjects,
 } from "@/lib/workbench-data";
 import { getMemberWorkspaceData, workspaceRecordTitle } from "@/src/lib/member-workspace";
+import { createClient } from "@/src/lib/supabase/server";
 
 type SearchParams = Promise<{ updated?: string; error?: string }>;
 
@@ -26,6 +27,11 @@ export default async function WorkbenchOverviewPage({
   searchParams: SearchParams;
 }) {
   const sp = await searchParams;
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   const [overview, projectsRes, tasksRes, projectRecordsRes, annotationsRes, collaboratorsRes, workspace] =
     await Promise.all([
       getWorkbenchOverviewContext(),
@@ -85,7 +91,10 @@ export default async function WorkbenchOverviewPage({
       projectRecords={projectRecordsRes.ok ? projectRecordsRes.records : []}
       annotations={annotationsRes.ok ? annotationsRes.annotations : []}
       collaborators={collaboratorsRes.ok ? collaboratorsRes.collaborators : []}
+      currentUserId={user?.id ?? null}
       recordOptions={Array.from(recordOptionMap.values())}
+      savedRecordsCount={workspace.bookmarks.length}
+      readingListsCount={workspace.readingLists.length}
       initialNotice={sp.updated}
       initialError={errors.join(" ")}
     />

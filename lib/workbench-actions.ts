@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireMember } from "@/src/lib/auth";
+import { trackWorkbenchActivity } from "@/lib/workbench-activity-actions";
 import { createClient } from "@/src/lib/supabase/server";
 import { insertDefaultResearchMilestones } from "@/lib/workbench-data";
 import { isProjectRecordStatus, type ProjectRecordStatusId } from "@/lib/workbench-types";
@@ -223,6 +224,12 @@ export async function createWorkbenchTask(formData: FormData) {
   });
 
   if (error) fail(error.message, `${WB}/projects/${projectId}`);
+  void trackWorkbenchActivity({
+    eventType: "task_created",
+    entityType: "task",
+    entityId: title,
+    projectId,
+  });
   revalidatePath(`${WB}/projects/${projectId}`);
   revalidatePath(`${WB}/tasks`);
   redirectWorkbench("Task created.", `${WB}/projects/${projectId}`);
@@ -321,28 +328,20 @@ export async function createWorkbenchAnnotation(formData: FormData) {
 }
 
 export async function inviteWorkbenchCollaborator(formData: FormData) {
+  const { inviteWorkbenchCollaborator: inviteCollaborator } = await import(
+    "@/lib/workbench-collaborator-actions"
+  );
   await requireMember(WB);
   const projectId = text(formData, "project_id");
   const invitedEmail = text(formData, "invited_email");
   const role = text(formData, "role") || "viewer";
-  if (!projectId) fail("Missing project.");
-  if (!invitedEmail) fail("Email is required.");
-
-  if (!["editor", "reviewer", "viewer"].includes(role)) {
-    fail("Invalid role.");
-  }
-
-  const supabase = await createClient();
-  const { error } = await supabase.from("workbench_collaborators").insert({
-    project_id: projectId,
-    invited_email: invitedEmail,
+  const result = await inviteCollaborator({
+    projectId,
+    email: invitedEmail,
     role,
   });
-
-  if (error) fail(error.message, `${WB}/projects/${projectId}`);
-  revalidatePath(`${WB}/projects/${projectId}`);
-  revalidatePath(`${WB}/collaborators`);
-  redirectWorkbench("Invitation recorded.", `${WB}/projects/${projectId}`);
+  if (!result.ok) fail(result.error || "Could not invite collaborator.", `${WB}/projects/${projectId}`);
+  redirectWorkbench("Collaborator invited.", `${WB}/projects/${projectId}`);
 }
 
 export async function importReadingListToProject(formData: FormData) {
@@ -371,6 +370,14 @@ export async function importReadingListToProject(formData: FormData) {
     });
     if (error) fail(error.message, `${WB}/projects/${projectId}`);
   }
+
+  void trackWorkbenchActivity({
+    eventType: "record_added_to_project",
+    entityType: "project",
+    entityId: projectId,
+    projectId,
+    metadata: { reading_list_id: readingListId, record_count: rows.length },
+  });
 
   revalidatePath(`${WB}/projects/${projectId}`);
   redirectWorkbench(
@@ -413,6 +420,13 @@ export async function createProjectAndAddRecord(formData: FormData) {
     },
     { onConflict: "project_id,record_id" },
   );
+
+  void trackWorkbenchActivity({
+    eventType: "record_added_to_project",
+    entityType: "record",
+    entityId: recordId,
+    projectId: project.id,
+  });
 
   revalidatePath(WB);
   revalidatePath(`${WB}/projects`);

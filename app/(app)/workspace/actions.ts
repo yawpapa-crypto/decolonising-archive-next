@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { readRecords } from "@/lib/records";
 import { requireMember } from "@/src/lib/auth";
+import { trackWorkbenchActivity } from "@/lib/workbench-activity-actions";
 import { createClient } from "@/src/lib/supabase/server";
 
 function text(formData: FormData, key: string) {
@@ -51,6 +52,12 @@ export async function createBookmark(formData: FormData) {
   );
 
   if (error) fail(error.message, redirectTo);
+  void trackWorkbenchActivity({
+    eventType: "record_saved",
+    entityType: "record",
+    entityId: recordId,
+    metadata: { record_title: recordTitle },
+  });
   revalidatePath(redirectTo);
   done("Bookmark saved.", redirectTo);
 }
@@ -289,6 +296,12 @@ export async function addRecordToReadingList(formData: FormData) {
   );
 
   if (error) fail(error.message, redirectTo);
+  void trackWorkbenchActivity({
+    eventType: "record_added_to_reading_list",
+    entityType: "reading_list_item",
+    entityId: recordId,
+    metadata: { reading_list_id: readingListId },
+  });
   revalidatePath(redirectTo);
   done("Record added to reading list.", redirectTo);
 }

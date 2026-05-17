@@ -33,6 +33,7 @@ import type {
   WorkbenchProjectRow,
   WorkbenchTaskRow,
 } from "@/lib/workbench-data";
+import WorkbenchCollaboratorPanel from "./WorkbenchCollaboratorPanel";
 
 export type WorkbenchRecordOption = {
   id: string;
@@ -242,13 +243,17 @@ export default function WorkbenchOverviewClient(props: {
   projectRecords: WorkbenchProjectRecordRow[];
   annotations: Array<WorkbenchAnnotationRow & { project_title?: string; record_title?: string }>;
   collaborators: WorkbenchCollaboratorRow[];
+  currentUserId: string | null;
   recordOptions: WorkbenchRecordOption[];
+  savedRecordsCount: number;
+  readingListsCount: number;
   initialNotice?: string;
   initialError?: string;
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [projects, setProjects] = useState(props.projects);
+  const [collaborators, setCollaborators] = useState(props.collaborators);
   const [tasks, setTasks] = useState(props.tasks);
   const [projectRecords, setProjectRecords] = useState(props.projectRecords);
   const [annotations, setAnnotations] = useState(props.annotations);
@@ -330,50 +335,90 @@ export default function WorkbenchOverviewClient(props: {
 
   const selectedProject = projects.find((p) => p.id === selectedProjectId) || projects[0] || null;
   const activeProjectId = selectedProject?.id || "";
+
+  const activeProjectCollaborators = useMemo(
+    () => collaborators.filter((c) => c.project_id === activeProjectId),
+    [collaborators, activeProjectId],
+  );
+
+  const canManageActiveProjectCollaborators = useMemo(() => {
+    if (!activeProjectId || !props.currentUserId) return false;
+    if (selectedProject?.owner_id === props.currentUserId) return true;
+    return collaborators.some(
+      (c) =>
+        c.project_id === activeProjectId &&
+        c.user_id === props.currentUserId &&
+        c.role === "editor",
+    );
+  }, [activeProjectId, props.currentUserId, selectedProject?.owner_id, collaborators]);
   const recordMap = useMemo(() => new Map(props.recordOptions.map((r) => [r.id, r.title])), [props.recordOptions]);
   const ownerOptions = useMemo(() => {
     const owners = new Set<string>();
     tasks.forEach((task) => owners.add(taskOwner(task)));
-    props.collaborators.forEach((c) => {
+    collaborators.forEach((c) => {
       if (c.invited_email) owners.add(c.invited_email);
       if (c.user_id) owners.add(c.user_id);
     });
     owners.add("Unassigned");
     return Array.from(owners).sort();
-  }, [tasks, props.collaborators]);
+  }, [tasks, collaborators]);
 
-  const visibleTasks = useMemo(() => {
-    const term = query.trim().toLowerCase();
-    return tasks
-      .filter((task) => !activeProjectId || task.project_id === activeProjectId)
-      .filter((task) => {
-        const rid = linkedRecordId(task);
-        const recordTitle = rid ? recordMap.get(rid) || rid : "";
-        const haystack = [
-          task.title,
-          task.notes,
-          task.review_type,
-          reviewLabel(task.review_type),
-          rid,
-          recordTitle,
-        ].join(" ").toLowerCase();
-        if (term && !haystack.includes(term)) return false;
-        if (ownerFilter && taskOwner(task) !== ownerFilter) return false;
-        if (statusFilter && task.status !== statusFilter) return false;
-        if (priorityFilter && task.priority !== priorityFilter) return false;
-        if (reviewFilter && task.review_type !== reviewFilter) return false;
-        return true;
-      })
-      .sort((a, b) => {
-        if (sortMode === "due_desc") return String(b.due_date || "9999").localeCompare(String(a.due_date || "9999"));
-        if (sortMode === "priority") return priorityWeight(b.priority) - priorityWeight(a.priority);
-        if (sortMode === "created_desc") return String(b.created_at).localeCompare(String(a.created_at));
-        return String(a.due_date || "9999").localeCompare(String(b.due_date || "9999"));
-      });
-  }, [activeProjectId, ownerFilter, priorityFilter, query, recordMap, reviewFilter, sortMode, statusFilter, tasks]);
+  const term = query.trim().toLowerCase();
+  const visibleTasks = tasks
+    .filter((task) => !activeProjectId || task.project_id === activeProjectId)
+    .filter((task) => {
+      const rid = linkedRecordId(task);
+      const recordTitle = rid ? recordMap.get(rid) || rid : "";
+      const haystack = [
+        task.title,
+        task.notes,
+        task.review_type,
+        reviewLabel(task.review_type),
+        rid,
+        recordTitle,
+      ].join(" ").toLowerCase();
+      if (term && !haystack.includes(term)) return false;
+      if (ownerFilter && taskOwner(task) !== ownerFilter) return false;
+      if (statusFilter && task.status !== statusFilter) return false;
+      if (priorityFilter && task.priority !== priorityFilter) return false;
+      if (reviewFilter && task.review_type !== reviewFilter) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      if (sortMode === "due_desc") return String(b.due_date || "9999").localeCompare(String(a.due_date || "9999"));
+      if (sortMode === "priority") return priorityWeight(b.priority) - priorityWeight(a.priority);
+      if (sortMode === "created_desc") return String(b.created_at).localeCompare(String(a.created_at));
+      return String(a.due_date || "9999").localeCompare(String(b.due_date || "9999"));
+    });
 
   const selectedProjectRecords = projectRecords.filter((record) => record.project_id === activeProjectId);
   const selectedProjectAnnotations = annotations.filter((annotation) => annotation.project_id === activeProjectId);
+  const totalDoneTasks = tasks.filter((task) => task.status === "done").length;
+  const totalOpenTasks = tasks.length - totalDoneTasks;
+  const selectedDoneTasks = visibleTasks.filter((task) => task.status === "done").length;
+  const selectedNeedsReviewTasks = visibleTasks.filter((task) => task.status === "needs_review").length;
+  const recentProjects = projects.slice(0, 4);
+  const recentActivity = [
+    ...tasks.slice(0, 4).map((task) => ({
+      id: `task-${task.id}`,
+      label: task.title,
+      meta: `${task.project_title} / ${statusLabel(task.status)}`,
+    })),
+    ...annotations.slice(0, 3).map((annotation) => ({
+      id: `note-${annotation.id}`,
+      label: annotation.note,
+      meta: `${annotation.project_title || "Project"} / annotation`,
+    })),
+  ].slice(0, 5);
+  const projectInitials = selectedProject
+    ? selectedProject.title
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0])
+        .join("")
+        .toUpperCase()
+    : "AW";
 
   function mutateTask(taskId: string, patch: Partial<TaskWithProject>) {
     setTasks((current) => current.map((task) => (task.id === taskId ? { ...task, ...patch } : task)));
@@ -654,47 +699,67 @@ export default function WorkbenchOverviewClient(props: {
   const comingSoon = (label: string) => setNotice(`${label} is coming soon. Core task and project tools are active now.`);
 
   return (
-    <div className="workbench-board-page">
+    <div className="workbench-dashboard-page workbench-board-page">
       {(notice || error) ? (
         <p className={`workbench-flash ${error ? "is-error" : ""}`} role={error ? "alert" : "status"}>
           {error || notice}
         </p>
       ) : null}
 
-      <header className="workbench-board-header">
-        <div>
-          <div className="workbench-board-title-row">
-            <h1>{selectedProject ? selectedProject.title : "Archive Workbench"}</h1>
-            <div className="workbench-project-actions">
-              <button
-                className="workbench-board-title-menu"
-                type="button"
-                onClick={openProjectMenu}
-                aria-expanded={isProjectMenuOpen}
-                aria-haspopup="menu"
-                aria-label="Open project menu"
-              >
-                ▾
-              </button>
-              {isProjectMenuOpen ? (
-                <div className="workbench-project-menu" role="menu">
-                  <button type="button" role="menuitem" onClick={openRenameProject}>
-                    Rename project
-                  </button>
-                  <button type="button" role="menuitem" onClick={openEditProject}>
-                    Edit project details
-                  </button>
-                  <button type="button" role="menuitem" className="is-danger" onClick={openDeleteProject}>
-                    Delete project
-                  </button>
-                </div>
-              ) : null}
+      <header className="workbench-dashboard-header workbench-board-header">
+        <div className="workbench-dashboard-identity">
+          <span className="workbench-dashboard-avatar" aria-hidden="true">
+            {projectInitials}
+          </span>
+          <div className="workbench-dashboard-copy">
+            <p className="workbench-kicker">Archive Workbench</p>
+            <div className="workbench-board-title-row">
+              <h1>{selectedProject ? selectedProject.title : "Archive Workbench"}</h1>
+              <div className="workbench-project-actions">
+                <button
+                  className="workbench-board-title-menu"
+                  type="button"
+                  onClick={openProjectMenu}
+                  aria-expanded={isProjectMenuOpen}
+                  aria-haspopup="menu"
+                  aria-label="Open project menu"
+                >
+                  <span className="workbench-menu-chevron" aria-hidden="true" />
+                </button>
+                {isProjectMenuOpen ? (
+                  <div className="workbench-project-menu" role="menu">
+                    <button type="button" role="menuitem" onClick={openRenameProject}>
+                      Rename project
+                    </button>
+                    <button type="button" role="menuitem" onClick={openEditProject}>
+                      Edit project details
+                    </button>
+                    <button type="button" role="menuitem" className="is-danger" onClick={openDeleteProject}>
+                      Delete project
+                    </button>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+            <p>Research project board for metadata, rights, cultural review, citation and publication work.</p>
+            <div className="workbench-dashboard-meta" aria-label="Workbench metadata">
+              <span>{projects.length} projects</span>
+              <span>{tasks.length} tasks</span>
+              <span>{projectRecords.length} linked records</span>
+              <span>{activeProjectCollaborators.length} collaborators</span>
             </div>
           </div>
-          <p>Research project board for metadata, rights, cultural review, citation and publication work.</p>
+        </div>
+        <div className="workbench-dashboard-actions" aria-label="Workbench actions">
+          <button type="button" className="workbench-button workbench-button-primary workbench-create-project-button" onClick={() => setProjectOpen(true)}>
+            New project
+          </button>
+          <button type="button" className="workbench-button workbench-button-secondary workbench-dashboard-secondary" onClick={() => router.push("/my/workbench/projects")}>
+            View projects
+          </button>
           {projects.length ? (
             <label className="workbench-board-project-select">
-              <span>Project</span>
+              <span>Active project</span>
               <select value={activeProjectId} onChange={(e) => setSelectedProjectId(e.target.value)}>
                 {projects.map((project) => (
                   <option value={project.id} key={project.id}>{project.title}</option>
@@ -703,17 +768,137 @@ export default function WorkbenchOverviewClient(props: {
             </label>
           ) : null}
         </div>
-        <div className="workbench-board-actions" aria-label="Board actions">
-          <button type="button" onClick={() => comingSoon("AI suggestions")}>AI suggestions</button>
-          <button type="button" onClick={() => comingSoon("Integrations")}>Integrate</button>
-          <button type="button" onClick={() => comingSoon("Automations")}>Automate</button>
-          <button type="button" onClick={() => comingSoon("Collaborator management")}>Collaborators</button>
-          <button type="button" className="workbench-board-invite" onClick={() => comingSoon("Invites")}>Invite / 1</button>
-          <button type="button" onClick={() => comingSoon("More board actions")} aria-label="More actions">•••</button>
-        </div>
       </header>
 
-      <nav className="workbench-board-tabs" aria-label="Workbench views">
+      <section className="workbench-dashboard-grid" aria-label="Workbench dashboard overview">
+        <div className="workbench-dashboard-column">
+          <section className="workbench-card workbench-dashboard-card workbench-usage-card">
+            <div className="workbench-panel-header">
+              <div>
+                <p className="workbench-card-label">Usage overview</p>
+                <h2>Research operations</h2>
+              </div>
+              <span className="workbench-status-pill">Active</span>
+            </div>
+            <div className="workbench-stat-grid">
+              {[
+                ["Projects", projects.length],
+                ["Tasks", tasks.length],
+                ["Saved Records", props.savedRecordsCount],
+                ["Reading Lists", props.readingListsCount],
+                ["Collaborators", activeProjectCollaborators.length],
+                ["Exports", projects.length],
+              ].map(([label, value]) => (
+                <article className="workbench-stat-card" key={label}>
+                  <span>{label}</span>
+                  <strong>{value}</strong>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="workbench-card workbench-dashboard-card workbench-project-summary-card">
+            <div className="workbench-panel-header">
+              <div>
+                <p className="workbench-card-label">Recent projects</p>
+                <h2>Project summary</h2>
+              </div>
+              <button type="button" className="workbench-link-button" onClick={() => router.push("/my/workbench/projects")}>
+                View all
+              </button>
+            </div>
+            <div className="workbench-dashboard-list">
+              {recentProjects.length ? recentProjects.map((project) => (
+                <button
+                  type="button"
+                  key={project.id}
+                  className="workbench-dashboard-list-row"
+                  onClick={() => setSelectedProjectId(project.id)}
+                >
+                  <span>{project.title}</span>
+                  <em>{project.status} / {project.visibility}</em>
+                </button>
+              )) : (
+                <p className="workbench-muted">No projects yet.</p>
+              )}
+            </div>
+          </section>
+
+          <section className="workbench-card workbench-dashboard-card">
+            <div className="workbench-panel-header">
+              <div>
+                <p className="workbench-card-label">Task status</p>
+                <h2>Current workload</h2>
+              </div>
+            </div>
+            <div className="workbench-status-grid">
+              <span><strong>{totalOpenTasks}</strong> open</span>
+              <span><strong>{totalDoneTasks}</strong> complete</span>
+              <span><strong>{selectedNeedsReviewTasks}</strong> need review</span>
+              <span><strong>{selectedDoneTasks}</strong> complete in active project</span>
+            </div>
+          </section>
+        </div>
+
+        <aside className="workbench-dashboard-column workbench-dashboard-aside">
+          <section className="workbench-card workbench-dashboard-card workbench-activity-card">
+            <div className="workbench-panel-header">
+              <div>
+                <p className="workbench-card-label">Collaborators</p>
+                <h2>Project members</h2>
+              </div>
+              <span className="workbench-status-pill">{activeProjectCollaborators.length}</span>
+            </div>
+            {activeProjectId ? (
+              <WorkbenchCollaboratorPanel
+                projectId={activeProjectId}
+                collaborators={collaborators}
+                canManage={canManageActiveProjectCollaborators}
+                compact
+                onCollaboratorsChange={setCollaborators}
+              />
+            ) : (
+              <p className="workbench-muted">Create a project to invite collaborators.</p>
+            )}
+          </section>
+
+          <section className="workbench-card workbench-dashboard-card workbench-activity-card">
+            <div className="workbench-panel-header">
+              <div>
+                <p className="workbench-card-label">Activity</p>
+                <h2>Recent changes</h2>
+              </div>
+            </div>
+            <div className="workbench-activity-list">
+              {recentActivity.length ? recentActivity.map((item) => (
+                <article key={item.id}>
+                  <span aria-hidden="true" />
+                  <div>
+                    <strong>{item.label}</strong>
+                    <em>{item.meta}</em>
+                  </div>
+                </article>
+              )) : <p className="workbench-muted">Activity will appear after you create tasks or annotations.</p>}
+            </div>
+          </section>
+
+          <section className="workbench-card workbench-dashboard-card">
+            <div className="workbench-panel-header">
+              <div>
+                <p className="workbench-card-label">Quick actions</p>
+                <h2>Help & support</h2>
+              </div>
+            </div>
+            <div className="workbench-quick-actions">
+              <button type="button" onClick={() => openNewTask("todo")}>Create task</button>
+              <button type="button" onClick={() => router.push("/my/workbench/saved-records")}>Saved records</button>
+              <button type="button" onClick={() => router.push("/my/workbench/exports")}>Export data</button>
+            </div>
+          </section>
+        </aside>
+      </section>
+
+      <nav className="workbench-tabs workbench-board-tabs" aria-label="Workbench views">
         {[
           ["table", "Main table"],
           ["board", "Board"],
@@ -728,8 +913,8 @@ export default function WorkbenchOverviewClient(props: {
         <button type="button" onClick={() => comingSoon("Custom views")} aria-label="Add view">+</button>
       </nav>
 
-      <div className="workbench-board-toolbar" aria-label="Board toolbar">
-        <button type="button" className="workbench-board-new-task" onClick={() => openNewTask("todo")}>New task</button>
+      <div className="workbench-toolbar workbench-board-toolbar" aria-label="Board toolbar">
+        <button type="button" className="workbench-button workbench-button-primary workbench-board-new-task" onClick={() => openNewTask("todo")}>New task</button>
         <label><span>Search</span><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search tasks" /></label>
         <label><span>Person</span><select value={ownerFilter} onChange={(e) => setOwnerFilter(e.target.value)}><option value="">All owners</option>{ownerOptions.map((owner) => <option key={owner} value={owner}>{owner}</option>)}</select></label>
         <label><span>Status</span><select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}><option value="">All statuses</option>{TASK_STATUSES.map((s) => <option key={s} value={s}>{statusLabel(s)}</option>)}</select></label>
@@ -763,10 +948,10 @@ export default function WorkbenchOverviewClient(props: {
       ) : null}
 
       {!projects.length ? (
-        <div className="workbench-board-empty empty-state" role="status">
+        <div className="workbench-empty-state workbench-board-empty empty-state" role="status">
           <strong>No research project yet</strong>
           Create a project to start tracking source checks, rights review, cultural review and publication tasks.
-          <button type="button" className="workbench-board-new-task" onClick={() => setProjectOpen(true)}>Create research project</button>
+          <button type="button" className="workbench-button workbench-button-primary workbench-board-new-task" onClick={() => setProjectOpen(true)}>Create research project</button>
         </div>
       ) : view === "table" ? (
         <MainTable grouped={groupedTasks()} hidden={hidden} recordMap={recordMap} onAdd={openNewTask} onPatch={savePatch} onEdit={openEditTask} onDelete={(task) => setDeletingTaskId(task.id)} />

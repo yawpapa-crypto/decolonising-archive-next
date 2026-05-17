@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Fragment, useCallback, useEffect, useMemo, useState, useTransition } from "react";
+import { Fragment, useCallback, useMemo, useState, useTransition } from "react";
 import type {
   WorkbenchAnnotationRow,
+  WorkbenchCollaboratorRow,
   WorkbenchMilestoneRow,
   WorkbenchProjectRecordRow,
   WorkbenchProjectRow,
@@ -14,7 +14,6 @@ import { snapshotRecordRights, type RecordRightsSnapshot } from "@/lib/workbench
 import {
   createWorkbenchAnnotation,
   importReadingListToProject,
-  inviteWorkbenchCollaborator,
   removeProjectRecord,
   updateProjectRecord,
   updateWorkbenchProject,
@@ -40,6 +39,7 @@ import {
 } from "@/lib/workbench-types";
 import { getRecordHref, isExternalHref } from "@/src/lib/record-links";
 import PendingSubmitButton from "@/src/components/ui/PendingSubmitButton";
+import WorkbenchCollaboratorPanel from "../../WorkbenchCollaboratorPanel";
 
 export type WorkbenchArchiveLite = {
   id: string;
@@ -78,6 +78,16 @@ const TABLE_COLS: { id: TableCol; label: string }[] = [
 
 const COL_STORAGE = (projectId: string) => `wb-pm-cols-${projectId}`;
 
+function readVisibleColumns(projectId: string): Record<TableCol, boolean> {
+  if (typeof window === "undefined") return defaultVisible();
+  try {
+    const raw = localStorage.getItem(COL_STORAGE(projectId));
+    return raw ? { ...defaultVisible(), ...(JSON.parse(raw) as Record<TableCol, boolean>) } : defaultVisible();
+  } catch {
+    return defaultVisible();
+  }
+}
+
 function notesLineCount(notes: string | null | undefined) {
   if (!notes?.trim()) return 0;
   return notes.split(/\n/).filter((l) => l.trim().length > 0).length;
@@ -94,7 +104,8 @@ export default function ProjectWorkbenchClient(props: {
   tasks: WorkbenchTaskRow[];
   milestones: WorkbenchMilestoneRow[];
   annotations: WorkbenchAnnotationRow[];
-  collaborators: { id: string; invited_email: string | null; user_id: string | null; role: string }[];
+  collaborators: WorkbenchCollaboratorRow[];
+  canManageCollaborators: boolean;
   readingLists: { id: string; title: string }[];
   archiveById: WorkbenchArchiveLite[];
   flashUpdated?: string;
@@ -108,6 +119,7 @@ export default function ProjectWorkbenchClient(props: {
     milestones,
     annotations,
     collaborators,
+    canManageCollaborators,
     readingLists,
     archiveById: archiveList,
     flashUpdated,
@@ -129,27 +141,9 @@ export default function ProjectWorkbenchClient(props: {
   const [groupBy, setGroupBy] = useState<"workflow" | "status" | "review_type" | "owner_name">(
     "workflow",
   );
-  const [visibleCols, setVisibleCols] = useState<Record<TableCol, boolean> | null>(null);
+  const [visibleCols, setVisibleCols] = useState<Record<TableCol, boolean> | null>(() => readVisibleColumns(projectId));
   const [dragTaskId, setDragTaskId] = useState<string | null>(null);
   const [projectNotes, setProjectNotes] = useState(project.notes ?? "");
-
-  useEffect(() => {
-    setProjectNotes(project.notes ?? "");
-  }, [project.notes]);
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(COL_STORAGE(projectId));
-      if (raw) {
-        const parsed = JSON.parse(raw) as Record<TableCol, boolean>;
-        setVisibleCols({ ...defaultVisible(), ...parsed });
-      } else {
-        setVisibleCols(defaultVisible());
-      }
-    } catch {
-      setVisibleCols(defaultVisible());
-    }
-  }, [projectId]);
 
   const owners = useMemo(() => {
     const s = new Set<string>();
@@ -291,9 +285,17 @@ export default function ProjectWorkbenchClient(props: {
     rows.sort((a, b) => a.date.localeCompare(b.date));
     return rows;
   }, [tasks, milestones]);
+  const projectInitials = project.title
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+  const doneTasks = tasks.filter((task) => task.status === "done").length;
 
   return (
-    <>
+    <div className="workbench-dashboard-page workbench-project-detail-page-clean">
       {flashUpdated ? (
         <p className="workbench-flash" role="status">
           {flashUpdated}
@@ -305,15 +307,36 @@ export default function ProjectWorkbenchClient(props: {
         </p>
       ) : null}
 
-      <header className="workbench-pm-header">
-        <div>
-          <p className="workbench-kicker">Project</p>
-          <h1 className="workbench-page-title">{project.title}</h1>
-          {project.description ? <p className="workbench-lede">{project.description}</p> : null}
+      <header className="workbench-pm-header workbench-dashboard-header">
+        <div className="workbench-dashboard-identity">
+          <span className="workbench-dashboard-avatar" aria-hidden="true">
+            {projectInitials || "PR"}
+          </span>
+          <div className="workbench-dashboard-copy">
+            <p className="workbench-kicker">Project</p>
+            <h1 className="workbench-page-title">{project.title}</h1>
+            {project.description ? <p className="workbench-lede">{project.description}</p> : null}
+            <div className="workbench-dashboard-meta" aria-label="Project metadata">
+              <span>{project.status}</span>
+              <span>{project.visibility}</span>
+              <span>{records.length} records</span>
+              <span>{tasks.length} tasks</span>
+              <span>{doneTasks} complete</span>
+              {project.deadline ? <span>Due {project.deadline}</span> : null}
+            </div>
+          </div>
+        </div>
+        <div className="workbench-dashboard-actions">
+          <button type="button" className="workbench-button workbench-button-primary workbench-create-project-button" onClick={() => setView("table")}>
+            Main table
+          </button>
+          <button type="button" className="workbench-button workbench-button-secondary workbench-dashboard-secondary" onClick={() => setView("records")}>
+            Records
+          </button>
         </div>
       </header>
 
-      <div className="workbench-pm-tabs" role="tablist" aria-label="Project views">
+      <div className="workbench-tabs workbench-pm-tabs" role="tablist" aria-label="Project views">
         {tabBtn("table", "Main table")}
         {tabBtn("board", "Board")}
         {tabBtn("timeline", "Timeline")}
@@ -344,7 +367,7 @@ export default function ProjectWorkbenchClient(props: {
             owners={owners}
             run={run}
           />
-          <div className="workbench-pm-table-scroll workbench-task-table">
+          <div className="workbench-table workbench-pm-table-scroll workbench-task-table">
             <table className="workbench-pm-table">
               <thead>
                 <tr>
@@ -494,9 +517,10 @@ export default function ProjectWorkbenchClient(props: {
           project={project}
           readingLists={readingLists}
           collaborators={collaborators}
+          canManageCollaborators={canManageCollaborators}
         />
       </details>
-    </>
+    </div>
   );
 }
 
@@ -815,7 +839,7 @@ function WorkbenchToolbar(props: {
   };
 
   return (
-    <div className="workbench-pm-toolbar">
+    <div className="workbench-toolbar workbench-pm-toolbar">
       <div className="workbench-pm-toolbar-row">
         <button type="button" className="workbench-btn" onClick={() => setNewOpen((o) => !o)}>
           New task
@@ -1181,9 +1205,10 @@ function NotesSection(props: {
 function AdminForms(props: {
   project: WorkbenchProjectRow;
   readingLists: { id: string; title: string }[];
-  collaborators: { id: string; invited_email: string | null; user_id: string | null; role: string }[];
+  collaborators: WorkbenchCollaboratorRow[];
+  canManageCollaborators: boolean;
 }) {
-  const { project, readingLists, collaborators } = props;
+  const { project, readingLists, collaborators, canManageCollaborators } = props;
   return (
     <div className="workbench-pm-admin-grid">
       <section className="workbench-panel">
@@ -1261,34 +1286,11 @@ function AdminForms(props: {
       </section>
       <section className="workbench-panel">
         <h2>Collaborators</h2>
-        <form action={inviteWorkbenchCollaborator} className="workbench-form-grid">
-          <input type="hidden" name="project_id" value={project.id} />
-          <label>
-            <span>Email</span>
-            <input className="workbench-input" type="email" name="invited_email" required />
-          </label>
-          <label>
-            <span>Role</span>
-            <select className="workbench-select" name="role" defaultValue="viewer">
-              <option value="editor">Editor</option>
-              <option value="reviewer">Reviewer</option>
-              <option value="viewer">Viewer</option>
-            </select>
-          </label>
-          <PendingSubmitButton
-            className="workbench-btn workbench-btn-secondary"
-            pendingLabel="Sending…"
-          >
-            Invite
-          </PendingSubmitButton>
-        </form>
-        <ul className="workbench-list">
-          {collaborators.map((c) => (
-            <li key={c.id}>
-              {c.invited_email ?? c.user_id ?? "—"} · {c.role}
-            </li>
-          ))}
-        </ul>
+        <WorkbenchCollaboratorPanel
+          projectId={project.id}
+          collaborators={collaborators}
+          canManage={canManageCollaborators}
+        />
       </section>
       <section className="workbench-panel">
         <h2>Exports</h2>

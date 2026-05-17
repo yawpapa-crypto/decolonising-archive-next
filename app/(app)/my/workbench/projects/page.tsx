@@ -16,26 +16,23 @@ export default async function WorkbenchProjectsPage({
   const showNew = sp.new === "1";
 
   return (
-    <section className="workbench-projects-page">
-      <header className="workbench-projects-header">
-        <p className="workbench-projects-eyebrow">Projects</p>
-        <div className="workbench-projects-header-row">
-          <div>
-            <h1>Research projects</h1>
-            <p>
-              Each project links archive records to workflow stages, reviews,
-              tasks, and exports.
-            </p>
-          </div>
-          {showNew ? null : (
-            <Link
-              href="/my/workbench/projects?new=1"
-              className="workbench-projects-new-button"
-            >
-              New research project
-            </Link>
-          )}
+    <section className="workbench-dashboard-page workbench-projects-page">
+      <header className="workbench-projects-header workbench-projects-header--fixed">
+        <div className="workbench-projects-heading-block">
+          <p className="workbench-projects-eyebrow">Projects</p>
+          <h1>Research projects</h1>
+          <p>
+            Each project links archive records to workflow stages, reviews, tasks,
+            and exports.
+          </p>
         </div>
+
+        <a
+          href="/my/workbench/projects?new=1"
+          className="workbench-button workbench-button-primary workbench-projects-new-button"
+        >
+          New research project
+        </a>
       </header>
 
       {sp.updated ? (
@@ -52,7 +49,7 @@ export default async function WorkbenchProjectsPage({
       {!ok ? <p className="workbench-flag">{error}</p> : null}
 
       {showNew ? (
-        <section className="workbench-project-form-card">
+        <section className="workbench-panel workbench-project-form-card">
           <div className="workbench-project-form-heading">
             <h2>New project</h2>
             <p>
@@ -110,7 +107,7 @@ export default async function WorkbenchProjectsPage({
             </label>
 
             <PendingSubmitButton
-              className="workbench-project-submit"
+              className="workbench-button workbench-button-primary workbench-project-submit"
               pendingLabel="Creating…"
             >
               Create project
@@ -119,7 +116,7 @@ export default async function WorkbenchProjectsPage({
         </section>
       ) : null}
 
-      <section className="workbench-project-list-card">
+      <section className="workbench-panel workbench-project-list-card">
         <div className="workbench-project-list-header">
           <h2>Your projects</h2>
           <p>
@@ -148,7 +145,7 @@ export default async function WorkbenchProjectsPage({
             ))}
           </div>
         ) : (
-          <p className="workbench-empty empty-state" role="status">
+          <p className="workbench-empty-state workbench-empty empty-state" role="status">
             Create your first project to begin linking archive records.
           </p>
         )}

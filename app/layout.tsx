@@ -21,7 +21,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" data-scroll-behavior="smooth">
-      <body className={`${geistSans.variable} ${geistMono.variable} min-h-full flex flex-col`}>
+      <body
+        suppressHydrationWarning
+        className={`${geistSans.variable} ${geistMono.variable} min-h-full flex flex-col`}
+      >
         <AuthHashHandler />
         <PageLoader />
         {children}

@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -20,8 +24,12 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"],
-      "@payload-config": ["./payload.config.ts"]
+      "@/*": [
+        "./*"
+      ],
+      "@payload-config": [
+        "./payload.config.ts"
+      ]
     }
   },
   "include": [
@@ -29,7 +37,17 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts",
+    "/tmp/decolonising-archive-build/types/**/*.ts",
+    "/tmp/decolonising-archive-build/dev/types/**/*.ts",
+    "/tmp/wb-build/types/**/*.ts",
+    "/tmp/wb-build/dev/types/**/*.ts",
+    ".next-build/types/**/*.ts",
+    ".next-build/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "app/_payload_disabled", "**/_payload_disabled/**"]
+  "exclude": [
+    "node_modules",
+    "app/_payload_disabled",
+    "**/_payload_disabled/**"
+  ]
 }
