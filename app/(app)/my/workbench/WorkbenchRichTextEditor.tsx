@@ -23,6 +23,11 @@ import WorkbenchNoteSlashMenu, {
   type SlashMenuItem,
 } from "./notes/WorkbenchNoteSlashMenu";
 
+
+function editorChain(editor: Editor): any {
+  return editor.chain().focus() as any;
+}
+
 type FontSizeOptions = {
   types: string[];
 };
@@ -162,22 +167,20 @@ export default function WorkbenchRichTextEditor({
       const textBefore = editor.state.doc.textBetween(blockStart, from, "\n", "\n");
       const slashIndex = textBefore.lastIndexOf("/");
       if (slashIndex >= 0) {
-        editor
-          .chain()
-          .focus()
+        editorChain(editor)
           .deleteRange({ from: blockStart + slashIndex, to: from })
           .run();
       }
 
       if (item.kind === "template" && item.templateId) {
         const template = getWorkbenchNoteTemplate(item.templateId);
-        editor.chain().focus().insertContent(template.html).run();
+        editorChain(editor).insertContent(template.html).run();
         closeSlash();
         onChangeRef.current(payloadFromEditor(editor));
         return;
       }
 
-      const chain = editor.chain().focus();
+      const chain = editorChain(editor);
       switch (item.id) {
         case "h2":
           chain.toggleHeading({ level: 2 }).run();
@@ -198,7 +201,7 @@ export default function WorkbenchRichTextEditor({
           chain.toggleBlockquote().run();
           break;
         case "divider":
-          chain.setHorizontalRule().run();
+          chain.insertContent('<hr />').run();
           break;
         case "table":
           chain.insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
@@ -297,7 +300,7 @@ export default function WorkbenchRichTextEditor({
 
   useEffect(() => {
     if (!editor || !insertHtml) return;
-    editor.chain().focus().insertContent(insertHtml).run();
+    editorChain(editor).insertContent(insertHtml).run();
     onChangeRef.current(payloadFromEditor(editor));
     onInsertHtmlApplied?.();
   }, [editor, insertHtml, onInsertHtmlApplied]);

@@ -1739,7 +1739,7 @@ export default function WorkbenchNotesClient(props: {
     for (const node of nodes) {
       if (node.textContent?.trim() === heading.text) {
         node.scrollIntoView({ behavior: "smooth", block: "center" });
-        editorInstance.chain().focus().run();
+        editorChain(editorInstance).run();
         break;
       }
     }
@@ -2161,6 +2161,11 @@ export default function WorkbenchNotesClient(props: {
     exportCurrentNote("md");
   }
 
+
+function editorChain(editor: Editor): any {
+  return editor.chain().focus() as any;
+}
+
   function runEditorCommand(command: (editor: Editor) => void) {
     if (!editorInstance || !canEditSelected) return;
     command(editorInstance);
@@ -2178,11 +2183,11 @@ export default function WorkbenchNotesClient(props: {
     if (url === null) return;
     const trimmed = url.trim();
     if (!trimmed) {
-      runEditorCommand((editor) => editor.chain().focus().extendMarkRange("link").unsetLink().run());
+      runEditorCommand((editor) => editorChain(editor).extendMarkRange("link").unsetLink().run());
       return;
     }
     runEditorCommand((editor) =>
-      editor.chain().focus().extendMarkRange("link").setLink({ href: trimmed }).run(),
+      editorChain(editor).extendMarkRange("link").setLink({ href: trimmed }).run(),
     );
   }
 
@@ -2190,7 +2195,7 @@ export default function WorkbenchNotesClient(props: {
     if (!editorInstance || !canEditSelected) return;
     const url = window.prompt("Image URL", "https://");
     if (!url?.trim()) return;
-    runEditorCommand((editor) => editor.chain().focus().setImage({ src: url.trim() }).run());
+    runEditorCommand((editor) => editorChain(editor).setImage({ src: url.trim() }).run());
   }
 
   function sendHtmlToDocument(html: string, card?: WorkbenchBoardCard) {
@@ -2300,7 +2305,7 @@ export default function WorkbenchNotesClient(props: {
         : `<span data-workbench-citation="${escapeHtml(citation.id)}">${escapeHtml(citationText)}</span>`;
 
     setNoteMode("document");
-    editorInstance.chain().focus().insertContent(insertedHtml).run();
+    editorChain(editorInstance).insertContent(insertedHtml).run();
     const nextHtml =
       input.insertMode === "endnote"
         ? refreshEndnotesHtml(editorInstance.getHTML(), nextCitations.filter((item) => item.insertMode === "endnote"))
@@ -2551,20 +2556,20 @@ export default function WorkbenchNotesClient(props: {
               {
                 id: "edit-undo",
                 label: "Undo",
-                onClick: () => runEditorCommand((editor) => editor.chain().focus().undo().run()),
+                onClick: () => runEditorCommand((editor) => editorChain(editor).undo().run()),
                 disabled: !editorInstance?.commands.undo || !editorInstance.can().undo(),
               },
               {
                 id: "edit-redo",
                 label: "Redo",
-                onClick: () => runEditorCommand((editor) => editor.chain().focus().redo().run()),
+                onClick: () => runEditorCommand((editor) => editorChain(editor).redo().run()),
                 disabled: !editorInstance?.commands.redo || !editorInstance.can().redo(),
               },
               { id: "edit-copy", label: copied ? "Copied" : "Copy note", onClick: () => void handleCopyNote(), disabled: !selectedNote },
               {
                 id: "edit-select-all",
                 label: "Select all",
-                onClick: () => runEditorCommand((editor) => editor.chain().focus().selectAll().run()),
+                onClick: () => runEditorCommand((editor) => editorChain(editor).selectAll().run()),
                 disabled: !editorInstance || !canEditSelected,
               },
               {
@@ -2572,7 +2577,7 @@ export default function WorkbenchNotesClient(props: {
                 label: "Clear formatting",
                 onClick: () =>
                   runEditorCommand((editor) =>
-                    editor.chain().focus().unsetAllMarks().clearNodes().run(),
+                    editorChain(editor).unsetAllMarks().clearNodes().run(),
                   ),
                 disabled: !editorInstance || !canEditSelected,
               },
@@ -2756,7 +2761,7 @@ export default function WorkbenchNotesClient(props: {
                 label: "Table",
                 onClick: () =>
                   runEditorCommand((editor) =>
-                    editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
+                    editorChain(editor).insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
                   ),
                 disabled: !editorInstance || !canEditSelected,
               },
@@ -2764,56 +2769,56 @@ export default function WorkbenchNotesClient(props: {
                 id: "insert-divider",
                 label: "Divider",
                 onClick: () =>
-                  runEditorCommand((editor) => editor.chain().focus().setHorizontalRule().run()),
+                  runEditorCommand((editor) => editorChain(editor).insertContent('<hr />').run()),
                 disabled: !editorInstance || !canEditSelected,
               },
               {
                 id: "insert-quote",
                 label: "Quote",
                 onClick: () =>
-                  runEditorCommand((editor) => editor.chain().focus().toggleBlockquote().run()),
+                  runEditorCommand((editor) => editorChain(editor).toggleBlockquote().run()),
                 disabled: !editorInstance || !canEditSelected,
               },
               {
                 id: "insert-bullet-list",
                 label: "Bullet list",
                 onClick: () =>
-                  runEditorCommand((editor) => editor.chain().focus().toggleBulletList().run()),
+                  runEditorCommand((editor) => editorChain(editor).toggleBulletList().run()),
                 disabled: !editorInstance || !canEditSelected,
               },
               {
                 id: "insert-numbered-list",
                 label: "Numbered list",
                 onClick: () =>
-                  runEditorCommand((editor) => editor.chain().focus().toggleOrderedList().run()),
+                  runEditorCommand((editor) => editorChain(editor).toggleOrderedList().run()),
                 disabled: !editorInstance || !canEditSelected,
               },
               {
                 id: "insert-task-list",
                 label: "Task list",
                 onClick: () =>
-                  runEditorCommand((editor) => editor.chain().focus().toggleTaskList().run()),
+                  runEditorCommand((editor) => editorChain(editor).toggleTaskList().run()),
                 disabled: !editorInstance || !canEditSelected,
               },
               {
                 id: "insert-heading-1",
                 label: "Heading 1",
                 onClick: () =>
-                  runEditorCommand((editor) => editor.chain().focus().toggleHeading({ level: 1 }).run()),
+                  runEditorCommand((editor) => editorChain(editor).toggleHeading({ level: 1 }).run()),
                 disabled: !editorInstance || !canEditSelected,
               },
               {
                 id: "insert-heading-2",
                 label: "Heading 2",
                 onClick: () =>
-                  runEditorCommand((editor) => editor.chain().focus().toggleHeading({ level: 2 }).run()),
+                  runEditorCommand((editor) => editorChain(editor).toggleHeading({ level: 2 }).run()),
                 disabled: !editorInstance || !canEditSelected,
               },
               {
                 id: "insert-heading-3",
                 label: "Heading 3",
                 onClick: () =>
-                  runEditorCommand((editor) => editor.chain().focus().toggleHeading({ level: 3 }).run()),
+                  runEditorCommand((editor) => editorChain(editor).toggleHeading({ level: 3 }).run()),
                 disabled: !editorInstance || !canEditSelected,
               },
             ],

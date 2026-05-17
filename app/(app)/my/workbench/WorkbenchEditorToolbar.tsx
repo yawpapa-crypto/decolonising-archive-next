@@ -43,6 +43,11 @@ function ToolbarButton({
   );
 }
 
+
+function editorChain(editor: Editor): any {
+  return editor.chain().focus() as any;
+}
+
 export default function WorkbenchEditorToolbar({
   editor,
   noteId,
@@ -57,7 +62,7 @@ export default function WorkbenchEditorToolbar({
 
   function run(command: () => boolean) {
     command();
-    editor.chain().focus();
+    editorChain(editor);
   }
 
   async function handleImageFile(file: File) {
@@ -74,15 +79,15 @@ export default function WorkbenchEditorToolbar({
       onImageError?.(data.error || data.details || "Could not upload image.");
       return;
     }
-    editor.chain().focus().setImage({ src: data.url }).run();
+    editorChain(editor).setImage({ src: data.url }).run();
   }
 
   function applyLink() {
     const url = linkUrl.trim();
     if (!url) {
-      editor.chain().focus().extendMarkRange("link").unsetLink().run();
+      editorChain(editor).extendMarkRange("link").unsetLink().run();
     } else {
-      editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+      editorChain(editor).extendMarkRange("link").setLink({ href: url }).run();
     }
     setLinkOpen(false);
     setLinkUrl("");
@@ -95,19 +100,19 @@ export default function WorkbenchEditorToolbar({
           label="P"
           ariaLabel="Paragraph"
           active={editor.isActive("paragraph")}
-          onClick={() => run(() => editor.chain().focus().setParagraph().run())}
+          onClick={() => run(() => editorChain(editor).setParagraph().run())}
         />
         <ToolbarButton
           label="H2"
           ariaLabel="Heading 2"
           active={editor.isActive("heading", { level: 2 })}
-          onClick={() => run(() => editor.chain().focus().toggleHeading({ level: 2 }).run())}
+          onClick={() => run(() => editorChain(editor).toggleHeading({ level: 2 }).run())}
         />
         <ToolbarButton
           label="H3"
           ariaLabel="Heading 3"
           active={editor.isActive("heading", { level: 3 })}
-          onClick={() => run(() => editor.chain().focus().toggleHeading({ level: 3 }).run())}
+          onClick={() => run(() => editorChain(editor).toggleHeading({ level: 3 }).run())}
         />
 
         <label className="workbench-editor-toolbar-select-wrap workbench-editor-toolbar-size-wrap">
@@ -122,9 +127,9 @@ export default function WorkbenchEditorToolbar({
             onChange={(event) => {
               const size = event.target.value;
               if (size) {
-                run(() => editor.chain().focus().setFontSize(`${size}px`).run());
+                run(() => editorChain(editor).setFontSize(`${size}px`).run());
               } else {
-                run(() => editor.chain().focus().unsetFontSize().run());
+                run(() => editorChain(editor).unsetFontSize().run());
               }
             }}
           >
@@ -141,43 +146,43 @@ export default function WorkbenchEditorToolbar({
           label="B"
           ariaLabel="Bold"
           active={editor.isActive("bold")}
-          onClick={() => run(() => editor.chain().focus().toggleBold().run())}
+          onClick={() => run(() => editorChain(editor).toggleBold().run())}
         />
         <ToolbarButton
           label="I"
           ariaLabel="Italic"
           active={editor.isActive("italic")}
-          onClick={() => run(() => editor.chain().focus().toggleItalic().run())}
+          onClick={() => run(() => editorChain(editor).toggleItalic().run())}
         />
         <ToolbarButton
           label="U"
           ariaLabel="Underline"
           active={editor.isActive("underline")}
-          onClick={() => run(() => editor.chain().focus().toggleUnderline().run())}
+          onClick={() => run(() => editorChain(editor).toggleUnderline().run())}
         />
         <ToolbarButton
           label="S"
           ariaLabel="Strike"
           active={editor.isActive("strike")}
-          onClick={() => run(() => editor.chain().focus().toggleStrike().run())}
+          onClick={() => run(() => editorChain(editor).toggleStrike().run())}
         />
         <ToolbarButton
           label="•"
           ariaLabel="Bullet list"
           active={editor.isActive("bulletList")}
-          onClick={() => run(() => editor.chain().focus().toggleBulletList().run())}
+          onClick={() => run(() => editorChain(editor).toggleBulletList().run())}
         />
         <ToolbarButton
           label="1."
           ariaLabel="Numbered list"
           active={editor.isActive("orderedList")}
-          onClick={() => run(() => editor.chain().focus().toggleOrderedList().run())}
+          onClick={() => run(() => editorChain(editor).toggleOrderedList().run())}
         />
         <ToolbarButton
           label="☐"
           ariaLabel="Task list"
           active={editor.isActive("taskList")}
-          onClick={() => run(() => editor.chain().focus().toggleTaskList().run())}
+          onClick={() => run(() => editorChain(editor).toggleTaskList().run())}
         />
         <ToolbarButton
           label="Link"
@@ -206,38 +211,38 @@ export default function WorkbenchEditorToolbar({
           ariaLabel="Table"
           onClick={() =>
             run(() =>
-              editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
+              editorChain(editor).insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
             )
           }
         />
         <ToolbarButton
           label="—"
           ariaLabel="Divider"
-          onClick={() => run(() => editor.chain().focus().setHorizontalRule().run())}
+          onClick={() => run(() => editorChain(editor).insertContent('<hr />').run())}
         />
         <ToolbarButton
           label="“"
           ariaLabel="Quote"
           active={editor.isActive("blockquote")}
-          onClick={() => run(() => editor.chain().focus().toggleBlockquote().run())}
+          onClick={() => run(() => editorChain(editor).toggleBlockquote().run())}
         />
         <ToolbarButton
           label="L"
           ariaLabel="Align left"
           active={editor.isActive({ textAlign: "left" })}
-          onClick={() => run(() => editor.chain().focus().setTextAlign("left").run())}
+          onClick={() => run(() => editorChain(editor).setTextAlign("left").run())}
         />
         <ToolbarButton
           label="C"
           ariaLabel="Align centre"
           active={editor.isActive({ textAlign: "center" })}
-          onClick={() => run(() => editor.chain().focus().setTextAlign("center").run())}
+          onClick={() => run(() => editorChain(editor).setTextAlign("center").run())}
         />
         <ToolbarButton
           label="R"
           ariaLabel="Align right"
           active={editor.isActive({ textAlign: "right" })}
-          onClick={() => run(() => editor.chain().focus().setTextAlign("right").run())}
+          onClick={() => run(() => editorChain(editor).setTextAlign("right").run())}
         />
       </div>
 
@@ -246,13 +251,13 @@ export default function WorkbenchEditorToolbar({
           label="↶"
           ariaLabel="Undo"
           disabled={!editor.can().undo()}
-          onClick={() => run(() => editor.chain().focus().undo().run())}
+          onClick={() => run(() => editorChain(editor).undo().run())}
         />
         <ToolbarButton
           label="↷"
           ariaLabel="Redo"
           disabled={!editor.can().redo()}
-          onClick={() => run(() => editor.chain().focus().redo().run())}
+          onClick={() => run(() => editorChain(editor).redo().run())}
         />
       </div>
 
