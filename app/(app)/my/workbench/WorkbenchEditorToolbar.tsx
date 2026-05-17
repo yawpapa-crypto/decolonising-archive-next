@@ -2,15 +2,31 @@
 
 import { useRef, useState } from "react";
 import type { Editor } from "@tiptap/react";
-import type { MouseEvent } from "react";
+import type { MouseEvent, ReactNode } from "react";
+import {
+  DOCUMENT_FONT_FAMILIES,
+  type DocumentFontFamilyId,
+} from "./workbench-editor-font-family";
 
 const FONT_SIZE_OPTIONS = ["12", "14", "16", "18", "20", "24", "28", "32"];
+
+function resolveFontFamilyId(fontFamily: string | undefined): string {
+  if (!fontFamily) return "";
+  const normalized = fontFamily.replace(/['"]/g, "").toLowerCase();
+  const match = DOCUMENT_FONT_FAMILIES.find((entry) =>
+    entry.value.replace(/['"]/g, "").toLowerCase().includes(normalized.split(",")[0]?.trim() ?? ""),
+  );
+  return match?.id ?? "";
+}
 
 type Props = {
   editor: Editor;
   noteId?: string;
   onImageError?: (message: string) => void;
   onOpenCitation?: (event?: MouseEvent<HTMLButtonElement>) => void;
+  trailingControls?: ReactNode;
+  leadingControls?: ReactNode;
+  layout?: "ribbon" | "sidebar";
 };
 
 function ToolbarButton({
@@ -53,6 +69,9 @@ export default function WorkbenchEditorToolbar({
   noteId,
   onImageError,
   onOpenCitation,
+  trailingControls,
+  leadingControls,
+  layout = "ribbon",
 }: Props) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [linkOpen, setLinkOpen] = useState(false);
@@ -64,6 +83,9 @@ export default function WorkbenchEditorToolbar({
 
   const currentFontSize =
     (editor.getAttributes("textStyle").fontSize as string | undefined)?.replace("px", "") ?? "";
+  const currentFontFamily = resolveFontFamilyId(
+    editor.getAttributes("textStyle").fontFamily as string | undefined,
+  );
 
   function run(command: () => boolean) {
     command();
@@ -98,11 +120,25 @@ export default function WorkbenchEditorToolbar({
     setLinkUrl("");
   }
 
+  const isSidebar = layout === "sidebar";
+
   return (
-    <div className="workbench-editor-toolbar" role="toolbar" aria-label="Formatting">
+    <div
+      className={`workbench-editor-toolbar${isSidebar ? " workbench-editor-toolbar--sidebar" : ""}`}
+      role="toolbar"
+      aria-label="Formatting"
+    >
+      {!isSidebar && leadingControls ? (
+        <div
+          className="workbench-editor-toolbar-group workbench-editor-toolbar-group--menus"
+          aria-label="Document menu"
+        >
+          {leadingControls}
+        </div>
+      ) : null}
       <div className="workbench-editor-toolbar-group workbench-editor-toolbar-group--primary" aria-label="Formatting controls">
         <ToolbarButton
-          label="P"
+          label={isSidebar ? "Body" : "P"}
           ariaLabel="Paragraph"
           active={editor.isActive("paragraph")}
           onClick={() => run(() => editorChain(editor).setParagraph().run())}
@@ -119,6 +155,34 @@ export default function WorkbenchEditorToolbar({
           active={editor.isActive("heading", { level: 3 })}
           onClick={() => run(() => editorChain(editor).toggleHeading({ level: 3 }).run())}
         />
+
+        <label className="workbench-editor-toolbar-select-wrap workbench-editor-toolbar-font-wrap">
+          <span className="workbench-editor-toolbar-size-label" aria-hidden="true">
+            Font
+          </span>
+          <select
+            className="workbench-editor-toolbar-select workbench-note-font-family-select"
+            value={currentFontFamily}
+            aria-label="Font family"
+            title="Font family"
+            onChange={(event) => {
+              const id = event.target.value as DocumentFontFamilyId | "";
+              const entry = DOCUMENT_FONT_FAMILIES.find((item) => item.id === id);
+              if (entry) {
+                run(() => editorChain(editor).setFontFamily(entry.value).run());
+              } else {
+                run(() => editorChain(editor).unsetFontFamily().run());
+              }
+            }}
+          >
+            <option value="">Default</option>
+            {DOCUMENT_FONT_FAMILIES.map((entry) => (
+              <option key={entry.id} value={entry.id}>
+                {entry.label}
+              </option>
+            ))}
+          </select>
+        </label>
 
         <label className="workbench-editor-toolbar-select-wrap workbench-editor-toolbar-size-wrap">
           <span className="workbench-editor-toolbar-size-label" aria-hidden="true">
@@ -266,6 +330,16 @@ export default function WorkbenchEditorToolbar({
         />
       </div>
 
+
+      {!isSidebar && trailingControls ? (
+        <div
+          className="workbench-editor-toolbar-group workbench-editor-toolbar-group--document"
+          aria-label="Document view"
+        >
+          {trailingControls}
+        </div>
+      ) : null}
+
       {linkOpen ? (
         <div className="workbench-editor-link-popover">
           <input
@@ -313,3 +387,4 @@ export default function WorkbenchEditorToolbar({
     </div>
   );
 }
+

@@ -18,6 +18,7 @@ type DocumentMetadataBarProps = {
   onProjectChange: (projectId: string) => void;
   onStatusChange: (status: WorkbenchNoteStatus) => void;
   onToggleDetails: () => void;
+  layout?: "bar" | "sidebar";
 };
 
 export function DocumentMetadataBar({
@@ -31,17 +32,28 @@ export function DocumentMetadataBar({
   onProjectChange,
   onStatusChange,
   onToggleDetails,
+  layout = "bar",
 }: DocumentMetadataBarProps) {
+  const isSidebar = layout === "sidebar";
+
   return (
-    <div className="workbench-doc-metadata-bar" aria-label="Note metadata">
-      <label className="workbench-doc-metadata-bar__field">
-        <span className="sr-only">Project</span>
+    <div
+      className={
+        isSidebar
+          ? "workbench-doc-sidebar-panel"
+          : "workbench-doc-metadata-bar"
+      }
+      aria-label="Note metadata"
+    >
+      <label className="workbench-doc-sidebar-panel__field">
+        <span className="workbench-doc-sidebar-panel__label">Project</span>
         <select
           className="workbench-doc-metadata-bar__select"
           value={projectId ?? ""}
           onChange={(e) => onProjectChange(e.target.value)}
           disabled={!canEdit}
         >
+          <option value="">Personal</option>
           {projects.map((project) => (
             <option key={project.id} value={project.id}>
               {project.title}
@@ -50,8 +62,8 @@ export function DocumentMetadataBar({
         </select>
       </label>
 
-      <label className="workbench-doc-metadata-bar__field">
-        <span className="sr-only">Status</span>
+      <label className="workbench-doc-sidebar-panel__field">
+        <span className="workbench-doc-sidebar-panel__label">Status</span>
         <select
           className="workbench-doc-metadata-bar__select workbench-doc-metadata-bar__select--status"
           value={noteStatus}
@@ -68,16 +80,18 @@ export function DocumentMetadataBar({
 
       <button
         type="button"
-        className={`workbench-doc-metadata-bar__details${detailsOpen ? " is-active" : ""}`}
+        className={`workbench-doc-sidebar-panel__details${detailsOpen ? " is-active" : ""}`}
         onClick={onToggleDetails}
       >
-        Details &amp; links
+        {detailsOpen ? "Hide details & links" : "Details & links"}
       </button>
 
-      <div className="workbench-doc-metadata-bar__spacer" aria-hidden="true" />
+      {!isSidebar ? <div className="workbench-doc-metadata-bar__spacer" aria-hidden="true" /> : null}
 
-      <span className="workbench-doc-metadata-bar__save">{saveLabel}</span>
-      <span className="workbench-doc-metadata-bar__updated">Last updated: {lastEditedLabel}</span>
+      <div className="workbench-doc-sidebar-panel__meta">
+        <span className="workbench-doc-metadata-bar__save">{saveLabel}</span>
+        <span className="workbench-doc-metadata-bar__updated">Last updated: {lastEditedLabel}</span>
+      </div>
     </div>
   );
 }

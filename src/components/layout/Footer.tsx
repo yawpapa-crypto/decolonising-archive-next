@@ -1,33 +1,39 @@
+import Link from "next/link";
+
+const LEGAL_LINKS = [
+  { href: "/terms", label: "Terms" },
+  { href: "/copyright", label: "Copyright" },
+  { href: "/privacy", label: "Privacy" },
+  { href: "/takedown", label: "Takedown" },
+] as const;
+
 export default function Footer() {
   return (
-    <footer className="site-disclaimer">
-      <div className="site-disclaimer-inner">
-        <p className="site-disclaimer-kicker">Rights, access and cultural care</p>
-        <p>
-          Decolonising Archive provides discovery metadata and educational
-          descriptions for research and public learning. Rights remain with the
-          original creators, communities, institutions or rights holders. Where
-          materials are copyrighted, restricted or rights are unclear, the
-          platform provides metadata and links to original sources rather than
-          hosting full materials. Users are responsible for checking original
-          source rights before reuse.
-        </p>
-        <p>
-          Some records may relate to Indigenous, community-held or culturally
-          sensitive knowledge. The platform aims to describe such materials
-          respectfully and welcomes correction, review or removal requests from
-          relevant communities and knowledge holders.
-        </p>
-        <nav className="site-disclaimer-links" aria-label="Legal and rights links">
-          <a href="/terms">Terms of Use</a>
-          <a href="/copyright">Copyright &amp; Permissions</a>
-          <a href="/privacy">Privacy Policy</a>
-          <a href="/takedown">Takedown / Rights Contact</a>
-        </nav>
-        <div className="site-disclaimer-meta">
-          <span>Decolonising Archive</span>
-          <span>yofosuasare.com</span>
+    <footer className="site-disclaimer site-footer-premium">
+      <div className="site-footer-premium__inner">
+        <div className="site-footer-premium__brand">
+          <span className="site-footer-premium__mark" aria-hidden="true">
+            N
+          </span>
+          <span className="site-footer-premium__name">Decolonising Archive</span>
         </div>
+
+        <nav className="site-footer-premium__links" aria-label="Legal and rights links">
+          {LEGAL_LINKS.map((link) => (
+            <Link key={link.href} href={link.href}>
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+
+        <a
+          className="site-footer-premium__site"
+          href="https://yofosuasare.com"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          yofosuasare.com
+        </a>
       </div>
     </footer>
   );

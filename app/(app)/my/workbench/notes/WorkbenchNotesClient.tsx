@@ -64,6 +64,7 @@ import WorkbenchNotesCommandPalette, {
 } from "./WorkbenchNotesCommandPalette";
 import WorkbenchNotesQuickSwitcher from "./WorkbenchNotesQuickSwitcher";
 import WorkbenchNotesDocumentOutline from "./WorkbenchNotesDocumentOutline";
+import WorkbenchDocumentPageView from "./WorkbenchDocumentPageView";
 import WorkbenchNoteBoard, {
   type BoardCardColour,
   type BoardCardType,
@@ -83,8 +84,12 @@ import WorkbenchNoteCanvas, {
   type WorkbenchCanvasData,
 } from "./WorkbenchNoteCanvas";
 import { useWorkbenchNotesShortcuts } from "./useWorkbenchNotesShortcuts";
-import { DocumentMetadataBar } from "./surfaces/DocumentMetadataBar";
 import { ResearchInspector } from "./surfaces/ResearchInspector";
+import { DocumentMetadataBar } from "./surfaces/DocumentMetadataBar";
+import WorkbenchDocumentTopBar, { type DocumentSidebarTab } from "./WorkbenchDocumentTopBar";
+import WorkbenchDocumentDrawer from "./WorkbenchDocumentDrawer";
+import WorkbenchDocumentFormatPanel from "./WorkbenchDocumentFormatPanel";
+import WorkbenchDocumentDetailsSections from "./WorkbenchDocumentDetailsSections";
 import type { NoteMode } from "./workbench-note-types";
 
 type SaveState = "unsaved" | "saving" | "saved" | "error";
@@ -548,7 +553,13 @@ function formatBibliographyCitation(
 }
 
 
-function WorkbenchNoteMenuBar({ menus }: { menus: NoteMenu[] }) {
+function WorkbenchNoteMenuBar({
+  menus,
+  className,
+}: {
+  menus: NoteMenu[];
+  className?: string;
+}) {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -574,7 +585,11 @@ function WorkbenchNoteMenuBar({ menus }: { menus: NoteMenu[] }) {
   }, [openMenu]);
 
   return (
-    <nav className="workbench-note-menu-bar" aria-label="Note editor menu" ref={ref}>
+    <nav
+      className={["workbench-note-menu-bar", className].filter(Boolean).join(" ")}
+      aria-label="Note editor menu"
+      ref={ref}
+    >
       {menus.map((menu) => {
         const isOpen = openMenu === menu.id;
         return (
@@ -1203,7 +1218,37 @@ export default function WorkbenchNotesClient(props: {
   const [inspectorPosition, setInspectorPosition] = useState({ x: 0, y: 0 });
   const inspectorDragRef = useRef<{ startX: number; startY: number; originX: number; originY: number } | null>(null);
   const [inspectorPositionReady, setInspectorPositionReady] = useState(false);
+  const [documentDrawerTab, setDocumentDrawerTab] = useState<DocumentSidebarTab>("format");
+  const [documentDrawerOpen, setDocumentDrawerOpen] = useState(false);
+  const [documentDrawerPinned, setDocumentDrawerPinned] = useState(true);
+  const documentImageInputRef = useRef<HTMLInputElement>(null);
   const noteModePrefRef = useRef<NoteMode | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const storedPin = window.localStorage.getItem("workbench-document-drawer-pinned");
+    if (storedPin === "true") setDocumentDrawerPinned(true);
+    if (storedPin === "false") setDocumentDrawerPinned(false);
+    const storedOpen = window.localStorage.getItem("workbench-document-drawer-open");
+    if (storedOpen === "true") setDocumentDrawerOpen(true);
+    if (storedOpen === "false") setDocumentDrawerOpen(false);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(
+      "workbench-document-drawer-pinned",
+      documentDrawerPinned ? "true" : "false",
+    );
+  }, [documentDrawerPinned]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(
+      "workbench-document-drawer-open",
+      documentDrawerOpen ? "true" : "false",
+    );
+  }, [documentDrawerOpen]);
 
   useEffect(() => {
     const placeNotesMenuInGutter = () => {
@@ -1340,6 +1385,7 @@ export default function WorkbenchNotesClient(props: {
   const [sidebarWidth, setSidebarWidth] = useState(NOTES_SIDEBAR_DEFAULT);
   const [isResizingSidebar, setIsResizingSidebar] = useState(false);
   const [editorInstance, setEditorInstance] = useState<Editor | null>(null);
+  const [documentZoom, setDocumentZoom] = useState(100);
   const [isPending, startTransition] = useTransition();
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -2198,6 +2244,12 @@ function editorChain(editor: Editor): any {
     runEditorCommand((editor) => editorChain(editor).setImage({ src: url.trim() }).run());
   }
 
+  function handleInsertDocumentPageBreak() {
+    if (!editorInstance || editorInstance.isDestroyed || !canEditSelected) return;
+    editorInstance.chain().focus().insertPageBreak().run();
+    commitEditorHtml(editorInstance.getHTML());
+  }
+
   function sendHtmlToDocument(html: string, card?: WorkbenchBoardCard) {
     if (!html.trim()) return;
     setInsertHtml(html);
@@ -2480,6 +2532,37 @@ function editorChain(editor: Editor): any {
     return () => page?.classList.remove("workbench-editorial-reading");
   }, [isEditorialReading]);
 
+  useEffect(() => {
+    if (!isEditorialReading || typeof window === "undefined") return;
+
+    const syncStickyOffset = () => {
+      const siteNav = document.querySelector<HTMLElement>(".nav");
+      const offset = siteNav ? Math.ceil(siteNav.getBoundingClientRect().height) : 0;
+      document.documentElement.style.setProperty("--notes-sticky-offset", `${offset}px`);
+    };
+
+    syncStickyOffset();
+    window.addEventListener("resize", syncStickyOffset);
+    return () => {
+      window.removeEventListener("resize", syncStickyOffset);
+      document.documentElement.style.removeProperty("--notes-sticky-offset");
+    };
+  }, [isEditorialReading]);
+
+  useEffect(() => {
+    if (!selectedId || typeof window === "undefined") return;
+    const stored = window.localStorage.getItem(`workbench-note-document-zoom-${selectedId}`);
+    const parsed = stored ? Number(stored) : 100;
+    setDocumentZoom(Number.isFinite(parsed) ? Math.min(200, Math.max(50, parsed)) : 100);
+  }, [selectedId]);
+
+  useEffect(() => {
+    if (!selectedId || typeof window === "undefined") return;
+    window.localStorage.setItem(
+      `workbench-note-document-zoom-${selectedId}`,
+      String(documentZoom),
+    );
+  }, [selectedId, documentZoom]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -2628,19 +2711,39 @@ function editorChain(editor: Editor): any {
               {
                 id: "view-details",
                 label: detailsOpen ? "Hide details & links" : "Details & links",
-                onClick: () => setDetailsOpen((v) => !v),
+                onClick: () => {
+                  if (noteMode === "document") {
+                    setDocumentDrawerOpen(true);
+                    setDocumentDrawerTab("document");
+                  }
+                  setDetailsOpen((v) => !v);
+                },
                 disabled: !selectedNote,
               },
               {
                 id: "view-outline",
                 label: "Document outline",
-                onClick: () => setDetailsOpen(true),
+                onClick: () => {
+                  if (noteMode === "document") {
+                    setInspectorOpen(true);
+                    return;
+                  }
+                  setDetailsOpen(true);
+                },
                 disabled: !selectedNote,
               },
               {
                 id: "view-linked-records",
                 label: "Linked archive records",
-                onClick: () => setDetailsOpen(true),
+                onClick: () => {
+                  if (noteMode === "document") {
+                    setDocumentDrawerOpen(true);
+                    setDocumentDrawerTab("document");
+                    setDetailsOpen(true);
+                    return;
+                  }
+                  setDetailsOpen(true);
+                },
                 disabled: !selectedNote,
               },
               {
@@ -2735,7 +2838,7 @@ function editorChain(editor: Editor): any {
               {
                 id: "insert-page-break",
                 label: "Page break",
-                onClick: () => sendHtmlToDocument('<hr data-type="page-break" /><p></p>'),
+                onClick: handleInsertDocumentPageBreak,
                 disabled: !canEditSelected,
               },
               {
@@ -2879,6 +2982,68 @@ function editorChain(editor: Editor): any {
     ],
   );
 
+  const toggleDocumentDetails = useCallback(() => {
+    setDetailsOpen((open) => {
+      const next = !open;
+      if (next) {
+        setDocumentDrawerOpen(true);
+        setDocumentDrawerTab("document");
+      }
+      return next;
+    });
+  }, []);
+
+  const documentDrawerDocumentPanel = useMemo(() => {
+    if (!selectedNote) return null;
+    return (
+      <>
+        <DocumentMetadataBar
+          layout="sidebar"
+          projects={props.projects}
+          projectId={projectId}
+          noteStatus={noteStatus}
+          canEdit={canEditSelected}
+          saveLabel={statusLabel}
+          lastEditedLabel={formatNoteUpdated(selectedNote.updated_at)}
+          detailsOpen={detailsOpen}
+          onProjectChange={handleProjectChange}
+          onStatusChange={handleStatusChange}
+          onToggleDetails={toggleDocumentDetails}
+        />
+        <WorkbenchDocumentDetailsSections
+          open={detailsOpen}
+          headings={documentHeadings}
+          onSelectHeading={scrollToHeading}
+          noteId={selectedId}
+          canEdit={canEditSelected}
+          linkedRecords={linkedRecordsForSelected}
+          linkableRecords={linkableForSelected}
+          onLinksChange={(recordIds) => handleLinksChange(selectedId, recordIds)}
+          onInsertBlock={handleInsertLinkedRecordBlock}
+          onError={setSaveError}
+        />
+      </>
+    );
+  }, [
+    selectedNote,
+    props.projects,
+    projectId,
+    noteStatus,
+    canEditSelected,
+    statusLabel,
+    detailsOpen,
+    toggleDocumentDetails,
+    documentHeadings,
+    scrollToHeading,
+    selectedId,
+    linkedRecordsForSelected,
+    linkableForSelected,
+    handleProjectChange,
+    handleStatusChange,
+    handleLinksChange,
+    handleInsertLinkedRecordBlock,
+  ]);
+
   return (
     <div
       className={
@@ -2896,7 +3061,7 @@ function editorChain(editor: Editor): any {
           .join(" ")
       }
     >
-      {notes.length ? (
+      {notes.length && !isEditorialReading ? (
         <>
           <button
             type="button"
@@ -3007,8 +3172,9 @@ function editorChain(editor: Editor): any {
         </>
       ) : null}
 
+      {!isEditorialReading ? (
       <header className="workbench-notes-header workbench-notes-header--fixed workbench-notes-page-header">
-        {selectedNote && !isEditorialReading ? (
+        {selectedNote ? (
           <div className="workbench-notes-header-menu-row">
             <WorkbenchNoteMenuBar menus={noteMenuItems} />
           </div>
@@ -3050,7 +3216,7 @@ function editorChain(editor: Editor): any {
           </div>
         </div>
 
-      {selectedNote && !isEditorialReading ? (
+      {selectedNote ? (
         <div className="workbench-notes-header-meta-row" aria-label="Note metadata">
           {canEditSelected ? (
             <>
@@ -3112,6 +3278,7 @@ function editorChain(editor: Editor): any {
       ) : null}
 
       </header>
+      ) : null}
 
       {saveError ? (
         <p className="workbench-flag" role="alert">
@@ -3141,82 +3308,160 @@ function editorChain(editor: Editor): any {
           >
             {selectedNote ? (
               isEditorialReading ? (
-                <div className="workbench-editorial-workspace">
-                  <DocumentMetadataBar
-                    projects={props.projects}
-                    projectId={projectId}
-                    noteStatus={noteStatus}
-                    canEdit={canEditSelected}
-                    saveLabel={statusLabel}
-                    lastEditedLabel={formatNoteUpdated(selectedNote.updated_at)}
-                    detailsOpen={detailsOpen}
-                    onProjectChange={handleProjectChange}
-                    onStatusChange={handleStatusChange}
-                    onToggleDetails={() => setDetailsOpen((open) => !open)}
-                  />
-                  <WorkbenchNoteMenuBar menus={noteMenuItems} />
-                  {editorInstance && !editorInstance.isDestroyed && canEditSelected ? (
-                    <div className="workbench-figma-formatting-bar">
-                      <WorkbenchEditorToolbar
-                        editor={editorInstance}
-                        noteId={selectedId}
-                        onImageError={setImageError}
-                        onOpenCitation={handleOpenCitation}
-                      />
-                    </div>
-                  ) : null}
+                <div className="workbench-editorial-workspace workbench-pages-layout">
                   <div
-                    className={`workbench-editorial-main${inspectorOpen ? " has-inspector" : " inspector-closed"}`}
+                    className={`workbench-pages-shell${
+                      documentDrawerOpen ? " has-drawer-open" : ""
+                    }${documentDrawerOpen && documentDrawerPinned ? " has-drawer-pinned" : ""}`}
                   >
-                    <div className="workbench-editorial-editor-column">
-                      <div className="workbench-reading-surface-host workbench-reading-surface-host--paginated">
-                        <div className="workbench-reading-page">
-                          <input
-                            className="workbench-reading-title"
-                            type="text"
-                            value={title}
-                            onChange={(e) => handleTitleChange(e.target.value)}
-                            readOnly={!canEditSelected}
-                            aria-label="Note title"
-                            placeholder="Untitled Research Note"
-                          />
-                          <div className="workbench-rich-editor-shell">
-                            <WorkbenchRichTextEditor
-                              key={`${selectedId}-${editorRevision}`}
-                              noteId={selectedId}
-                              contentHtml={contentHtml}
-                              editable={canEditSelected}
-                              hideToolbar
-                              onChange={handleEditorChange}
-                              onImageError={setImageError}
-                              insertHtml={insertHtml}
-                              onInsertHtmlApplied={() => setInsertHtml(null)}
-                              onEditorReady={setEditorInstance}
-                              onOpenCitation={() => setCitationPickerOpen(true)}
+                    <div className="workbench-pages-main">
+                      {editorInstance && !editorInstance.isDestroyed ? (
+                        <WorkbenchDocumentTopBar
+                          menuBar={
+                            <WorkbenchNoteMenuBar
+                              menus={noteMenuItems}
+                              className="workbench-note-menu-bar--topbar"
                             />
-                          </div>
-                          <span className="workbench-reading-page__folio" aria-hidden="true">
-                            Page 1
-                          </span>
-                        </div>
+                          }
+                          zoom={documentZoom}
+                          onZoomChange={setDocumentZoom}
+                          noteModes={NOTE_MODES}
+                          activeMode={noteMode}
+                          onModeChange={(mode) => setNoteMode(mode as NoteMode)}
+                          formatPanelOpen={documentDrawerOpen}
+                          onToggleFormatPanel={() => {
+                            setDocumentDrawerOpen((open) => {
+                              const next = !open;
+                              if (next) setDocumentDrawerTab("format");
+                              return next;
+                            });
+                          }}
+                          inspectorOpen={inspectorOpen}
+                          onToggleInspector={() => setInspectorOpen((open) => !open)}
+                          canEdit={canEditSelected}
+                          onInsertPageBreak={handleInsertDocumentPageBreak}
+                          onInsertCitation={() => setCitationPickerOpen(true)}
+                          onInsertImage={() => documentImageInputRef.current?.click()}
+                          onInsertTable={() =>
+                            runEditorCommand((editor) =>
+                              editorChain(editor)
+                                .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+                                .run(),
+                            )
+                          }
+                        />
+                      ) : null}
+                      <div className="workbench-document-pane">
+                        <WorkbenchDocumentPageView
+                          zoom={documentZoom}
+                          wordCount={wordCount}
+                          flushToDrawer={documentDrawerOpen}
+                          title={
+                            <input
+                              className="workbench-reading-title"
+                              type="text"
+                              value={title}
+                              onChange={(e) => handleTitleChange(e.target.value)}
+                              readOnly={!canEditSelected}
+                              aria-label="Note title"
+                              placeholder="Untitled Research Note"
+                            />
+                          }
+                          editor={
+                            <div className="workbench-rich-editor-shell">
+                              <WorkbenchRichTextEditor
+                                key={`${selectedId}-${editorRevision}`}
+                                noteId={selectedId}
+                                contentHtml={contentHtml}
+                                editable={canEditSelected}
+                                hideToolbar
+                                onChange={handleEditorChange}
+                                onImageError={setImageError}
+                                insertHtml={insertHtml}
+                                onInsertHtmlApplied={() => setInsertHtml(null)}
+                                onEditorReady={setEditorInstance}
+                                onOpenCitation={() => setCitationPickerOpen(true)}
+                              />
+                            </div>
+                          }
+                        />
                       </div>
                     </div>
+                  </div>
+                  {documentDrawerOpen && editorInstance && !editorInstance.isDestroyed ? (
+                    <WorkbenchDocumentDrawer
+                      open
+                      pinned={documentDrawerPinned}
+                      tab={documentDrawerTab}
+                      onTabChange={setDocumentDrawerTab}
+                      onTogglePin={() => setDocumentDrawerPinned((pinned) => !pinned)}
+                      onClose={() => setDocumentDrawerOpen(false)}
+                      formatPanel={
+                        <WorkbenchDocumentFormatPanel
+                          editor={editorInstance}
+                          onOpenCitation={handleOpenCitation}
+                          onInsertPageBreak={handleInsertDocumentPageBreak}
+                        />
+                      }
+                      documentPanel={documentDrawerDocumentPanel}
+                    />
+                  ) : null}
+                  <input
+                    ref={documentImageInputRef}
+                    type="file"
+                    accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
+                    className="workbench-editor-image-input"
+                    tabIndex={-1}
+                    aria-hidden
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      e.target.value = "";
+                      if (!file || !editorInstance || editorInstance.isDestroyed) return;
+                      void (async () => {
+                        const form = new FormData();
+                        form.append("file", file);
+                        form.append("noteId", selectedId || "temp");
+                        const res = await fetch("/api/workbench/notes/upload-image", {
+                          method: "POST",
+                          body: form,
+                        });
+                        const data = (await res.json()) as {
+                          url?: string;
+                          error?: string;
+                          details?: string;
+                        };
+                        if (!res.ok || !data.url) {
+                          setImageError(data.error || data.details || "Could not upload image.");
+                          return;
+                        }
+                        editorChain(editorInstance).setImage({ src: data.url }).run();
+                      })();
+                    }}
+                  />
                   {inspectorOpen ? (
                     <div
-                      className="workbench-floating-inspector-panel"
+                      className={
+                        isEditorialReading
+                          ? "workbench-document-inspector-dock"
+                          : "workbench-floating-inspector-panel"
+                      }
                       role="dialog"
                       aria-label="Research Inspector"
                       style={
-                        {
-                          "--inspector-x": `${inspectorPosition.x}px`,
-                          "--inspector-y": `${inspectorPosition.y}px`,
-                          opacity: inspectorPositionReady ? 1 : 0,
-                        } as React.CSSProperties
+                        isEditorialReading
+                          ? undefined
+                          : ({
+                              "--inspector-x": `${inspectorPosition.x}px`,
+                              "--inspector-y": `${inspectorPosition.y}px`,
+                              opacity: inspectorPositionReady ? 1 : 0,
+                            } as React.CSSProperties)
                       }
                     >
                       <div
                         className="workbench-floating-inspector-panel__handle"
-                        onPointerDown={handleInspectorPointerDown}
+                        onPointerDown={
+                          isEditorialReading ? undefined : handleInspectorPointerDown
+                        }
                       >
                         <span>Research Inspector</span>
                         <button
@@ -3242,18 +3487,7 @@ function editorChain(editor: Editor): any {
                         onOpenRecord={openBoardRecord}
                       />
                     </div>
-                  ) : (
-                    <button
-                      type="button"
-                      className="workbench-floating-inspector-menu"
-                      onClick={() => setInspectorOpen(true)}
-                      aria-label="Open Research Inspector"
-                      title="Open Research Inspector"
-                    >
-                      ◧
-                    </button>
-                  )}
-                  </div>
+                  ) : null}
                 </div>
               ) : (
               <>

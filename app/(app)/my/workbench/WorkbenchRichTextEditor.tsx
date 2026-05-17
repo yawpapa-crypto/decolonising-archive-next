@@ -22,6 +22,8 @@ import WorkbenchEditorToolbar from "./WorkbenchEditorToolbar";
 import WorkbenchNoteSlashMenu, {
   type SlashMenuItem,
 } from "./notes/WorkbenchNoteSlashMenu";
+import { FontFamily } from "./workbench-editor-font-family";
+import { WorkbenchPageBreak } from "./workbench-page-break";
 
 
 function editorChain(editor: Editor): any {
@@ -248,6 +250,8 @@ export default function WorkbenchRichTextEditor({
       CharacterCount,
       TextStyleMark,
       FontSize,
+      FontFamily,
+      WorkbenchPageBreak,
     ],
     content: contentHtml || "<p></p>",
     editable,

@@ -371,6 +371,10 @@
   padding: 0;
 }
 
+.workbench-editorial-reading .workbench-reading-page--document .workbench-rich-editor-shell {
+  max-width: none;
+}
+
 .workbench-editorial-reading .workbench-rich-editor {
   font-family: var(--font-serif);
   font-size: var(--type-body-size);
