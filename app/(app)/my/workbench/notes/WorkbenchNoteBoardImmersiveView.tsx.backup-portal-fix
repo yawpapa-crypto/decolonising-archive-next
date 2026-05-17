@@ -1,0 +1,629 @@
+"use client";
+
+import React, { useState, useRef, useEffect } from "react";
+
+import type { WorkbenchCitationSource } from "@/lib/workbench-data";
+import type { BoardState, WorkbenchNote } from "./workbench-board-figma-types";
+import { WorkbenchBoardCardImmersive } from "./WorkbenchBoardCardImmersive";
+import { getImmersiveFallbackPosition } from "./workbench-board-presentation";
+
+function immersiveFallbackPosition(index: number) {
+  const positions = [
+    { x: 92, y: 210 },
+    { x: 470, y: 118 },
+    { x: 1010, y: 220 },
+    { x: 92, y: 590 },
+    { x: 520, y: 620 },
+    { x: 915, y: 620 },
+    { x: 1230, y: 230 },
+    { x: 1230, y: 650 },
+  ];
+
+  return positions[index % positions.length];
+}
+
+function immersivePositionIsBroken(x: unknown, y: unknown) {
+  if (typeof x !== "number" || typeof y !== "number") return true;
+  if (!Number.isFinite(x) || !Number.isFinite(y)) return true;
+  if (x < 460 && y < 170) return true;
+  if (x < 60 || y < 110) return true;
+  if (x > 1160 && y > 120) return true;
+  return false;
+}
+
+function immersiveCardPosition(card: WorkbenchNote, index: number) {
+  const fallback = immersiveFallbackPosition(index);
+
+  if (immersivePositionIsBroken(card.x, card.y)) {
+    return fallback;
+  }
+
+  return {
+    x: card.x as number,
+    y: card.y as number,
+  };
+}
+
+
+
+import {
+  Search,
+  Plus,
+  Grid3x3,
+  Columns3,
+  Film,
+  LayoutGrid,
+  Map as MapIcon,
+  ChevronLeft,
+  FileText,
+  Image as ImageIcon,
+  Quote,
+  BookOpen,
+  HelpCircle,
+  CheckSquare,
+  Link as LinkIcon,
+  Archive,
+} from "lucide-react";
+
+type ArchiveGroup = {
+  id: string;
+  label: string;
+  items: WorkbenchCitationSource[];
+};
+
+interface WorkbenchNoteBoardImmersiveViewProps {
+  notes: WorkbenchNote[];
+  onUpdateNote: (id: string, updates: Partial<WorkbenchNote>) => void;
+  onDeleteNote: (id: string) => void;
+  onAddNote: (note: Omit<WorkbenchNote, "id" | "createdAt" | "updatedAt">) => void;
+  boardState: BoardState;
+  onUpdateBoardState: (updates: Partial<BoardState>) => void;
+  canEdit?: boolean;
+  searchQuery?: string;
+  onSearchChange?: (query: string) => void;
+  archiveGroups?: ArchiveGroup[];
+  onAddFromArchive?: (source: WorkbenchCitationSource) => void;
+  onOpenRecord?: (noteId: string) => void;
+  onCiteNote?: (noteId: string) => void;
+  onSendNoteToDocument?: (noteId: string) => void;
+}
+
+export function WorkbenchNoteBoardImmersiveView({
+  notes,
+  onUpdateNote,
+  onDeleteNote,
+  onAddNote,
+  boardState,
+  onUpdateBoardState,
+  canEdit = true,
+  searchQuery: controlledSearch = "",
+  onSearchChange,
+  archiveGroups = [],
+  onAddFromArchive,
+  onOpenRecord,
+  onCiteNote,
+  onSendNoteToDocument,
+}: WorkbenchNoteBoardImmersiveViewProps) {
+  const [searchQuery, setSearchQuery] = useState(controlledSearch);
+  const [addMenuOpen, setAddMenuOpen] = useState(false);
+  const [archivePickerOpen, setArchivePickerOpen] = useState(false);
+  const [railCollapsed, setRailCollapsed] = useState(false);
+
+  useEffect(() => {
+    setSearchQuery(controlledSearch);
+  }, [controlledSearch]);
+
+  function setSearch(value: string) {
+    setSearchQuery(value);
+    onSearchChange?.(value);
+  }
+  const [isDragging, setIsDragging] = useState(false);
+  const [draggedNoteId, setDraggedNoteId] = useState<string | null>(null);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [isPanning, setIsPanning] = useState(false);
+  const [panStart, setPanStart] = useState({ x: 0, y: 0 });
+
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const worldRef = useRef<HTMLDivElement>(null);
+  const addMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close add menu when clicking outside
+  useEffect(() => {
+    if (!addMenuOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (addMenuRef.current && !addMenuRef.current.contains(event.target as Node)) {
+        setAddMenuOpen(false);
+        setArchivePickerOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [addMenuOpen]);
+
+  // Check if target is an interactive element that should not trigger drag/pan
+  const isInteractiveBoardTarget = (target: EventTarget | null): boolean => {
+    if (!(target instanceof HTMLElement)) return false;
+
+    const interactiveSelectors = [
+      '.workbench-note-board-card-menu',
+      '.workbench-note-board-card-menu-panel',
+      '.workbench-note-board-card-menu-trigger',
+      '.workbench-note-board-card-menu-item',
+      '.workbench-note-board-floating-add',
+      '.workbench-note-board-add-panel',
+      '.workbench-note-board-floating-search',
+      '.workbench-note-board-side-rail',
+      '.workbench-note-board-control-panel',
+      '.workbench-note-board-card-checkbox',
+      '.workbench-note-board-card-link-url',
+      '.workbench-note-board-card-action-btn',
+      'input',
+      'button',
+      'a'
+    ];
+
+    return interactiveSelectors.some(selector =>
+      target.closest(selector) !== null
+    );
+  };
+
+  // Handle pointer down for card dragging
+  const handlePointerDown = (event: React.PointerEvent) => {
+    const target = event.target as HTMLElement;
+
+    // Check for card drag
+    const cardElement = target.closest('.workbench-note-board-card');
+    if (cardElement && !isInteractiveBoardTarget(target)) {
+      const noteId = cardElement.getAttribute('data-note-id');
+      if (noteId) {
+        const note = notes.find(n => n.id === noteId);
+        if (note) {
+          setIsDragging(true);
+          setDraggedNoteId(noteId);
+          const rect = cardElement.getBoundingClientRect();
+          setDragOffset({
+            x: (event.clientX - rect.left) / boardState.zoom,
+            y: (event.clientY - rect.top) / boardState.zoom
+          });
+          event.preventDefault();
+          return;
+        }
+      }
+    }
+
+    // Check for Space key panning
+    if (event.button === 0 && event.nativeEvent instanceof PointerEvent) {
+      const keyboardEvent = event.nativeEvent as PointerEvent & { spaceKey?: boolean };
+      if (keyboardEvent.spaceKey || event.shiftKey) {
+        setIsPanning(true);
+        setPanStart({ x: event.clientX - boardState.panX, y: event.clientY - boardState.panY });
+        event.preventDefault();
+      }
+    }
+  };
+
+  // Handle pointer move
+  const handlePointerMove = (event: React.PointerEvent) => {
+    if (isDragging && draggedNoteId) {
+      const note = notes.find(n => n.id === draggedNoteId);
+      if (note && viewportRef.current) {
+        const rect = viewportRef.current.getBoundingClientRect();
+        const newX = (event.clientX - rect.left - boardState.panX) / boardState.zoom - dragOffset.x;
+        const newY = (event.clientY - rect.top - boardState.panY) / boardState.zoom - dragOffset.y;
+
+        onUpdateNote(draggedNoteId, { x: newX, y: newY });
+      }
+    } else if (isPanning) {
+      const newPanX = event.clientX - panStart.x;
+      const newPanY = event.clientY - panStart.y;
+      onUpdateBoardState({ panX: newPanX, panY: newPanY });
+    }
+  };
+
+  // Handle pointer up
+  const handlePointerUp = () => {
+    setIsDragging(false);
+    setDraggedNoteId(null);
+    setIsPanning(false);
+  };
+
+  // Handle wheel for zoom
+  const handleWheel = (event: React.WheelEvent) => {
+    if (event.ctrlKey || event.metaKey) {
+      event.preventDefault();
+      const delta = -event.deltaY;
+      const zoomFactor = delta > 0 ? 1.1 : 0.9;
+      const newZoom = Math.min(Math.max(boardState.zoom * zoomFactor, 0.25), 2);
+      onUpdateBoardState({ zoom: newZoom });
+    } else if (event.shiftKey) {
+      event.preventDefault();
+      const newPanX = boardState.panX - event.deltaY;
+      onUpdateBoardState({ panX: newPanX });
+    }
+  };
+
+  // Handle duplicate note
+  const handleDuplicateNote = (id: string) => {
+    const note = notes.find(n => n.id === id);
+    if (note) {
+      const newNote: Omit<WorkbenchNote, 'id' | 'createdAt' | 'updatedAt'> = {
+        ...note,
+        x: note.x + 20,
+        y: note.y + 20,
+        title: `${note.title} (copy)`
+      };
+      onAddNote(newNote);
+    }
+  };
+
+  const handleAddNote = (type: WorkbenchNote["type"]) => {
+    if (!canEdit) return;
+    const slot = getImmersiveFallbackPosition(notes.length);
+
+    const newNote: Omit<WorkbenchNote, "id" | "createdAt" | "updatedAt"> = {
+      type,
+      title: "",
+      content: "",
+      x: slot.x,
+      y: slot.y,
+    };
+
+    onAddNote(newNote);
+    setAddMenuOpen(false);
+  };
+
+  const filteredNotes = notes.filter(note => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      note.title.toLowerCase().includes(query) ||
+      note.content.toLowerCase().includes(query) ||
+      note.type.includes(query)
+    );
+  });
+
+  const cardProps = (note: WorkbenchNote) => ({
+    note,
+    onUpdate: onUpdateNote,
+    onDelete: onDeleteNote,
+    onDuplicate: handleDuplicateNote,
+    isSelected: boardState.selectedNoteIds.includes(note.id),
+    onSelect: (id: string) => onUpdateBoardState({ selectedNoteIds: [id] }),
+    zoom: boardState.zoom,
+    canEdit,
+    onOpenRecord:
+      note.type === "source" && note.archiveRecordId
+        ? () => onOpenRecord?.(note.id)
+        : undefined,
+    onCite: note.type === "source" ? () => onCiteNote?.(note.id) : undefined,
+    onSendToDocument:
+      note.type === "source" ? () => onSendNoteToDocument?.(note.id) : undefined,
+  });
+
+  return (
+    <section
+      className={`workbench-note-board-immersive theme-${boardState.theme} is-fullscreen ${!boardState.controlsVisible ? 'controls-hidden' : ''}`}
+      style={{
+        position: "fixed",
+        top: 52,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        width: "100vw",
+        height: "calc(100vh - 52px)",
+        minHeight: "calc(100vh - 52px)",
+        zIndex: 9000,
+        overflow: "hidden",
+      }}
+    >
+      <div className="workbench-note-board-bg" />
+
+      {boardState.controlsVisible && (
+        <>
+          <header className="workbench-note-board-hero">
+            <div className="workbench-note-board-avatar">DA</div>
+            <div>
+              <p className="workbench-note-board-meta">Archive Workbench</p>
+              <h2>Research Board</h2>
+              <p>Collect, connect, cite, and write from your archive.</p>
+            </div>
+          </header>
+
+          <div
+            className="workbench-note-board-floating-search"
+            onPointerDown={(event) => event.stopPropagation()}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <Search size={18} />
+            <input
+              type="search"
+              placeholder="Search board..."
+              value={searchQuery}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+
+          <aside
+            className={`workbench-note-board-side-rail ${railCollapsed ? "is-collapsed" : ""}`}
+            aria-label="Board controls"
+            onPointerDown={(event) => event.stopPropagation()}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="workbench-note-board-rail-toggle"
+              onClick={() => setRailCollapsed(!railCollapsed)}
+              aria-label={railCollapsed ? "Expand panel" : "Collapse panel"}
+            >
+              <ChevronLeft size={16} style={railCollapsed ? undefined : { transform: "rotate(180deg)" }} />
+            </button>
+
+            {!railCollapsed ? (
+              <>
+                <div className="workbench-note-board-rail-section">
+                  <h3>Layout</h3>
+                  <button
+                    type="button"
+                    className={boardState.layout === "wall" ? "is-active" : ""}
+                    onClick={() => onUpdateBoardState({ layout: "wall" })}
+                  >
+                    <Grid3x3 size={16} />
+                    <span>Wall</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={boardState.layout === "columns" ? "is-active" : ""}
+                    onClick={() => onUpdateBoardState({ layout: "columns" })}
+                  >
+                    <Columns3 size={16} />
+                    <span>Columns</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={boardState.layout === "storyboard" ? "is-active" : ""}
+                    onClick={() => onUpdateBoardState({ layout: "storyboard" })}
+                  >
+                    <Film size={16} />
+                    <span>Storyboard</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={boardState.layout === "gallery" ? "is-active" : ""}
+                    onClick={() => onUpdateBoardState({ layout: "gallery" })}
+                  >
+                    <LayoutGrid size={16} />
+                    <span>Gallery</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={boardState.layout === "map" ? "is-active" : ""}
+                    onClick={() => onUpdateBoardState({ layout: "map" })}
+                  >
+                    <MapIcon size={16} />
+                    <span>Map</span>
+                  </button>
+                </div>
+
+                <div className="workbench-note-board-rail-section">
+                  <h3>Theme</h3>
+                  {(
+                    [
+                      ["archive-paper", "Archive Paper"],
+                      ["dark-storyboard", "Dark Storyboard"],
+                      ["green-field", "Green Field"],
+                      ["night-archive", "Night Archive"],
+                      ["gallery-light", "Gallery Light"],
+                    ] as const
+                  ).map(([theme, label]) => (
+                    <button
+                      key={theme}
+                      type="button"
+                      className={boardState.theme === theme ? "is-active" : ""}
+                      onClick={() => onUpdateBoardState({ theme })}
+                    >
+                      <span>{label}</span>
+                    </button>
+                  ))}
+                </div>
+              </>
+            ) : null}
+
+            <button
+              type="button"
+              className="workbench-note-board-floating-add workbench-note-board-floating-add--in-rail"
+              onPointerDown={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+              }}
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                setAddMenuOpen(!addMenuOpen);
+              }}
+              aria-label="Add note"
+            >
+              <Plus size={24} />
+            </button>
+          </aside>
+
+        </>
+      )}
+
+      <div
+        className="workbench-note-board-fullscreen-controls"
+        onPointerDown={(event) => event.stopPropagation()}
+        onClick={(event) => event.stopPropagation()}
+      >
+        <button
+          type="button"
+          onClick={() =>
+            onUpdateBoardState({
+              isFullscreen: !boardState.isFullscreen,
+              controlsVisible: true,
+            })
+          }
+        >
+          {boardState.isFullscreen ? "Exit fullscreen" : "Fullscreen"}
+        </button>
+        <button
+          type="button"
+          onClick={() =>
+            onUpdateBoardState({
+              controlsVisible: !boardState.controlsVisible,
+            })
+          }
+        >
+          {boardState.controlsVisible ? "Hide controls" : "Show controls"}
+        </button>
+      </div>
+
+      {!boardState.controlsVisible && (
+        <button
+          className="workbench-note-board-show-controls"
+          onClick={() => onUpdateBoardState({ controlsVisible: true })}
+        >
+          Show controls
+        </button>
+      )}
+
+      <div
+        ref={viewportRef}
+        className="workbench-note-board-viewport"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerUp}
+        onWheel={handleWheel}
+      >
+        <div
+          ref={worldRef}
+          className={`workbench-note-board-world layout-${boardState.layout}`}
+          style={{
+            transform: `translate(${boardState.panX}px, ${boardState.panY}px) scale(${boardState.zoom})`
+          }}
+        >
+          {boardState.layout === 'wall' && filteredNotes.map((note, index) => (
+            <div
+              key={note.id}
+              className="workbench-note-board-card-wrapper"
+              style={{
+                transform: `translate(${immersiveCardPosition(note, index).x}px, ${immersiveCardPosition(note, index).y}px)`
+              }}
+            >
+              <WorkbenchBoardCardImmersive {...cardProps(note)} />
+            </div>
+          ))}
+
+          {boardState.layout === 'columns' && (
+            <div className="workbench-note-board-columns">
+              {(['collecting', 'reviewing', 'ready', 'used'] as const).map(columnId => (
+                <div key={columnId} className="workbench-note-board-column">
+                  <h3 className="workbench-note-board-column-header">
+                    {columnId === 'collecting' && 'Collecting'}
+                    {columnId === 'reviewing' && 'Reviewing'}
+                    {columnId === 'ready' && 'Ready for Writing'}
+                    {columnId === 'used' && 'Used in Document'}
+                  </h3>
+                  <div className="workbench-note-board-column-cards">
+                    {filteredNotes
+                      .filter(note => note.columnId === columnId)
+                      .map(note => (
+                        <WorkbenchBoardCardImmersive key={note.id} {...cardProps(note)} />
+                      ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {boardState.layout === 'storyboard' && (
+            <div className="workbench-note-board-storyboard">
+              {filteredNotes.map(note => (
+                <WorkbenchBoardCardImmersive key={note.id} {...cardProps(note)} />
+              ))}
+            </div>
+          )}
+
+          {boardState.layout === 'gallery' && (
+            <div className="workbench-note-board-gallery">
+              {filteredNotes.map(note => (
+                <WorkbenchBoardCardImmersive key={note.id} {...cardProps(note)} />
+              ))}
+            </div>
+          )}
+
+          {boardState.layout === 'map' && (
+            <div className="workbench-note-board-map-placeholder">
+              <MapIcon size={48} />
+              <p>Map view available when location metadata exists</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {addMenuOpen && (
+        <div
+          ref={addMenuRef}
+          className="workbench-note-board-add-panel"
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button onClick={() => handleAddNote('note')}>
+            <FileText size={16} />
+            <span>Note</span>
+          </button>
+          <button onClick={() => handleAddNote('image')}>
+            <ImageIcon size={16} />
+            <span>Image</span>
+          </button>
+          <button onClick={() => handleAddNote('quote')}>
+            <Quote size={16} />
+            <span>Quote</span>
+          </button>
+          <button onClick={() => handleAddNote('source')}>
+            <BookOpen size={16} />
+            <span>Source</span>
+          </button>
+          <button onClick={() => handleAddNote('question')}>
+            <HelpCircle size={16} />
+            <span>Question</span>
+          </button>
+          <button onClick={() => handleAddNote('task')}>
+            <CheckSquare size={16} />
+            <span>Task</span>
+          </button>
+          <button onClick={() => handleAddNote('link')}>
+            <LinkIcon size={16} />
+            <span>Link</span>
+          </button>
+          <div className="workbench-note-board-add-divider" />
+          <button type="button" onClick={() => setArchivePickerOpen(!archivePickerOpen)}>
+            <Archive size={16} />
+            <span>Add from archive</span>
+          </button>
+          {archivePickerOpen &&
+            archiveGroups.map((group) => (
+              <div key={group.id} className="workbench-note-board-add-archive-group">
+                <p>{group.label}</p>
+                {group.items.map((item) => (
+                  <button
+                    key={`${group.id}-${item.recordId}`}
+                    type="button"
+                    onClick={() => {
+                      onAddFromArchive?.(item);
+                      setArchivePickerOpen(false);
+                      setAddMenuOpen(false);
+                    }}
+                  >
+                    <span>{item.title}</span>
+                  </button>
+                ))}
+              </div>
+            ))}
+        </div>
+      )}
+    </section>
+  );
+}

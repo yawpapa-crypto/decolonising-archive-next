@@ -1,0 +1,12 @@
+/* Scoped notes page tokens */
+.workbench-notes-page-premium,
+.workbench-notes-page,
+.workbench-notes-figma-shell {
+  --workbench-sidebar-width: 232px;
+  --notes-content-max: 1080px;
+  --notes-focus: #dfff35;
+  --notes-hover: #f7f7f7;
+  --notes-border-subtle: #f0f0f0;
+  --archive-ui-font: "Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --archive-doc-font: "Source Serif 4", Georgia, "Times New Roman", serif;
+}

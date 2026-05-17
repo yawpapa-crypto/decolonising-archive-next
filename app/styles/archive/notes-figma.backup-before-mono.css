@@ -1,0 +1,512 @@
+@import "./tokens.css";
+
+/* ═══════════════════════════════════════════════════════════════════
+   1. Notes page tokens and shell
+   ═══════════════════════════════════════════════════════════════════ */
+
+.workbench-notes-page-premium,
+.workbench-notes-page,
+.workbench-notes-figma-shell {
+  --archive-bg: #f6f2e9;
+  --archive-surface: #fbfaf6;
+  --archive-paper: #ffffff;
+  --archive-border: #ded8cb;
+  --archive-muted: #756f64;
+  --archive-text: #181713;
+  --archive-black: #11110f;
+  --archive-lime: #dfff3f;
+  --archive-footer: #eee7d8;
+  --archive-muted-bg: #ece8df;
+  --archive-ui-font: "Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --archive-doc-font: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --archive-sidebar-offset: 309px;
+}
+
+.workbench-notes-page-premium {
+  background: var(--archive-bg) !important;
+  color: var(--archive-text);
+}
+
+.workbench-notes-page-premium .workbench-notes-figma-shell,
+.workbench-notes-page-premium .workbench-notes-view,
+.workbench-notes-page-premium .workbench-notes-layout,
+.workbench-notes-page-premium .workbench-note-editor-shell {
+  background: var(--archive-bg) !important;
+}
+
+.workbench-notes-page-premium .workbench-notes-layout-premium.workbench-notes-layout--editor-only {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  background: var(--archive-bg) !important;
+  box-shadow: none !important;
+}
+
+.workbench-notes-page-premium .workbench-notes-list-panel,
+.workbench-notes-page-premium .workbench-notes-resizer {
+  display: none !important;
+}
+
+.workbench-notes-page-premium .workbench-note-editor-shell {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   2. Header and action buttons
+   ═══════════════════════════════════════════════════════════════════ */
+
+.workbench-notes-page-premium .workbench-notes-header {
+  margin: 0 auto !important;
+  padding: 24px 32px 20px !important;
+  max-width: 1320px;
+  border: 1px solid var(--archive-border) !important;
+  border-bottom: 0 !important;
+  background: var(--archive-surface) !important;
+}
+
+.workbench-notes-page-premium .workbench-notes-page-header__top {
+  align-items: flex-start !important;
+}
+
+.workbench-notes-page-premium .workbench-notes-eyebrow {
+  margin: 0 0 8px !important;
+  color: var(--archive-muted) !important;
+  font-size: 12px !important;
+  font-weight: 650 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+.workbench-notes-page-premium .workbench-notes-heading-block h1 {
+  margin: 0 0 8px !important;
+  color: var(--archive-black) !important;
+  font-family: var(--archive-ui-font) !important;
+  font-size: 30px !important;
+  font-weight: 560 !important;
+  line-height: 1.2 !important;
+}
+
+.workbench-notes-page-premium .workbench-notes-heading-block > p {
+  max-width: 48rem !important;
+  margin: 0 !important;
+  color: var(--archive-muted) !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+}
+
+.workbench-notes-page-premium .workbench-notes-header-meta-row {
+  display: none !important;
+}
+
+.workbench-notes-page-premium .workbench-notes-new-button,
+.workbench-notes-page-premium .workbench-note-mode-button {
+  border: 1px solid var(--archive-border) !important;
+  background: var(--archive-paper) !important;
+  color: var(--archive-text) !important;
+  box-shadow: none !important;
+}
+
+.workbench-notes-page-premium .workbench-note-mode-button.is-active {
+  background: var(--archive-lime) !important;
+  border-color: var(--archive-black) !important;
+  color: var(--archive-black) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   3. Floating notes drawer trigger
+   ═══════════════════════════════════════════════════════════════════ */
+
+.workbench-notes-page-premium .workbench-floating-notes-toggle {
+  position: fixed;
+  top: 78px;
+  left: calc(var(--archive-sidebar-offset) + 24px);
+  z-index: 300;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  min-width: 92px;
+  padding: 0 14px;
+  border: 1px solid var(--archive-black);
+  border-radius: 999px;
+  background: var(--archive-surface);
+  color: var(--archive-text);
+  box-shadow: 0 10px 28px rgba(24, 23, 19, 0.12);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.workbench-notes-page-premium .workbench-floating-notes-toggle:hover {
+  background: var(--archive-lime);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   4. Notes drawer and backdrop
+   ═══════════════════════════════════════════════════════════════════ */
+
+.workbench-notes-page-premium .workbench-notes-drawer {
+  position: fixed;
+  top: 52px;
+  left: var(--archive-sidebar-offset);
+  bottom: 0;
+  z-index: 280;
+  display: flex;
+  flex-direction: column;
+  width: min(360px, calc(100vw - 40px));
+  overflow-y: auto;
+  border-right: 1px solid var(--archive-border);
+  background: var(--archive-surface);
+  box-shadow: 24px 0 70px rgba(24, 23, 19, 0.2);
+  transform: translateX(-120%);
+  transition: transform 180ms ease;
+  pointer-events: none;
+}
+
+.workbench-notes-page-premium .workbench-notes-drawer.is-open {
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.workbench-notes-page-premium .workbench-notes-drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--archive-border);
+  background: var(--archive-surface);
+}
+
+.workbench-notes-page-premium .workbench-notes-drawer__header strong {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.workbench-notes-page-premium .workbench-notes-drawer__body {
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.workbench-notes-page-premium .workbench-notes-drawer__close {
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--archive-border);
+  border-radius: 999px;
+  background: var(--archive-paper);
+  color: var(--archive-text);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.workbench-notes-page-premium .workbench-notes-drawer-backdrop {
+  position: fixed;
+  inset: 52px 0 0 var(--archive-sidebar-offset);
+  z-index: 260;
+  padding: 0;
+  border: 0;
+  background: rgba(24, 23, 19, 0.14);
+  cursor: pointer;
+}
+
+.workbench-notes-page-premium .workbench-note-list-search {
+  width: 100%;
+  padding: 12px 14px;
+  border: 0;
+  border-bottom: 1px solid var(--archive-border);
+  background: var(--archive-surface);
+  color: var(--archive-text);
+  font-size: 13px;
+}
+
+.workbench-notes-page-premium .workbench-notes-list-count {
+  margin: 0;
+  padding: 8px 14px;
+  color: var(--archive-muted);
+  font-size: 11px;
+}
+
+.workbench-notes-page-premium .workbench-note-list-item__main {
+  background: transparent !important;
+}
+
+.workbench-notes-page-premium .workbench-note-list-item__main:hover,
+.workbench-notes-page-premium .workbench-note-list-item.is-active .workbench-note-list-item__main {
+  background: rgba(223, 255, 63, 0.14) !important;
+}
+
+.workbench-notes-page-premium .workbench-note-active-strip {
+  background: var(--archive-lime) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   5. Workspace grid
+   ═══════════════════════════════════════════════════════════════════ */
+
+.workbench-notes-page-premium .workbench-editorial-workspace {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  background: var(--archive-bg);
+}
+
+.workbench-notes-page-premium .workbench-editorial-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  width: 100%;
+  min-height: 980px;
+  border: 1px solid var(--archive-border);
+  border-top: 0;
+  background: var(--archive-bg);
+}
+
+.workbench-notes-page-premium .workbench-editorial-main.inspector-closed {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.workbench-notes-page-premium .workbench-editorial-editor-column {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+  padding: 32px 36px 44px;
+  background: var(--archive-bg);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   6. Document metadata and menu bars
+   ═══════════════════════════════════════════════════════════════════ */
+
+.workbench-notes-page-premium .workbench-doc-metadata-bar,
+.workbench-notes-page-premium .workbench-note-menu-bar,
+.workbench-notes-page-premium .workbench-figma-formatting-bar {
+  max-width: 1320px;
+  margin: 0 auto;
+  border-right: 1px solid var(--archive-border);
+  border-left: 1px solid var(--archive-border);
+  border-bottom: 1px solid var(--archive-border);
+  background: var(--archive-surface) !important;
+}
+
+.workbench-notes-page-premium .workbench-doc-metadata-bar__select {
+  height: 32px;
+  border: 1px solid var(--archive-border);
+  background: var(--archive-paper);
+  color: var(--archive-text);
+  font-size: 13px;
+}
+
+.workbench-notes-page-premium .workbench-figma-formatting-bar .workbench-editor-toolbar {
+  min-height: 40px !important;
+  padding: 4px 12px !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   7. Editor / document page
+   ═══════════════════════════════════════════════════════════════════ */
+
+.workbench-notes-page-premium .workbench-reading-surface-host {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  background: transparent !important;
+}
+
+.workbench-notes-page-premium .workbench-reading-surface-host--paginated {
+  overflow: visible;
+  padding: 0;
+}
+
+.workbench-notes-page-premium .workbench-reading-page {
+  position: relative;
+  width: min(720px, 100%);
+  min-height: 940px;
+  padding: 68px 76px;
+  border: 1px solid #e1dccf;
+  border-radius: 2px;
+  background: var(--archive-paper);
+  box-shadow: 0 20px 45px rgba(24, 23, 19, 0.08);
+  font-family: var(--archive-doc-font);
+}
+
+.workbench-notes-page-premium .workbench-reading-title {
+  width: 100%;
+  margin: 0 0 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--archive-black);
+  font-family: var(--archive-ui-font);
+  font-size: 36px;
+  font-weight: 520;
+  line-height: 1.15;
+}
+
+.workbench-notes-page-premium .workbench-reading-page__folio {
+  position: absolute;
+  right: 20px;
+  bottom: 16px;
+  color: var(--archive-muted);
+  font-size: 11px;
+}
+
+.workbench-notes-page-premium .workbench-rich-editor {
+  color: var(--archive-text);
+  font-family: var(--archive-doc-font);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.workbench-notes-page-premium .workbench-rich-editor .ProseMirror {
+  min-height: 480px;
+  outline: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   8. Inspector open / closed states
+   ═══════════════════════════════════════════════════════════════════ */
+
+.workbench-notes-page-premium .workbench-inspector-shell {
+  display: flex;
+  flex-direction: column;
+  min-width: 320px;
+  max-width: 320px;
+  overflow: hidden;
+  border-left: 1px solid var(--archive-border);
+  background: var(--archive-surface);
+}
+
+.workbench-notes-page-premium .workbench-inspector-shell__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 38px;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--archive-border);
+  background: var(--archive-surface);
+  color: var(--archive-muted);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.workbench-notes-page-premium .workbench-inspector-shell__close {
+  height: 26px;
+  padding: 0 10px;
+  border: 1px solid var(--archive-border);
+  border-radius: 2px;
+  background: var(--archive-paper);
+  color: var(--archive-text);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.workbench-notes-page-premium .workbench-inspector-shell .workbench-research-inspector {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  border-left: 0;
+}
+
+.workbench-notes-page-premium .workbench-inspector-shell .workbench-research-inspector__header {
+  display: none;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-toggle {
+  position: fixed;
+  top: 78px;
+  right: 24px;
+  z-index: 220;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--archive-black);
+  border-radius: 999px;
+  background: var(--archive-surface);
+  color: var(--archive-text);
+  box-shadow: 0 10px 28px rgba(24, 23, 19, 0.12);
+  font-size: 12px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   9. Footer / cultural care area
+   ═══════════════════════════════════════════════════════════════════ */
+
+.workbench-notes-page-premium ~ footer,
+.workbench-shell:has(.workbench-notes-page-premium) .site-footer {
+  background: var(--archive-footer);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   10. Responsive rules
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1100px) {
+  .workbench-notes-page-premium .workbench-editorial-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .workbench-notes-page-premium .workbench-inspector-shell {
+    position: fixed;
+    top: 52px;
+    right: 0;
+    bottom: 0;
+    z-index: 290;
+    width: min(360px, calc(100vw - 40px));
+    max-width: none;
+    box-shadow: -24px 0 60px rgba(24, 23, 19, 0.16);
+  }
+}
+
+@media (max-width: 720px) {
+  .workbench-notes-page-premium,
+  .workbench-notes-page,
+  .workbench-notes-figma-shell {
+    --archive-sidebar-offset: 0px;
+  }
+
+  .workbench-notes-page-premium .workbench-floating-notes-toggle {
+    top: 72px;
+    left: 16px;
+  }
+
+  .workbench-notes-page-premium .workbench-notes-drawer {
+    top: 56px;
+    left: 0;
+  }
+
+  .workbench-notes-page-premium .workbench-notes-drawer-backdrop {
+    inset: 56px 0 0 0;
+  }
+
+  .workbench-notes-page-premium .workbench-floating-inspector-toggle {
+    top: 72px;
+    right: 16px;
+  }
+
+  .workbench-notes-page-premium .workbench-reading-page {
+    padding: 48px 28px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   11. Accessibility / focus states
+   ═══════════════════════════════════════════════════════════════════ */
+
+.workbench-notes-page-premium :is(button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--archive-lime);
+  outline-offset: 2px;
+}

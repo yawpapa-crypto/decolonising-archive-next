@@ -1,0 +1,13 @@
+.workbench-editorial-reading {
+  --ease-paper: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-instant: 0ms;
+  --duration-ink: 140ms;
+  --duration-paper: 240ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workbench-editorial-reading {
+    --duration-ink: 0ms;
+    --duration-paper: 0ms;
+  }
+}

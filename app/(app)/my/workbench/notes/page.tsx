@@ -1,35 +1,76 @@
-import Link from "next/link";
-import { listAllWorkbenchAnnotations } from "@/lib/workbench-data";
+import {
+  listWorkbenchCitationSources,
+  listWorkbenchLinkableRecords,
+  listWorkbenchNoteRecordsForNotes,
+  listWorkbenchNotes,
+  listWorkbenchProjects,
+} from "@/lib/workbench-data";
+import { createClient } from "@/src/lib/supabase/server";
+import WorkbenchNotesClient from "./WorkbenchNotesClient";
 
 export default async function WorkbenchNotesPage() {
-  const { ok, error, annotations } = await listAllWorkbenchAnnotations(80);
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const [notesRes, projectsRes, linkableRes, citationSourcesRes] = await Promise.all([
+    listWorkbenchNotes({ limit: 200 }),
+    listWorkbenchProjects(),
+    listWorkbenchLinkableRecords(),
+    listWorkbenchCitationSources(),
+  ]);
+
+  const notes = notesRes.ok ? notesRes.notes : [];
+  const noteIds = notes.map((n) => n.id);
+  const linksRes = await listWorkbenchNoteRecordsForNotes(noteIds);
+
+  const noteRecordIdsByNote: Record<string, string[]> = {};
+  if (linksRes.ok) {
+    for (const link of linksRes.links) {
+      if (!noteRecordIdsByNote[link.note_id]) {
+        noteRecordIdsByNote[link.note_id] = [];
+      }
+      noteRecordIdsByNote[link.note_id].push(link.record_id);
+    }
+  }
+
+  const projects = projectsRes.ok ? projectsRes.projects : [];
+  const ownerProjectIds = projects.filter((p) => p.owner_id === user?.id).map((p) => p.id);
+
+  const editorProjectIds: string[] = [];
+  if (user?.id) {
+    const { data: editorRows } = await supabase
+      .from("workbench_collaborators")
+      .select("project_id")
+      .eq("user_id", user.id)
+      .eq("role", "editor");
+    for (const row of editorRows ?? []) {
+      editorProjectIds.push((row as { project_id: string }).project_id);
+    }
+  }
 
   return (
-    <>
-      <p className="workbench-kicker">Notes</p>
-      <h1 className="workbench-page-title">Project annotations</h1>
-      <p className="workbench-lede">
-        Research notes attached to archive records inside projects.
-      </p>
-      {!ok ? <p className="workbench-flag">{error}</p> : null}
-      <section className="workbench-panel">
-        <ul className="workbench-list">
-          {annotations.map((a) => (
-            <li key={a.id}>
-              <div style={{ fontSize: 14 }}>{a.note}</div>
-              <div style={{ fontSize: 12, color: "#525252", marginTop: 6 }}>
-                <Link className="workbench-link" href={`/my/workbench/projects/${a.project_id}`}>
-                  {a.project_title}
-                </Link>
-                {" · "}
-                {a.record_title}
-                {(a.tags ?? []).length ? ` · ${(a.tags ?? []).join(", ")}` : ""}
-              </div>
-            </li>
-          ))}
-        </ul>
-        {!annotations.length ? <p>No annotations yet.</p> : null}
-      </section>
-    </>
+    <section className="workbench-projects-page workbench-notes-page workbench-notes-page-premium">
+      <WorkbenchNotesClient
+        notes={notes}
+        projects={projects}
+        linkableRecords={linkableRes.ok ? linkableRes.records : []}
+        citationSources={citationSourcesRes.ok ? citationSourcesRes.sources : []}
+        noteRecordIdsByNote={noteRecordIdsByNote}
+        currentUserId={user?.id ?? null}
+        ownerProjectIds={ownerProjectIds}
+        editorProjectIds={editorProjectIds}
+        initialError={
+          !notesRes.ok
+            ? notesRes.error
+            : !linkableRes.ok
+              ? linkableRes.error
+              : !citationSourcesRes.ok
+                ? citationSourcesRes.error
+              : undefined
+        }
+      />
+    </section>
   );
 }

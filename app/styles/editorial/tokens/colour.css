@@ -1,0 +1,44 @@
+/* Archival paper & ink — scoped under .workbench-editorial-reading */
+.workbench-editorial-reading {
+  --paper-foxed: #f6f2ea;
+  --paper-leaf: #faf7f1;
+  --paper-vellum: #fdfcf8;
+
+  --ink-deep: #14110d;
+  --ink-body: #2a2620;
+  --ink-quiet: #585149;
+  --ink-faint: #908779;
+  --ink-veil: #c7bfb0;
+
+  --rule-hair: rgba(20, 17, 13, 0.1);
+  --rule-quiet: rgba(20, 17, 13, 0.18);
+  --rule-firm: rgba(20, 17, 13, 0.32);
+
+  --accent-oxide: #8b4a2b;
+  --accent-verdigris: #3f6b5a;
+  --accent-indigo: #284b6e;
+  --accent-vermilion: #8e2a2a;
+
+  --highlight-annotation: color-mix(in oklab, var(--accent-oxide) 18%, transparent);
+
+  --editorial-bg: var(--paper-leaf);
+  --editorial-surface: var(--paper-vellum);
+  --editorial-text: var(--ink-body);
+  --editorial-text-muted: var(--ink-quiet);
+  --editorial-border: var(--rule-hair);
+}
+
+.workbench-editorial-reading.workbench-notes-night-archive,
+.workbench-editorial-reading.is-night-archive {
+  --paper-foxed: #15120e;
+  --paper-leaf: #1a1713;
+  --paper-vellum: #221e18;
+  --ink-deep: #f2ebdf;
+  --ink-body: #dcd3c5;
+  --ink-quiet: #a39a8c;
+  --ink-faint: #6e6557;
+  --ink-veil: #4a4438;
+  --rule-hair: rgba(242, 235, 223, 0.1);
+  --rule-quiet: rgba(242, 235, 223, 0.18);
+  --rule-firm: rgba(242, 235, 223, 0.32);
+}
