@@ -31367,3 +31367,118 @@ body.workbench-board-is-fullscreen .workbench-note-board-side-rail .board-layout
   height: 16px !important;
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   NOTES-PAGE NEUTRALISERS
+   These rules disable legacy notes-page layout fragments so the
+   scoped layout in app/styles/archive/notes-figma.css can take over.
+   Only target classes used by the notes page wrapper.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.workbench-shell .workbench-notes-page-premium .workbench-notes-layout-premium,
+.workbench-shell .workbench-notes-page-premium .workbench-notes-layout {
+  display: block !important;
+  grid-template-columns: none !important;
+  gap: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.workbench-shell .workbench-notes-page-premium .workbench-notes-list-panel,
+.workbench-shell .workbench-notes-page-premium .workbench-notes-resizer {
+  display: none !important;
+}
+
+.workbench-shell .workbench-notes-page-premium .workbench-note-editor-shell {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SIDEBAR ICON PROTECTION
+   Ensure SVG / [data-icon] markers in the global workbench sidebar
+   are always visible — defend against accidental hides from other
+   stylesheets.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.workbench-sidebar svg,
+.workbench-nav svg,
+.workbench-sidebar [data-icon],
+.workbench-nav [data-icon] {
+  display: inline-flex !important;
+  width: 1em;
+  height: 1em;
+  opacity: 1 !important;
+  visibility: visible !important;
+  flex-shrink: 0;
+}
+
+.workbench-sidebar .workbench-nav-icon,
+.workbench-nav .workbench-nav-icon {
+  display: inline-block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+
+/* RESTORE NOTES + RESEARCH INSPECTOR GREEN FLOATING BUTTONS */
+.workbench-floating-notes-menu,
+.workbench-floating-inspector-menu {
+  width: 54px !important;
+  height: 54px !important;
+  min-width: 54px !important;
+  min-height: 54px !important;
+  border-radius: 18px !important;
+  background: #0f3d2e !important;
+  color: #ffffff !important;
+  border: 2px solid #dfff35 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow:
+    0 0 0 4px rgba(223,255,53,0.24),
+    0 0 30px rgba(223,255,53,0.48),
+    0 18px 48px rgba(15,61,46,0.34) !important;
+  z-index: 2147482000 !important;
+}
+
+.workbench-floating-notes-menu:hover,
+.workbench-floating-inspector-menu:hover {
+  transform: translateY(-2px) scale(1.04) !important;
+  background: #14543f !important;
+}
+
+/* Research Inspector panel restored */
+.workbench-floating-inspector-panel {
+  border-radius: 20px !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(0,0,0,0.08) !important;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.16) !important;
+  overflow: hidden !important;
+}
+
+.workbench-floating-inspector-panel__handle {
+  background: #0f3d2e !important;
+  color: #ffffff !important;
+  border-bottom: 2px solid #dfff35 !important;
+}
+
+.workbench-floating-inspector-panel__handle button {
+  border: 1px solid rgba(223,255,53,0.55) !important;
+  background: rgba(255,255,255,0.08) !important;
+  color: #ffffff !important;
+  border-radius: 999px !important;
+}
+
+.workbench-floating-inspector-panel__handle button:hover {
+  background: #dfff35 !important;
+  color: #0f3d2e !important;
+}
+

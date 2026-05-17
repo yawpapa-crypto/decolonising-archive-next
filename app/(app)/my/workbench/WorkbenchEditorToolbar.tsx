@@ -57,6 +57,11 @@ export default function WorkbenchEditorToolbar({
   const fileRef = useRef<HTMLInputElement>(null);
   const [linkOpen, setLinkOpen] = useState(false);
   const [linkUrl, setLinkUrl] = useState("");
+
+  if (!editor || editor.isDestroyed) {
+    return null;
+  }
+
   const currentFontSize =
     (editor.getAttributes("textStyle").fontSize as string | undefined)?.replace("px", "") ?? "";
 

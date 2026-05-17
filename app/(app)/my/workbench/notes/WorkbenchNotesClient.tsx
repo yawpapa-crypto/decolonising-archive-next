@@ -1733,7 +1733,7 @@ export default function WorkbenchNotesClient(props: {
   );
 
   function scrollToHeading(heading: NoteHeading) {
-    if (!editorInstance) return;
+    if (!editorInstance || editorInstance.isDestroyed) return;
     const root = editorInstance.view.dom;
     const nodes = root.querySelectorAll("h2, h3");
     for (const node of nodes) {
@@ -2167,7 +2167,7 @@ function editorChain(editor: Editor): any {
 }
 
   function runEditorCommand(command: (editor: Editor) => void) {
-    if (!editorInstance || !canEditSelected) return;
+    if (!editorInstance || editorInstance.isDestroyed || !canEditSelected) return;
     command(editorInstance);
     scheduleSave();
   }
@@ -2557,13 +2557,19 @@ function editorChain(editor: Editor): any {
                 id: "edit-undo",
                 label: "Undo",
                 onClick: () => runEditorCommand((editor) => editorChain(editor).undo().run()),
-                disabled: !editorInstance?.commands.undo || !editorInstance.can().undo(),
+                disabled:
+                  !editorInstance ||
+                  editorInstance.isDestroyed ||
+                  !editorInstance.can().undo(),
               },
               {
                 id: "edit-redo",
                 label: "Redo",
                 onClick: () => runEditorCommand((editor) => editorChain(editor).redo().run()),
-                disabled: !editorInstance?.commands.redo || !editorInstance.can().redo(),
+                disabled:
+                  !editorInstance ||
+                  editorInstance.isDestroyed ||
+                  !editorInstance.can().redo(),
               },
               { id: "edit-copy", label: copied ? "Copied" : "Copy note", onClick: () => void handleCopyNote(), disabled: !selectedNote },
               {
@@ -3149,7 +3155,7 @@ function editorChain(editor: Editor): any {
                     onToggleDetails={() => setDetailsOpen((open) => !open)}
                   />
                   <WorkbenchNoteMenuBar menus={noteMenuItems} />
-                  {editorInstance && canEditSelected ? (
+                  {editorInstance && !editorInstance.isDestroyed && canEditSelected ? (
                     <div className="workbench-figma-formatting-bar">
                       <WorkbenchEditorToolbar
                         editor={editorInstance}
