@@ -85,5 +85,8 @@
   "overrides": {
     "@tiptap/core": "3.23.4",
     "@tiptap/pm": "3.23.4"
+  },
+  "installConfig": {
+    "legacyPeerDeps": true
   }
 }
