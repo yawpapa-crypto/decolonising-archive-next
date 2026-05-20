@@ -2,10 +2,16 @@
 
 import { createClient } from "@/src/lib/supabase/server";
 import { revalidatePath } from "next/cache";
-import type { WorkbenchUserPreferences } from "@/lib/workbench-intelligence-types";
 import { trackWorkbenchActivity } from "@/lib/workbench-activity-actions";
 
 const INTELLIGENCE_PATH = "/my/workbench/intelligence";
+const REVIEWS_PATH = "/my/workbench/reviews";
+
+function revalidateReviewPaths(projectId: string) {
+  revalidatePath(INTELLIGENCE_PATH);
+  revalidatePath(REVIEWS_PATH);
+  revalidatePath(`${REVIEWS_PATH}/${projectId}`);
+}
 
 export async function listExtractionFields(projectId: string) {
   const supabase = await createClient();
@@ -19,8 +25,11 @@ export async function listExtractionFields(projectId: string) {
   return { ok: true as const, fields: data ?? [] };
 }
 
-export async function createExtractionField(projectId: string, field: { fieldKey: string; name: string; fieldType: string; options?: any; required?: boolean; }) {
+export async function createExtractionField(projectId: string, field: { fieldKey: string; name: string; fieldType: string; options?: Record<string, unknown>; required?: boolean; }) {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false as const, error: "Not signed in." };
+
   const payload = {
     project_id: projectId,
     field_key: field.fieldKey,
@@ -28,11 +37,12 @@ export async function createExtractionField(projectId: string, field: { fieldKey
     field_type: field.fieldType,
     options: field.options ?? {},
     required: !!field.required,
+    created_by: user.id,
   };
 
   const { data, error } = await supabase.from("workbench_review_extraction_fields").insert(payload).select("id").single();
   if (error) return { ok: false as const, error: error.message };
-  revalidatePath(INTELLIGENCE_PATH);
+  revalidateReviewPaths(projectId);
   return { ok: true as const, fieldId: data.id as string };
 }
 
@@ -62,7 +72,7 @@ export async function upsertExtraction(projectId: string, fieldId: string, recor
     metadata: { action: "extraction_upsert", fieldId },
   }).catch(() => {});
 
-  revalidatePath(INTELLIGENCE_PATH);
+  revalidateReviewPaths(projectId);
   return { ok: true as const };
 }
 
@@ -86,7 +96,7 @@ export async function assignRecordToUser(projectId: string, recordId: string, as
   }, { onConflict: "project_id,record_id,assignee_user_id" }).select("id").single();
 
   if (error) return { ok: false as const, error: error.message };
-  revalidatePath(INTELLIGENCE_PATH);
+  revalidateReviewPaths(projectId);
   return { ok: true as const, assignmentId: data.id as string };
 }
 
@@ -111,7 +121,7 @@ export async function addReviewComment(projectId: string, recordId: string, body
   }).select("id").single();
 
   if (error) return { ok: false as const, error: error.message };
-  revalidatePath(INTELLIGENCE_PATH);
+  revalidateReviewPaths(projectId);
   return { ok: true as const, commentId: data.id as string };
 }
 

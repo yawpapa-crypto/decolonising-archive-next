@@ -4,6 +4,9 @@ import {
   mapExternalArchiveRecordToClientPayload,
   searchExternalSources,
 } from "@/src/lib/external-sources/external-search";
+import { enforceSearchRateLimit } from "@/src/lib/security/rate-limit";
+import { normalizeSearchQuery, SEARCH_MAX_QUERY_LENGTH } from "@/src/lib/security/validate";
+import { safePublicError } from "@/src/lib/security/sanitize";
 
 export const runtime = "nodejs";
 
@@ -14,7 +17,19 @@ export const runtime = "nodejs";
  */
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const q = url.searchParams.get("q") || "";
+  const rawQ = url.searchParams.get("q") || "";
+  if (rawQ.trim().length > SEARCH_MAX_QUERY_LENGTH) {
+    return NextResponse.json({ ok: false, error: "Query too long" }, { status: 400 });
+  }
+  const q = normalizeSearchQuery(rawQ);
+
+  const rate = enforceSearchRateLimit(request);
+  if (!rate.ok) {
+    return NextResponse.json(
+      { ok: false, error: "Too many requests. Please try again shortly." },
+      { status: 429, headers: { "Retry-After": String(rate.retryAfterSec ?? 60) } },
+    );
+  }
 
   try {
     const { externalRecords, handoffRecords, sourceStatuses } = await searchExternalSources(q);
@@ -38,7 +53,7 @@ export async function GET(request: Request) {
           id: "open-access-aggregator",
           label: "Open access & OER aggregator",
           state: "fail" as const,
-          message: e instanceof Error ? e.message : "Aggregator error",
+          message: safePublicError(e, "Aggregator error"),
         },
       ],
       notices: defaultExternalOpenAccessNotices(),

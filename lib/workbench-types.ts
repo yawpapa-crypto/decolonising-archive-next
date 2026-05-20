@@ -1,4 +1,9 @@
 export const WORKBENCH_PROJECT_TYPES = [
+  { id: "custom_project", label: "General research project" },
+  { id: "systematic_review", label: "Systematic review" },
+  { id: "scoping_review", label: "Scoping review" },
+  { id: "rapid_review", label: "Rapid review" },
+  { id: "evidence_map", label: "Evidence map" },
   { id: "phd_literature_review", label: "PhD Literature Review" },
   { id: "masters_research_archive", label: "Master’s Research Archive" },
   { id: "decolonial_design_reading_list", label: "Decolonial Design Reading List" },
@@ -8,10 +13,22 @@ export const WORKBENCH_PROJECT_TYPES = [
   { id: "visual_culture_case_study", label: "Visual Culture Case Study" },
   { id: "indigenous_knowledge_mapping", label: "Indigenous Knowledge Mapping Project" },
   { id: "teaching_resource", label: "Teaching Resource" },
-  { id: "custom_project", label: "Custom Project" },
 ] as const;
 
 export type WorkbenchProjectTypeId = (typeof WORKBENCH_PROJECT_TYPES)[number]["id"];
+
+export const WORKBENCH_REVIEW_PROJECT_TYPES = [
+  "systematic_review",
+  "scoping_review",
+  "rapid_review",
+  "evidence_map",
+] as const;
+
+export type WorkbenchReviewProjectTypeId = (typeof WORKBENCH_REVIEW_PROJECT_TYPES)[number];
+
+export function isWorkbenchReviewProjectType(value: string): value is WorkbenchReviewProjectTypeId {
+  return (WORKBENCH_REVIEW_PROJECT_TYPES as readonly string[]).includes(value);
+}
 
 export const PROJECT_RECORD_STATUSES = [
   "to_review",
@@ -138,6 +155,17 @@ export const DEFAULT_RESEARCH_MILESTONES = [
 
 export function projectTypeLabel(id: string) {
   return WORKBENCH_PROJECT_TYPES.find((t) => t.id === id)?.label ?? id;
+}
+
+export const PROJECT_STATUS_LABEL: Record<ProjectStatusId, string> = {
+  active: "Active",
+  paused: "Paused",
+  completed: "Completed",
+  archived: "Archived",
+};
+
+export function projectStatusLabel(id: string) {
+  return PROJECT_STATUS_LABEL[id as ProjectStatusId] ?? id;
 }
 
 /** Map task review type (+ done status) to a board column. */

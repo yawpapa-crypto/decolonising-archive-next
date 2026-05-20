@@ -33,6 +33,7 @@ export type GeoPlaceStats = {
 export const COUNTRY_COORDINATES: Record<string, { lat: number; lon: number; continent: string }> = {
   ghana: { lat: 7.95, lon: -1.02, continent: "Africa" },
   nigeria: { lat: 9.08, lon: 8.68, continent: "Africa" },
+  mali: { lat: 17.57, lon: -3.99, continent: "Africa" },
   "south africa": { lat: -30.56, lon: 22.94, continent: "Africa" },
   kenya: { lat: -0.02, lon: 37.91, continent: "Africa" },
   egypt: { lat: 26.82, lon: 30.8, continent: "Africa" },
@@ -97,6 +98,7 @@ const REGION_TO_CONTINENT: Record<string, string> = {
 const COUNTRY_ALIASES: Record<string, string> = {
   ghana: "Ghana",
   nigeria: "Nigeria",
+  mali: "Mali",
   brazil: "Brazil",
   australia: "Australia",
   jamaica: "Jamaica",

@@ -1,8 +1,9 @@
 import type { User } from "@supabase/supabase-js";
 import Link from "next/link";
 import { createAdminClient } from "@/src/lib/supabase/admin";
-import { type Role } from "@/src/lib/auth";
-import { updateUserRole, updateUserStatus } from "./actions";
+import { requireAdmin, type Role } from "@/src/lib/auth";
+import { updateUserRole } from "./actions";
+import AdminUserRowActions from "./AdminUserRowActions";
 
 type SearchParams = Promise<{
   q?: string;
@@ -179,6 +180,7 @@ export default async function AdminUsersPage({
   searchParams: SearchParams;
 }) {
   const sp = await searchParams;
+  const admin = await requireAdmin();
   const query = (sp.q ?? "").trim().toLowerCase();
   const roleFilter = sp.role ?? "all";
   const statusFilter = sp.status ?? "all";
@@ -204,7 +206,7 @@ export default async function AdminUsersPage({
   ).length;
 
   return (
-    <div className="admin-dashboard">
+    <div className="admin-dashboard admin-moderation-premium">
       <div className="admin-header">
         <div>
           <p className="admin-kicker">Access and moderation</p>
@@ -292,7 +294,7 @@ export default async function AdminUsersPage({
             <span>Role</span>
             <span>Activity</span>
             <span>Status</span>
-            <span>Moderate</span>
+            <span>Actions</span>
           </div>
 
           {filteredUsers.length === 0 ? (
@@ -308,9 +310,9 @@ export default async function AdminUsersPage({
                   <code>{user.id}</code>
                 </div>
 
-                <form action={updateUserRole} className="admin-inline-form">
+                <form action={updateUserRole} className="admin-inline-form admin-role-form">
                   <input type="hidden" name="user_id" value={user.id} />
-                  <select name="role" defaultValue={user.role} className="admin-filter">
+                  <select name="role" defaultValue={user.role} className="admin-filter admin-role-select">
                     {ROLE_OPTIONS.map((role) => (
                       <option key={role} value={role}>
                         {role}
@@ -319,7 +321,7 @@ export default async function AdminUsersPage({
                   </select>
                   <button
                     type="submit"
-                    className="admin-small-button"
+                    className="admin-small-button admin-primary-button"
                     disabled={needsProfilesSetup}
                   >
                     Save
@@ -346,24 +348,12 @@ export default async function AdminUsersPage({
                   </span>
                 </div>
 
-                <form action={updateUserStatus} className="admin-inline-form">
-                  <input type="hidden" name="user_id" value={user.id} />
-                  <input
-                    type="hidden"
-                    name="status"
-                    value={user.status === "blocked" ? "active" : "blocked"}
-                  />
-                  <button
-                    type="submit"
-                    className={
-                      user.status === "blocked"
-                        ? "admin-small-button"
-                        : "admin-small-button admin-danger-button"
-                    }
-                  >
-                    {user.status === "blocked" ? "Unblock" : "Block"}
-                  </button>
-                </form>
+                <AdminUserRowActions
+                  userId={user.id}
+                  email={user.email}
+                  status={user.status}
+                  isSelf={user.id === admin.id}
+                />
               </div>
             ))
           )}

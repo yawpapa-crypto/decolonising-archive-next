@@ -1,0 +1,644 @@
+/**
+ * Workbench overview — premium archival polish
+ * Overrides lemon/SaaS styling from workbench.css tail patch.
+ * Scoped: .platform-ui .workbench-overview-premium
+ */
+
+.platform-ui .workbench-overview-premium {
+  --wo-ink: #14110d;
+  --wo-muted: #585149;
+  --wo-faint: #908779;
+  --wo-bg: #f7f6f2;
+  --wo-surface: #fafaf8;
+  --wo-panel: #ffffff;
+  --wo-border: rgba(20, 17, 13, 0.1);
+  --wo-border-fine: rgba(20, 17, 13, 0.08);
+  --wo-accent: #0f3d2e;
+  --wo-accent-soft: rgba(15, 61, 46, 0.07);
+  --wo-radius: 10px;
+  --wo-touch: 44px;
+  max-width: 100%;
+  width: 100%;
+  margin: 0;
+  gap: 24px;
+  overflow: visible;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* ── Surfaces: flat, no shadow ── */
+
+.platform-ui .workbench-overview-premium .workbench-card,
+.platform-ui .workbench-overview-premium .workbench-dashboard-card,
+.platform-ui .workbench-overview-premium .workbench-panel,
+.platform-ui .workbench-overview-premium .workbench-task-table-panel {
+  background: var(--wo-panel) !important;
+  border: 1px solid var(--wo-border-fine) !important;
+  border-radius: var(--wo-radius) !important;
+  box-shadow: none !important;
+  padding: 18px 20px !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-usage-card {
+  background: var(--wo-panel) !important;
+}
+
+/* ── Primary actions: forest, not neon ── */
+
+.platform-ui .workbench-overview-premium .workbench-button-primary,
+.platform-ui .workbench-overview-premium .workbench-create-project-button,
+.platform-ui .workbench-overview-premium .workbench-board-new-task,
+.platform-ui .workbench-overview-premium .workbench-modal-btn-primary {
+  background: var(--wo-accent) !important;
+  border-color: var(--wo-accent) !important;
+  color: #fff !important;
+  font-weight: 500 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-button-primary:hover,
+.platform-ui .workbench-overview-premium .workbench-create-project-button:hover,
+.platform-ui .workbench-overview-premium .workbench-board-new-task:hover,
+.platform-ui .workbench-overview-premium .workbench-modal-btn-primary:hover {
+  background: #0a2d22 !important;
+  border-color: #0a2d22 !important;
+  color: #fff !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-button-secondary,
+.platform-ui .workbench-overview-premium .workbench-dashboard-secondary {
+  background: var(--wo-panel) !important;
+  border: 1px solid var(--wo-border) !important;
+  color: var(--wo-ink) !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-button-secondary:hover,
+.platform-ui .workbench-overview-premium .workbench-dashboard-secondary:hover {
+  background: var(--wo-accent-soft) !important;
+  border-color: rgba(15, 61, 46, 0.18) !important;
+  color: var(--wo-accent) !important;
+}
+
+/* ── Header ── */
+
+.platform-ui .workbench-overview-premium .workbench-dashboard-header {
+  grid-template-columns: minmax(0, 1fr) minmax(200px, auto);
+  gap: 20px 28px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--wo-border-fine);
+}
+
+.platform-ui .workbench-overview-premium .workbench-dashboard-avatar {
+  background: var(--wo-accent) !important;
+  border-radius: var(--wo-radius) !important;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+}
+
+.platform-ui .workbench-overview-premium .workbench-board-title-row h1 {
+  font-size: clamp(1.5rem, 2.4vw, 1.85rem) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.02em;
+}
+
+.platform-ui .workbench-overview-premium .workbench-kicker {
+  color: var(--wo-faint) !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-dashboard-copy > p {
+  color: var(--wo-muted) !important;
+  max-width: 56ch;
+}
+
+.platform-ui .workbench-overview-premium .workbench-dashboard-meta span {
+  border-color: var(--wo-border-fine) !important;
+  background: var(--wo-surface) !important;
+  color: var(--wo-muted) !important;
+  font-weight: 500;
+}
+
+.platform-ui .workbench-overview-premium .workbench-dashboard-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.platform-ui .workbench-overview-premium .workbench-board-title-menu {
+  box-shadow: none !important;
+  border-color: var(--wo-border-fine) !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-board-title-menu:hover {
+  border-color: var(--wo-border) !important;
+  background: var(--wo-accent-soft) !important;
+  color: var(--wo-accent) !important;
+}
+
+/* ── Dashboard grid ── */
+
+.platform-ui .workbench-overview-premium .workbench-dashboard-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 360px);
+  gap: 18px;
+  overflow: visible;
+}
+
+.platform-ui .workbench-overview-premium .workbench-dashboard-aside,
+.platform-ui .workbench-overview-premium .workbench-dashboard-column {
+  min-width: 0;
+  overflow: visible;
+}
+
+.platform-ui .workbench-overview-premium .workbench-dashboard-column {
+  gap: 18px;
+}
+
+.platform-ui .workbench-overview-premium .workbench-card-label {
+  color: var(--wo-faint) !important;
+  letter-spacing: 0.07em;
+}
+
+.platform-ui .workbench-overview-premium .workbench-panel-header h2 {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-status-pill {
+  background: var(--wo-accent-soft) !important;
+  border: 1px solid rgba(15, 61, 46, 0.14) !important;
+  color: var(--wo-accent) !important;
+}
+
+/* ── Stat grid ── */
+
+.platform-ui .workbench-overview-premium .workbench-stat-grid {
+  border-color: var(--wo-border-fine) !important;
+  border-radius: var(--wo-radius-sm, 8px);
+}
+
+.platform-ui .workbench-overview-premium .workbench-stat-card {
+  background: var(--wo-surface) !important;
+  border-color: var(--wo-border-fine) !important;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.platform-ui .workbench-overview-premium .workbench-stat-card--link {
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  margin: 0;
+  padding: 12px 14px !important;
+  border: 0;
+  border-right: 1px solid var(--wo-border-fine) !important;
+  border-bottom: 1px solid var(--wo-border-fine) !important;
+  font: inherit;
+  appearance: none;
+  display: block;
+}
+
+.platform-ui .workbench-overview-premium .workbench-stat-card--link:nth-child(3n) {
+  border-right: 0 !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-stat-card--link:nth-last-child(-n + 3) {
+  border-bottom: 0 !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-stat-card--link:hover {
+  background: var(--wo-accent-soft) !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-stat-card--link:focus-visible {
+  outline: 2px solid rgba(15, 61, 46, 0.35);
+  outline-offset: -2px;
+}
+
+.platform-ui .workbench-overview-premium .workbench-stat-card span {
+  color: var(--wo-muted) !important;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.platform-ui .workbench-overview-premium .workbench-stat-card strong {
+  font-size: 1.35rem !important;
+  font-weight: 600 !important;
+  color: var(--wo-ink) !important;
+}
+
+/* ── Lists & workload ── */
+
+.platform-ui .workbench-overview-premium .workbench-dashboard-list-row {
+  border-color: var(--wo-border-fine) !important;
+  background: var(--wo-surface) !important;
+  border-radius: 8px !important;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.platform-ui .workbench-overview-premium .workbench-dashboard-list-row:hover {
+  border-color: var(--wo-border) !important;
+  background: var(--wo-accent-soft) !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-status-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.platform-ui .workbench-overview-premium .workbench-status-grid span {
+  background: var(--wo-surface) !important;
+  border-color: var(--wo-border-fine) !important;
+  border-radius: 8px !important;
+  white-space: normal;
+  line-height: 1.4;
+  min-height: 72px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.platform-ui .workbench-overview-premium .workbench-status-grid strong {
+  color: var(--wo-ink) !important;
+  font-size: 1.4rem !important;
+  font-weight: 600 !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-link-button {
+  color: var(--wo-accent) !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-quick-actions button {
+  border-color: var(--wo-border-fine) !important;
+  background: var(--wo-surface) !important;
+  border-radius: 8px !important;
+  min-height: var(--wo-touch);
+}
+
+.platform-ui .workbench-overview-premium .workbench-quick-actions button:hover {
+  background: var(--wo-accent-soft) !important;
+  border-color: rgba(15, 61, 46, 0.16) !important;
+  color: var(--wo-accent) !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-muted {
+  color: var(--wo-muted) !important;
+  line-height: 1.55;
+}
+
+/* ── Tabs ── */
+
+.platform-ui .workbench-overview-premium .workbench-board-tabs {
+  border-bottom-color: var(--wo-border-fine) !important;
+  gap: 2px;
+}
+
+.platform-ui .workbench-overview-premium .workbench-board-tabs button {
+  color: var(--wo-muted) !important;
+  min-height: 40px;
+  padding: 8px 14px !important;
+  border-radius: 8px 8px 0 0 !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-board-tabs button:hover {
+  color: var(--wo-ink) !important;
+  background: var(--wo-accent-soft) !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-board-tabs button.is-active {
+  color: var(--wo-accent) !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-board-tabs button.is-active::after {
+  background: var(--wo-accent) !important;
+  height: 2px;
+}
+
+/* ── Toolbar ── */
+
+.platform-ui .workbench-overview-premium .workbench-board-toolbar {
+  background: var(--wo-panel) !important;
+  border: 1px solid var(--wo-border-fine) !important;
+  border-radius: var(--wo-radius) !important;
+  padding: 12px 14px !important;
+  gap: 8px 10px;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: flex-end !important;
+  grid-template-columns: unset !important;
+  overflow: visible !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-board-toolbar > .workbench-board-new-task {
+  flex: 0 0 auto;
+}
+
+.platform-ui .workbench-overview-premium .workbench-board-toolbar > label {
+  flex: 1 1 148px;
+  min-width: 148px;
+  max-width: 100%;
+}
+
+.platform-ui .workbench-overview-premium .workbench-board-toolbar > .workbench-hide-menu,
+.platform-ui .workbench-overview-premium .workbench-board-toolbar > button:last-of-type {
+  flex: 0 0 auto;
+}
+
+.platform-ui .workbench-overview-premium .workbench-board-toolbar input,
+.platform-ui .workbench-overview-premium .workbench-board-toolbar select {
+  border-color: var(--wo-border) !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  min-height: 40px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  box-shadow: none !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-board-toolbar select {
+  text-overflow: ellipsis;
+}
+
+.platform-ui .workbench-overview-premium .workbench-board-toolbar input:focus,
+.platform-ui .workbench-overview-premium .workbench-board-toolbar select:focus {
+  border-color: rgba(15, 61, 46, 0.35) !important;
+  box-shadow: 0 0 0 3px rgba(15, 61, 46, 0.1) !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-board-toolbar label span {
+  color: var(--wo-faint) !important;
+}
+
+/* ── Summary strip ── */
+
+.platform-ui .workbench-overview-premium .workbench-summary-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.platform-ui .workbench-overview-premium .workbench-summary-strip article {
+  background: var(--wo-panel) !important;
+  border: 1px solid var(--wo-border-fine) !important;
+  border-radius: var(--wo-radius) !important;
+  box-shadow: none !important;
+  padding: 12px 14px !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-summary-strip span {
+  color: var(--wo-faint) !important;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.platform-ui .workbench-overview-premium .workbench-summary-strip strong {
+  color: var(--wo-ink) !important;
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+}
+
+/* ── Task table ── */
+
+.platform-ui .workbench-overview-premium .workbench-task-table-panel {
+  overflow: hidden;
+}
+
+.platform-ui .workbench-overview-premium .workbench-task-group-title {
+  border-left: 3px solid var(--wo-border) !important;
+  padding-left: 12px !important;
+  background: transparent !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-task-group--todo .workbench-task-group-title,
+.platform-ui .workbench-overview-premium .workbench-task-group:first-child .workbench-task-group-title {
+  border-left-color: #b8860b !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-task-group--completed .workbench-task-group-title {
+  border-left-color: var(--wo-accent) !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-task-row--head {
+  background: var(--wo-surface) !important;
+  border-bottom: 1px solid var(--wo-border-fine) !important;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--wo-faint) !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-task-row {
+  border-bottom: 1px solid var(--wo-border-fine) !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-task-row:hover {
+  background: var(--wo-accent-soft) !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-task-add-row {
+  color: var(--wo-accent) !important;
+  border: 1px dashed var(--wo-border) !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-task-add-row:hover {
+  background: var(--wo-accent-soft) !important;
+  border-color: rgba(15, 61, 46, 0.22) !important;
+}
+
+/* ── Empty & flash ── */
+
+.platform-ui .workbench-overview-premium .workbench-empty-state {
+  border: 1px dashed var(--wo-border) !important;
+  border-radius: var(--wo-radius) !important;
+  background: var(--wo-surface) !important;
+  padding: 32px 24px !important;
+  text-align: center;
+  color: var(--wo-muted) !important;
+  gap: 14px;
+  display: grid;
+  justify-items: center;
+}
+
+.platform-ui .workbench-overview-premium .workbench-flash {
+  border-radius: 8px;
+  border: 1px solid var(--wo-border-fine);
+  background: var(--wo-surface);
+  padding: 10px 14px;
+  font-size: 14px;
+}
+
+.platform-ui .workbench-overview-premium .workbench-flash.is-error {
+  border-color: rgba(154, 28, 48, 0.2);
+  background: rgba(154, 28, 48, 0.06);
+}
+
+/* ── Modals ── */
+
+.platform-ui .workbench-overview-premium ~ .workbench-modal-backdrop .workbench-modal,
+.platform-ui .workbench-modal-backdrop:has(+ *) .workbench-modal {
+  box-shadow: 0 16px 48px rgba(20, 17, 13, 0.12) !important;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 1024px) {
+  .platform-ui .workbench-overview-premium .workbench-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .platform-ui .workbench-overview-premium .workbench-dashboard-header {
+    grid-template-columns: 1fr;
+  }
+
+  .platform-ui .workbench-overview-premium .workbench-dashboard-actions {
+    justify-content: flex-start;
+  }
+
+  .platform-ui .workbench-overview-premium .workbench-summary-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .platform-ui .workbench-overview-premium .workbench-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .platform-ui .workbench-overview-premium .workbench-stat-card:nth-child(3n) {
+    border-right: 1px solid var(--wo-border-fine) !important;
+  }
+
+  .platform-ui .workbench-overview-premium .workbench-board-toolbar label {
+    flex: 1 1 calc(50% - 8px);
+    min-width: 140px;
+  }
+
+  .platform-ui .workbench-overview-premium .workbench-board-toolbar .workbench-board-new-task {
+    width: 100%;
+  }
+
+  .platform-ui .workbench-overview-premium .workbench-summary-strip {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 430px) {
+  .platform-ui .workbench-overview-premium .workbench-dashboard-actions .workbench-button {
+    flex: 1 1 100%;
+  }
+}
+
+/* ── Clipping / overflow fixes ── */
+
+.platform-ui .workbench-main:has(.workbench-overview-premium) {
+  overflow-x: visible !important;
+  min-width: 0;
+}
+
+.platform-ui .workbench-overview-premium.workbench-dashboard-page,
+.platform-ui .workbench-overview-premium.workbench-board-page {
+  overflow: visible !important;
+  overflow-x: visible !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-card,
+.platform-ui .workbench-overview-premium .workbench-dashboard-card {
+  overflow: visible !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-muted,
+.platform-ui .workbench-overview-premium .workbench-collab-empty,
+.platform-ui .workbench-overview-premium .workbench-collab-help,
+.platform-ui .workbench-overview-premium .workbench-activity-list article,
+.platform-ui .workbench-overview-premium .workbench-activity-list strong,
+.platform-ui .workbench-overview-premium .workbench-activity-list em {
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+  max-width: 100% !important;
+  text-overflow: unset !important;
+}
+
+/* Sidebar collab form: stack — 300px min column was clipping in narrow aside */
+.platform-ui .workbench-overview-premium .workbench-dashboard-aside .workbench-collab-panel,
+.platform-ui .workbench-overview-premium .workbench-dashboard-aside .workbench-collab-panel--fixed,
+.platform-ui .workbench-overview-premium .workbench-dashboard-aside .workbench-collab-panel--compact {
+  max-width: 100% !important;
+  width: 100% !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-dashboard-aside .workbench-collab-form {
+  grid-template-columns: 1fr !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  margin-bottom: 12px !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-dashboard-aside .workbench-collab-invite {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-dashboard-aside .workbench-collab-form label {
+  min-width: 0 !important;
+}
+
+/* Undo ultra-tight stat labels from legacy patch */
+.platform-ui .workbench-overview-premium .workbench-stat-card span,
+.platform-ui .workbench-overview-premium .workbench-stat-card--link span {
+  font-size: 11px !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-stat-card strong,
+.platform-ui .workbench-overview-premium .workbench-stat-card--link strong {
+  font-size: 1.35rem !important;
+}
+
+.platform-ui .workbench-overview-premium .workbench-panel-header {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.platform-ui .workbench-overview-premium .workbench-status-pill {
+  flex-shrink: 0;
+}
+
+.platform-ui .workbench-overview-premium .workbench-task-board-anchor {
+  min-width: 0;
+  overflow: visible;
+}
+
+@media (max-width: 1200px) {
+  .platform-ui .workbench-overview-premium .workbench-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .platform-ui .workbench-overview-premium .workbench-dashboard-aside {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+  }
+}
+
+@media (max-width: 900px) {
+  .platform-ui .workbench-overview-premium .workbench-dashboard-aside {
+    grid-template-columns: 1fr;
+  }
+
+  .platform-ui .workbench-overview-premium .workbench-board-toolbar > label {
+    flex: 1 1 calc(50% - 8px);
+    min-width: 0;
+  }
+}

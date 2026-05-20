@@ -6,7 +6,12 @@ import { requireMember } from "@/src/lib/auth";
 import { trackWorkbenchActivity } from "@/lib/workbench-activity-actions";
 import { createClient } from "@/src/lib/supabase/server";
 import { insertDefaultResearchMilestones } from "@/lib/workbench-data";
-import { isProjectRecordStatus, type ProjectRecordStatusId } from "@/lib/workbench-types";
+import { createReviewProject } from "@/lib/workbench-review-actions";
+import {
+  isProjectRecordStatus,
+  isWorkbenchReviewProjectType,
+  type ProjectRecordStatusId,
+} from "@/lib/workbench-types";
 
 function text(formData: FormData, key: string) {
   return String(formData.get(key) ?? "").trim();
@@ -32,11 +37,12 @@ function fail(message: string, path = "/my/workbench"): never {
 const WB = "/my/workbench";
 
 export async function createWorkbenchProject(formData: FormData) {
-  await requireMember(WB);
+  const profile = await requireMember(WB);
   const title = text(formData, "title");
   if (!title) fail("Project title is required.");
   const projectType = text(formData, "project_type") || "custom_project";
   const description = optionalText(formData, "description");
+  const researchQuestion = optionalText(formData, "research_question");
   const deadline = optionalText(formData, "deadline");
   const visibility = text(formData, "visibility") || "private";
   const withMilestones = bool(formData, "with_milestones");
@@ -46,6 +52,7 @@ export async function createWorkbenchProject(formData: FormData) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) fail("Sign in required.");
+  if (user.id !== profile.id) fail("Signed-in user mismatch. Please sign in again.");
 
   const { data: project, error } = await supabase
     .from("workbench_projects")
@@ -64,6 +71,22 @@ export async function createWorkbenchProject(formData: FormData) {
 
   if (error || !project) fail(error?.message ?? "Could not create project.");
 
+  let reviewWarning: string | null = null;
+  if (isWorkbenchReviewProjectType(projectType)) {
+    const review = await createReviewProject({
+      title,
+      description,
+      projectId: project.id,
+      reviewType: projectType,
+      researchQuestion: researchQuestion ?? undefined,
+    });
+    if (!review.ok) {
+      reviewWarning = `Project created, but review setup failed: ${review.error ?? "Unknown review setup error."}`;
+    } else if ("warning" in review && review.warning) {
+      reviewWarning = `Review project created, but setup needs attention: ${review.warning}`;
+    }
+  }
+
   if (
     withMilestones &&
     (projectType === "phd_literature_review" ||
@@ -76,8 +99,63 @@ export async function createWorkbenchProject(formData: FormData) {
   revalidatePath(WB);
   revalidatePath(`${WB}/projects`);
   redirect(
-    `/my/workbench/projects/${project.id}?updated=${encodeURIComponent("Project created.")}`,
+    `/my/workbench/projects/${project.id}?${
+      reviewWarning
+        ? `error=${encodeURIComponent(reviewWarning)}`
+        : `updated=${encodeURIComponent(
+            isWorkbenchReviewProjectType(projectType)
+              ? "Review project created."
+              : "Project created.",
+          )}`
+    }`,
   );
+}
+
+export async function retryCreateLinkedReviewProject(formData: FormData) {
+  const profile = await requireMember(WB);
+  const projectId = text(formData, "project_id");
+  if (!projectId) fail("Missing project.", `${WB}/projects`);
+
+  const supabase = await createClient();
+  const { data: project, error } = await supabase
+    .from("workbench_projects")
+    .select("id, owner_id, title, description, project_type")
+    .eq("id", projectId)
+    .eq("owner_id", profile.id)
+    .maybeSingle();
+
+  if (error) fail(error.message, `${WB}/projects/${projectId}`);
+  if (!project) fail("Project not found or you do not have access.", `${WB}/projects`);
+  if (!isWorkbenchReviewProjectType(project.project_type)) {
+    fail("This project type is not a review workflow.", `${WB}/projects/${projectId}`);
+  }
+
+  const existing = await supabase
+    .from("workbench_review_projects")
+    .select("id")
+    .eq("project_id", projectId)
+    .eq("user_id", profile.id)
+    .maybeSingle();
+
+  if (existing.error) fail(existing.error.message, `${WB}/projects/${projectId}`);
+  if (existing.data?.id) {
+    redirectWorkbench("Review setup already exists.", `${WB}/projects/${projectId}`);
+  }
+
+  const review = await createReviewProject({
+    title: project.title,
+    description: project.description,
+    projectId,
+    reviewType: project.project_type,
+  });
+  if (!review.ok) fail(review.error ?? "Review setup failed.", `${WB}/projects/${projectId}`);
+  if ("warning" in review && review.warning) {
+    redirect(`${WB}/projects/${projectId}?error=${encodeURIComponent(`Review setup created, but setup needs attention: ${review.warning}`)}`);
+  }
+
+  revalidatePath(`${WB}/projects/${projectId}`);
+  revalidatePath(`/my/workbench/reviews/${review.projectId}`);
+  redirectWorkbench("Review setup created.", `${WB}/projects/${projectId}`);
 }
 
 export async function updateWorkbenchProject(formData: FormData) {
@@ -106,12 +184,15 @@ export async function updateWorkbenchProject(formData: FormData) {
   patch.is_curated_public = isCurated;
   if (notes !== undefined) patch.notes = notes;
 
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("workbench_projects")
     .update(patch)
-    .eq("id", id);
+    .eq("id", id)
+    .select("id")
+    .maybeSingle();
 
   if (error) fail(error.message, `${WB}/projects/${id}`);
+  if (!data) fail("Project update was not permitted. Please check you are signed in as the project owner or editor.", `${WB}/projects/${id}`);
   revalidatePath(`${WB}/projects/${id}`);
   revalidatePath(`${WB}/projects`);
   redirectWorkbench("Project updated.", `${WB}/projects/${id}`);

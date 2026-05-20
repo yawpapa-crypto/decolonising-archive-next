@@ -1,5 +1,5 @@
-import ArchiveAppPage from "@/src/components/archive/ArchiveAppPage";
+import ArchiveAppPageWithAuth from "@/src/components/archive/ArchiveAppPageWithAuth";
 
 export default function AboutPage() {
-  return <ArchiveAppPage />;
+  return <ArchiveAppPageWithAuth />;
 }

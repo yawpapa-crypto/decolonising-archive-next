@@ -1,0 +1,724 @@
+/**
+ * FINAL PLATFORM UI CONSOLIDATION
+ * Scoped research-archive design system. Import last (after globals / workbench / module CSS).
+ * No unscoped element selectors except :root tokens.
+ */
+
+:root {
+  --platform-bg: #f7f6f2;
+  --platform-surface: #fafaf8;
+  --platform-surface-raised: #ffffff;
+  --platform-border: rgba(20, 17, 13, 0.1);
+  --platform-border-fine: rgba(20, 17, 13, 0.08);
+  --platform-ink: #14110d;
+  --platform-ink-muted: #585149;
+  --platform-ink-faint: #908779;
+  --platform-accent: #0f3d2e;
+  --platform-accent-soft: rgba(15, 61, 46, 0.07);
+  --platform-radius: 10px;
+  --platform-radius-sm: 8px;
+  --platform-space-xs: 8px;
+  --platform-space-sm: 12px;
+  --platform-space-md: 16px;
+  --platform-space-lg: 24px;
+  --platform-space-xl: 32px;
+  --platform-touch: 44px;
+  --platform-caption: 11px;
+  --platform-ui-size: 14px;
+  --platform-title-size: clamp(1.35rem, 2vw, 1.75rem);
+  --platform-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── 1. Page shell ─────────────────────────────────────────────── */
+
+.platform-ui.dashboard-shell--member,
+.platform-ui.workbench-member-canvas {
+  background: var(--platform-bg);
+  color: var(--platform-ink);
+}
+
+.platform-ui .workbench-main,
+.platform-ui .saved-records-page,
+.platform-ui .ri-page.ri-dash {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.platform-ui .workbench-main {
+  padding: var(--platform-space-md) var(--platform-space-lg) var(--platform-space-xl);
+}
+
+/* ── 2. Section headers ────────────────────────────────────────── */
+
+.platform-ui .workbench-projects-header,
+.platform-ui .workbench-dashboard-header,
+.platform-ui .saved-records-header,
+.platform-ui .ri-header,
+.platform-ui .workbench-review-hero {
+  gap: var(--platform-space-sm) var(--platform-space-md);
+  padding-bottom: var(--platform-space-md);
+  border-bottom: 1px solid var(--platform-border-fine);
+}
+
+.platform-ui .workbench-projects-header h1,
+.platform-ui .workbench-dashboard-header h1,
+.platform-ui .saved-records-header h1,
+.platform-ui .ri-section-shell__title,
+.platform-ui .workbench-review-hero h1 {
+  font-size: var(--platform-title-size);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--platform-ink);
+}
+
+.platform-ui .saved-records-eyebrow,
+.platform-ui .ri-eyebrow,
+.platform-ui .workbench-review-eyebrow,
+.platform-ui .workbench-projects-eyebrow {
+  font-size: var(--platform-caption);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--platform-ink-faint);
+}
+
+/* ── 3. Cards ──────────────────────────────────────────────────── */
+
+.platform-ui .workbench-card,
+.platform-ui .workbench-panel,
+.platform-ui .workbench-project-card,
+.platform-ui .saved-records-card,
+.platform-ui .ri-panel,
+.platform-ui .workbench-review-card,
+.platform-ui .workbench-review-stage-card {
+  border: 1px solid var(--platform-border-fine);
+  border-radius: var(--platform-radius);
+  background: var(--platform-surface-raised);
+  box-shadow: none;
+}
+
+.platform-ui .saved-records-card:hover,
+.platform-ui .workbench-project-card:hover {
+  box-shadow: 0 4px 16px rgba(20, 17, 13, 0.04);
+  border-color: var(--platform-border);
+}
+
+/* ── 4. Tables ─────────────────────────────────────────────────── */
+
+.platform-ui .ri-table-wrap,
+.platform-ui .workbench-review-table-wrap,
+.platform-ui .saved-records-table-wrap {
+  border: 1px solid var(--platform-border-fine);
+  border-radius: var(--platform-radius);
+  background: var(--platform-surface-raised);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.platform-ui .ri-table thead th,
+.platform-ui .workbench-review-table thead th,
+.platform-ui .saved-records-table thead th {
+  font-size: var(--platform-caption);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--platform-ink-faint);
+  background: var(--platform-surface);
+  border-bottom: 1px solid var(--platform-border-fine);
+}
+
+.platform-ui .ri-table tbody tr:hover,
+.platform-ui .workbench-review-table tbody tr:hover,
+.platform-ui .saved-records-table tbody tr:hover {
+  background: var(--platform-accent-soft);
+}
+
+/* ── 5. Toolbars ───────────────────────────────────────────────── */
+
+.platform-ui .workbench-editor-toolbar,
+.platform-ui .workbench-note-toolbar,
+.platform-ui .ri-section-shell__head,
+.platform-ui .workbench-review-toolbar {
+  gap: var(--platform-space-xs);
+  min-height: var(--platform-touch);
+  align-items: center;
+}
+
+.platform-ui .workbench-editor-toolbar button,
+.platform-ui .workbench-note-toolbar button {
+  min-width: var(--platform-touch);
+  min-height: 36px;
+  border-radius: var(--platform-radius-sm);
+  border: 1px solid transparent;
+}
+
+/* ── 6. Tabs ───────────────────────────────────────────────────── */
+
+.platform-ui .ri-kpi-band__tab,
+.platform-ui .workbench-review-tabs__item,
+.platform-ui .workbench-tab,
+.platform-ui .workbench-note-mode-button {
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: var(--platform-radius-sm);
+  border: 1px solid transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--platform-ink-muted);
+  background: transparent;
+  transition: background 160ms var(--platform-ease), color 160ms var(--platform-ease);
+}
+
+.platform-ui .ri-kpi-band__tab.is-active,
+.platform-ui .workbench-review-tabs__item.is-active,
+.platform-ui .workbench-tab.is-active,
+.platform-ui .workbench-note-mode-button.is-active {
+  background: var(--platform-accent-soft);
+  color: var(--platform-accent);
+  border-color: rgba(15, 61, 46, 0.12);
+  box-shadow: none;
+}
+
+/* ── 7. Buttons ────────────────────────────────────────────────── */
+
+.platform-ui .workbench-button,
+.platform-ui .workbench-button-primary,
+.platform-ui .workbench-action-btn,
+.platform-ui .ri-btn,
+.platform-ui .workbench-review-primary,
+.platform-ui .saved-records-btn,
+.platform-ui .saved-records-btn-primary {
+  min-height: var(--platform-touch);
+  padding: 0 16px;
+  border-radius: var(--platform-radius-sm);
+  font-size: var(--platform-ui-size);
+  font-weight: 500;
+  line-height: 1.2;
+  box-shadow: none;
+  transition: background 160ms var(--platform-ease), border-color 160ms var(--platform-ease), color 160ms var(--platform-ease);
+}
+
+.platform-ui .workbench-button-primary,
+.platform-ui .workbench-action-btn--primary,
+.platform-ui .ri-btn--primary,
+.platform-ui .workbench-review-primary,
+.platform-ui .saved-records-btn-primary {
+  background: var(--platform-accent);
+  border: 1px solid var(--platform-accent);
+  color: #fff;
+}
+
+.platform-ui .workbench-button-primary:hover,
+.platform-ui .ri-btn--primary:hover,
+.platform-ui .workbench-review-primary:hover,
+.platform-ui .saved-records-btn-primary:hover {
+  background: #0a2d22;
+  border-color: #0a2d22;
+  transform: none;
+  box-shadow: none;
+}
+
+.platform-ui .workbench-button-secondary,
+.platform-ui .ri-btn--secondary,
+.platform-ui .workbench-review-ghost,
+.platform-ui .saved-records-btn-secondary {
+  background: var(--platform-surface-raised);
+  border: 1px solid var(--platform-border);
+  color: var(--platform-ink);
+}
+
+/* ── 8. Inputs ─────────────────────────────────────────────────── */
+
+.platform-ui .workbench-input,
+.platform-ui .ri-input,
+.platform-ui .saved-records-search input,
+.platform-ui .workbench-review-input,
+.platform-ui .record-input,
+.platform-ui .record-select {
+  min-height: var(--platform-touch);
+  padding: 0 14px;
+  border: 1px solid var(--platform-border);
+  border-radius: var(--platform-radius-sm);
+  background: var(--platform-surface-raised);
+  color: var(--platform-ink);
+  font-size: var(--platform-ui-size);
+  box-shadow: none;
+}
+
+.platform-ui .workbench-input:focus,
+.platform-ui .ri-input:focus,
+.platform-ui .saved-records-search input:focus,
+.platform-ui .record-input:focus,
+.platform-ui .record-select:focus {
+  outline: 2px solid rgba(15, 61, 46, 0.22);
+  outline-offset: 1px;
+  border-color: rgba(15, 61, 46, 0.28);
+}
+
+/* ── 9. Badges ─────────────────────────────────────────────────── */
+
+.platform-ui .ri-badge,
+.platform-ui .saved-records-badge,
+.platform-ui .workbench-badge,
+.platform-ui .workbench-review-badge,
+.platform-ui .record-source-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--platform-border-fine);
+  background: var(--platform-surface);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--platform-ink-muted);
+  box-shadow: none;
+}
+
+.platform-ui .ri-source-badge,
+.platform-ui .saved-records-source-chip {
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ── 10. Empty states ──────────────────────────────────────────── */
+
+.platform-ui .ri-empty-note,
+.platform-ui .workbench-empty-state,
+.platform-ui .saved-records-empty,
+.platform-ui .workbench-review-empty {
+  margin: 0;
+  padding: var(--platform-space-lg);
+  border: 1px dashed var(--platform-border);
+  border-radius: var(--platform-radius);
+  background: var(--platform-surface);
+  color: var(--platform-ink-muted);
+  font-size: var(--platform-ui-size);
+  line-height: 1.55;
+  text-align: center;
+}
+
+/* ── 11. Modals ────────────────────────────────────────────────── */
+
+.platform-ui .workbench-modal-backdrop,
+.platform-ui .workbench-review-modal-backdrop,
+.platform-ui .saved-records-modal-backdrop {
+  background: rgba(20, 17, 13, 0.32);
+  backdrop-filter: blur(2px);
+}
+
+.platform-ui .workbench-modal,
+.platform-ui .workbench-review-modal,
+.platform-ui .saved-records-modal {
+  border: 1px solid var(--platform-border-fine);
+  border-radius: var(--platform-radius);
+  background: var(--platform-surface-raised);
+  box-shadow: 0 16px 48px rgba(20, 17, 13, 0.12);
+  max-height: min(92vh, 900px);
+  overflow: auto;
+}
+
+/* ── 12. Sidebars ──────────────────────────────────────────────── */
+
+.platform-ui .workbench-sidebar[data-wb-sidebar="2"] {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  z-index: 20;
+  max-height: 100dvh;
+  overflow: hidden auto;
+  border-right: 1px solid var(--platform-border-fine);
+  background: var(--platform-surface-raised);
+  -webkit-overflow-scrolling: touch;
+}
+
+.platform-ui .workbench-sidebar-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--platform-surface-raised);
+  border-bottom: 1px solid var(--platform-border-fine);
+}
+
+.platform-ui .workbench-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--platform-space-xs);
+}
+
+/* ── 13. Mobile patterns ───────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .platform-ui .workbench-main {
+    padding: var(--platform-space-sm) var(--platform-space-md) calc(var(--platform-space-xl) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .platform-ui .workbench-sidebar[data-wb-sidebar="2"] {
+    position: static;
+    max-height: none;
+    border-right: none;
+    border-bottom: 1px solid var(--platform-border-fine);
+  }
+
+  .platform-ui .workbench-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    padding-bottom: var(--platform-space-xs);
+  }
+
+  .platform-ui .workbench-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .platform-ui .workbench-sidebar-head .workbench-sidebar-title {
+    font-size: 12px;
+  }
+}
+
+.platform-ui .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item--active,
+.platform-ui .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item.is-active,
+.platform-ui .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item[aria-current="page"] {
+  background: var(--platform-accent) !important;
+  border-color: var(--platform-accent) !important;
+  color: #ffffff !important;
+}
+
+.platform-ui .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item--active:hover,
+.platform-ui .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item.is-active:hover,
+.platform-ui .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item[aria-current="page"]:hover {
+  background: #0a2d22 !important;
+  border-color: #0a2d22 !important;
+}
+
+.platform-ui.workbench-shell.is-sidebar-collapsed .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item--active .workbench-sidebar-glyph,
+.platform-ui.workbench-shell.is-sidebar-collapsed .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item.is-active .workbench-sidebar-glyph {
+  background: var(--platform-accent) !important;
+  border-color: var(--platform-accent) !important;
+}
+
+/* ── Workbench sidebar: no overlap / float ─────────────────────── */
+
+.platform-ui .workbench-shell {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0;
+  min-width: 0;
+  align-items: start;
+}
+
+.platform-ui .workbench-shell.is-sidebar-collapsed {
+  grid-template-columns: var(--wb-sidebar-collapsed-width, 72px) minmax(0, 1fr);
+}
+
+/* ── Review module: evidence-review tone ───────────────────────── */
+
+.platform-ui.workbench-member-canvas--reviews .workbench-review-card,
+.platform-ui.workbench-member-canvas--reviews .workbench-review-stage-card,
+.platform-ui.workbench-member-canvas--reviews .workbench-review-pipeline-step {
+  border-radius: var(--platform-radius);
+  box-shadow: none;
+  background: var(--platform-surface-raised);
+}
+
+.platform-ui.workbench-member-canvas--reviews .workbench-review-pipeline {
+  gap: var(--platform-space-sm);
+}
+
+.platform-ui.workbench-member-canvas--reviews .workbench-review-pipeline-step {
+  border-left: 3px solid var(--platform-border-fine);
+  padding-left: var(--platform-space-md);
+}
+
+.platform-ui.workbench-member-canvas--reviews .workbench-review-pipeline-step.is-active,
+.platform-ui.workbench-member-canvas--reviews .workbench-review-pipeline-step.is-complete {
+  border-left-color: var(--platform-accent);
+}
+
+.platform-ui.workbench-member-canvas--reviews .workbench-review-summary-grid {
+  gap: var(--platform-space-sm);
+}
+
+/* ── Research Intelligence: restrained analytics ──────────────── */
+
+.platform-ui.workbench-member-canvas--intelligence .ri-page.ri-dash {
+  gap: var(--platform-space-lg);
+}
+
+.platform-ui.workbench-member-canvas--intelligence .ri-panel,
+.platform-ui.workbench-member-canvas--intelligence .ri-overview-stat,
+.platform-ui.workbench-member-canvas--intelligence .ri-dash-kpi {
+  border-radius: var(--platform-radius);
+  box-shadow: none;
+}
+
+.platform-ui.workbench-member-canvas--intelligence .ri-kpi-band {
+  border: 1px solid var(--platform-border-fine);
+  border-radius: var(--platform-radius);
+  background: var(--platform-surface-raised);
+}
+
+.platform-ui.workbench-member-canvas--intelligence .ri-chart-tooltip {
+  border-radius: var(--platform-radius-sm);
+  box-shadow: 0 8px 24px rgba(20, 17, 13, 0.14);
+}
+
+/* ── Notes: scroll + overflow ──────────────────────────────────── */
+
+.platform-ui.workbench-shell--notes-premium .workbench-notes-layout-premium,
+.platform-ui.workbench-shell--notes-premium .workbench-editorial-main,
+.platform-ui.workbench-shell--notes-premium .workbench-document-pages-scroll {
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.platform-ui.workbench-shell--notes-premium .workbench-document-pages-scroll {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.platform-ui.workbench-shell--notes-premium .workbench-note-editor-shell,
+.platform-ui.workbench-shell--notes-premium .workbench-rich-editor-wrap {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.platform-ui.workbench-shell--notes-premium .workbench-citation-picker,
+.platform-ui.workbench-shell--notes-premium .workbench-references-panel {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* ── Saved records / reading lists ─────────────────────────────── */
+
+.platform-ui .saved-records-page {
+  --sr-bg: var(--platform-surface-raised);
+  --sr-bg-soft: var(--platform-surface);
+  --sr-border: var(--platform-border-fine);
+  --sr-text: var(--platform-ink);
+  --sr-text-muted: var(--platform-ink-muted);
+  --sr-radius: var(--platform-radius);
+  --sr-shadow: none;
+  --sr-shadow-hover: 0 4px 16px rgba(20, 17, 13, 0.05);
+}
+
+/* ── Library / Advanced Search (SPA) ───────────────────────────── */
+
+.library-layout,
+.main-results.library-blended-discovery {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.library-blended-discovery .library-advanced-panel {
+  border: 1px solid rgba(20, 17, 13, 0.1) !important;
+  border-radius: var(--platform-radius) !important;
+  background: var(--platform-surface-raised) !important;
+  box-shadow: none !important;
+  padding: var(--platform-space-md) !important;
+}
+
+.library-blended-discovery .library-advanced-toggle {
+  border-radius: var(--platform-radius-sm) !important;
+  min-height: var(--platform-touch) !important;
+  box-shadow: none !important;
+  background: var(--platform-surface) !important;
+  border: 1px solid var(--platform-border) !important;
+  color: var(--platform-accent) !important;
+}
+
+.library-blended-discovery .library-advanced-toggle:hover,
+.library-blended-discovery .library-advanced-toggle[aria-expanded="true"] {
+  background: var(--platform-accent-soft) !important;
+  border-color: rgba(15, 61, 46, 0.2) !important;
+  transform: none !important;
+}
+
+.library-blended-discovery .library-advanced-concept header,
+.library-blended-discovery .library-advanced-section-title {
+  font-size: var(--platform-caption) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: var(--platform-ink-faint) !important;
+}
+
+.library-blended-discovery .library-advanced-panel input,
+.library-blended-discovery .library-advanced-panel select,
+.library-blended-discovery .library-advanced-panel textarea {
+  min-height: 40px;
+  border-radius: var(--platform-radius-sm) !important;
+  border: 1px solid var(--platform-border) !important;
+  box-shadow: none !important;
+  font-size: var(--platform-ui-size) !important;
+}
+
+.library-blended-discovery .library-advanced-boolean-row {
+  gap: var(--platform-space-xs) !important;
+  align-items: center !important;
+}
+
+.library-blended-discovery .library-advanced-actions button {
+  min-height: var(--platform-touch) !important;
+  border-radius: var(--platform-radius-sm) !important;
+  box-shadow: none !important;
+}
+
+.library-blended-discovery .library-advanced-actions .library-advanced-primary {
+  background: var(--platform-accent) !important;
+  border-color: var(--platform-accent) !important;
+}
+
+.library-blended-discovery .library-results-section {
+  border-radius: var(--platform-radius) !important;
+  box-shadow: none !important;
+  border: 1px solid var(--platform-border-fine) !important;
+}
+
+.library-route-loading {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: var(--platform-space-lg) var(--platform-space-md);
+}
+
+.library-route-loading__bar {
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--platform-accent), transparent);
+  background-size: 200% 100%;
+  animation: platform-loading-bar 1.2s ease-in-out infinite;
+}
+
+.library-route-loading__grid {
+  display: grid;
+  gap: var(--platform-space-sm);
+  margin-top: var(--platform-space-lg);
+}
+
+.library-route-loading__row {
+  height: 72px;
+  border-radius: var(--platform-radius-sm);
+  background: var(--platform-surface);
+  border: 1px solid var(--platform-border-fine);
+}
+
+@keyframes platform-loading-bar {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .library-blended-discovery .library-advanced-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .library-blended-discovery .library-advanced-grid > aside {
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+
+  .main-results.library-blended-discovery > .search-bar button {
+    min-height: var(--platform-touch) !important;
+    border-radius: var(--platform-radius-sm) !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+}
+
+/* ── Record detail ─────────────────────────────────────────────── */
+
+.record-detail-page .record-detail-layout,
+.detail-body.record-detail-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
+  gap: var(--platform-space-lg);
+}
+
+.record-detail-page .record-sidebar-card {
+  padding: var(--platform-space-md);
+  border-radius: var(--platform-radius);
+  border: 1px solid var(--platform-border-fine);
+  background: var(--platform-surface-raised);
+  box-shadow: none;
+}
+
+.record-detail-page .record-citation-card .record-citation-text,
+.record-detail-page .record-citation-card pre,
+.record-detail-page .record-citation-card code,
+.record-detail-page .record-sidebar-card p,
+.record-detail-page .record-sidebar-card dd {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.record-detail-page .record-detail-main {
+  min-width: 0;
+}
+
+.record-detail-page .record-detail-sidebar {
+  top: 96px;
+}
+
+@media (max-width: 760px) {
+  .record-detail-page .record-detail-layout,
+  .detail-body.record-detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .record-detail-page .record-detail-sidebar {
+    position: static;
+  }
+}
+
+/* ── Admin (minimal touch-up) ──────────────────────────────────── */
+
+.dashboard-shell--admin .admin-surface-card,
+.dashboard-shell--admin .admin-stat-card {
+  border-radius: var(--platform-radius);
+  border: 1px solid var(--platform-border-fine);
+  box-shadow: none;
+}
+
+.dashboard-shell--admin .admin-button {
+  min-height: var(--platform-touch);
+  border-radius: var(--platform-radius-sm);
+}
+
+/* ── Responsive: no horizontal scroll ──────────────────────────── */
+
+@media (max-width: 430px) {
+  .platform-ui .workbench-main,
+  .platform-ui .saved-records-page,
+  .platform-ui .ri-page.ri-dash {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .platform-ui .workbench-button,
+  .platform-ui .ri-btn,
+  .platform-ui .saved-records-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .library-route-loading__bar {
+    animation: none;
+  }
+}

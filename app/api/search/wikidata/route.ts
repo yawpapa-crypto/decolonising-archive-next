@@ -3,22 +3,24 @@ import { searchWikidataEntities } from "@/lib/search/wikidata";
 import { wikidataEntityToLibraryLive } from "@/lib/wikidata-library-live";
 import { SEARCH_DEFAULT_PAGE_SIZE, clampPageSize } from "@/lib/search-pagination";
 import { getCachedSearch, searchCacheKey, setCachedSearch } from "@/lib/search-cache";
+import { guardPublicSearch } from "@/src/lib/security/search-guard";
+import { safePublicError } from "@/src/lib/security/sanitize";
+import { parseSearchOffset } from "@/src/lib/security/validate";
 
 export const runtime = "nodejs";
 
 export async function GET(request: NextRequest) {
   try {
+    const guarded = await guardPublicSearch(request);
+    if (!guarded.ok) return guarded.response;
+
     const { searchParams } = new URL(request.url);
-    const query = String(searchParams.get("q") || searchParams.get("query") || "").trim();
+    const query = guarded.query;
     const limit = clampPageSize(
       Number(searchParams.get("limit") || searchParams.get("perPage") || SEARCH_DEFAULT_PAGE_SIZE),
     );
-    const offset = Math.max(0, Number(searchParams.get("offset") || 0));
+    const offset = parseSearchOffset(searchParams);
     const language = String(searchParams.get("language") || "en").trim() || "en";
-
-    if (!query) {
-      return NextResponse.json({ ok: false, error: "Missing q parameter" }, { status: 400 });
-    }
 
     const cacheKey = searchCacheKey("wikidata", query, { limit, offset, language });
     const cached = getCachedSearch<Record<string, unknown>>(cacheKey);
@@ -43,7 +45,7 @@ export async function GET(request: NextRequest) {
     setCachedSearch(cacheKey, payload);
     return NextResponse.json(payload);
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
+    const message = safePublicError(error, "Search temporarily unavailable");
     console.warn("[Wikidata API]", message);
     return NextResponse.json(
       {

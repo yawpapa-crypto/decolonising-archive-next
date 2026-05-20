@@ -165,6 +165,101 @@ export type IntelligenceDashboardKpis = {
   slrReadinessPercent?: number;
 };
 
+export type IntelligenceDistributionEntry = {
+  label: string;
+  count: number;
+  percent: number;
+};
+
+export type IntelligenceOverviewMetrics = {
+  totalSavedRecords: number;
+  totalSearches: number;
+  activeReviewProjects: number;
+  readingListCount: number;
+  notesWithCitations: number;
+  totalNotes: number;
+  totalCitations: number;
+  openAccessPercent: number;
+  externalSourcePercent: number;
+  metadataOnlyPercent: number;
+  missingMetadataWarnings: number;
+  recordsInReadingLists: number;
+  recordsLinkedToProjects: number;
+};
+
+export type SourceIntelligence = {
+  mix: IntelligenceDistributionEntry[];
+  openAccessVsMetadataOnly: { openAccess: number; metadataOnly: number; closed: number };
+  mediaTypeMix: IntelligenceDistributionEntry[];
+  dominanceWarning: string | null;
+  underusedArchives: string[];
+  trustIndicators: Array<{
+    sourceId: string;
+    label: string;
+    level: "high" | "medium" | "low";
+    note: string;
+  }>;
+};
+
+export type TemporalCoverage = {
+  yearSpread: Array<{ year: string; count: number; cited: number }>;
+  earliestYear: string | null;
+  latestYear: string | null;
+  decadeGaps: string[];
+};
+
+export type GeographicCoverage = {
+  countries: IntelligenceFacetOption[];
+  regions: IntelligenceFacetOption[];
+  continents: IntelligenceFacetOption[];
+  countriesCovered: number;
+  locationCards: IntelligenceLocationCard[];
+  mapPointCount: number;
+};
+
+export type CitationIntelligence = {
+  citedSourcesCount: number;
+  totalCitations: number;
+  uncitedNotesCount: number;
+  notesWithoutCitations: number;
+  topAuthors: IntelligenceDistributionEntry[];
+  styleIssues: number;
+  missingDoiOrUrl: number;
+  weakDiversityWarning: string | null;
+  sourceAgeSpread: IntelligenceDistributionEntry[];
+  coveragePrompts: string[];
+};
+
+export type IntelligenceRecommendation = {
+  id: string;
+  category: "source" | "metadata" | "citation" | "review" | "reading-list" | "search";
+  title: string;
+  detail: string;
+  severity: "info" | "warning" | "action";
+};
+
+export type ReviewIntelligenceDetail = PrismaFlowCounts & {
+  activeReviewProjects: number;
+  maybeCount: number;
+  unresolvedConflicts: number;
+  extractionProgressPercent: number;
+  reviewerWorkload: Array<{ label: string; count: number }>;
+  databasesUsed: string[];
+  projects: Array<{
+    id: string;
+    title: string;
+    reviewType: ReviewProjectType;
+    status: ReviewProject["status"];
+    databasesSearched: string[];
+  }>;
+};
+
+export type ReviewIntelligenceExtras = {
+  unresolvedConflicts: number;
+  extractionProgressPercent: number;
+  reviewerWorkload: Array<{ label: string; count: number }>;
+};
+
 export type IntelligenceBehaviorInsight = {
   id: string;
   category: "reading" | "location" | "citation" | "gap" | "activity";
@@ -265,6 +360,10 @@ export type IntelligenceItem = {
   theme?: string | null;
   recordType?: string | null;
   openAccess?: boolean | null;
+  language?: string | null;
+  mediaType?: string | null;
+  citationCount?: number | null;
+  sourceDatabaseId?: string | null;
   confidence?: IntelligenceConfidence | null;
   lastSynced?: string | null;
   engagementScore?: number;
@@ -325,6 +424,8 @@ export type UserResearchProfile = {
 export type ReviewProjectType =
   | "systematic_review"
   | "scoping_review"
+  | "rapid_review"
+  | "evidence_map"
   | "mapping_review"
   | "narrative_review";
 
@@ -333,6 +434,7 @@ export type ReviewScreeningStatus =
   | "title_abstract_screening"
   | "included"
   | "excluded"
+  | "maybe"
   | "full_text_review"
   | "final_included";
 
@@ -357,7 +459,7 @@ export type ReviewProject = {
   dateRangeStart: string | null;
   dateRangeEnd: string | null;
   notes: string | null;
-  status: "active" | "paused" | "completed";
+  status: "active" | "paused" | "completed" | "archived";
   createdAt: string;
   updatedAt: string;
 };
@@ -408,6 +510,18 @@ export type SavedSearchInsight = {
   createdAt: string;
 };
 
+export type IntelligenceDashboardPayload = {
+  overview: IntelligenceOverviewMetrics;
+  sourceDistribution: SourceIntelligence;
+  typeDistribution: IntelligenceDistributionEntry[];
+  timeline: TemporalCoverage;
+  geography: GeographicCoverage;
+  reviews: ReviewIntelligenceDetail;
+  citations: CitationIntelligence;
+  warnings: IntelligenceResearchGap[];
+  records: IntelligenceItem[];
+};
+
 export type IntelligenceSnapshot = {
   items: IntelligenceItem[];
   collections: IntelligenceCollection[];
@@ -437,5 +551,10 @@ export type IntelligenceSnapshot = {
   prismaCounts: PrismaFlowCounts;
   reviewKpis: ReviewIntelligenceKpis;
   savedSearchInsights: SavedSearchInsight[];
+  overviewMetrics: IntelligenceOverviewMetrics;
+  sourceIntelligence: SourceIntelligence;
+  citationIntelligence: CitationIntelligence;
+  recommendations: IntelligenceRecommendation[];
+  reviewDetail: ReviewIntelligenceExtras;
   errors: string[];
 };

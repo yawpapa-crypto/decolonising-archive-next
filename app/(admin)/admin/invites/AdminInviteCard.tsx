@@ -42,10 +42,11 @@ export default function AdminInviteCard({
   const [editing, setEditing] = useState(false);
   const isAccepted = Boolean(invite.used_at);
   const isRevoked = Boolean(invite.revoked_at);
-  const actionsDisabled = isAccepted || isRevoked;
+  const canRevokeOrResend = !isAccepted && !isRevoked;
+  const canDelete = !isAccepted;
 
   return (
-    <article className="admin-invite-card">
+    <article className="admin-invite-card admin-invite-card--moderation">
       <div className="admin-invite-main">
         <div className="admin-invite-primary">
           <strong>{invite.email || invite.label || "Open invite"}</strong>
@@ -68,7 +69,7 @@ export default function AdminInviteCard({
             <button
               type="submit"
               className="admin-small-button admin-secondary-button"
-              disabled={actionsDisabled}
+              disabled={!canRevokeOrResend}
             >
               Resend
             </button>
@@ -86,8 +87,8 @@ export default function AdminInviteCard({
             <input type="hidden" name="invite_id" value={invite.id} />
             <button
               type="submit"
-              className="admin-small-button admin-danger-button"
-              disabled={actionsDisabled}
+              className="admin-small-button admin-danger-button admin-danger-button--solid"
+              disabled={!canRevokeOrResend}
             >
               Revoke
             </button>
@@ -96,8 +97,8 @@ export default function AdminInviteCard({
             <input type="hidden" name="invite_id" value={invite.id} />
             <button
               type="submit"
-              className="admin-small-button admin-danger-button"
-              disabled={actionsDisabled}
+              className="admin-small-button admin-danger-button admin-danger-button--outline"
+              disabled={!canDelete}
             >
               Delete
             </button>

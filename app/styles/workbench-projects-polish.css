@@ -1,0 +1,374 @@
+/**
+ * Workbench projects index — compact premium polish
+ * Scoped: .platform-ui .workbench-projects-premium
+ */
+
+.platform-ui .workbench-projects-premium {
+  --wp-ink: #14110d;
+  --wp-muted: #585149;
+  --wp-faint: #908779;
+  --wp-surface: #fafaf8;
+  --wp-panel: #ffffff;
+  --wp-border: rgba(20, 17, 13, 0.1);
+  --wp-border-fine: rgba(20, 17, 13, 0.08);
+  --wp-accent: #0f3d2e;
+  --wp-accent-soft: rgba(15, 61, 46, 0.07);
+  --wp-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  background: transparent !important;
+  box-sizing: border-box;
+}
+
+/* ── Header ── */
+
+.platform-ui .workbench-projects-premium .workbench-projects-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--wp-border-fine);
+  background: transparent !important;
+}
+
+.platform-ui .workbench-projects-premium .workbench-projects-eyebrow {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--wp-faint) !important;
+  margin: 0 0 4px !important;
+}
+
+.platform-ui .workbench-projects-premium .workbench-projects-heading-block h1 {
+  font-size: clamp(1.25rem, 2vw, 1.5rem) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.2 !important;
+  color: var(--wp-ink) !important;
+  margin: 0 !important;
+}
+
+.platform-ui .workbench-projects-premium .workbench-projects-new-button {
+  flex-shrink: 0;
+  min-height: 36px !important;
+  padding: 0 14px !important;
+  border-radius: 8px !important;
+  background: var(--wp-accent) !important;
+  border: 1px solid var(--wp-accent) !important;
+  color: #fff !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  box-shadow: none !important;
+  transform: none !important;
+  white-space: nowrap;
+}
+
+.platform-ui .workbench-projects-premium .workbench-projects-new-button:hover {
+  background: #0a2d22 !important;
+  border-color: #0a2d22 !important;
+}
+
+/* ── Panel ── */
+
+.platform-ui .workbench-projects-premium .workbench-project-list-card,
+.platform-ui .workbench-projects-premium .workbench-project-form-card {
+  background: var(--wp-panel) !important;
+  border: 1px solid var(--wp-border-fine) !important;
+  border-radius: var(--wp-radius) !important;
+  box-shadow: none !important;
+  padding: 14px 16px !important;
+}
+
+.platform-ui .workbench-projects-premium .workbench-project-form-heading h2 {
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  margin: 0 0 4px !important;
+}
+
+.platform-ui .workbench-projects-premium .workbench-project-form-heading p {
+  font-size: 13px !important;
+  color: var(--wp-muted) !important;
+  margin: 0 0 12px !important;
+}
+
+/* ── Compact toolbar ── */
+
+.platform-ui .workbench-projects-premium .workbench-projects-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.platform-ui .workbench-projects-premium .workbench-projects-search,
+.platform-ui .workbench-projects-premium .workbench-projects-select {
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--wp-border);
+  border-radius: 8px;
+  background: var(--wp-panel);
+  font-size: 13px;
+  color: var(--wp-ink);
+  box-shadow: none;
+}
+
+.platform-ui .workbench-projects-premium .workbench-projects-search {
+  flex: 1 1 160px;
+  min-width: min(100%, 160px);
+}
+
+.platform-ui .workbench-projects-premium .workbench-projects-select {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.platform-ui .workbench-projects-premium .workbench-projects-search:focus,
+.platform-ui .workbench-projects-premium .workbench-projects-select:focus {
+  border-color: rgba(15, 61, 46, 0.35);
+  box-shadow: 0 0 0 2px rgba(15, 61, 46, 0.1);
+  outline: none;
+}
+
+.platform-ui .workbench-projects-premium .workbench-projects-results-meta {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--wp-faint);
+  margin: 0;
+  padding: 0 4px;
+  white-space: nowrap;
+}
+
+.platform-ui .workbench-projects-premium .workbench-projects-clear {
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--wp-border-fine);
+  border-radius: 8px;
+  background: var(--wp-surface);
+  color: var(--wp-muted);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.platform-ui .workbench-projects-premium .workbench-projects-clear:hover {
+  border-color: rgba(15, 61, 46, 0.2);
+  color: var(--wp-accent);
+}
+
+/* ── Compact list (not tall cards) ── */
+
+.platform-ui .workbench-projects-premium .workbench-project-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.platform-ui .workbench-projects-premium .workbench-project-card {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  min-height: 0 !important;
+  padding: 10px 12px !important;
+  border: 1px solid var(--wp-border-fine) !important;
+  border-radius: 8px !important;
+  background: var(--wp-surface) !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  color: inherit !important;
+  transition: border-color 0.15s ease, background 0.15s ease !important;
+  transform: none !important;
+}
+
+.platform-ui .workbench-projects-premium .workbench-project-card:hover {
+  border-color: rgba(15, 61, 46, 0.22) !important;
+  background: var(--wp-panel) !important;
+}
+
+.platform-ui .workbench-projects-premium .workbench-project-card-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.platform-ui .workbench-projects-premium .workbench-project-card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.platform-ui .workbench-projects-premium .workbench-project-card-category,
+.platform-ui .workbench-projects-premium .workbench-project-card-status {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.platform-ui .workbench-projects-premium .workbench-project-card-category {
+  color: var(--wp-faint);
+}
+
+.platform-ui .workbench-projects-premium .workbench-project-card-status {
+  color: var(--wp-accent);
+  background: var(--wp-accent-soft);
+  border-radius: 999px;
+  padding: 3px 7px;
+}
+
+.platform-ui .workbench-projects-premium .workbench-project-card h3 {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+  color: var(--wp-ink) !important;
+  margin: 0 0 2px !important;
+  max-width: none !important;
+  overflow-wrap: anywhere;
+}
+
+.platform-ui .workbench-projects-premium .workbench-project-card p {
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+  color: var(--wp-muted) !important;
+  margin: 0 !important;
+}
+
+.platform-ui .workbench-projects-premium .workbench-project-card-action {
+  flex-shrink: 0;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  color: var(--wp-faint) !important;
+  padding: 0 !important;
+  line-height: 1;
+}
+
+.platform-ui .workbench-projects-premium .workbench-project-card:hover .workbench-project-card-action {
+  color: var(--wp-accent) !important;
+}
+
+/* ── Form ── */
+
+.platform-ui .workbench-projects-premium .workbench-project-form {
+  gap: 12px !important;
+}
+
+.platform-ui .workbench-projects-premium .workbench-field span {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  color: var(--wp-faint) !important;
+}
+
+.platform-ui .workbench-projects-premium .workbench-field input,
+.platform-ui .workbench-projects-premium .workbench-field select,
+.platform-ui .workbench-projects-premium .workbench-field textarea {
+  border: 1px solid var(--wp-border) !important;
+  border-radius: 8px !important;
+  min-height: 36px !important;
+  font-size: 14px !important;
+  box-shadow: none !important;
+}
+
+.platform-ui .workbench-projects-premium .workbench-project-submit {
+  background: var(--wp-accent) !important;
+  border-color: var(--wp-accent) !important;
+  color: #fff !important;
+  border-radius: 8px !important;
+  min-height: 36px !important;
+  box-shadow: none !important;
+}
+
+.platform-ui .workbench-projects-premium .workbench-project-discard {
+  border-radius: 8px !important;
+  min-height: 36px !important;
+}
+
+/* ── Empty state ── */
+
+.platform-ui .workbench-projects-premium .workbench-projects-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 28px 20px;
+  border: 1px dashed var(--wp-border);
+  border-radius: var(--wp-radius);
+  background: var(--wp-surface);
+}
+
+.platform-ui .workbench-projects-premium .workbench-projects-empty h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--wp-ink);
+  margin: 0;
+}
+
+.platform-ui .workbench-projects-premium .workbench-projects-empty p {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--wp-muted);
+  max-width: 36ch;
+  margin: 0;
+}
+
+.platform-ui .workbench-projects-premium .workbench-projects-empty--filtered {
+  padding: 20px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.platform-ui .workbench-projects-premium .workbench-flash {
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 720px) {
+  .platform-ui .workbench-projects-premium .workbench-projects-header {
+    flex-wrap: wrap;
+  }
+
+  .platform-ui .workbench-projects-premium .workbench-projects-new-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .platform-ui .workbench-projects-premium .workbench-projects-select {
+    flex: 1 1 calc(50% - 4px);
+  }
+}
+
+@media (max-width: 430px) {
+  .platform-ui .workbench-projects-premium .workbench-project-form-actions {
+    flex-direction: column;
+  }
+
+  .platform-ui .workbench-projects-premium .workbench-project-form-actions .workbench-button {
+    width: 100%;
+  }
+
+  .platform-ui .workbench-projects-premium .workbench-projects-select {
+    flex: 1 1 100%;
+  }
+}

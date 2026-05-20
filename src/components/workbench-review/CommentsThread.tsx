@@ -28,7 +28,7 @@ export default function CommentsThread({ projectId, recordId, comments = [] }: P
       const d = await r.json();
       if (d.ok) setRemoteComments(d.comments || []);
       setText('');
-    } catch (err) {
+    } catch {
       setRemoteComments((c) => c.filter((x) => x.id !== optimistic.id));
     } finally {
       setSending(false);
@@ -64,6 +64,13 @@ export default function CommentsThread({ projectId, recordId, comments = [] }: P
         ) : (
           <div className="empty">No comments yet.</div>
         )}
+      </div>
+      <div className="comment-form">
+        <label htmlFor="new-comment" className="workbench-card-label">Add a comment</label>
+        <textarea id="new-comment" aria-label="New comment" value={text} onChange={(e) => setText(e.target.value)} className="workbench-textarea" />
+        <div>
+          <button type="button" className="workbench-button-primary" disabled={sending} onClick={post}>Post comment</button>
+        </div>
       </div>
     </div>
   );

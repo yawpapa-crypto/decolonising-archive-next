@@ -409,7 +409,7 @@
     border-left: 0 !important;
     border-top: 1px solid rgba(15, 61, 46, 0.12);
     border-radius: 20px 20px 0 0 !important;
-    box-shadow: 0 -20px 48px rgba(15, 17, 15, 0.18) !important;
+    box-shadow: none !important;
     transform: translateY(0) !important;
     animation: workbench-notes-sheet-in 220ms cubic-bezier(0.22, 1, 0.36, 1);
   }
@@ -429,7 +429,7 @@
     border-left: 0 !important;
     border-top: 1px solid rgba(15, 61, 46, 0.14);
     border-radius: 20px 20px 0 0 !important;
-    box-shadow: 0 -12px 40px rgba(15, 17, 15, 0.16) !important;
+    box-shadow: none !important;
     transform: translateY(0) !important;
     animation: none !important;
   }

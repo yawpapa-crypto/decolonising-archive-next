@@ -1,21 +1,12 @@
 import { NextResponse } from "next/server";
 
-export async function POST(request: Request) {
-  const { password } = await request.json();
-  const adminPassword = process.env.ADMIN_PASSWORD;
-
-  if (!adminPassword || password !== adminPassword) {
-    return NextResponse.json({ ok: false }, { status: 401 });
-  }
-
-  const response = NextResponse.json({ ok: true });
-
-  response.cookies.set("admin_access", adminPassword, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-  });
-
-  return response;
+/** Legacy password gate — superseded by Supabase admin sign-in at /admin/signin. */
+export async function POST() {
+  return NextResponse.json(
+    {
+      ok: false,
+      error: "Legacy admin login is disabled. Use /admin/signin with your admin account.",
+    },
+    { status: 410 },
+  );
 }

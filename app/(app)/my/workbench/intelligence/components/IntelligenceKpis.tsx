@@ -83,7 +83,13 @@ export default function IntelligenceKpis({ kpis, reviewKpis }: Props) {
           <KpiCard
             label="Corpus size"
             value={kpis.totalRecords.toLocaleString()}
-            hint={`${kpis.userSavedRecords} saved bookmarks`}
+            hint={
+              (kpis.citedRecords ?? 0) > 0
+                ? `${kpis.citedRecords} cited in notes`
+                : kpis.activeSources > 0
+                  ? `${kpis.activeSources} source databases`
+                  : "In your research corpus"
+            }
             icon={Database}
             accent="ri-accent-forest"
           />

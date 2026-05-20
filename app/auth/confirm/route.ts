@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "../../../src/lib/supabase/server";
+import { safeNextPath } from "@/src/lib/security/validate";
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
@@ -7,7 +8,7 @@ export async function GET(request: NextRequest) {
   const code = requestUrl.searchParams.get("code");
   const tokenHash = requestUrl.searchParams.get("token_hash");
   const type = requestUrl.searchParams.get("type");
-  const next = requestUrl.searchParams.get("next") || "/workspace";
+  const next = safeNextPath(requestUrl.searchParams.get("next"));
 
   const origin = requestUrl.origin;
   const supabase = await createClient();

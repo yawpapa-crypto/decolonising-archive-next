@@ -3,22 +3,23 @@ import { scholarlyResultToLibraryLive } from "@/lib/openalex-library-live";
 import { SEARCH_DEFAULT_PAGE_SIZE, clampPageSize } from "@/lib/search-pagination";
 import { searchOpenAlexWorksPage } from "@/lib/scholarly-search";
 import { getCachedSearch, searchCacheKey, setCachedSearch } from "@/lib/search-cache";
+import { guardPublicSearch } from "@/src/lib/security/search-guard";
+import { safePublicError } from "@/src/lib/security/sanitize";
 
 export const runtime = "nodejs";
 
 export async function GET(request: NextRequest) {
   try {
+    const guarded = await guardPublicSearch(request);
+    if (!guarded.ok) return guarded.response;
+
     const { searchParams } = new URL(request.url);
-    const query = String(searchParams.get("q") || searchParams.get("query") || "").trim();
+    const query = guarded.query;
     const limit = clampPageSize(
       Number(searchParams.get("limit") || searchParams.get("perPage") || SEARCH_DEFAULT_PAGE_SIZE),
     );
     const cursorParam = searchParams.get("cursor");
     const cursor = cursorParam && cursorParam.trim() ? cursorParam.trim() : "*";
-
-    if (!query) {
-      return NextResponse.json({ ok: false, error: "Missing q parameter" }, { status: 400 });
-    }
 
     const cacheKey = searchCacheKey("openalex", query, { limit, cursor });
     const cached = getCachedSearch<{
@@ -53,7 +54,7 @@ export async function GET(request: NextRequest) {
     setCachedSearch(cacheKey, payload);
     return NextResponse.json(payload);
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
+    const message = safePublicError(error, "Search temporarily unavailable");
     return NextResponse.json(
       {
         ok: false,

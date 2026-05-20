@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "smoke:test": "node --experimental-specifier-resolution=node scripts/smoke-test-review-api.mjs"
+    "smoke:test": "node --experimental-specifier-resolution=node scripts/smoke-test-review-api.mjs",
+    "ui:smoke": "node --experimental-specifier-resolution=node scripts/ui-smoke-check.mjs"
   },
   "dependencies": {
     "@deck.gl/aggregation-layers": "^9.3.2",
@@ -30,6 +31,7 @@
     "@tiptap/extension-highlight": "3.23.4",
     "@tiptap/extension-image": "3.23.4",
     "@tiptap/extension-link": "3.23.4",
+    "@tiptap/extension-list": "^3.23.4",
     "@tiptap/extension-placeholder": "3.23.4",
     "@tiptap/extension-table": "3.23.4",
     "@tiptap/extension-table-cell": "3.23.4",
@@ -41,6 +43,7 @@
     "@tiptap/extension-text-style": "3.23.4",
     "@tiptap/extension-typography": "3.23.4",
     "@tiptap/extension-underline": "3.23.4",
+    "@tiptap/extensions": "^3.23.4",
     "@tiptap/pm": "3.23.4",
     "@tiptap/react": "3.23.4",
     "@tiptap/starter-kit": "3.23.4",
@@ -48,6 +51,7 @@
     "@vercel/postgres": "^0.10.0",
     "@vercel/speed-insights": "^2.0.0",
     "clsx": "^2.1.1",
+    "d3-geo": "^3.1.1",
     "docx": "^9.6.1",
     "framer-motion": "^12.39.0",
     "lucide-react": "^1.14.0",
@@ -59,16 +63,20 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-map-gl": "^8.1.1",
+    "react-simple-maps": "^3.0.0",
     "recharts": "^3.8.1",
     "server-only": "^0.0.1",
-    "tailwind-merge": "^3.6.0"
+    "tailwind-merge": "^3.6.0",
+    "topojson-client": "^3.1.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/d3-geo": "^3.1.0",
     "@types/node": "^20",
     "@types/pdfkit": "^0.17.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/topojson-client": "^3.1.5",
     "eslint": "^9",
     "eslint-config-next": "16.2.3",
     "tailwindcss": "^4",

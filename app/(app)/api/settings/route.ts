@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/src/lib/supabase";
+import { isGuardResponse, requireAdminApi } from "@/src/lib/security/auth-guards";
 
 export async function GET() {
   const { data, error } = await supabase
@@ -16,6 +17,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const guard = await requireAdminApi();
+  if (isGuardResponse(guard)) return guard;
+
   const body = await request.json();
 
   const { error } = await supabase

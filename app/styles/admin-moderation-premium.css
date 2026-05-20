@@ -1,0 +1,229 @@
+/**
+ * Admin moderation — premium crimson styling for users & invites.
+ */
+
+.admin-moderation-premium {
+  --admin-red: #9f1239;
+  --admin-red-deep: #881337;
+  --admin-red-bg: #fff1f2;
+  --admin-red-line: rgba(159, 18, 57, 0.28);
+  --admin-red-glow: rgba(159, 18, 57, 0.14);
+}
+
+.admin-moderation-premium .admin-error-status,
+.admin-moderation-premium .auth-error {
+  border-color: var(--admin-red-line);
+  background: var(--admin-red-bg);
+  color: var(--admin-red-deep);
+  border-radius: 12px;
+}
+
+.admin-moderation-premium .admin-save-status,
+.admin-moderation-premium .auth-notice {
+  border: 1px solid rgba(25, 106, 59, 0.22);
+  background: #f1fbf4;
+  color: #196a3b;
+  border-radius: 12px;
+  padding: 10px 14px;
+}
+
+/* Users table — five balanced columns */
+.admin-moderation-premium .admin-users-surface {
+  overflow: hidden;
+}
+
+.admin-moderation-premium .admin-users-table {
+  border-radius: 16px;
+  border-color: #ddd;
+}
+
+.admin-moderation-premium .admin-users-row {
+  grid-template-columns:
+    minmax(220px, 1.45fr)
+    minmax(148px, 0.72fr)
+    minmax(220px, 1.05fr)
+    minmax(120px, 0.58fr)
+    minmax(200px, 0.85fr);
+  gap: 14px;
+  align-items: start;
+  min-width: 960px;
+  padding: 16px 18px;
+}
+
+.admin-moderation-premium .admin-table-head {
+  align-items: center;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.admin-moderation-premium .admin-role-form {
+  flex-wrap: nowrap;
+  gap: 8px;
+  width: 100%;
+}
+
+.admin-moderation-premium .admin-role-select {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 38px;
+}
+
+.admin-moderation-premium .admin-role-form .admin-small-button {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/* Combined actions column */
+.admin-moderation-premium .admin-user-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  min-width: 0;
+}
+
+.admin-moderation-premium .admin-user-actions__block {
+  display: flex;
+}
+
+.admin-moderation-premium .admin-user-actions__block .admin-small-button {
+  width: 100%;
+}
+
+.admin-moderation-premium .admin-user-actions__hint {
+  margin: 0;
+  font-size: 12px;
+  color: #6b6560;
+  font-style: italic;
+}
+
+.admin-moderation-premium .admin-user-actions__delete {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--admin-red-line);
+  border-radius: 12px;
+  background: var(--admin-red-bg);
+}
+
+.admin-moderation-premium .admin-user-actions__delete-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--admin-red-deep);
+  font-weight: 600;
+}
+
+.admin-moderation-premium .admin-user-actions__delete-label span {
+  overflow-wrap: anywhere;
+}
+
+.admin-moderation-premium .admin-delete-confirm {
+  min-height: 36px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-color: var(--admin-red-line);
+  background: #fff;
+}
+
+.admin-moderation-premium .admin-delete-confirm:focus {
+  outline-color: var(--admin-red);
+  border-color: var(--admin-red);
+}
+
+.admin-moderation-premium .admin-user-actions__delete-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-moderation-premium .admin-user-actions__delete-buttons .admin-small-button {
+  flex: 1 1 0;
+}
+
+/* Premium danger buttons */
+.admin-moderation-premium .admin-danger-button--solid {
+  border-color: var(--admin-red-deep) !important;
+  background: linear-gradient(180deg, var(--admin-red) 0%, var(--admin-red-deep) 100%) !important;
+  color: #fff !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.12) inset, 0 6px 14px var(--admin-red-glow);
+  font-weight: 600;
+}
+
+.admin-moderation-premium .admin-danger-button--solid:hover:not(:disabled) {
+  background: linear-gradient(180deg, #be123c 0%, #7f1d1d 100%) !important;
+  border-color: #7f1d1d !important;
+  color: #fff !important;
+}
+
+.admin-moderation-premium .admin-danger-button--outline {
+  border-color: var(--admin-red-line) !important;
+  background: #fff !important;
+  color: var(--admin-red-deep) !important;
+  font-weight: 600;
+  width: 100%;
+}
+
+.admin-moderation-premium .admin-danger-button--outline:hover:not(:disabled) {
+  background: var(--admin-red-bg) !important;
+  border-color: rgba(159, 18, 57, 0.45) !important;
+}
+
+.admin-moderation-premium .admin-small-button:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.admin-moderation-premium .admin-status-pill.is-active {
+  border-color: #196a3b;
+  color: #196a3b;
+  background: #f1fbf4;
+}
+
+.admin-moderation-premium .admin-status-pill.is-blocked {
+  border-color: var(--admin-red);
+  color: var(--admin-red-deep);
+  background: var(--admin-red-bg);
+}
+
+/* Invite cards */
+.admin-moderation-premium .admin-invite-card {
+  border-color: #e3e3dc;
+  border-radius: 18px;
+  box-shadow: 0 10px 28px rgba(17, 17, 17, 0.04);
+}
+
+.admin-moderation-premium .admin-invite-actions {
+  padding: 10px;
+  border: 1px solid #ecece6;
+  border-radius: 14px;
+  background: #fbfbf7;
+  gap: 8px;
+}
+
+.admin-moderation-premium .admin-invite-actions .admin-small-button {
+  min-width: 76px;
+}
+
+.admin-moderation-premium .admin-status-badge.is-revoked {
+  border-color: var(--admin-red);
+  color: var(--admin-red-deep);
+  background: var(--admin-red-bg);
+}
+
+.admin-moderation-premium .admin-invite-edit-panel {
+  background: linear-gradient(180deg, #fbfbf7 0%, #fff 100%);
+}
+
+@media (max-width: 1100px) {
+  .admin-moderation-premium .admin-invite-main {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-moderation-premium .admin-invite-actions {
+    justify-content: flex-start;
+  }
+}

@@ -18,6 +18,7 @@ type Invite = {
   role: "admin" | "curator";
   label: string | null;
   used_at: string | null;
+  revoked_at: string | null;
   expires_at: string | null;
 };
 
@@ -27,6 +28,7 @@ function inviteIsExpired(expiresAt: string | null) {
 
 function invalidReason(invite: Invite | null) {
   if (!invite) return "This admin invite is invalid or has expired.";
+  if (invite.revoked_at) return "This admin invite has been revoked.";
   if (invite.used_at) return "This admin invite has already been used.";
   if (inviteIsExpired(invite.expires_at)) {
     return "This admin invite is invalid or has expired.";
@@ -46,7 +48,7 @@ export default async function AdminInvitePage({ params, searchParams }: PageProp
     const admin = createAdminClient();
     const result = await admin
       .from("admin_invites")
-      .select("token, email, role, label, used_at, expires_at")
+      .select("token, email, role, label, used_at, revoked_at, expires_at")
       .eq("token", token)
       .maybeSingle();
     if (result.error) loadError = "This admin invite is invalid or has expired.";

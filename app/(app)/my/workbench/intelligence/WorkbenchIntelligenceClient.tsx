@@ -11,42 +11,62 @@ import {
 } from "@/lib/workbench-activity-actions";
 import {
   EMPTY_FACETS,
+  describeActiveIntelligenceFilters,
   filterIntelligenceItems,
   intelligenceItemsToCsv,
   literatureReviewToCsv,
   reviewScreeningToCsv,
+  sourceLabelToFacetValue,
 } from "@/lib/workbench-intelligence-client";
+import { getReviewIntelligence, getTemporalCoverage } from "@/lib/workbench-intelligence-metrics";
 import { derivePipelineStages } from "@/lib/workbench-intelligence-pipeline";
 import type {
   IntelligenceBehaviorInsight,
+  IntelligenceDashboardPayload,
   IntelligenceFacetFilters,
   IntelligenceFilter,
   IntelligenceSnapshot,
   IntelligenceSuggestion,
 } from "@/lib/workbench-intelligence-types";
+import IntelligenceActiveFilterBar from "./components/IntelligenceActiveFilterBar";
 import IntelligenceActivityFeed from "./components/IntelligenceActivityFeed";
+import IntelligenceCitationPanel from "./components/IntelligenceCitationPanel";
 import IntelligenceComparison from "./components/IntelligenceComparison";
 import IntelligenceFacetsPanel from "./components/IntelligenceFacetsPanel";
 import IntelligenceGaps from "./components/IntelligenceGaps";
 import IntelligenceHeader from "./components/IntelligenceHeader";
 import IntelligenceKpis from "./components/IntelligenceKpis";
+import IntelligenceOverviewPanel from "./components/IntelligenceOverviewPanel";
 import IntelligencePrivacyPanel from "./components/IntelligencePrivacyPanel";
+import IntelligenceRecommendations from "./components/IntelligenceRecommendations";
 import IntelligenceRecordsTable from "./components/IntelligenceRecordsTable";
 import IntelligenceResearchCorpus from "./components/IntelligenceResearchCorpus";
+import IntelligenceReviewStats from "./components/IntelligenceReviewStats";
 import IntelligenceReviewWorkspace from "./components/IntelligenceReviewWorkspace";
-import IntelligenceSectionNav from "./components/IntelligenceSectionNav";
-import IntelligenceSources from "./components/IntelligenceSources";
-import {
-  scrollToIntelligenceSection,
-  useIntelligenceSectionSpy,
-} from "./hooks/useIntelligenceSectionSpy";
+import IntelligenceSourcesPanel from "./components/IntelligenceSourcesPanel";
+import IntelligenceTimeline from "./components/IntelligenceTimeline";
+import { cn } from "@/lib/cn";
 import "@/app/styles/workbench-intelligence-dashboard.css";
 
-const IntelligenceGlobalMap = dynamic(() => import("./components/IntelligenceGlobalMap"), {
+const INTELLIGENCE_TABS = [
+  { id: "overview", label: "Overview" },
+  { id: "sources", label: "Sources" },
+  { id: "geography", label: "Geography" },
+  { id: "timeline", label: "Timeline" },
+  { id: "reviews", label: "Reviews" },
+  { id: "citations", label: "Citations" },
+  { id: "recommendations", label: "Recommendations" },
+  { id: "records", label: "Records" },
+] as const;
+
+type IntelligenceTabId = (typeof INTELLIGENCE_TABS)[number]["id"];
+
+const WorkbenchGeographyMap = dynamic(() => import("./components/WorkbenchGeographyMap"), {
   ssr: false,
   loading: () => (
-    <section className="ri-dash-map-panel ri-dash-map-panel--loading" aria-busy="true">
-      <p>Loading global map…</p>
+    <section className="ri-panel ri-geo-map ri-geo-map--loading" aria-busy="true">
+      <div className="ri-widget-skeleton" />
+      <p>Loading geographic coverage…</p>
     </section>
   ),
 });
@@ -88,6 +108,28 @@ function placeLabel(snapshot: IntelligenceSnapshot, placeId: string) {
   );
 }
 
+function scrollToRecordsPanel() {
+  document.getElementById("ri-records")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function applyPayloadToSnapshot(
+  current: IntelligenceSnapshot,
+  payload: IntelligenceDashboardPayload,
+): IntelligenceSnapshot {
+  return {
+    ...current,
+    items: payload.records,
+    overviewMetrics: payload.overview,
+    sourceIntelligence: payload.sourceDistribution,
+    citationIntelligence: payload.citations,
+    gaps: payload.warnings,
+    literatureReview: {
+      ...current.literatureReview,
+      yearSpread: payload.timeline.yearSpread,
+    },
+  };
+}
+
 export default function WorkbenchIntelligenceClient({
   snapshot: initialSnapshot,
 }: {
@@ -102,8 +144,8 @@ export default function WorkbenchIntelligenceClient({
   const [activeComparisonId, setActiveComparisonId] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
   const [facetDrawerOpen, setFacetDrawerOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<IntelligenceTabId>("overview");
   const [isPending, startTransition] = useTransition();
-  const activeSection = useIntelligenceSectionSpy("overview");
 
   const facetState = useMemo(
     () => ({
@@ -114,6 +156,11 @@ export default function WorkbenchIntelligenceClient({
   );
 
   const selectedCountry = facets.country ?? null;
+  const selectedRegion = facets.region ?? null;
+  const selectedSource = facets.sourceDatabase ?? null;
+  const selectedType = facets.type ?? null;
+  const selectedYear = facets.year ?? null;
+  const selectedAuthor = facets.creator ?? null;
 
   const filteredItems = useMemo(
     () =>
@@ -126,7 +173,31 @@ export default function WorkbenchIntelligenceClient({
   );
 
   const pipelineStages = useMemo(() => derivePipelineStages(snapshot.items), [snapshot.items]);
+  const temporalCoverage = useMemo(() => getTemporalCoverage(snapshot), [snapshot]);
+  const reviewIntelligence = useMemo(() => getReviewIntelligence(snapshot), [snapshot]);
   const activeFacetCount = Object.values(facetState).filter((v) => v != null && v !== false).length;
+  const activeFilterChips = useMemo(
+    () => describeActiveIntelligenceFilters(filter, facetState),
+    [filter, facetState],
+  );
+
+  function resetPlaceState() {
+    setActivePlaceId(null);
+    setActiveComparisonId(null);
+  }
+
+  function revealRecords() {
+    setActiveTab("records");
+    window.requestAnimationFrame(scrollToRecordsPanel);
+  }
+
+  function applyFacetUpdate(next: Partial<IntelligenceFacetFilters>, nextFilter?: IntelligenceFilter) {
+    resetPlaceState();
+    if (nextFilter) setFilter(nextFilter);
+    setFacets({ ...EMPTY_FACETS, ...next });
+    setActiveTab("records");
+    window.requestAnimationFrame(scrollToRecordsPanel);
+  }
 
   function applyPlaceFilter(placeId: string | null) {
     setActiveComparisonId(null);
@@ -171,6 +242,8 @@ export default function WorkbenchIntelligenceClient({
     }
 
     setFacets(next);
+    setActiveTab("records");
+    window.requestAnimationFrame(scrollToRecordsPanel);
   }
 
   function applyComparisonFilter(presetId: string | null) {
@@ -183,6 +256,60 @@ export default function WorkbenchIntelligenceClient({
     }
 
     setFacets({ ...EMPTY_FACETS, ...COMPARISON_FACETS[presetId] });
+    setActiveTab("records");
+    window.requestAnimationFrame(scrollToRecordsPanel);
+  }
+
+  function applyCountryFilter(country: string | null) {
+    applyFacetUpdate(country ? { country, region: null, city: null } : {});
+  }
+
+  function applyRegionFilter(region: string | null) {
+    applyFacetUpdate(region ? { region, country: null, city: null } : {});
+  }
+
+  function applySourceFilter(label: string | null) {
+    if (!label) {
+      applyFacetUpdate({});
+      return;
+    }
+    applyFacetUpdate({
+      sourceDatabase: sourceLabelToFacetValue(label, snapshot.facets.sourceDatabases),
+    });
+  }
+
+  function applyTypeFilter(label: string | null) {
+    if (!label) {
+      applyFacetUpdate({});
+      return;
+    }
+    const match = snapshot.facets.types.find((entry) => entry.label === label);
+    applyFacetUpdate({ type: match?.value ?? label });
+  }
+
+  function applyYearFilter(year: string | null) {
+    applyFacetUpdate(year ? { year } : {});
+  }
+
+  function applyAuthorFilter(author: string | null) {
+    applyFacetUpdate(author ? { creator: author } : {});
+  }
+
+  function applyGapFilter(hint?: IntelligenceFacetFilters) {
+    if (!hint) return;
+    applyFacetUpdate(hint);
+  }
+
+  function applyInsightFilter(hint?: IntelligenceBehaviorInsight["filterHint"]) {
+    if (!hint) return;
+    applyFacetUpdate(hint);
+  }
+
+  function clearAllFilters() {
+    setFilter("all");
+    setFacets({ ...EMPTY_FACETS });
+    setActivePlaceId(null);
+    setActiveComparisonId(null);
   }
 
   function handleDismiss(suggestionId: string) {
@@ -200,27 +327,6 @@ export default function WorkbenchIntelligenceClient({
           : current.preferences,
       }));
     });
-  }
-
-  function applyGapFilter(hint?: IntelligenceFacetFilters) {
-    if (!hint) return;
-    setActivePlaceId(null);
-    setActiveComparisonId(null);
-    setFacets((current) => ({ ...current, ...hint }));
-  }
-
-  function applyInsightFilter(hint?: IntelligenceBehaviorInsight["filterHint"]) {
-    if (!hint) return;
-    setActivePlaceId(null);
-    setActiveComparisonId(null);
-    setFacets((current) => ({ ...current, ...hint }));
-    scrollToIntelligenceSection("records");
-  }
-
-  function clearAllFilters() {
-    setFacets({ ...EMPTY_FACETS });
-    setActivePlaceId(null);
-    setActiveComparisonId(null);
   }
 
   function handleExport() {
@@ -251,13 +357,22 @@ export default function WorkbenchIntelligenceClient({
     setSyncing(true);
     startTransition(async () => {
       await refreshIntelligenceSnapshot();
-      router.refresh();
-      setSyncing(false);
+      try {
+        const response = await fetch("/api/workbench/intelligence", { cache: "no-store" });
+        if (response.ok) {
+          const payload = (await response.json()) as IntelligenceDashboardPayload;
+          setSnapshot((current) => applyPayloadToSnapshot(current, payload));
+        }
+      } catch {
+        router.refresh();
+      } finally {
+        setSyncing(false);
+      }
     });
   }
 
   return (
-    <section className="ri-page ri-dash">
+    <section className="workbench-intelligence ri-page ri-dash">
       <IntelligenceHeader
         onExport={handleExport}
         onExportSlr={handleExportSlr}
@@ -275,9 +390,134 @@ export default function WorkbenchIntelligenceClient({
         <IntelligenceKpis kpis={snapshot.dashboard} reviewKpis={snapshot.reviewKpis} />
       </div>
 
-      <IntelligenceSectionNav active={activeSection} onNavigate={scrollToIntelligenceSection} />
+      <nav className="workbench-intelligence-tabs" aria-label="Research intelligence sections">
+        {INTELLIGENCE_TABS.map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            className={cn(activeTab === tab.id && "is-active")}
+            aria-current={activeTab === tab.id ? "page" : undefined}
+            onClick={() => setActiveTab(tab.id)}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </nav>
 
-      <div id="ri-review" className="ri-zone ri-zone--panel">
+      <div
+        id="ri-overview-panel"
+        className="ri-zone ri-zone--panel workbench-intelligence-tab-panel"
+        hidden={activeTab !== "overview"}
+      >
+        <IntelligenceOverviewPanel
+          overview={snapshot.overviewMetrics}
+          facets={snapshot.facets}
+          activeSource={selectedSource}
+          activeType={selectedType}
+          onSourceSelect={applySourceFilter}
+          onTypeSelect={applyTypeFilter}
+          onStatAction={(action) => {
+            if (action.kind === "scroll") {
+              const targetTab: IntelligenceTabId =
+                action.targetId === "ri-geography"
+                  ? "geography"
+                  : action.targetId === "ri-reviews"
+                    ? "reviews"
+                    : "overview";
+              setActiveTab(targetTab);
+              window.requestAnimationFrame(() => {
+                document.getElementById(action.targetId)?.scrollIntoView({ behavior: "smooth", block: "start" });
+              });
+              return;
+            }
+            if (action.kind === "filter") {
+              applyFacetUpdate({}, action.filter);
+              setActiveTab("records");
+              return;
+            }
+            applyFacetUpdate({ openAccess: action.value });
+            setActiveTab("records");
+          }}
+        />
+
+        {snapshot.suggestions.length ? (
+          <div className="workbench-intelligence-priority">
+            <section className="ri-panel workbench-intelligence-recommendation" aria-label="Urgent suggested actions">
+              <h3 className="ri-section-title">Suggested actions</h3>
+              <ul className="ri-suggestions">
+                {snapshot.suggestions.slice(0, 3).map((suggestion: IntelligenceSuggestion) => (
+                  <li key={suggestion.id} className="ri-suggestion">
+                    <div>
+                      <strong>{suggestion.title}</strong>
+                      <p>{suggestion.body}</p>
+                    </div>
+                    <div className="ri-suggestion__actions">
+                      {suggestion.actionHref ? (
+                        <Link href={suggestion.actionHref} className="ri-btn ri-btn--primary">
+                          {suggestion.actionLabel}
+                        </Link>
+                      ) : (
+                        <button type="button" className="ri-btn ri-btn--primary" onClick={revealRecords}>
+                          View records
+                        </button>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </div>
+        ) : null}
+      </div>
+
+      <div
+        id="ri-sources"
+        className="ri-zone ri-zone--panel workbench-intelligence-tab-panel"
+        hidden={activeTab !== "sources"}
+      >
+        <IntelligenceSourcesPanel
+          sources={snapshot.sourceIntelligence}
+          activeSource={selectedSource}
+          onSourceSelect={applySourceFilter}
+        />
+      </div>
+
+      <div
+        id="ri-geography"
+        className="ri-zone ri-zone--panel workbench-intelligence-tab-panel"
+        hidden={activeTab !== "geography"}
+      >
+        <WorkbenchGeographyMap
+          selectedCountry={selectedCountry}
+          selectedRegion={selectedRegion}
+          onSelectCountry={applyCountryFilter}
+          onSelectRegion={applyRegionFilter}
+        />
+        <IntelligenceComparison
+          comparisons={snapshot.comparisons}
+          activePresetId={activeComparisonId}
+          onSelectPreset={applyComparisonFilter}
+        />
+      </div>
+
+      <div
+        id="ri-timeline"
+        className="ri-zone ri-zone--panel workbench-intelligence-tab-panel"
+        hidden={activeTab !== "timeline"}
+      >
+        <IntelligenceTimeline
+          temporal={temporalCoverage}
+          activeYear={selectedYear}
+          onYearSelect={applyYearFilter}
+        />
+      </div>
+
+      <div
+        id="ri-reviews"
+        className="ri-zone ri-zone--panel workbench-intelligence-tab-panel"
+        hidden={activeTab !== "reviews"}
+      >
+        <IntelligenceReviewStats reviews={reviewIntelligence} />
         <IntelligenceReviewWorkspace
           projects={snapshot.reviewProjects}
           screenings={snapshot.reviewScreenings}
@@ -287,36 +527,36 @@ export default function WorkbenchIntelligenceClient({
         />
       </div>
 
-      <div id="ri-intelligence" className="ri-zone">
+      <div
+        id="ri-citations"
+        className="ri-zone ri-zone--panel workbench-intelligence-tab-panel"
+        hidden={activeTab !== "citations"}
+      >
+        <IntelligenceCitationPanel
+          citation={snapshot.citationIntelligence}
+          activeAuthor={selectedAuthor}
+          onAuthorSelect={applyAuthorFilter}
+          onFilterRecords={(nextFilter) => {
+            applyFacetUpdate({}, nextFilter);
+            setActiveTab("records");
+          }}
+        />
+      </div>
+
+      <div
+        id="ri-recommendations"
+        className="ri-zone ri-zone--panel workbench-intelligence-tab-panel"
+        hidden={activeTab !== "recommendations"}
+      >
         <IntelligenceResearchCorpus
           review={snapshot.literatureReview}
           insights={snapshot.behaviorInsights}
           patterns={snapshot.readingPatterns}
           onApplyFilter={applyInsightFilter}
         />
-
         <IntelligenceActivityFeed entries={snapshot.activityFeed} />
-
-        <IntelligenceGlobalMap
-          points={snapshot.worldMap}
-          locations={snapshot.locations}
-          cityPlaces={snapshot.cityPlaces}
-          items={snapshot.items}
-          activePlaceId={activePlaceId}
-          selectedCountry={selectedCountry}
-          onSelectPlace={applyPlaceFilter}
-        />
-
-        <IntelligenceComparison
-          comparisons={snapshot.comparisons}
-          activePresetId={activeComparisonId}
-          onSelectPreset={applyComparisonFilter}
-        />
-
-        <IntelligenceSources sources={snapshot.sources} />
-
         <IntelligenceGaps gaps={snapshot.gaps} onApplyFilter={applyGapFilter} />
-
+        <IntelligenceRecommendations recommendations={snapshot.recommendations} />
         {snapshot.suggestions.length ? (
           <section className="ri-panel" aria-label="Suggested actions">
             <h3 className="ri-section-title">Suggested actions</h3>
@@ -351,7 +591,11 @@ export default function WorkbenchIntelligenceClient({
         ) : null}
       </div>
 
-      <div id="ri-records" className="ri-zone ri-zone--panel">
+      <div
+        id="ri-records"
+        className="ri-zone ri-zone--panel workbench-intelligence-tab-panel"
+        hidden={activeTab !== "records"}
+      >
         <div className="ri-section-shell">
           <div className="ri-section-shell__head">
             <div>
@@ -368,6 +612,12 @@ export default function WorkbenchIntelligenceClient({
             </button>
           </div>
 
+          <IntelligenceActiveFilterBar
+            chips={activeFilterChips}
+            resultCount={filteredItems.length}
+            onClear={clearAllFilters}
+          />
+
           <div className="ri-dash-body ri-dash-body--records">
             <IntelligenceRecordsTable
               items={filteredItems}
@@ -383,8 +633,7 @@ export default function WorkbenchIntelligenceClient({
                 facets={snapshot.facets}
                 active={facetState}
                 onChange={(next) => {
-                  setActivePlaceId(null);
-                  setActiveComparisonId(null);
+                  resetPlaceState();
                   setFacets(next);
                 }}
                 onClear={clearAllFilters}
@@ -403,8 +652,7 @@ export default function WorkbenchIntelligenceClient({
         facets={snapshot.facets}
         active={facetState}
         onChange={(next) => {
-          setActivePlaceId(null);
-          setActiveComparisonId(null);
+          resetPlaceState();
           setFacets(next);
         }}
         onClear={clearAllFilters}

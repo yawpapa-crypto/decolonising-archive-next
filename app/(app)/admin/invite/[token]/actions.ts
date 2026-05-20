@@ -34,11 +34,12 @@ export async function acceptAdminInvite(formData: FormData) {
   const admin = createAdminClient();
   const { data: invite, error: inviteError } = await admin
     .from("admin_invites")
-    .select("id, email, role, used_at, expires_at")
+    .select("id, email, role, used_at, revoked_at, expires_at")
     .eq("token", token)
     .maybeSingle();
 
   if (inviteError || !invite) fail(token, "This admin invite is invalid or has expired.");
+  if (invite.revoked_at) fail(token, "This admin invite has been revoked.");
   if (invite.used_at) fail(token, "This admin invite has already been used.");
   if (inviteIsExpired(invite.expires_at)) {
     fail(token, "This admin invite is invalid or has expired.");

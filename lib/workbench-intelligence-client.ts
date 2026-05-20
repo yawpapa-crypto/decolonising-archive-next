@@ -337,3 +337,59 @@ export const EMPTY_FACETS: IntelligenceFacetFilters = {
   sourceDatabase: null,
   status: null,
 };
+
+const FILTER_LABELS: Record<IntelligenceFilter, string> = {
+  all: "All records",
+  unsorted: "Unsorted",
+  bookmarks: "Saved records",
+  reading_lists: "Reading lists",
+  projects: "Review projects",
+  cited: "Cited",
+  uncited: "Uncited",
+  needs_metadata: "Needs metadata",
+  needs_action: "Needs action",
+  questions: "Open questions",
+  images: "Images",
+  tasks: "Tasks",
+};
+
+export type IntelligenceActiveFilterChip = {
+  id: string;
+  label: string;
+};
+
+export function describeActiveIntelligenceFilters(
+  filter: IntelligenceFilter,
+  facets: IntelligenceFacetFilters,
+): IntelligenceActiveFilterChip[] {
+  const chips: IntelligenceActiveFilterChip[] = [];
+
+  if (filter !== "all") {
+    chips.push({ id: "quick-filter", label: FILTER_LABELS[filter] });
+  }
+  if (facets.year) chips.push({ id: "year", label: `Year ${facets.year}` });
+  if (facets.type) chips.push({ id: "type", label: facets.type });
+  if (facets.sourceDatabase) chips.push({ id: "source", label: facets.sourceDatabase });
+  if (facets.theme) chips.push({ id: "theme", label: facets.theme });
+  if (facets.creator) chips.push({ id: "creator", label: facets.creator });
+  if (facets.institution) chips.push({ id: "institution", label: facets.institution });
+  if (facets.continent) chips.push({ id: "continent", label: facets.continent });
+  if (facets.region) chips.push({ id: "region", label: facets.region });
+  if (facets.country) chips.push({ id: "country", label: facets.country });
+  if (facets.city) chips.push({ id: "city", label: facets.city });
+  if (facets.diaspora === true) chips.push({ id: "diaspora", label: "Diaspora" });
+  if (facets.openAccess === "open") chips.push({ id: "openAccess", label: "Open access" });
+  if (facets.openAccess === "closed") chips.push({ id: "openAccess", label: "Restricted" });
+  if (facets.openAccess === "unknown") chips.push({ id: "openAccess", label: "Unknown access" });
+  if (facets.status) chips.push({ id: "status", label: facets.status.replace(/_/g, " ") });
+
+  return chips;
+}
+
+export function sourceLabelToFacetValue(
+  label: string,
+  options: Array<{ value: string; label: string }>,
+): string {
+  const match = options.find((entry) => entry.label === label);
+  return match?.value ?? label;
+}

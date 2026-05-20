@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/src/lib/supabase";
 import { canPublishRecord, normalizeArchiveRecord } from "@/lib/archive-metadata";
+import { isGuardResponse, requireAdminApi } from "@/src/lib/security/auth-guards";
 
 type Entity = { id: string; [key: string]: unknown };
 
@@ -19,6 +20,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const guard = await requireAdminApi();
+  if (isGuardResponse(guard)) return guard;
+
   const body = (await request.json()) as { records?: unknown } | unknown;
   const records = Array.isArray(body)
     ? body

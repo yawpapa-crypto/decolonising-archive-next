@@ -4,8 +4,14 @@ import React, { useEffect, useState } from "react";
 
 type Props = { projectId: string };
 
+type ReviewAssignment = {
+  id: string;
+  record_id: string;
+  assignee_user_id: string;
+};
+
 export default function AssignmentPanel({ projectId }: Props) {
-  const [assignments, setAssignments] = useState<any[]>([]);
+  const [assignments, setAssignments] = useState<ReviewAssignment[]>([]);
   const [assigning, setAssigning] = useState(false);
   const [recordId, setRecordId] = useState('');
   const [assigneeUserId, setAssigneeUserId] = useState('');
@@ -26,7 +32,7 @@ export default function AssignmentPanel({ projectId }: Props) {
       const r = await fetch(`/api/workbench/review/assignments?projectId=${encodeURIComponent(projectId)}`);
       const d = await r.json();
       if (d.ok) setAssignments(d.assignments || []);
-    } catch (err) {
+    } catch {
       setAssignments((s) => s.filter((a) => a.id !== optimistic.id));
     } finally {
       setAssigning(false);
@@ -55,9 +61,13 @@ export default function AssignmentPanel({ projectId }: Props) {
       <p>{assignments.length ? `${assignments.length} assignments` : "No assignments yet."}</p>
 
       <div className="assign-form">
-        <input placeholder="Record ID" value={recordId} onChange={(e) => setRecordId(e.target.value)} />
-        <input placeholder="Assignee user id" value={assigneeUserId} onChange={(e) => setAssigneeUserId(e.target.value)} />
-        <button disabled={assigning} onClick={assign}>Assign</button>
+        <label htmlFor="assign-record"><span className="workbench-card-label">Record ID</span>
+          <input id="assign-record" aria-label="Record ID" placeholder="Record ID" value={recordId} onChange={(e) => setRecordId(e.target.value)} className="workbench-input" />
+        </label>
+        <label htmlFor="assign-user"><span className="workbench-card-label">Assignee</span>
+          <input id="assign-user" aria-label="Assignee user id" placeholder="Assignee user id" value={assigneeUserId} onChange={(e) => setAssigneeUserId(e.target.value)} className="workbench-input" />
+        </label>
+        <button type="button" className="workbench-button-primary" disabled={assigning} onClick={assign}>Assign</button>
       </div>
     </div>
   );

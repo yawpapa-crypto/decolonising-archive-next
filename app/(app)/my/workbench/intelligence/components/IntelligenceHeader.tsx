@@ -25,7 +25,7 @@ export default function IntelligenceHeader({ onExport, onExportSlr, onSync, sync
   }, []);
 
   return (
-    <header className="ri-dash-header">
+    <header className="ri-dash-header workbench-intelligence-hero">
       <div className="ri-dash-header__copy">
         <p className="ri-eyebrow">Research Intelligence</p>
         <h1>Your research command centre</h1>

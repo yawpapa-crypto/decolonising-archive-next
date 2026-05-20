@@ -1,5 +1,5 @@
-import ArchiveAppPage from "@/src/components/archive/ArchiveAppPage";
+import ArchiveAppPageWithAuth from "@/src/components/archive/ArchiveAppPageWithAuth";
 
-export default function LibraryPage() {
-  return <ArchiveAppPage />;
+export default async function LibraryPage() {
+  return <ArchiveAppPageWithAuth />;
 }

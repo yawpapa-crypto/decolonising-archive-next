@@ -29,7 +29,12 @@ import {
   getWorkbenchUserPreferences,
   listRecentWorkbenchActivity,
 } from "@/lib/workbench-activity-actions";
+import { buildIntelligenceDashboardPayload } from "@/lib/workbench-intelligence-dashboard";
 import { buildIntelligenceDashboard } from "@/lib/workbench-intelligence-enrich";
+import { extractCountriesFromRecord } from "@/lib/intelligence/geography-shared";
+import { buildIntelligenceMetricsBundle } from "@/lib/workbench-intelligence-metrics";
+import { placeId } from "@/lib/workbench-intelligence-geo";
+import { normalizeSavedRecord } from "@/src/lib/saved-record-normalization";
 import {
   buildPrismaCounts,
   buildReviewIntelligenceKpis,
@@ -49,6 +54,7 @@ import type {
 
 export type {
   IntelligenceCollection,
+  IntelligenceDashboardPayload,
   IntelligenceFilter,
   IntelligenceItem,
   IntelligenceItemType,
@@ -60,6 +66,19 @@ export type {
   IntelligenceWorkflowStatus,
   UserResearchProfile,
 } from "@/lib/workbench-intelligence-types";
+export { buildIntelligenceDashboardPayload } from "@/lib/workbench-intelligence-dashboard";
+
+export {
+  buildIntelligenceMetricsBundle,
+  getCitationIntelligence,
+  getGeographicCoverage,
+  getRecordTypeDistribution,
+  getResearchWarnings,
+  getReviewIntelligence,
+  getSourceDistribution,
+  getTemporalCoverage,
+  getWorkbenchIntelligenceOverview,
+} from "@/lib/workbench-intelligence-metrics";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
@@ -643,6 +662,16 @@ export function buildWorkbenchIntelligenceSnapshot(input: {
     const used = usedRecordIds.has(recordId);
     const unsorted = !inList && !inProject;
     const needsMeta = missingMetadataForBookmark(bookmark);
+    const normalized = normalizeSavedRecord(bookmark);
+    const archiveRecord = input.recordsById.get(recordId);
+    const geo = extractCountriesFromRecord({
+      recordId,
+      title,
+      source: bookmark.record_source,
+      year: bookmark.record_year,
+      metadata: bookmark.record_metadata,
+      archiveRecord,
+    });
     const culturalRows = (projectRecordByRecordId.get(recordId) ?? []).filter(
       (r) => r.cultural_review_needed,
     );
@@ -691,9 +720,21 @@ export function buildWorkbenchIntelligenceSnapshot(input: {
                 : "collecting",
       cited,
       usedInWriting: used,
-      creator: null,
-      date: bookmark.record_year,
-      sourceLabel: bookmark.record_source,
+      creator: normalized.authorLabel || null,
+      date: bookmark.record_year ?? (normalized.year ? String(normalized.year) : null),
+      year: bookmark.record_year ?? (normalized.year ? String(normalized.year) : null),
+      sourceLabel: normalized.sourceLabel || bookmark.record_source,
+      recordType: normalized.typeLabel || bookmark.record_type,
+      openAccess: normalized.isOpenAccess,
+      mediaType: normalized.mediaTypes[0] ?? null,
+      sourceDatabaseId: normalized.normalizedSource,
+      citationCount: normalized.citedByCount,
+      country: geo.countries[0] ?? null,
+      region: geo.regions[0] ?? null,
+      placeIds: [
+        ...geo.countries.map((country) => placeId("country", country)),
+        ...geo.regions.map((region) => placeId("region", region)),
+      ],
       openHref: recordHref(recordId),
       collections,
       relations,
@@ -711,6 +752,15 @@ export function buildWorkbenchIntelligenceSnapshot(input: {
     const used = usedRecordIds.has(recordId);
     const needsMeta = missingMetadataForListItem(item);
     const listTitle = readingListTitleById.get(item.reading_list_id) ?? "Reading list";
+    const archiveRecord = input.recordsById.get(recordId);
+    const geo = extractCountriesFromRecord({
+      recordId,
+      title,
+      source: item.record_source,
+      year: item.record_year,
+      metadata: item.record_metadata,
+      archiveRecord,
+    });
     const culturalRows = (projectRecordByRecordId.get(recordId) ?? []).filter(
       (r) => r.cultural_review_needed,
     );
@@ -749,6 +799,12 @@ export function buildWorkbenchIntelligenceSnapshot(input: {
       creator: item.record_author,
       date: item.record_year,
       sourceLabel: item.record_source,
+      country: geo.countries[0] ?? null,
+      region: geo.regions[0] ?? null,
+      placeIds: [
+        ...geo.countries.map((country) => placeId("country", country)),
+        ...geo.regions.map((region) => placeId("region", region)),
+      ],
       openHref: recordHref(recordId),
       collections,
       relations: [
@@ -993,6 +1049,47 @@ export function buildWorkbenchIntelligenceSnapshot(input: {
       missingMetadata: 0,
     },
     savedSearchInsights: [],
+    reviewDetail: {
+      unresolvedConflicts: 0,
+      extractionProgressPercent: 0,
+      reviewerWorkload: [],
+    },
+    overviewMetrics: {
+      totalSavedRecords: 0,
+      totalSearches: 0,
+      activeReviewProjects: 0,
+      readingListCount: 0,
+      notesWithCitations: 0,
+      totalNotes: 0,
+      totalCitations: 0,
+      openAccessPercent: 0,
+      externalSourcePercent: 0,
+      metadataOnlyPercent: 0,
+      missingMetadataWarnings: 0,
+      recordsInReadingLists: 0,
+      recordsLinkedToProjects: 0,
+    },
+    sourceIntelligence: {
+      mix: [],
+      openAccessVsMetadataOnly: { openAccess: 0, metadataOnly: 0, closed: 0 },
+      mediaTypeMix: [],
+      dominanceWarning: null,
+      underusedArchives: [],
+      trustIndicators: [],
+    },
+    citationIntelligence: {
+      citedSourcesCount: 0,
+      totalCitations: 0,
+      uncitedNotesCount: 0,
+      notesWithoutCitations: 0,
+      topAuthors: [],
+      styleIssues: 0,
+      missingDoiOrUrl: 0,
+      weakDiversityWarning: null,
+      sourceAgeSpread: [],
+      coveragePrompts: [],
+    },
+    recommendations: [],
     errors,
   };
 }
@@ -1020,10 +1117,32 @@ async function loadReviewData(userId: string) {
         .limit(20),
     ]);
 
+    const projectIds = (projectsRes.data ?? []).map((row) => row.id as string);
+    let conflicts: Array<{ id: string; status: string }> = [];
+    let extractions: Array<{ id: string }> = [];
+    let extractionFields: Array<{ id: string }> = [];
+
+    if (projectIds.length) {
+      const [conflictsRes, extractionsRes, fieldsRes] = await Promise.all([
+        supabase
+          .from("workbench_review_conflicts")
+          .select("id, status")
+          .in("review_project_id", projectIds),
+        supabase.from("workbench_review_extractions").select("id").in("review_project_id", projectIds),
+        supabase.from("workbench_review_extraction_fields").select("id").in("review_project_id", projectIds),
+      ]);
+      conflicts = (conflictsRes.data ?? []) as Array<{ id: string; status: string }>;
+      extractions = (extractionsRes.data ?? []) as Array<{ id: string }>;
+      extractionFields = (fieldsRes.data ?? []) as Array<{ id: string }>;
+    }
+
     return {
       projects: projectsRes.data ?? [],
       screenings: screeningsRes.data ?? [],
       savedSearches: searchesRes.data ?? [],
+      conflicts,
+      extractions,
+      extractionFields,
       errors: [
         projectsRes.error?.message,
         screeningsRes.error?.message,
@@ -1035,6 +1154,9 @@ async function loadReviewData(userId: string) {
       projects: [],
       screenings: [],
       savedSearches: [],
+      conflicts: [],
+      extractions: [],
+      extractionFields: [],
       errors: [
         error instanceof Error ?
           error.message
@@ -1060,7 +1182,15 @@ export async function loadWorkbenchIntelligenceSnapshot(): Promise<IntelligenceS
       listAllWorkbenchProjectRecords(400),
       getWorkbenchUserPreferences(),
       listRecentWorkbenchActivity(50),
-      user ? loadReviewData(user.id) : Promise.resolve({ projects: [], screenings: [], savedSearches: [], errors: [] }),
+      user ? loadReviewData(user.id) : Promise.resolve({
+        projects: [],
+        screenings: [],
+        savedSearches: [],
+        conflicts: [],
+        extractions: [],
+        extractionFields: [],
+        errors: [],
+      }),
     ]);
 
   if (!projectsRes.ok) errors.push(projectsRes.error ?? "Could not load projects.");
@@ -1124,6 +1254,62 @@ export async function loadWorkbenchIntelligenceSnapshot(): Promise<IntelligenceS
     missingMetadata: snapshot.summary.needs_metadata,
   });
 
+  const unresolvedConflicts = reviewData.conflicts.filter((row) => row.status === "open").length;
+  const extractionProgressPercent =
+    reviewData.extractionFields.length ?
+      Math.round((reviewData.extractions.length / reviewData.extractionFields.length) * 100)
+    : 0;
+  const reviewerWorkload = [
+    {
+      label: "Awaiting screening",
+      count: prismaCounts.awaitingScreening,
+    },
+    {
+      label: "Full text assessed",
+      count: prismaCounts.fullTextAssessed,
+    },
+    {
+      label: "Final included",
+      count: prismaCounts.finalIncluded,
+    },
+  ];
+
+  const metrics = buildIntelligenceMetricsBundle(
+    {
+      ...snapshot,
+      items: dashboardLayer.items,
+      dashboard: dashboardLayer.dashboard,
+      worldMap: dashboardLayer.worldMap,
+      locations: dashboardLayer.locations,
+      comparisons: dashboardLayer.comparisons,
+      cityPlaces: dashboardLayer.cityPlaces,
+      sources: dashboardLayer.sources,
+      gaps: dashboardLayer.gaps,
+      facets: dashboardLayer.facets,
+      literatureReview: dashboardLayer.literatureReview,
+      behaviorInsights: dashboardLayer.behaviorInsights,
+      activityFeed: dashboardLayer.activityFeed,
+      readingPatterns: dashboardLayer.readingPatterns,
+      savedSearchInsights: dashboardLayer.savedSearchInsights,
+      reviewProjects,
+      reviewScreenings,
+      prismaCounts,
+      reviewKpis,
+      reviewDetail: {
+        unresolvedConflicts,
+        extractionProgressPercent,
+        reviewerWorkload,
+      },
+      overviewMetrics: {} as never,
+      sourceIntelligence: {} as never,
+      citationIntelligence: {} as never,
+      recommendations: [],
+      preferences,
+      errors: [...snapshot.errors, ...errors],
+    },
+    archiveRecords,
+  );
+
   return {
     ...snapshot,
     items: dashboardLayer.items,
@@ -1144,7 +1330,22 @@ export async function loadWorkbenchIntelligenceSnapshot(): Promise<IntelligenceS
     reviewScreenings,
     prismaCounts,
     reviewKpis,
+    reviewDetail: {
+      unresolvedConflicts,
+      extractionProgressPercent,
+      reviewerWorkload,
+    },
+    overviewMetrics: metrics.overview,
+    sourceIntelligence: metrics.sourceDistribution,
+    citationIntelligence: metrics.citationIntelligence,
+    recommendations: metrics.recommendations,
     preferences,
     errors: [...snapshot.errors, ...errors],
   };
+}
+
+export async function loadIntelligenceDashboardPayload() {
+  const snapshot = await loadWorkbenchIntelligenceSnapshot();
+  const archiveRecords = await readRecords();
+  return buildIntelligenceDashboardPayload(snapshot, archiveRecords);
 }

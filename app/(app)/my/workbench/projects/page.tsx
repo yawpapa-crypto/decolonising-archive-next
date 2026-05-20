@@ -2,7 +2,8 @@ import Link from "next/link";
 import { listWorkbenchProjectsSummary } from "@/lib/workbench-data";
 import { createWorkbenchProject } from "@/lib/workbench-actions";
 import PendingSubmitButton from "@/src/components/ui/PendingSubmitButton";
-import { WORKBENCH_PROJECT_TYPES, projectTypeLabel } from "@/lib/workbench-types";
+import { WORKBENCH_PROJECT_TYPES } from "@/lib/workbench-types";
+import WorkbenchProjectsListClient from "./WorkbenchProjectsListClient";
 
 type SearchParams = Promise<{ new?: string; updated?: string; error?: string }>;
 
@@ -16,23 +17,19 @@ export default async function WorkbenchProjectsPage({
   const showNew = sp.new === "1";
 
   return (
-    <section className="workbench-dashboard-page workbench-projects-page">
+    <section className="workbench-dashboard-page workbench-projects-page workbench-projects-premium">
       <header className="workbench-projects-header workbench-projects-header--fixed">
         <div className="workbench-projects-heading-block">
           <p className="workbench-projects-eyebrow">Projects</p>
           <h1>Research projects</h1>
-          <p>
-            Each project links archive records to workflow stages, reviews, tasks,
-            and exports.
-          </p>
         </div>
 
-        <a
+        <Link
           href="/my/workbench/projects?new=1"
           className="workbench-button workbench-button-primary workbench-projects-new-button"
         >
-          New research project
-        </a>
+          New project
+        </Link>
       </header>
 
       {sp.updated ? (
@@ -49,7 +46,7 @@ export default async function WorkbenchProjectsPage({
       {!ok ? <p className="workbench-flag">{error}</p> : null}
 
       {showNew ? (
-        <section className="workbench-panel workbench-project-form-card">
+        <section className="workbench-panel workbench-project-form-card" id="new-project">
           <div className="workbench-project-form-heading">
             <h2>New project</h2>
             <p>
@@ -106,49 +103,26 @@ export default async function WorkbenchProjectsPage({
               </span>
             </label>
 
-            <PendingSubmitButton
-              className="workbench-button workbench-button-primary workbench-project-submit"
-              pendingLabel="Creating…"
-            >
-              Create project
-            </PendingSubmitButton>
+            <div className="workbench-project-form-actions">
+              <PendingSubmitButton
+                className="workbench-button workbench-button-primary workbench-project-submit"
+                pendingLabel="Creating…"
+              >
+                Create project
+              </PendingSubmitButton>
+              <Link
+                href="/my/workbench/projects"
+                className="workbench-button workbench-button-secondary workbench-project-discard"
+              >
+                Discard
+              </Link>
+            </div>
           </form>
         </section>
       ) : null}
 
       <section className="workbench-panel workbench-project-list-card">
-        <div className="workbench-project-list-header">
-          <h2>Your projects</h2>
-          <p>
-            Select a project to manage linked records, reviews and tasks.
-          </p>
-        </div>
-
-        {projects.length ? (
-          <div className="workbench-project-grid">
-            {projects.map((p) => (
-              <Link
-                key={p.id}
-                href={`/my/workbench/projects/${p.id}`}
-                className="workbench-project-card"
-              >
-                <div>
-                  <h3>{p.title}</h3>
-                  <p>
-                    {projectTypeLabel(p.project_type)} · {p.record_count} records
-                    · {p.status}
-                    {p.deadline ? ` · deadline ${p.deadline}` : ""}
-                  </p>
-                </div>
-                <span>Open project →</span>
-              </Link>
-            ))}
-          </div>
-        ) : (
-          <p className="workbench-empty-state workbench-empty empty-state" role="status">
-            Create your first project to begin linking archive records.
-          </p>
-        )}
+        <WorkbenchProjectsListClient projects={projects} />
       </section>
     </section>
   );

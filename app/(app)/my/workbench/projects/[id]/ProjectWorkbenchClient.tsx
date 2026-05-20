@@ -110,6 +110,7 @@ export default function ProjectWorkbenchClient(props: {
   archiveById: WorkbenchArchiveLite[];
   flashUpdated?: string;
   flashError?: string;
+  linkedReviewProjectId?: string | null;
 }) {
   const {
     projectId,
@@ -124,6 +125,7 @@ export default function ProjectWorkbenchClient(props: {
     archiveById: archiveList,
     flashUpdated,
     flashError,
+    linkedReviewProjectId: _linkedReviewProjectId,
   } = props;
 
   const router = useRouter();
@@ -215,21 +217,7 @@ export default function ProjectWorkbenchClient(props: {
     (next: ViewTab) => {
       const p = new URLSearchParams(sp.toString());
       p.set("view", next);
-      if (typeof window !== "undefined") {
-        const labels: Record<ViewTab, string> = {
-          table: "Opening table…",
-          board: "Opening board…",
-          timeline: "Opening timeline…",
-          records: "Opening records…",
-          notes: "Opening notes…",
-        };
-        window.dispatchEvent(
-          new CustomEvent("app:loading:start", {
-            detail: { message: labels[next] },
-          }),
-        );
-      }
-      router.push(`/my/workbench/projects/${projectId}?${p.toString()}`, { scroll: false });
+      router.replace(`/my/workbench/projects/${projectId}?${p.toString()}`, { scroll: false });
     },
     [router, projectId, sp],
   );
@@ -295,7 +283,7 @@ export default function ProjectWorkbenchClient(props: {
   const doneTasks = tasks.filter((task) => task.status === "done").length;
 
   return (
-    <div className="workbench-dashboard-page workbench-project-detail-page-clean">
+    <div className="workbench-dashboard-page workbench-project-detail-page-clean workbench-project-detail">
       {flashUpdated ? (
         <p className="workbench-flash" role="status">
           {flashUpdated}
@@ -307,7 +295,7 @@ export default function ProjectWorkbenchClient(props: {
         </p>
       ) : null}
 
-      <header className="workbench-pm-header workbench-dashboard-header">
+      <header className="workbench-pm-header workbench-dashboard-header workbench-project-header">
         <div className="workbench-dashboard-identity">
           <span className="workbench-dashboard-avatar" aria-hidden="true">
             {projectInitials || "PR"}
@@ -336,7 +324,7 @@ export default function ProjectWorkbenchClient(props: {
         </div>
       </header>
 
-      <div className="workbench-tabs workbench-pm-tabs" role="tablist" aria-label="Project views">
+      <div className="workbench-tabs workbench-pm-tabs workbench-project-tabs" role="tablist" aria-label="Project views">
         {tabBtn("table", "Main table")}
         {tabBtn("board", "Board")}
         {tabBtn("timeline", "Timeline")}
@@ -347,7 +335,7 @@ export default function ProjectWorkbenchClient(props: {
       {isPending ? <p className="workbench-pm-pending" aria-live="polite">Saving…</p> : null}
 
       {view === "table" ? (
-        <section className="workbench-panel workbench-pm-panel">
+        <section className="workbench-panel workbench-pm-panel workbench-project-card workbench-project-board-card">
           <WorkbenchToolbar
             projectId={projectId}
             q={q}
@@ -367,7 +355,7 @@ export default function ProjectWorkbenchClient(props: {
             owners={owners}
             run={run}
           />
-          <div className="workbench-table workbench-pm-table-scroll workbench-task-table">
+          <div className="workbench-table workbench-pm-table-scroll workbench-task-table workbench-project-table workbench-project-table-scroll">
             <table className="workbench-pm-table">
               <thead>
                 <tr>
@@ -399,7 +387,7 @@ export default function ProjectWorkbenchClient(props: {
       ) : null}
 
       {view === "board" ? (
-        <section className="workbench-panel workbench-pm-panel">
+        <section className="workbench-panel workbench-pm-panel workbench-project-card">
           <div className="workbench-board-wrap workbench-pm-board-wrap">
             <div className="workbench-board workbench-pm-board">
               {WORKBENCH_BOARD_COLUMNS.map((col) => {
@@ -421,7 +409,12 @@ export default function ProjectWorkbenchClient(props: {
                       setDragTaskId(null);
                     }}
                   >
-                    <h3>{PROJECT_RECORD_STATUS_LABEL[col]}</h3>
+                    <h3>
+                      <span>{PROJECT_RECORD_STATUS_LABEL[col]}</span>
+                      <em>
+                        {colTasks.length} task{colTasks.length === 1 ? "" : "s"}
+                      </em>
+                    </h3>
                     <div className="workbench-board-cards">
                       {colTasks.map((t) => (
                         <article
@@ -456,7 +449,7 @@ export default function ProjectWorkbenchClient(props: {
                       {!colTasks.length ? (
                         <div className="workbench-board-card workbench-board-card--empty" role="status">
                           <strong>Empty column</strong>
-                          Drag a task card here or create a task for this stage.
+                          <span>Drop tasks here when this stage is ready.</span>
                         </div>
                       ) : null}
                     </div>
@@ -469,7 +462,7 @@ export default function ProjectWorkbenchClient(props: {
       ) : null}
 
       {view === "timeline" ? (
-        <section className="workbench-panel workbench-pm-panel">
+        <section className="workbench-panel workbench-pm-panel workbench-project-card">
           <h2>Timeline</h2>
           {timelineRows.length ? (
             <ul className="workbench-list workbench-pm-timeline">
@@ -511,7 +504,7 @@ export default function ProjectWorkbenchClient(props: {
         />
       ) : null}
 
-      <details className="workbench-pm-admin">
+      <details className="workbench-pm-admin workbench-project-settings-card">
         <summary>Project settings &amp; administration</summary>
         <AdminForms
           project={project}
@@ -545,7 +538,7 @@ function FragmentRows(props: {
       : groupKey;
   return (
     <>
-      <tr className="workbench-pm-group-row">
+      <tr className="workbench-pm-group-row workbench-project-stage-row">
         <td colSpan={colSpan}>
           <strong>{label}</strong>{" "}
           <span className="workbench-muted">
@@ -553,6 +546,11 @@ function FragmentRows(props: {
           </span>
         </td>
       </tr>
+      {rows.length ? null : (
+        <tr className="workbench-pm-empty-row">
+          <td colSpan={colSpan}>No tasks in this stage yet.</td>
+        </tr>
+      )}
       {rows.map((t) => (
         <TaskRow
           key={`${t.id}-${t.updated_at}`}
@@ -839,7 +837,7 @@ function WorkbenchToolbar(props: {
   };
 
   return (
-    <div className="workbench-toolbar workbench-pm-toolbar">
+    <div className="workbench-toolbar workbench-pm-toolbar workbench-project-toolbar">
       <div className="workbench-pm-toolbar-row">
         <button type="button" className="workbench-btn" onClick={() => setNewOpen((o) => !o)}>
           New task
@@ -1024,7 +1022,7 @@ function RecordsSection(props: {
 }) {
   const { project, records, archiveMap, tasksByRecord } = props;
   return (
-    <section className="workbench-panel workbench-pm-panel">
+    <section className="workbench-panel workbench-pm-panel workbench-project-card">
       <h2>Linked records</h2>
       <div className="workbench-pm-table-scroll">
         <table className="workbench-meta-table workbench-pm-records">
@@ -1135,11 +1133,11 @@ function NotesSection(props: {
 }) {
   const { projectId, projectNotes, setProjectNotes, annotations, records, run, notesActionPending } = props;
   return (
-    <section className="workbench-panel workbench-pm-panel">
+    <section className="workbench-panel workbench-pm-panel workbench-project-card workbench-project-notes-card">
       <h2>Project notes</h2>
       <textarea
-        className="workbench-textarea"
-        rows={5}
+        className="workbench-textarea workbench-project-notes-textarea"
+        rows={3}
         value={projectNotes}
         onChange={(e) => setProjectNotes(e.target.value)}
         aria-label="Project-level notes"
@@ -1168,7 +1166,7 @@ function NotesSection(props: {
           </li>
         ))}
       </ul>
-      <form action={createWorkbenchAnnotation} className="workbench-form-grid">
+      <form action={createWorkbenchAnnotation} className="workbench-form-grid workbench-project-annotation-form">
         <input type="hidden" name="project_id" value={projectId} />
         <label>
           <span>Record</span>
@@ -1185,7 +1183,7 @@ function NotesSection(props: {
         </label>
         <label>
           <span>Note</span>
-          <textarea className="workbench-textarea" name="note" rows={3} required />
+          <textarea className="workbench-textarea workbench-project-annotation-textarea" name="note" rows={2} required />
         </label>
         <label>
           <span>Tags</span>

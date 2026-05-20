@@ -4,8 +4,14 @@ import React, { useEffect, useState } from "react";
 
 type Props = { projectId: string };
 
+type ReviewScreening = {
+  id?: string;
+  record_id: string;
+  screening_status: string;
+};
+
 export default function ScreeningWorkspace({ projectId }: Props) {
-  const [screenings, setScreenings] = useState<any[]>([]);
+  const [screenings, setScreenings] = useState<ReviewScreening[]>([]);
 
   async function decide(recordId: string, status: string) {
     // optimistic update
@@ -18,7 +24,7 @@ export default function ScreeningWorkspace({ projectId }: Props) {
       });
       const data = await res.json();
       if (!data.ok) throw new Error(data.error || 'Failed');
-    } catch (err) {
+    } catch {
       // rollback by reloading
       const r = await fetch(`/api/workbench/review/screenings?projectId=${encodeURIComponent(projectId)}`);
       const d = await r.json();
@@ -51,8 +57,8 @@ export default function ScreeningWorkspace({ projectId }: Props) {
             <div>{s.record_id}</div>
             <div>Status: <strong>{s.screening_status}</strong></div>
             <div>
-              <button onClick={() => decide(s.record_id, 'included')}>Include</button>
-              <button onClick={() => decide(s.record_id, 'excluded')}>Exclude</button>
+              <button type="button" aria-label={`include-${s.record_id}`} className="workbench-button" onClick={() => decide(s.record_id, 'included')}>Include</button>
+              <button type="button" aria-label={`exclude-${s.record_id}`} className="workbench-button workbench-button-secondary" onClick={() => decide(s.record_id, 'excluded')}>Exclude</button>
             </div>
           </div>
         ))}

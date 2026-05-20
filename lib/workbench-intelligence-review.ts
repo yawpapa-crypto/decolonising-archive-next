@@ -43,6 +43,8 @@ function asStringArray(value: unknown): string[] {
 const REVIEW_TYPES = new Set([
   "systematic_review",
   "scoping_review",
+  "rapid_review",
+  "evidence_map",
   "mapping_review",
   "narrative_review",
 ]);
@@ -161,6 +163,8 @@ export function buildReviewIntelligenceKpis(input: {
 export const REVIEW_TYPE_LABELS: Record<ReviewProject["reviewType"], string> = {
   systematic_review: "Systematic review",
   scoping_review: "Scoping review",
+  rapid_review: "Rapid review",
+  evidence_map: "Evidence map",
   mapping_review: "Mapping review",
   narrative_review: "Narrative review",
 };
@@ -170,6 +174,7 @@ export const SCREENING_STATUS_LABELS: Record<ReviewScreeningStatus, string> = {
   title_abstract_screening: "Title/abstract screening",
   included: "Included",
   excluded: "Excluded",
+  maybe: "Maybe",
   full_text_review: "Full-text review",
   final_included: "Final dataset",
 };

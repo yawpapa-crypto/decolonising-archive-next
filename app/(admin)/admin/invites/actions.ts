@@ -135,8 +135,7 @@ export async function deleteAdminInvite(formData: FormData) {
   if (!id) fail("Invite not found.");
 
   const supabase = await createClient();
-  const invite = await loadPendingInvite(supabase, id);
-  assertNotRevoked(invite);
+  await loadPendingInvite(supabase, id);
 
   const { error } = await supabase
     .from("admin_invites")

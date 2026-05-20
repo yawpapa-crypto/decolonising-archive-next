@@ -94,8 +94,8 @@
 }
 
 .workbench-notes-page-premium .workbench-notes-layout,
-.workbench-notes-page-premium .workbench-notes-layout-premium,
-.workbench-notes-page-premium .workbench-notes-layout--editor-only {
+.workbench-notes-page-premium:not(:has(.workbench-editorial-reading)):not(:has([data-notes-document="true"])) .workbench-notes-layout-premium,
+.workbench-notes-page-premium:not(:has(.workbench-editorial-reading)):not(:has([data-notes-document="true"])) .workbench-notes-layout--editor-only {
   display: block !important;
   grid-template-columns: none !important;
   gap: 0 !important;
@@ -2128,16 +2128,16 @@ body:has(.workbench-notes-page-premium),
   padding: 0;
   background: #ffffff;
   border-left: 1px solid rgba(15, 61, 46, 0.1);
-  box-shadow: -16px 0 40px rgba(15, 17, 15, 0.14);
+  box-shadow: none;
 }
 
 .workbench-pages-drawer.is-pinned {
   border-left: 1px solid rgba(15, 61, 46, 0.14);
-  box-shadow: -16px 0 40px rgba(15, 17, 15, 0.14);
+  box-shadow: none;
 }
 
 .workbench-pages-drawer.is-overlay {
-  box-shadow: -16px 0 40px rgba(15, 17, 15, 0.18);
+  box-shadow: none;
 }
 
 body.workbench-format-drawer-open .ai-citation-floating-trigger {

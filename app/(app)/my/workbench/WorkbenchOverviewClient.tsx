@@ -699,7 +699,7 @@ export default function WorkbenchOverviewClient(props: {
   const comingSoon = (label: string) => setNotice(`${label} is coming soon. Core task and project tools are active now.`);
 
   return (
-    <div className="workbench-dashboard-page workbench-board-page">
+    <div className="workbench-dashboard-page workbench-board-page workbench-overview-premium">
       {(notice || error) ? (
         <p className={`workbench-flash ${error ? "is-error" : ""}`} role={error ? "alert" : "status"}>
           {error || notice}
@@ -781,18 +781,25 @@ export default function WorkbenchOverviewClient(props: {
               <span className="workbench-status-pill">Active</span>
             </div>
             <div className="workbench-stat-grid">
-              {[
-                ["Projects", projects.length],
-                ["Tasks", tasks.length],
-                ["Saved Records", props.savedRecordsCount],
-                ["Reading Lists", props.readingListsCount],
-                ["Collaborators", activeProjectCollaborators.length],
-                ["Exports", projects.length],
-              ].map(([label, value]) => (
-                <article className="workbench-stat-card" key={label}>
+              {(
+                [
+                  ["Projects", projects.length, () => router.push("/my/workbench/projects")],
+                  ["Tasks", tasks.length, () => document.getElementById("workbench-task-board")?.scrollIntoView({ behavior: "smooth" })],
+                  ["Saved records", props.savedRecordsCount, () => router.push("/my/workbench/saved-records")],
+                  ["Reading lists", props.readingListsCount, () => router.push("/my/workbench/reading-lists")],
+                  ["Collaborators", activeProjectCollaborators.length, () => document.getElementById("workbench-collaborators")?.scrollIntoView({ behavior: "smooth" })],
+                  ["Annotations", annotations.length, () => setView("notes")],
+                ] as const
+              ).map(([label, value, onNavigate]) => (
+                <button
+                  type="button"
+                  className="workbench-stat-card workbench-stat-card--link"
+                  key={label}
+                  onClick={onNavigate}
+                >
                   <span>{label}</span>
                   <strong>{value}</strong>
-                </article>
+                </button>
               ))}
             </div>
           </section>
@@ -841,7 +848,7 @@ export default function WorkbenchOverviewClient(props: {
         </div>
 
         <aside className="workbench-dashboard-column workbench-dashboard-aside">
-          <section className="workbench-card workbench-dashboard-card workbench-activity-card">
+          <section id="workbench-collaborators" className="workbench-card workbench-dashboard-card workbench-activity-card">
             <div className="workbench-panel-header">
               <div>
                 <p className="workbench-card-label">Collaborators</p>
@@ -898,6 +905,7 @@ export default function WorkbenchOverviewClient(props: {
         </aside>
       </section>
 
+      <div id="workbench-task-board" className="workbench-task-board-anchor">
       <nav className="workbench-tabs workbench-board-tabs" aria-label="Workbench views">
         {[
           ["table", "Main table"],
@@ -966,6 +974,7 @@ export default function WorkbenchOverviewClient(props: {
       )}
 
       {projects.length ? <button className="workbench-add-group" type="button" onClick={() => comingSoon("Custom task groups")}>+ Add new group</button> : null}
+      </div>
 
       {isRenameProjectOpen ? (
         <WorkbenchModalFrame

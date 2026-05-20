@@ -1,6 +1,6 @@
 import { createClient } from "@/src/lib/supabase/server";
 import { createAdminInvite } from "./actions";
-import CopyInviteLinkButton from "./CopyInviteLinkButton";
+import AdminInviteCard from "./AdminInviteCard";
 import PendingSubmitButton from "@/src/components/ui/PendingSubmitButton";
 
 type SearchParams = Promise<{
@@ -15,7 +15,9 @@ type InviteRow = {
   role: "admin" | "curator";
   label: string | null;
   used_at: string | null;
+  revoked_at: string | null;
   expires_at: string | null;
+  resent_at: string | null;
   created_at: string;
 };
 
@@ -34,11 +36,16 @@ function formatDate(value: string | null) {
 }
 
 function inviteStatus(invite: InviteRow) {
-  if (invite.used_at) return "Used";
+  if (invite.revoked_at) return "Revoked";
+  if (invite.used_at) return "Accepted";
   if (invite.expires_at && new Date(invite.expires_at).getTime() < Date.now()) {
     return "Expired";
   }
   return "Active";
+}
+
+function statusClass(status: string) {
+  return status.toLowerCase();
 }
 
 export default async function AdminInvitesPage({
@@ -50,14 +57,14 @@ export default async function AdminInvitesPage({
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("admin_invites")
-    .select("id, token, email, role, label, used_at, expires_at, created_at")
+    .select("id, token, email, role, label, used_at, revoked_at, expires_at, resent_at, created_at")
     .order("created_at", { ascending: false })
     .limit(50);
   const invites = (data ?? []) as InviteRow[];
   const baseUrl = siteUrl();
 
   return (
-    <div className="admin-dashboard">
+    <div className="admin-dashboard admin-moderation-premium">
       <header className="admin-header admin-header-card">
         <div className="admin-header-main">
           <p className="admin-kicker">Admin access</p>
@@ -107,35 +114,36 @@ export default async function AdminInvitesPage({
 
       <section className="admin-surface">
         <div className="admin-panel-label">Recent invites</div>
-        <div className="admin-table">
-          <div className="admin-table-row admin-table-head">
-            <span>Invite</span>
-            <span>Role</span>
-            <span>Status</span>
-            <span>Actions</span>
-          </div>
-          {invites.length ? (
-            invites.map((invite) => {
+        {invites.length ? (
+          <div className="admin-invite-list">
+            {invites.map((invite) => {
               const link = `${baseUrl}/admin/invite/${invite.token}`;
+              const isAccepted = Boolean(invite.used_at);
+              const isRevoked = Boolean(invite.revoked_at);
+              const canEdit = !isAccepted && !isRevoked;
+              const status = inviteStatus(invite);
+              const expiresValue = invite.expires_at
+                ? new Date(invite.expires_at).toISOString().slice(0, 10)
+                : "";
+
               return (
-                <div className="admin-table-row" key={invite.id}>
-                  <div>
-                    <strong>{invite.email || invite.label || "Open invite"}</strong>
-                    <p className="admin-muted">{link}</p>
-                    <p className="admin-muted">Expires: {formatDate(invite.expires_at)}</p>
-                  </div>
-                  <span>{invite.role}</span>
-                  <span>{inviteStatus(invite)}</span>
-                  <CopyInviteLinkButton link={link} />
-                </div>
+                <AdminInviteCard
+                  key={invite.id}
+                  invite={invite}
+                  link={link}
+                  status={status}
+                  statusClassName={statusClass(status)}
+                  expiresLabel={formatDate(invite.expires_at)}
+                  resentLabel={invite.resent_at ? formatDate(invite.resent_at) : null}
+                  expiresValue={expiresValue}
+                  canEdit={canEdit}
+                />
               );
-            })
-          ) : (
-            <div className="admin-table-row">
-              <span>No invites yet.</span>
-            </div>
-          )}
-        </div>
+            })}
+          </div>
+        ) : (
+          <p className="admin-muted admin-invite-empty">No invites yet.</p>
+        )}
       </section>
     </div>
   );

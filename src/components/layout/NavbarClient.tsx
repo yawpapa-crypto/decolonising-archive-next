@@ -15,7 +15,6 @@ import {
   refreshBodyScrollLockPadding,
   setBodyScrollLock,
 } from "@/lib/body-scroll-lock";
-import { archiveLoadingMessage } from "@/src/lib/loading-messages";
 import { Bell, Bookmark, Layers, ListChecks } from "lucide-react";
 import {
   useEffect,
@@ -48,11 +47,6 @@ function hardNavigateToArchive(
   if (isNonArchiveShellPath(window.location.pathname)) {
     event.preventDefault();
     event.stopPropagation();
-    window.dispatchEvent(
-      new CustomEvent("app:loading:start", {
-        detail: { message: archiveLoadingMessage(href) },
-      }),
-    );
     window.location.assign(href);
   }
 }

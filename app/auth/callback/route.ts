@@ -5,11 +5,12 @@
 
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/src/lib/supabase/server";
+import { safeNextPath } from "@/src/lib/security/validate";
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
-  const next = url.searchParams.get("next") ?? "/workspace";
+  const next = safeNextPath(url.searchParams.get("next"));
 
   if (!code) {
     return NextResponse.redirect(

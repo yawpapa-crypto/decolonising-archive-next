@@ -25,6 +25,10 @@ import {
 import type { ChainedCommands } from "@tiptap/core";
 import type { Editor } from "@tiptap/react";
 import { extractHeadingsFromHtml, type NoteHeading } from "@/lib/workbench-note-headings";
+import {
+  parseCitedReferencesFromHtml,
+  type ParsedCitedReference,
+} from "@/lib/workbench-note-reference-html";
 import type {
   WorkbenchCitationSource,
   WorkbenchCitationSourceType,
@@ -996,11 +1000,6 @@ function parseApaParenthetical(text?: string | null) {
   return { authors, year };
 }
 
-function readLinkDataAttr(link: HTMLAnchorElement, name: string) {
-  const value = link.getAttribute(name)?.trim();
-  return value || undefined;
-}
-
 function citationCandidateFromCitation(citation: WorkbenchNoteCitation): CitationCandidate {
   return {
     id: citation.id,
@@ -1940,42 +1939,6 @@ function referenceTextFromLinkedRecord(record: LinkedRecordView) {
     .join(" ");
 }
 
-type ParsedCitedReference = {
-  citationId?: string;
-  recordId?: string;
-  referenceId: string;
-  title?: string;
-  authors?: string;
-  year?: string;
-  source?: string;
-  url?: string;
-  doi?: string;
-  displayText?: string;
-};
-
-function readParsedCitationLink(link: HTMLAnchorElement): ParsedCitedReference | null {
-  const citationId = readLinkDataAttr(link, "data-citation-id");
-  const recordId = readLinkDataAttr(link, "data-record-id");
-  const referenceId =
-    readLinkDataAttr(link, "data-reference-id") ||
-    link.getAttribute("href")?.replace(/^#ref-workbench-citation-/, "").trim() ||
-    (recordId ? `record-${slugifyCitationKey(recordId)}` : citationId);
-  if (!referenceId) return null;
-  return {
-    citationId,
-    recordId,
-    referenceId,
-    title: readLinkDataAttr(link, "data-title"),
-    authors: readLinkDataAttr(link, "data-authors"),
-    year: readLinkDataAttr(link, "data-year"),
-    source: readLinkDataAttr(link, "data-source"),
-    url: readLinkDataAttr(link, "data-url"),
-    doi: readLinkDataAttr(link, "data-doi"),
-    displayText:
-      readLinkDataAttr(link, "data-citation-display") || link.textContent?.trim() || undefined,
-  };
-}
-
 function referenceTextFromLinkMetadata(parsed: ParsedCitedReference) {
   const authors = parsed.authors
     ?.split("|")
@@ -1990,55 +1953,6 @@ function referenceTextFromLinkMetadata(parsed: ParsedCitedReference) {
     url: parsed.url,
     doi: parsed.doi,
   });
-}
-
-function parseCitedReferencesFromHtml(html: string) {
-  const refs: ParsedCitedReference[] = [];
-  if (!html) return refs;
-
-  if (typeof DOMParser !== "undefined") {
-    const doc = new DOMParser().parseFromString(html, "text/html");
-    doc
-      .querySelectorAll<HTMLAnchorElement>(
-        '.workbench-citation-link[data-citation-id],.workbench-citation-link,a[href^="#ref-workbench-citation-"]',
-      )
-      .forEach((link) => {
-        const parsed = readParsedCitationLink(link);
-        if (parsed) refs.push(parsed);
-      });
-    return refs;
-  }
-
-  const linkPattern =
-    /<a\b(?=[^>]*(?:class=["'][^"']*\bworkbench-citation-link\b[^"']*["']|href=["']#ref-workbench-citation-))[^>]*>/gi;
-  const attrPattern =
-    /\s(data-citation-id|data-record-id|data-reference-id|data-title|data-authors|data-year|data-source|data-url|data-doi|data-citation-display|href)=["']([^"']+)["']/gi;
-  let match: RegExpExecArray | null;
-  while ((match = linkPattern.exec(html)) !== null) {
-    const attrs = new Map<string, string>();
-    let attr: RegExpExecArray | null;
-    while ((attr = attrPattern.exec(match[0])) !== null) attrs.set(attr[1], attr[2]);
-    const citationId = attrs.get("data-citation-id") || undefined;
-    const recordId = attrs.get("data-record-id") || undefined;
-    const referenceId =
-      attrs.get("data-reference-id") ||
-      attrs.get("href")?.replace(/^#ref-workbench-citation-/, "") ||
-      (recordId ? `record-${slugifyCitationKey(recordId)}` : citationId);
-    if (!referenceId) continue;
-    refs.push({
-      citationId,
-      recordId,
-      referenceId,
-      title: attrs.get("data-title") || undefined,
-      authors: attrs.get("data-authors") || undefined,
-      year: attrs.get("data-year") || undefined,
-      source: attrs.get("data-source") || undefined,
-      url: attrs.get("data-url") || undefined,
-      doi: attrs.get("data-doi") || undefined,
-      displayText: attrs.get("data-citation-display") || undefined,
-    });
-  }
-  return refs;
 }
 
 function WorkbenchGeneratedReferences({
@@ -2422,7 +2336,7 @@ export default function WorkbenchNotesClient(props: {
   const inspectorDragRef = useRef<{ startX: number; startY: number; originX: number; originY: number } | null>(null);
   const [inspectorPositionReady, setInspectorPositionReady] = useState(false);
   const [documentDrawerTab, setDocumentDrawerTab] = useState<DocumentSidebarTab>("format");
-  const [documentDrawerOpen, setDocumentDrawerOpen] = useState(false);
+  const [documentDrawerOpen, setDocumentDrawerOpen] = useState(true);
   const [documentDrawerPinned, setDocumentDrawerPinned] = useState(true);
   const documentImageInputRef = useRef<HTMLInputElement>(null);
   const noteModePrefRef = useRef<NoteMode | null>(null);
@@ -2432,9 +2346,6 @@ export default function WorkbenchNotesClient(props: {
     const storedPin = window.localStorage.getItem("workbench-document-drawer-pinned");
     if (storedPin === "true") setDocumentDrawerPinned(true);
     if (storedPin === "false") setDocumentDrawerPinned(false);
-    const storedOpen = window.localStorage.getItem("workbench-document-drawer-open");
-    if (storedOpen === "true") setDocumentDrawerOpen(true);
-    if (storedOpen === "false") setDocumentDrawerOpen(false);
   }, []);
 
   useEffect(() => {
@@ -2446,12 +2357,10 @@ export default function WorkbenchNotesClient(props: {
   }, [documentDrawerPinned]);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    window.localStorage.setItem(
-      "workbench-document-drawer-open",
-      documentDrawerOpen ? "true" : "false",
-    );
-  }, [documentDrawerOpen]);
+    if (noteMode !== "document" || !selectedId) return;
+    setDocumentDrawerOpen(true);
+    setDocumentDrawerTab("format");
+  }, [noteMode, selectedId]);
 
   useEffect(() => {
     const placeNotesMenuInGutter = () => {
@@ -3938,10 +3847,14 @@ function editorChain(editor: Editor): ChainedCommands {
     [citations],
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const page = document.querySelector(".workbench-notes-page-premium");
     page?.classList.toggle("workbench-editorial-reading", isEditorialReading);
-    return () => page?.classList.remove("workbench-editorial-reading");
+    document.body.classList.toggle("workbench-notes-document-mode", isEditorialReading);
+    return () => {
+      page?.classList.remove("workbench-editorial-reading");
+      document.body.classList.remove("workbench-notes-document-mode");
+    };
   }, [isEditorialReading]);
 
   useEffect(() => {
@@ -4485,6 +4398,7 @@ function editorChain(editor: Editor): ChainedCommands {
 
   return (
     <div
+      data-notes-document={isEditorialReading ? "true" : undefined}
       className={
         [
           "workbench-notes-view",
@@ -4836,11 +4750,7 @@ function editorChain(editor: Editor): ChainedCommands {
                               </div>
                               <WorkbenchGeneratedReferences
                                 key={citationRevision}
-                                editorHtml={
-                                  editorInstance && !editorInstance.isDestroyed
-                                    ? editorInstance.getHTML()
-                                    : contentHtml
-                                }
+                                editorHtml={contentHtml}
                                 citations={citations}
                                 linkedRecordsForSelected={linkedRecordsForSelected}
                                 citationSources={props.citationSources}
@@ -5054,11 +4964,7 @@ function editorChain(editor: Editor): ChainedCommands {
                     </div>
                     <WorkbenchGeneratedReferences
                       key={citationRevision}
-                      editorHtml={
-                        editorInstance && !editorInstance.isDestroyed
-                          ? editorInstance.getHTML()
-                          : contentHtml
-                      }
+                      editorHtml={contentHtml}
                       citations={citations}
                       linkedRecordsForSelected={linkedRecordsForSelected}
                       citationSources={props.citationSources}

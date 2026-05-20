@@ -1,10 +1,23 @@
 import PageShell from "@/src/components/layout/PageShell";
 import Script from "next/script";
 
-export default function ArchiveAppPage() {
+type ArchiveAppPageProps = {
+  /** Server-resolved sign-in state for Library advanced search gating. */
+  initialMemberSignedIn?: boolean;
+};
+
+export default function ArchiveAppPage({ initialMemberSignedIn }: ArchiveAppPageProps = {}) {
+  const memberSignedInAttr =
+    initialMemberSignedIn === undefined ? undefined : initialMemberSignedIn ? "true" : "false";
+
   return (
     <PageShell>
-      <main id="app"></main>
+      <main
+        id="app"
+        {...(memberSignedInAttr !== undefined
+          ? { "data-member-signed-in": memberSignedInAttr }
+          : {})}
+      />
 
       <noscript>
         <div className="empty noscript-note">

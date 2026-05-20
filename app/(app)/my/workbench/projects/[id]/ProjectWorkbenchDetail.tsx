@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { readRecords } from "@/lib/records";
 import { getWorkbenchProjectBundle, snapshotRecordRights } from "@/lib/workbench-data";
+import { isWorkbenchReviewProjectType } from "@/lib/workbench-types";
 import { getMemberWorkspaceData } from "@/src/lib/member-workspace";
 import { createClient } from "@/src/lib/supabase/server";
 import ProjectWorkbenchClient, { type WorkbenchArchiveLite } from "./ProjectWorkbenchClient";
@@ -41,6 +42,15 @@ export default async function ProjectWorkbenchDetail({
     Boolean(user?.id) &&
     (project.owner_id === user?.id ||
       collaborators.some((c) => c.user_id === user?.id && c.role === "editor"));
+  const isReviewProject = isWorkbenchReviewProjectType(project.project_type);
+  const linkedReview = isReviewProject
+    ? await supabase
+        .from("workbench_review_projects")
+        .select("id")
+        .eq("project_id", projectId)
+        .eq("user_id", project.owner_id)
+        .maybeSingle()
+    : { data: null, error: null };
   const published = (await readRecords()).filter((r) => r.published);
   const archiveById: WorkbenchArchiveLite[] = published.map((r) => ({
     id: r.id,
@@ -70,6 +80,7 @@ export default async function ProjectWorkbenchDetail({
         archiveById={archiveById}
         flashUpdated={sp.updated}
         flashError={sp.error}
+        linkedReviewProjectId={linkedReview.data?.id ?? null}
       />
     </>
   );

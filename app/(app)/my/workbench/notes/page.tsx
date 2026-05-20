@@ -1,4 +1,3 @@
-import dynamic from "next/dynamic";
 import {
   listWorkbenchCitationSources,
   listWorkbenchLinkableRecords,
@@ -7,11 +6,7 @@ import {
   listWorkbenchProjects,
 } from "@/lib/workbench-data";
 import { createClient } from "@/src/lib/supabase/server";
-import WorkbenchNotesLoading from "./WorkbenchNotesLoading";
-
-const WorkbenchNotesClient = dynamic(() => import("./WorkbenchNotesClient"), {
-  loading: () => <WorkbenchNotesLoading />,
-});
+import WorkbenchNotesClientEntry from "./WorkbenchNotesClientEntry";
 
 export default async function WorkbenchNotesPage() {
   const supabase = await createClient();
@@ -59,7 +54,7 @@ export default async function WorkbenchNotesPage() {
 
   return (
     <section className="workbench-projects-page workbench-notes-page workbench-notes-page-premium">
-      <WorkbenchNotesClient
+      <WorkbenchNotesClientEntry
         notes={notes}
         projects={projects}
         linkableRecords={linkableRes.ok ? linkableRes.records : []}

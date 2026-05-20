@@ -9,12 +9,21 @@ import {
   updateWorkbenchCollaboratorRole,
 } from "@/lib/workbench-collaborator-actions";
 
+type InviteResult = {
+  ok: boolean;
+  error?: string;
+  collaborator?: WorkbenchCollaboratorRow;
+  duplicate?: boolean;
+};
+
 type Props = {
   projectId: string;
   collaborators: WorkbenchCollaboratorRow[];
   canManage: boolean;
   compact?: boolean;
   variant?: "default" | "premium";
+  defaultRole?: string;
+  inviteAction?: (input: { projectId: string; email: string; role: string }) => Promise<InviteResult>;
   onCollaboratorsChange?: (rows: WorkbenchCollaboratorRow[]) => void;
 };
 
@@ -49,13 +58,15 @@ export default function WorkbenchCollaboratorPanel({
   canManage,
   compact = false,
   variant = "default",
+  defaultRole = "viewer",
+  inviteAction,
   onCollaboratorsChange,
 }: Props) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [rows, setRows] = useState(initialCollaborators);
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("viewer");
+  const [role, setRole] = useState(defaultRole);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const isPremium = variant === "premium";
@@ -74,7 +85,9 @@ export default function WorkbenchCollaboratorPanel({
     setNotice("");
     setError("");
     startTransition(async () => {
-      const result = await inviteWorkbenchCollaborator({ projectId, email, role });
+      const result = inviteAction
+        ? await inviteAction({ projectId, email, role })
+        : await inviteWorkbenchCollaborator({ projectId, email, role });
       if (!result.ok) {
         setError(result.error || "Could not invite collaborator.");
         return;

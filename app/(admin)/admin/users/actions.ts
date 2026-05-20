@@ -95,3 +95,38 @@ export async function updateUserStatus(formData: FormData) {
     status === "blocked" ? "User sign-in blocked." : "User sign-in restored."
   );
 }
+
+export async function deleteUserAccount(formData: FormData) {
+  const admin = await requireAdmin();
+  const userId = getTargetId(formData);
+  const confirmation = String(formData.get("confirm") ?? "").trim().toUpperCase();
+
+  if (!userId) {
+    redirectWith("error", "Choose a valid user to delete.");
+  }
+
+  if (userId === admin.id) {
+    redirectWith("error", "You cannot delete your own admin account.");
+  }
+
+  if (confirmation !== "DELETE") {
+    redirectWith("error", "Type DELETE to confirm account deletion.");
+  }
+
+  const supabase = createAdminClient();
+  const { data: userResult, error: userError } =
+    await supabase.auth.admin.getUserById(userId);
+
+  if (userError || !userResult.user) {
+    redirectWith("error", userError?.message ?? "User account not found.");
+  }
+
+  const { error } = await supabase.auth.admin.deleteUser(userId);
+
+  if (error) {
+    redirectWith("error", error.message);
+  }
+
+  revalidatePath("/admin/users");
+  redirectWith("updated", "User account deleted.");
+}

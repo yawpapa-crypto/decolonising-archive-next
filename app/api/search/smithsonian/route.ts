@@ -10,6 +10,9 @@ import {
   type SmithsonianSort,
 } from "@/lib/search/smithsonian";
 import { getCachedSearch, searchCacheKey, setCachedSearch } from "@/lib/search-cache";
+import { guardPublicSearch } from "@/src/lib/security/search-guard";
+import { parseSearchLimit, parseSearchOffset } from "@/src/lib/security/validate";
+import { safePublicError } from "@/src/lib/security/sanitize";
 
 export const runtime = "nodejs";
 
@@ -62,17 +65,16 @@ function parseMedia(value: string | null): SmithsonianMediaFilter {
 
 /** Smithsonian Open Access — live EDAN items (default) or curated unit gateways (`mode=collections`). */
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const q = String(searchParams.get("q") || searchParams.get("query") || "").trim();
-  const mode = String(searchParams.get("mode") || "items").toLowerCase();
+  const guarded = await guardPublicSearch(request);
+  if (!guarded.ok) return guarded.response;
 
-  if (!q) {
-    return NextResponse.json({ ok: false, error: "Missing q parameter" }, { status: 400 });
-  }
+  const { searchParams } = new URL(request.url);
+  const q = guarded.query;
+  const mode = String(searchParams.get("mode") || "items").toLowerCase();
 
   if (mode === "collections") {
     try {
-      const limit = Number(searchParams.get("limit") || searchParams.get("rows") || 8);
+      const limit = parseSearchLimit(searchParams, 8);
       const { results, clientResults } = searchSmithsonianCollections(q, { limit });
       return NextResponse.json({
         ok: true,
@@ -88,7 +90,7 @@ export async function GET(request: NextRequest) {
         },
       });
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Smithsonian collection search failed";
+      const message = safePublicError(error, "Smithsonian collection search failed");
       return NextResponse.json({
         ok: true,
         mode: "collections",
@@ -102,8 +104,8 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  const rows = Number(searchParams.get("rows") || searchParams.get("limit") || 25);
-  const start = Math.max(0, Number(searchParams.get("start") || searchParams.get("offset") || 0));
+  const rows = parseSearchLimit(searchParams, 25);
+  const start = parseSearchOffset(searchParams);
   const sort = parseSort(searchParams.get("sort"));
   const type = parseType(searchParams.get("type"));
   const rowGroup = parseRowGroup(searchParams.get("rowGroup") || searchParams.get("row_group"));

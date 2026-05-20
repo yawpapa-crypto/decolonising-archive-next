@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { sql } from '@vercel/postgres';
+import { checkRateLimit, getRequestIp } from '@/src/lib/security/rate-limit';
 
 function normalizeTerm(term) {
   return String(term || '')
@@ -11,6 +12,15 @@ function normalizeTerm(term) {
 
 export async function POST(request) {
   try {
+    const ip = getRequestIp(request);
+    const rate = checkRateLimit(`search-term:ip:${ip}`, 30, 60_000);
+    if (!rate.ok) {
+      return NextResponse.json(
+        { ok: false, error: 'Too many requests' },
+        { status: 429, headers: { 'Retry-After': String(rate.retryAfterSec ?? 60) } },
+      );
+    }
+
     const body = await request.json();
     const term = normalizeTerm(body.term);
 

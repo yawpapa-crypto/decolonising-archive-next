@@ -1,0 +1,344 @@
+/**
+ * Workbench sidebar — Lucide icon system (import last in WorkbenchShell).
+ * Scoped to [data-wb-sidebar="2"] only.
+ */
+
+.workbench-shell.workbench-shell--premium {
+  --wb-sidebar-collapsed-width: 72px;
+  --wb-sidebar-item-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Disable ALL legacy pseudo-icons (Lucide SVG is the only icon layer) */
+.workbench-sidebar[data-wb-sidebar="2"] a::before,
+.workbench-sidebar[data-wb-sidebar="2"] a::after,
+.workbench-sidebar[data-wb-sidebar="2"] button::before,
+.workbench-sidebar[data-wb-sidebar="2"] button::after,
+.workbench-shell .workbench-sidebar[data-wb-sidebar="2"] .workbench-nav a::before,
+.workbench-shell .workbench-sidebar[data-wb-sidebar="2"] .workbench-nav a::after,
+.workbench-shell .workbench-sidebar[data-wb-sidebar="2"] .workbench-nav button::before,
+.workbench-shell .workbench-sidebar[data-wb-sidebar="2"] .workbench-nav button::after,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-nav-icon::before,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-nav-icon::after,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-glyph::before,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-glyph::after,
+.workbench-sidebar[data-wb-sidebar="2"] a.is-active::before,
+.workbench-sidebar[data-wb-sidebar="2"] a[aria-current="page"]::before,
+.workbench-shell .workbench-sidebar[data-wb-sidebar="2"] a[href] .workbench-nav-icon::before,
+.workbench-shell .workbench-sidebar[data-wb-sidebar="2"] a[href] .workbench-sidebar-glyph::before {
+  display: none !important;
+  content: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-control-icon::before,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-control-icon::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Legacy [class*="icon"] patch must not reposition Lucide SVGs */
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item svg,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-control svg {
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+}
+
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-glyph {
+  position: relative !important;
+  left: auto !important;
+  top: auto !important;
+}
+
+/* Nav item — flex only (override legacy grid + pseudo tiles) */
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-nav a.workbench-sidebar-item,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-nav .workbench-sidebar-item {
+  display: flex !important;
+  grid-template-columns: unset !important;
+  grid-template-rows: unset !important;
+  padding-left: 8px !important;
+}
+
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item::before,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item::after,
+.workbench-sidebar[data-wb-sidebar="2"] a.workbench-sidebar-item::before {
+  display: none !important;
+  content: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+/* Nav item */
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  min-height: 44px !important;
+  padding: 4px 8px !important;
+  border: 1px solid transparent !important;
+  border-radius: 10px !important;
+  color: #4b5563 !important;
+  text-decoration: none !important;
+  background: transparent !important;
+  transition:
+    background 160ms var(--wb-sidebar-item-ease),
+    color 160ms var(--wb-sidebar-item-ease),
+    border-color 160ms var(--wb-sidebar-item-ease);
+}
+
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item:hover {
+  background: rgba(11, 15, 20, 0.05) !important;
+  color: #0b0f14 !important;
+  transform: none !important;
+}
+
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item--active,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item.is-active,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item[aria-current="page"] {
+  background: #0b0f14 !important;
+  border-color: #0b0f14 !important;
+  color: #ffffff !important;
+  transform: none !important;
+}
+
+/* Active + hover — keep charcoal row, brighten icon (never dark-on-dark) */
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item--active:hover,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item.is-active:hover,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item[aria-current="page"]:hover {
+  background: #151a22 !important;
+  border-color: #151a22 !important;
+  color: #ffffff !important;
+  transform: none !important;
+}
+
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item:not(.is-active):not(.workbench-sidebar-item--active):not([aria-current="page"]):hover .workbench-sidebar-glyph {
+  background: rgba(11, 15, 20, 0.06) !important;
+  border: 1px solid rgba(11, 15, 20, 0.08) !important;
+  color: #0b0f14 !important;
+}
+
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item--active:hover .workbench-sidebar-glyph,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item.is-active:hover .workbench-sidebar-glyph,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item[aria-current="page"]:hover .workbench-sidebar-glyph {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  color: #ffffff !important;
+}
+
+/* Icon tile */
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-glyph {
+  position: relative !important;
+  flex: 0 0 36px !important;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 10px !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: inherit !important;
+  transition:
+    transform 160ms var(--wb-sidebar-item-ease),
+    background 160ms var(--wb-sidebar-item-ease),
+    border-color 160ms var(--wb-sidebar-item-ease),
+    color 160ms var(--wb-sidebar-item-ease);
+}
+
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-glyph svg {
+  display: block !important;
+  width: 18px !important;
+  height: 18px !important;
+  flex-shrink: 0 !important;
+  color: inherit !important;
+  stroke: currentColor !important;
+  opacity: 1 !important;
+}
+
+/* Kill legacy lime tiles + dark SVG overrides on v2 sidebar */
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-nav a:hover > span:first-child,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-nav a.is-active > span:first-child,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-nav a[aria-current="page"] > span:first-child,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-nav a:hover .workbench-sidebar-glyph,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-nav a.is-active .workbench-sidebar-glyph,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-nav a[aria-current="page"] .workbench-sidebar-glyph {
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-nav a:hover svg,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-nav a.is-active svg,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-nav a[aria-current="page"] svg {
+  color: inherit !important;
+  stroke: currentColor !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item:hover .workbench-sidebar-glyph {
+  transform: translateY(-1px) scale(1.02);
+}
+
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item--active .workbench-sidebar-glyph,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item.is-active .workbench-sidebar-glyph,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item[aria-current="page"] .workbench-sidebar-glyph {
+  transform: none;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  color: #ffffff !important;
+}
+
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item--active .workbench-sidebar-glyph svg,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item.is-active .workbench-sidebar-glyph svg,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item[aria-current="page"] .workbench-sidebar-glyph svg {
+  color: #ffffff !important;
+}
+
+/* Label */
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-label {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+  color: inherit !important;
+  transition: opacity 160ms var(--wb-sidebar-item-ease);
+}
+
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item--active .workbench-sidebar-label,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item.is-active .workbench-sidebar-label,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item[aria-current="page"] .workbench-sidebar-label {
+  font-weight: 600 !important;
+  color: #ffffff !important;
+}
+
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item--active:hover .workbench-sidebar-label,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item.is-active:hover .workbench-sidebar-label,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item[aria-current="page"]:hover .workbench-sidebar-label {
+  color: #ffffff !important;
+}
+
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item:focus-visible {
+  outline: 2px solid rgba(15, 61, 46, 0.45) !important;
+  outline-offset: 2px !important;
+}
+
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item--active:focus-visible,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item.is-active:focus-visible,
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item[aria-current="page"]:focus-visible {
+  outline-color: rgba(255, 255, 255, 0.55) !important;
+}
+
+/* Header controls — Lucide, no pseudo shapes */
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-control {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 32px !important;
+  height: 32px !important;
+  padding: 0 !important;
+  border: 1px solid transparent !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  color: #6f747c !important;
+  cursor: pointer;
+  transition:
+    background 160ms var(--wb-sidebar-item-ease),
+    color 160ms var(--wb-sidebar-item-ease),
+    border-color 160ms var(--wb-sidebar-item-ease);
+}
+
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-control svg {
+  width: 16px !important;
+  height: 16px !important;
+  display: block !important;
+}
+
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-control:hover {
+  background: rgba(11, 15, 20, 0.05) !important;
+  color: #0b0f14 !important;
+}
+
+.workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-control.is-active {
+  background: rgba(15, 61, 46, 0.08) !important;
+  border-color: rgba(15, 61, 46, 0.12) !important;
+  color: #0f3d2e !important;
+}
+
+/* Collapsed — centred icon rail */
+.workbench-shell.is-sidebar-collapsed .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-label {
+  display: none !important;
+}
+
+.workbench-shell.is-sidebar-collapsed .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item {
+  justify-content: center !important;
+  padding: 4px 0 !important;
+  gap: 0 !important;
+}
+
+.workbench-shell.is-sidebar-collapsed .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item--active,
+.workbench-shell.is-sidebar-collapsed .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item.is-active {
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+.workbench-shell.is-sidebar-collapsed .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item--active .workbench-sidebar-glyph,
+.workbench-shell.is-sidebar-collapsed .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item.is-active .workbench-sidebar-glyph {
+  background: #0b0f14 !important;
+  color: #ffffff !important;
+}
+
+.workbench-shell.is-sidebar-collapsed .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item--active:hover .workbench-sidebar-glyph,
+.workbench-shell.is-sidebar-collapsed .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item.is-active:hover .workbench-sidebar-glyph,
+.workbench-shell.is-sidebar-collapsed .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item[aria-current="page"]:hover .workbench-sidebar-glyph {
+  background: #151a22 !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}
+
+.workbench-shell.is-sidebar-collapsed .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item:not(.is-active):not(.workbench-sidebar-item--active):hover .workbench-sidebar-glyph {
+  background: rgba(11, 15, 20, 0.06) !important;
+  border-color: rgba(11, 15, 20, 0.08) !important;
+  color: #0b0f14 !important;
+}
+
+.workbench-shell.is-sidebar-collapsed .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item:hover .workbench-sidebar-glyph {
+  transform: translateY(-1px) scale(1.02);
+}
+
+@media (max-width: 900px) {
+  .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-height: 40px !important;
+    padding: 0 10px !important;
+  }
+
+  .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-label {
+    display: inline !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item,
+  .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-glyph,
+  .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-label,
+  .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-control {
+    transition: none !important;
+  }
+
+  .workbench-sidebar[data-wb-sidebar="2"] .workbench-sidebar-item:hover .workbench-sidebar-glyph {
+    transform: none !important;
+  }
+}

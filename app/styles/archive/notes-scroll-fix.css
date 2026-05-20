@@ -1,0 +1,159 @@
+/* =========================================================
+   FINAL WORKBENCH NOTES SCROLL FIX (import last)
+   Document mode: internal scroll on .workbench-document-pages-scroll
+   Root cause: premium shell align-items:start + overflow:hidden clips
+   content when the flex height chain never gets a bounded viewport.
+   ========================================================= */
+
+/* Grid row must fill the fixed shell height so flex children can shrink */
+body.workbench-notes-document-mode .workbench-shell.workbench-shell--stable.workbench-shell--premium,
+body.workbench-notes-document-mode
+  .workbench-shell:has(.workbench-notes-page-premium.workbench-editorial-reading),
+body.workbench-notes-document-mode .workbench-shell:has([data-notes-document="true"]) {
+  align-items: stretch !important;
+  align-content: stretch !important;
+  height: calc(100dvh - var(--notes-sticky-offset, 0px)) !important;
+  min-height: calc(100dvh - var(--notes-sticky-offset, 0px)) !important;
+  max-height: calc(100dvh - var(--notes-sticky-offset, 0px)) !important;
+  overflow: hidden !important;
+}
+
+body.workbench-notes-document-mode
+  .workbench-shell:has(.workbench-notes-page-premium.workbench-editorial-reading)
+  .workbench-main,
+body.workbench-notes-document-mode
+  .workbench-shell:has([data-notes-document="true"])
+  .workbench-main {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  align-self: stretch !important;
+  min-height: 0 !important;
+  max-height: 100% !important;
+  height: auto !important;
+  overflow: hidden !important;
+}
+
+body.workbench-notes-document-mode .workbench-notes-page-premium.workbench-editorial-reading,
+body.workbench-notes-document-mode
+  .workbench-notes-page-premium:has([data-notes-document="true"]) {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+body.workbench-notes-document-mode
+  .workbench-notes-page-premium.workbench-editorial-reading
+  .workbench-notes-view,
+body.workbench-notes-document-mode
+  .workbench-notes-page-premium.workbench-editorial-reading
+  .workbench-notes-figma-shell,
+body.workbench-notes-document-mode
+  .workbench-notes-page-premium:has([data-notes-document="true"])
+  .workbench-notes-view {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+body.workbench-notes-document-mode
+  .workbench-notes-page-premium.workbench-editorial-reading
+  .workbench-notes-layout-premium,
+body.workbench-notes-document-mode
+  .workbench-notes-page-premium.workbench-editorial-reading
+  .workbench-notes-layout--editor-only,
+body.workbench-notes-document-mode
+  .workbench-notes-page-premium.workbench-editorial-reading
+  .workbench-note-editor-shell,
+body.workbench-notes-document-mode
+  .workbench-notes-page-premium.workbench-editorial-reading
+  .workbench-editorial-workspace,
+body.workbench-notes-document-mode
+  .workbench-notes-page-premium.workbench-editorial-reading
+  .workbench-pages-layout,
+body.workbench-notes-document-mode
+  .workbench-notes-page-premium.workbench-editorial-reading
+  .workbench-pages-shell,
+body.workbench-notes-document-mode
+  .workbench-notes-page-premium.workbench-editorial-reading
+  .workbench-pages-main,
+body.workbench-notes-document-mode
+  .workbench-notes-page-premium.workbench-editorial-reading
+  .workbench-document-pane {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* The only scroll viewport in document mode */
+body.workbench-notes-document-mode
+  .workbench-notes-page-premium.workbench-editorial-reading
+  .workbench-document-pages-scroll,
+body.workbench-notes-document-mode
+  .workbench-notes-page-premium:has([data-notes-document="true"])
+  .workbench-document-pages-scroll {
+  flex: 1 1 0% !important;
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+body.workbench-notes-document-mode
+  .workbench-notes-page-premium.workbench-editorial-reading
+  .workbench-document-top-bar {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 95 !important;
+  flex-shrink: 0 !important;
+  background: #ffffff !important;
+}
+
+body.workbench-notes-document-mode
+  .workbench-notes-page-premium.workbench-editorial-reading
+  .workbench-document-pages-outer,
+body.workbench-notes-document-mode
+  .workbench-notes-page-premium.workbench-editorial-reading
+  .workbench-document-zoom-spacer,
+body.workbench-notes-document-mode
+  .workbench-notes-page-premium.workbench-editorial-reading
+  .workbench-document-pages-stack,
+body.workbench-notes-document-mode
+  .workbench-notes-page-premium.workbench-editorial-reading
+  .workbench-rich-editor-wrap,
+body.workbench-notes-document-mode
+  .workbench-notes-page-premium.workbench-editorial-reading
+  .workbench-rich-editor,
+body.workbench-notes-document-mode
+  .workbench-notes-page-premium.workbench-editorial-reading
+  .workbench-rich-editor
+  .ProseMirror {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+@media (max-width: 900px) {
+  body.workbench-notes-document-mode
+    .workbench-notes-page-premium.workbench-editorial-reading
+    .workbench-document-pages-scroll {
+    padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (max-width: 640px) {
+  body.workbench-format-drawer-pinned.workbench-notes-mobile.workbench-notes-document-mode
+    .workbench-document-pages-scroll {
+    padding-bottom: calc(
+      min(46dvh, 400px) + 96px + env(safe-area-inset-bottom, 0px)
+    ) !important;
+  }
+}

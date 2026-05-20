@@ -4,8 +4,15 @@ import React, { useEffect, useState } from "react";
 
 type Props = { projectId: string };
 
+type ExtractionField = {
+  id: string;
+  name: string;
+  field_key: string;
+  field_type: string;
+};
+
 export default function ReviewSetup({ projectId }: Props) {
-  const [fields, setFields] = useState<any[]>([]);
+  const [fields, setFields] = useState<ExtractionField[]>([]);
   const [creating, setCreating] = useState(false);
   const [newName, setNewName] = useState("");
   const [newKey, setNewKey] = useState("");
@@ -33,18 +40,29 @@ export default function ReviewSetup({ projectId }: Props) {
 
       <div className="create-field">
         <h4>Add extraction field</h4>
-        <input value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="Field name" />
-        <input value={newKey} onChange={(e) => setNewKey(e.target.value)} placeholder="Field key" />
-        <select value={newType} onChange={(e) => setNewType(e.target.value)}>
-          <option value="text">Text</option>
-          <option value="number">Number</option>
-          <option value="boolean">Boolean</option>
-        </select>
+        <label htmlFor="field-name">
+          <span className="workbench-card-label">Name</span>
+          <input id="field-name" className="workbench-input" aria-label="Field name" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="Field name" />
+        </label>
+        <label htmlFor="field-key">
+          <span className="workbench-card-label">Key</span>
+          <input id="field-key" className="workbench-input" aria-label="Field key" value={newKey} onChange={(e) => setNewKey(e.target.value)} placeholder="Field key" />
+        </label>
+        <label htmlFor="field-type">
+          <span className="workbench-card-label">Type</span>
+          <select id="field-type" className="workbench-select" value={newType} onChange={(e) => setNewType(e.target.value)}>
+            <option value="text">Text</option>
+            <option value="number">Number</option>
+            <option value="boolean">Boolean</option>
+          </select>
+        </label>
         <button
+          type="button"
+          className="workbench-button-primary"
           disabled={creating || !newName || !newKey}
           onClick={async () => {
             setCreating(true);
-            const optimistic = { id: `temp-${Date.now()}`, name: newName, field_key: newKey, field_type: newType };
+            const optimistic: ExtractionField = { id: `temp-${Date.now()}`, name: newName, field_key: newKey, field_type: newType };
             setFields((s) => [optimistic, ...s]);
             try {
               const res = await fetch('/api/workbench/review/fields', {
@@ -57,7 +75,7 @@ export default function ReviewSetup({ projectId }: Props) {
               // replace optimistic id with real id if returned
               setFields((s) => s.map((f) => (f.id === optimistic.id ? { ...f, id: data.fieldId ?? f.id } : f)));
               setNewName(''); setNewKey(''); setNewType('text');
-            } catch (err) {
+            } catch {
               setFields((s) => s.filter((f) => f.id !== optimistic.id));
             } finally {
               setCreating(false);

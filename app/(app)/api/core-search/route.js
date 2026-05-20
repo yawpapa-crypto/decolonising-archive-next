@@ -1,4 +1,7 @@
 import { NextResponse } from 'next/server';
+import { getCachedSearch, searchCacheKey, setCachedSearch } from '@/lib/search-cache';
+import { guardPublicSearch } from '@/src/lib/security/search-guard';
+import { parseSearchLimit, parseSearchOffset } from '@/src/lib/security/validate';
 
 function asArray(value) {
   return Array.isArray(value) ? value : [];
@@ -282,32 +285,27 @@ async function fetchCore(url, apiKey, attempt = 1) {
 
 export async function GET(request) {
   try {
+    const guarded = await guardPublicSearch(request);
+    if (!guarded.ok) return guarded.response;
+
     const { searchParams } = new URL(request.url);
-    const q = String(searchParams.get('q') || '').trim();
-    const limit = Math.min(Number(searchParams.get('limit') || '10'), 10);
-    const offset = Number(searchParams.get('offset') || '0');
+    const q = guarded.query;
+    const limit = Math.min(parseSearchLimit(searchParams, 25), 25);
+    const offset = parseSearchOffset(searchParams);
     const apiKey = process.env.CORE_API_KEY;
-
-    console.log('[CORE API] incoming request', {
-      q,
-      limit,
-      offset,
-      time: new Date().toISOString(),
-    });
-
-    if (!q) {
-      return NextResponse.json(
-        { ok: false, error: 'Missing q parameter' },
-        { status: 400 }
-      );
-    }
 
     if (!apiKey) {
       console.error('[CORE API] missing CORE_API_KEY environment variable');
       return NextResponse.json(
-        { ok: false, error: 'Missing CORE_API_KEY' },
-        { status: 500 }
+        { ok: false, error: 'Search temporarily unavailable' },
+        { status: 503 }
       );
+    }
+
+    const cacheKey = searchCacheKey('core', q, { limit, offset });
+    const cached = getCachedSearch(cacheKey);
+    if (cached) {
+      return NextResponse.json(cached);
     }
 
     const url =
@@ -316,48 +314,36 @@ export async function GET(request) {
       `&limit=${limit}` +
       `&offset=${offset}`;
 
-    console.log('[CORE API] fetching upstream', url);
+    console.log('[CORE API] fetching upstream');
 
     const { data, partial, overloaded } = await fetchCore(url, apiKey);
 
-    console.log('[CORE API] upstream shape', {
-      hasResults: !!data?.results,
-      resultsCount: Array.isArray(data?.results) ? data.results.length : null,
-      totalHits: data?.total_hits ?? data?.totalHits ?? null,
-      partial,
-      overloaded: overloaded || false,
-    });
+    const results = asArray(data.results).map((item, index) => normalizeCoreItem(item, index));
 
-    const results = asArray(data.results).map((item, index) => {
-      const normalized = normalizeCoreItem(item, index);
-      console.log('[CORE API] normalized item', {
-        index,
-        id: normalized.id,
-        hasTitle: !!normalized.title && normalized.title !== 'Untitled record',
-        hasCreator: !!normalized.creator && normalized.creator !== 'Unknown creator',
-        hasSourceUrl: !!normalized.sourceUrl,
-        hasAbstract: !!normalized.abstract,
-      });
-      return normalized;
-    });
+    const totalHits = data.total_hits ?? data.totalHits ?? results.length;
+    const nextOffset = offset + results.length;
+    const hasMore = nextOffset < totalHits;
 
-    console.log('[CORE API] returning results', {
-      count: results.length,
-      totalHits: data.total_hits ?? data.totalHits ?? results.length,
-      partial,
-    });
-
-    return NextResponse.json({
+    const payload = {
       ok: true,
+      source: 'core',
+      query: q,
+      count: totalHits,
+      displayedCount: results.length,
+      nextCursor: null,
+      nextOffset: hasMore ? nextOffset : null,
       partial: partial || false,
       warning: overloaded
         ? 'CORE search service is temporarily under load. Local and fallback results are shown instead.'
         : partial
         ? 'CORE returned partial results because its search service is under load. Showing available results.'
         : undefined,
-      totalHits: data.total_hits ?? data.totalHits ?? results.length,
+      totalHits,
       results,
-    });
+      error: null,
+    };
+    setCachedSearch(cacheKey, payload);
+    return NextResponse.json(payload);
   } catch (error) {
     console.error('[CORE API] failed', {
       message: error instanceof Error ? error.message : String(error),
