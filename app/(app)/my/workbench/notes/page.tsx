@@ -1,3 +1,4 @@
+import dynamic from "next/dynamic";
 import {
   listWorkbenchCitationSources,
   listWorkbenchLinkableRecords,
@@ -6,7 +7,11 @@ import {
   listWorkbenchProjects,
 } from "@/lib/workbench-data";
 import { createClient } from "@/src/lib/supabase/server";
-import WorkbenchNotesClient from "./WorkbenchNotesClient";
+import WorkbenchNotesLoading from "./WorkbenchNotesLoading";
+
+const WorkbenchNotesClient = dynamic(() => import("./WorkbenchNotesClient"), {
+  loading: () => <WorkbenchNotesLoading />,
+});
 
 export default async function WorkbenchNotesPage() {
   const supabase = await createClient();
@@ -14,16 +19,25 @@ export default async function WorkbenchNotesPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [notesRes, projectsRes, linkableRes, citationSourcesRes] = await Promise.all([
+  const [notesRes, projectsRes, linkableRes, citationSourcesRes, editorRowsRes] = await Promise.all([
     listWorkbenchNotes({ limit: 200 }),
     listWorkbenchProjects(),
     listWorkbenchLinkableRecords(),
     listWorkbenchCitationSources(),
+    user?.id
+      ? supabase
+          .from("workbench_collaborators")
+          .select("project_id")
+          .eq("user_id", user.id)
+          .eq("role", "editor")
+      : Promise.resolve({ data: [], error: null }),
   ]);
 
   const notes = notesRes.ok ? notesRes.notes : [];
   const noteIds = notes.map((n) => n.id);
-  const linksRes = await listWorkbenchNoteRecordsForNotes(noteIds);
+  const linksRes = noteIds.length
+    ? await listWorkbenchNoteRecordsForNotes(noteIds)
+    : { ok: true as const, links: [] };
 
   const noteRecordIdsByNote: Record<string, string[]> = {};
   if (linksRes.ok) {
@@ -39,15 +53,8 @@ export default async function WorkbenchNotesPage() {
   const ownerProjectIds = projects.filter((p) => p.owner_id === user?.id).map((p) => p.id);
 
   const editorProjectIds: string[] = [];
-  if (user?.id) {
-    const { data: editorRows } = await supabase
-      .from("workbench_collaborators")
-      .select("project_id")
-      .eq("user_id", user.id)
-      .eq("role", "editor");
-    for (const row of editorRows ?? []) {
-      editorProjectIds.push((row as { project_id: string }).project_id);
-    }
+  for (const row of editorRowsRes.data ?? []) {
+    editorProjectIds.push((row as { project_id: string }).project_id);
   }
 
   return (

@@ -1,6 +1,7 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import type { DocumentSidebarTab } from "./WorkbenchDocumentTopBar";
 
 type Props = {
@@ -24,22 +25,29 @@ export default function WorkbenchDocumentDrawer({
   formatPanel,
   documentPanel,
 }: Props) {
-  if (!open) return null;
+  const [mounted, setMounted] = useState(false);
 
-  return (
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!open || !mounted) return null;
+
+  return createPortal(
     <>
       {!pinned ? (
-        <button
-          type="button"
+        <div
+          role="presentation"
           className="workbench-pages-drawer-backdrop"
-          aria-label="Close format panel"
           onClick={onClose}
+          aria-hidden="true"
         />
       ) : null}
       <aside
         className={`workbench-pages-drawer${pinned ? " is-pinned" : " is-overlay"}`}
         aria-label="Format and document settings"
       >
+        <div className="workbench-pages-drawer__sheet-handle" aria-hidden="true" />
         <header className="workbench-pages-drawer__header">
           <div
             className="workbench-pages-drawer__tabs"
@@ -68,14 +76,21 @@ export default function WorkbenchDocumentDrawer({
           <div className="workbench-pages-drawer__actions">
             <button
               type="button"
-              className={`workbench-pages-drawer__icon-btn${pinned ? " is-active" : ""}`}
+              className={`workbench-pages-drawer__icon-btn workbench-pages-drawer__lock-btn${pinned ? " is-active" : ""}`}
               onClick={onTogglePin}
               aria-pressed={pinned}
-              aria-label={pinned ? "Unpin panel" : "Pin panel to side"}
-              title={pinned ? "Unpin panel" : "Pin panel to side"}
+              aria-label={
+                pinned
+                  ? "Unlock panel — tap the document to dismiss"
+                  : "Lock panel — keep open while editing"
+              }
+              title={pinned ? "Unlock" : "Lock open"}
             >
               <span className="workbench-pages-drawer__icon" aria-hidden>
                 {pinned ? "▣" : "▢"}
+              </span>
+              <span className="workbench-pages-drawer__lock-label">
+                {pinned ? "Locked" : "Lock"}
               </span>
             </button>
             <button
@@ -102,6 +117,7 @@ export default function WorkbenchDocumentDrawer({
           </div>
         </div>
       </aside>
-    </>
+    </>,
+    document.body,
   );
 }

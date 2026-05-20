@@ -1,0 +1,137 @@
+{
+  "node": {
+    "400d3f9601d001e4dbe66f4ef9c0191df116f8cb4b": {
+      "workers": {
+        "app/(app)/my/workbench/projects/[id]/page": {
+          "moduleId": 16790,
+          "async": false,
+          "exportedName": "createWorkbenchAnnotation",
+          "filename": "lib/workbench-actions.ts"
+        }
+      },
+      "exportedName": "createWorkbenchAnnotation",
+      "filename": "lib/workbench-actions.ts"
+    },
+    "40e6bf15b88071d12a3fd953554e58e31c83cb1898": {
+      "workers": {
+        "app/(app)/my/workbench/projects/[id]/page": {
+          "moduleId": 16790,
+          "async": false,
+          "exportedName": "importReadingListToProject",
+          "filename": "lib/workbench-actions.ts"
+        }
+      },
+      "exportedName": "importReadingListToProject",
+      "filename": "lib/workbench-actions.ts"
+    },
+    "403eff7887e7970b307031cd6ba271899379ee45fc": {
+      "workers": {
+        "app/(app)/my/workbench/projects/[id]/page": {
+          "moduleId": 16790,
+          "async": false,
+          "exportedName": "inviteWorkbenchCollaborator",
+          "filename": "lib/workbench-actions.ts"
+        }
+      },
+      "exportedName": "inviteWorkbenchCollaborator",
+      "filename": "lib/workbench-actions.ts"
+    },
+    "40c46160a6b2bd6a5ba34ea8df572f79dac2589105": {
+      "workers": {
+        "app/(app)/my/workbench/projects/[id]/page": {
+          "moduleId": 16790,
+          "async": false,
+          "exportedName": "removeProjectRecord",
+          "filename": "lib/workbench-actions.ts"
+        }
+      },
+      "exportedName": "removeProjectRecord",
+      "filename": "lib/workbench-actions.ts"
+    },
+    "407abdc68cef5059828561c1b14f04e42227c50fdb": {
+      "workers": {
+        "app/(app)/my/workbench/projects/[id]/page": {
+          "moduleId": 16790,
+          "async": false,
+          "exportedName": "updateProjectRecord",
+          "filename": "lib/workbench-actions.ts"
+        }
+      },
+      "exportedName": "updateProjectRecord",
+      "filename": "lib/workbench-actions.ts"
+    },
+    "40548261cc77ae34d5e84370b5fb154c3263dddbeb": {
+      "workers": {
+        "app/(app)/my/workbench/projects/[id]/page": {
+          "moduleId": 16790,
+          "async": false,
+          "exportedName": "updateWorkbenchProject",
+          "filename": "lib/workbench-actions.ts"
+        }
+      },
+      "exportedName": "updateWorkbenchProject",
+      "filename": "lib/workbench-actions.ts"
+    },
+    "40cf78e732a9feeed66804b448d17157ed1f206059": {
+      "workers": {
+        "app/(app)/my/workbench/projects/[id]/page": {
+          "moduleId": 16790,
+          "async": false,
+          "exportedName": "createWorkbenchTaskInline",
+          "filename": "lib/workbench-inline-actions.ts"
+        }
+      },
+      "exportedName": "createWorkbenchTaskInline",
+      "filename": "lib/workbench-inline-actions.ts"
+    },
+    "403e778681a2cb25f4f820c3c417122d00136e7b9f": {
+      "workers": {
+        "app/(app)/my/workbench/projects/[id]/page": {
+          "moduleId": 16790,
+          "async": false,
+          "exportedName": "deleteWorkbenchTaskInline",
+          "filename": "lib/workbench-inline-actions.ts"
+        }
+      },
+      "exportedName": "deleteWorkbenchTaskInline",
+      "filename": "lib/workbench-inline-actions.ts"
+    },
+    "403939f368c68256927951e4e5f782bd892f23bc23": {
+      "workers": {
+        "app/(app)/my/workbench/projects/[id]/page": {
+          "moduleId": 16790,
+          "async": false,
+          "exportedName": "moveWorkbenchTaskStage",
+          "filename": "lib/workbench-inline-actions.ts"
+        }
+      },
+      "exportedName": "moveWorkbenchTaskStage",
+      "filename": "lib/workbench-inline-actions.ts"
+    },
+    "409eb480b0f07e333b6305e10c4d0036d0a587a787": {
+      "workers": {
+        "app/(app)/my/workbench/projects/[id]/page": {
+          "moduleId": 16790,
+          "async": false,
+          "exportedName": "patchWorkbenchTask",
+          "filename": "lib/workbench-inline-actions.ts"
+        }
+      },
+      "exportedName": "patchWorkbenchTask",
+      "filename": "lib/workbench-inline-actions.ts"
+    },
+    "40902a777a2ee7175dbd47facca6a62f94055476bb": {
+      "workers": {
+        "app/(app)/my/workbench/projects/[id]/page": {
+          "moduleId": 16790,
+          "async": false,
+          "exportedName": "saveWorkbenchProjectNotes",
+          "filename": "lib/workbench-inline-actions.ts"
+        }
+      },
+      "exportedName": "saveWorkbenchProjectNotes",
+      "filename": "lib/workbench-inline-actions.ts"
+    }
+  },
+  "edge": {}
+}

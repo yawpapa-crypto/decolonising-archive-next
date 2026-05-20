@@ -1,0 +1,3 @@
+{
+  "/(app)/api/reading-lists/[id]/export/route": "app/(app)/api/reading-lists/[id]/export/route.js"
+}

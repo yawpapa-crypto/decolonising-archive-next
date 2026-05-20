@@ -21,6 +21,16 @@
   },
   {
     "id": "s003",
+    "name": "AODL — African Online Digital Library",
+    "region": "Pan-Africa",
+    "type": "African-Priority",
+    "access": "linked",
+    "description": "Michigan State University aggregation of digitised African archives and collections.",
+    "url": "https://aodl.org",
+    "published": true
+  },
+  {
+    "id": "s033",
     "name": "OpenAlex",
     "region": "Global",
     "type": "Search-Ready",

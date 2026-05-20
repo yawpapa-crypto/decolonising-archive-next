@@ -14,6 +14,7 @@ type Props = {
   collaborators: WorkbenchCollaboratorRow[];
   canManage: boolean;
   compact?: boolean;
+  variant?: "default" | "premium";
   onCollaboratorsChange?: (rows: WorkbenchCollaboratorRow[]) => void;
 };
 
@@ -27,11 +28,27 @@ function displayStatus(row: WorkbenchCollaboratorRow) {
   return row.status || "pending";
 }
 
+function emailInitials(value: string) {
+  const local = value.includes("@") ? value.split("@")[0] : value;
+  const parts = local.split(/[._-]+/).filter(Boolean);
+  if (parts.length >= 2) {
+    return `${parts[0][0] ?? ""}${parts[1][0] ?? ""}`.toUpperCase();
+  }
+  return local.slice(0, 2).toUpperCase() || "?";
+}
+
+function roleLabel(role: string) {
+  if (role === "editor") return "Editor";
+  if (role === "reviewer") return "Reviewer";
+  return "Viewer";
+}
+
 export default function WorkbenchCollaboratorPanel({
   projectId,
   collaborators: initialCollaborators,
   canManage,
   compact = false,
+  variant = "default",
   onCollaboratorsChange,
 }: Props) {
   const router = useRouter();
@@ -41,6 +58,7 @@ export default function WorkbenchCollaboratorPanel({
   const [role, setRole] = useState("viewer");
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
+  const isPremium = variant === "premium";
 
   const visibleRows = useMemo(
     () => rows.filter((row) => row.project_id === projectId && displayStatus(row) !== "removed"),
@@ -106,8 +124,134 @@ export default function WorkbenchCollaboratorPanel({
     });
   }
 
+  if (isPremium) {
+    return (
+      <div className="wb-collab-panel">
+        {notice ? (
+          <p className="wb-collab-notice" role="status">
+            {notice}
+          </p>
+        ) : null}
+        {error ? (
+          <p className="wb-collab-error" role="alert">
+            {error}
+          </p>
+        ) : null}
+
+        {canManage ? (
+          <form
+            className="wb-collab-form"
+            onSubmit={(event) => {
+              event.preventDefault();
+              invite();
+            }}
+          >
+            <label className="wb-collab-field wb-collab-field--grow">
+              <span>Email</span>
+              <input
+                className="wb-collab-input"
+                type="email"
+                name="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="name@example.com"
+                required
+                disabled={isPending}
+              />
+            </label>
+            <label className="wb-collab-field">
+              <span>Role</span>
+              <select
+                className="wb-collab-select"
+                name="role"
+                value={role}
+                onChange={(event) => setRole(event.target.value)}
+                disabled={isPending}
+              >
+                <option value="viewer">Viewer</option>
+                <option value="reviewer">Reviewer</option>
+                <option value="editor">Editor</option>
+              </select>
+            </label>
+            <button type="submit" className="wb-collab-btn wb-collab-btn--primary" disabled={isPending}>
+              {isPending ? "Inviting…" : "Send invite"}
+            </button>
+          </form>
+        ) : (
+          <p className="wb-collab-help">
+            Only the project owner or an editor can invite collaborators.
+          </p>
+        )}
+
+        {visibleRows.length ? (
+          <ul className="wb-collab-members">
+            {visibleRows.map((row) => {
+              const emailLabel = displayEmail(row);
+              const status = displayStatus(row);
+              return (
+                <li key={row.id} className="wb-collab-member">
+                  <div className="wb-collab-member__identity">
+                    <span className="wb-collab-avatar" aria-hidden>
+                      {emailInitials(emailLabel)}
+                    </span>
+                    <div>
+                      <strong>{emailLabel}</strong>
+                      <span className={`wb-collab-status wb-collab-status--${status}`}>
+                        {status}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="wb-collab-member__actions">
+                    {canManage ? (
+                      <>
+                        <select
+                          className="wb-collab-select wb-collab-select--inline"
+                          value={row.role}
+                          onChange={(event) => changeRole(row.id, event.target.value)}
+                          disabled={isPending}
+                          aria-label={`Role for ${emailLabel}`}
+                        >
+                          <option value="viewer">Viewer</option>
+                          <option value="reviewer">Reviewer</option>
+                          <option value="editor">Editor</option>
+                        </select>
+                        <button
+                          type="button"
+                          className="wb-collab-btn wb-collab-btn--ghost"
+                          onClick={() => remove(row.id)}
+                          disabled={isPending}
+                        >
+                          Remove
+                        </button>
+                      </>
+                    ) : (
+                      <span className={`wb-collab-role-badge wb-collab-role-badge--${row.role}`}>
+                        {roleLabel(row.role)}
+                      </span>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <div className="wb-collab-panel-empty">
+            <strong>No collaborators yet</strong>
+            <span>Invite someone to view, review, or edit this project.</span>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
-    <div className={compact ? "workbench-collab-panel workbench-collab-panel--compact workbench-collab-panel--fixed" : "workbench-collab-panel workbench-collab-panel--fixed"}>
+    <div
+      className={
+        compact
+          ? "workbench-collab-panel workbench-collab-panel--compact workbench-collab-panel--fixed"
+          : "workbench-collab-panel workbench-collab-panel--fixed"
+      }
+    >
       {notice ? (
         <p className="workbench-collab-notice" role="status">
           {notice}
@@ -122,8 +266,8 @@ export default function WorkbenchCollaboratorPanel({
       {canManage ? (
         <form
           className="workbench-collab-form"
-          onSubmit={(e) => {
-            e.preventDefault();
+          onSubmit={(event) => {
+            event.preventDefault();
             invite();
           }}
         >
@@ -134,7 +278,7 @@ export default function WorkbenchCollaboratorPanel({
               type="email"
               name="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(event) => setEmail(event.target.value)}
               placeholder="name@example.com"
               required
               disabled={isPending}
@@ -146,7 +290,7 @@ export default function WorkbenchCollaboratorPanel({
               className="workbench-select workbench-collab-role-select"
               name="role"
               value={role}
-              onChange={(e) => setRole(e.target.value)}
+              onChange={(event) => setRole(event.target.value)}
               disabled={isPending}
             >
               <option value="viewer">Viewer</option>
@@ -163,7 +307,9 @@ export default function WorkbenchCollaboratorPanel({
           </button>
         </form>
       ) : (
-        <p className="workbench-collab-help">Only the project owner or an editor can invite collaborators.</p>
+        <p className="workbench-collab-help">
+          Only the project owner or an editor can invite collaborators.
+        </p>
       )}
 
       {visibleRows.length ? (
@@ -172,7 +318,9 @@ export default function WorkbenchCollaboratorPanel({
             <li key={row.id} className="workbench-collab-row">
               <div className="workbench-collab-row__main">
                 <strong>{displayEmail(row)}</strong>
-                <span className={`workbench-collab-status workbench-collab-status--${displayStatus(row)}`}>
+                <span
+                  className={`workbench-collab-status workbench-collab-status--${displayStatus(row)}`}
+                >
                   {displayStatus(row)}
                 </span>
               </div>
@@ -182,7 +330,7 @@ export default function WorkbenchCollaboratorPanel({
                     <select
                       className="workbench-select workbench-collab-role-select"
                       value={row.role}
-                      onChange={(e) => changeRole(row.id, e.target.value)}
+                      onChange={(event) => changeRole(row.id, event.target.value)}
                       disabled={isPending}
                       aria-label={`Role for ${displayEmail(row)}`}
                     >

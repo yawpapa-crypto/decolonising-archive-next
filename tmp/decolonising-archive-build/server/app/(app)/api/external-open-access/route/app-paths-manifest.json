@@ -1,0 +1,3 @@
+{
+  "/(app)/api/external-open-access/route": "app/(app)/api/external-open-access/route.js"
+}

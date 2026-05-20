@@ -1,0 +1,17 @@
+{
+  "node": {
+    "40ac5af8e23756176030dcbacfa94c5800fa3347c6": {
+      "workers": {
+        "app/(app)/admin/invite/[token]/page": {
+          "moduleId": 65529,
+          "async": false,
+          "exportedName": "acceptAdminInvite",
+          "filename": "app/(app)/admin/invite/[token]/actions.ts"
+        }
+      },
+      "exportedName": "acceptAdminInvite",
+      "filename": "app/(app)/admin/invite/[token]/actions.ts"
+    }
+  },
+  "edge": {}
+}

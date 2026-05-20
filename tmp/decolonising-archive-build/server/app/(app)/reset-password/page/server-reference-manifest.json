@@ -1,0 +1,17 @@
+{
+  "node": {
+    "407671e7b5592da0d17178e7a9a4cffaf8f4de5186": {
+      "workers": {
+        "app/(app)/reset-password/page": {
+          "moduleId": 22743,
+          "async": false,
+          "exportedName": "updatePassword",
+          "filename": "app/(app)/reset-password/actions.ts"
+        }
+      },
+      "exportedName": "updatePassword",
+      "filename": "app/(app)/reset-password/actions.ts"
+    }
+  },
+  "edge": {}
+}

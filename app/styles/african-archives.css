@@ -1,0 +1,317 @@
+.african-archives-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.african-archives-hero {
+  margin-bottom: 2rem;
+}
+
+.african-archives-hero .hero-eyebrow {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b5b4b;
+  margin-bottom: 0.75rem;
+}
+
+.african-archives-hero h1 {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  line-height: 1.15;
+  margin: 0 0 0.75rem;
+}
+
+.african-archives-hero .lead {
+  max-width: 52rem;
+  color: #3d3a36;
+  line-height: 1.55;
+  margin: 0 0 1rem;
+}
+
+.african-archives-disclaimer {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  background: rgba(139, 94, 52, 0.08);
+  border: 1px solid rgba(139, 94, 52, 0.18);
+  color: #4a3f34;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.african-archives-controls {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.african-archives-search-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.african-archives-search-row input[type="search"] {
+  flex: 1 1 240px;
+  min-width: 0;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid #d4ccc2;
+  border-radius: 8px;
+  font: inherit;
+}
+
+.african-archives-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
+}
+
+.african-archives-filters label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: #5c534a;
+}
+
+.african-archives-filters select {
+  padding: 0.5rem 0.65rem;
+  border: 1px solid #d4ccc2;
+  border-radius: 8px;
+  font: inherit;
+  background: #fff;
+}
+
+.african-archives-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  color: #5c534a;
+  font-size: 0.92rem;
+}
+
+.african-archives-clear {
+  border: none;
+  background: transparent;
+  color: #8b5e34;
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+}
+
+.african-archives-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.aodl-collection-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem 1.05rem 1.1rem;
+  border-radius: 12px;
+  border: 1px solid #e6dfd6;
+  background: #fff;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
+  border-left: 4px solid #8b5e34;
+}
+
+.aodl-collection-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.aodl-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #8b5e34;
+  background: rgba(139, 94, 52, 0.1);
+  border: 1px solid rgba(139, 94, 52, 0.22);
+}
+
+.aodl-type-badge {
+  display: inline-flex;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  color: #4a5568;
+  background: #f3f4f6;
+}
+
+.aodl-collection-card h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.3;
+}
+
+.aodl-collection-card p {
+  margin: 0;
+  color: #4b5563;
+  line-height: 1.45;
+  font-size: 0.92rem;
+}
+
+.aodl-collection-card__platform {
+  font-size: 0.82rem;
+  color: #6b7280;
+}
+
+.aodl-tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.aodl-tag {
+  font-size: 0.74rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  background: #faf7f2;
+  border: 1px solid #ebe4da;
+  color: #5c534a;
+}
+
+.aodl-tag.is-media {
+  background: rgba(139, 94, 52, 0.07);
+  border-color: rgba(139, 94, 52, 0.16);
+}
+
+.aodl-collection-card.is-smithsonian {
+  border-left-color: #0077a3;
+}
+
+.smithsonian-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #0077a3;
+  background: rgba(0, 119, 163, 0.1);
+  border: 1px solid rgba(0, 119, 163, 0.22);
+}
+
+.smithsonian-open-btn {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: 8px;
+  background: #0077a3;
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.smithsonian-open-btn:hover {
+  background: #005f85;
+}
+
+.archive-record-card.search-result-card[data-source="smithsonian"],
+.archive-record-card[data-source="smithsonian"] {
+  --source-accent: #0077a3;
+  --source-bg: rgba(0, 119, 163, 0.08);
+  border-left: 4px solid var(--source-accent);
+}
+
+.archive-record-card[data-source="smithsonian"] .source-label.is-origin-smithsonian {
+  color: var(--source-accent);
+  border-color: color-mix(in srgb, var(--source-accent) 28%, #fff);
+}
+
+.record-card-smithsonian-disclaimer {
+  font-size: 0.78rem;
+  color: #78716c;
+  line-height: 1.35;
+  margin-top: 0.35rem;
+}
+
+.aodl-open-btn {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: 8px;
+  background: #8b5e34;
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.aodl-open-btn:hover {
+  background: #744d2b;
+}
+
+.aodl-host-note {
+  font-size: 0.78rem;
+  color: #78716c;
+  line-height: 1.35;
+}
+
+.african-archives-empty {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: #6b7280;
+  border: 1px dashed #d4ccc2;
+  border-radius: 12px;
+}
+
+.archive-record-card.search-result-card[data-source="aodl"],
+.archive-record-card[data-source="aodl"] {
+  --source-accent: #8b5e34;
+  --source-bg: rgba(139, 94, 52, 0.08);
+  border-left: 4px solid var(--source-accent);
+}
+
+.archive-record-card[data-source="aodl"] .source-label.is-origin-aodl {
+  color: var(--source-accent);
+  border-color: color-mix(in srgb, var(--source-accent) 28%, #fff);
+}
+
+.record-card-aodl-disclaimer {
+  font-size: 0.78rem;
+  color: #78716c;
+  line-height: 1.35;
+  margin-top: 0.35rem;
+}
+
+.record-card-media-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+}
+
+.record-card-media-chip {
+  font-size: 0.72rem;
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  background: rgba(139, 94, 52, 0.08);
+  border: 1px solid rgba(139, 94, 52, 0.16);
+  color: #6b4f2e;
+}

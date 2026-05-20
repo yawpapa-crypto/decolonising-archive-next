@@ -1,0 +1,3 @@
+{
+  "/(app)/signup/page": "app/(app)/signup/page.js"
+}

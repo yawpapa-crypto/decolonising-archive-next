@@ -1,7 +1,788 @@
+const DISCOVERY_PAGE_SIZE = 25;
+// SMITHSONIAN_LIVE_WIRED_v1
+const DISCOVERY_PREVIEW_SIZE = 8;
+
 let coreTotalHits = 0;
-let coreOffset = 10;
-let coreLimit = 10;
-let coreLoadingMore = false;
+let coreOffset = DISCOVERY_PAGE_SIZE;
+let coreLimit = DISCOVERY_PAGE_SIZE;
+
+const DISCOVERY_SECTION_ORDER = ["openalex", "core", "crossref", "semantic-scholar", "wikidata", "smithsonian", "openAccess", "previews", "smithsonianCollections", "handoffs"];
+const DISCOVERY_SECTION_LABELS = {
+  openalex: { title: "OpenAlex scholarly results", loadMore: "Load more OpenAlex results" },
+  core: { title: "CORE open access results", loadMore: "Load more CORE results" },
+  crossref: { title: "Crossref publication metadata", loadMore: "Load more Crossref results" },
+  "semantic-scholar": { title: "Semantic Scholar papers", loadMore: "Load more Semantic Scholar results" },
+  wikidata: { title: "Wikidata entities", loadMore: "Load more Wikidata entities" },
+  smithsonian: { title: "Smithsonian Open Access items", loadMore: "Load more Smithsonian results" },
+  openAccess: { title: "Open access & OER", loadMore: "Load more open access results" },
+  previews: { title: "Additional catalogue previews", loadMore: "Load more catalogue previews", preview: true },
+  smithsonianCollections: { title: "Smithsonian collection gateways", loadMore: null, preview: true },
+  handoffs: { title: "External source handoffs", loadMore: null },
+};
+
+function emptyDiscoverySection() {
+  return {
+    results: [],
+    count: null,
+    displayedCount: 0,
+    nextCursor: null,
+    nextOffset: null,
+    state: "idle",
+    error: null,
+    loadingMore: false,
+  };
+}
+
+let discoverySections = Object.fromEntries(
+  DISCOVERY_SECTION_ORDER.map((id) => [id, emptyDiscoverySection()]),
+);
+
+function resetDiscoverySections() {
+  discoverySections = Object.fromEntries(
+    DISCOVERY_SECTION_ORDER.map((id) => [id, emptyDiscoverySection()]),
+  );
+  coreOffset = DISCOVERY_PAGE_SIZE;
+  coreTotalHits = 0;
+  openAccessReleasedCount = 0;
+}
+
+const PREVIEW_ADAPTER_IDS = ["openlibrary", "loc", "met", "wikimedia"];
+const UNIFIED_PAGINATED_SECTION_IDS = ["openalex", "core", "crossref", "semantic-scholar", "wikidata", "smithsonian"];
+const FUTURE_SOURCE_PAGINATION = [
+  { source: "trove", label: "Trove", connected: false },
+];
+
+let archiveSearchPool = [];
+let archiveLoadedCount = 0;
+let openAccessReleasedCount = 0;
+let sourcePaginationStates = [];
+
+function mapAdapterIdToDiscoverySection(adapterId) {
+  if (adapterId === "smithsonian-collections") return "smithsonianCollections";
+  if (DISCOVERY_SECTION_ORDER.includes(adapterId)) return adapterId;
+  if (["openlibrary", "loc", "met", "wikimedia"].includes(adapterId)) return "previews";
+  return "handoffs";
+}
+
+function syncLiveResultsFromDiscoverySections() {
+  const combined = [];
+  for (const sectionId of DISCOVERY_SECTION_ORDER) {
+    const section = discoverySections[sectionId];
+    if (!section?.results?.length) continue;
+    combined.push(...section.results);
+  }
+  liveResults = dedupeBlendedResults(combined, getEffectiveSearchQuery() || libraryQuery);
+  externalDiscovery = liveResults.filter((item) => getResultMode(item) === "external_handoff");
+}
+
+function applyDiscoverySection(sectionId, patch, { append = false } = {}) {
+  const current = discoverySections[sectionId] || emptyDiscoverySection();
+  const nextResults = append ? [...current.results, ...(patch.results || [])] : patch.results ?? current.results;
+  discoverySections[sectionId] = {
+    ...current,
+    ...patch,
+    results: nextResults,
+    displayedCount: nextResults.length,
+    previewPagination:
+      patch.previewPagination !== undefined ? patch.previewPagination : current.previewPagination,
+    metObjectIds: patch.metObjectIds !== undefined ? patch.metObjectIds : current.metObjectIds,
+  };
+  if (sectionId === "openAccess" && patch.results && !append) {
+    openAccessReleasedCount = Math.min(DISCOVERY_PAGE_SIZE, patch.results.length);
+  }
+  syncLiveResultsFromDiscoverySections();
+}
+
+/** Unified library result stream (display window — fetched results kept in memory). */
+const UNIFIED_STREAM_INITIAL = 25;
+const UNIFIED_STREAM_STEP = 25;
+const UNIFIED_STREAM_SECTION_IDS = ["openalex", "core", "crossref", "semantic-scholar", "wikidata", "smithsonian", "openAccess", "previews"];
+const UNIFIED_SOURCE_FILTERS = [
+  { id: "all", label: "All" },
+  { id: "archive", label: "Archive" },
+  { id: "openalex", label: "OpenAlex" },
+  { id: "core", label: "CORE" },
+  { id: "wikidata", label: "Wikidata" },
+  { id: "smithsonian", label: "Smithsonian" },
+  { id: "openaccess", label: "Open access" },
+  { id: "scholarly", label: "Scholarly" },
+  { id: "archival", label: "Archival" },
+];
+
+const UNIFIED_SORT_OPTIONS = [
+  { id: "relevance", label: "Relevance" },
+  { id: "newest", label: "Newest" },
+  { id: "cited", label: "Most cited" },
+  { id: "source", label: "Source" },
+];
+const UNIFIED_SOURCE_SORT_ORDER = [
+  "archive",
+  "openalex",
+  "core",
+  "crossref",
+  "semantic-scholar",
+  "wikidata",
+  "smithsonian",
+  "openaccess",
+  "archival-external",
+  "handoff",
+  "external",
+];
+
+let unifiedStreamFilter = "all";
+let unifiedStreamSort = "relevance";
+let unifiedStreamVisibleCount = UNIFIED_STREAM_INITIAL;
+let unifiedStreamLoadingMore = false;
+
+function resetUnifiedStreamUi() {
+  unifiedStreamFilter = "all";
+  unifiedStreamSort = "relevance";
+  unifiedStreamVisibleCount = UNIFIED_STREAM_INITIAL;
+  unifiedStreamLoadingMore = false;
+  refreshArchiveSearchPool();
+  archiveLoadedCount = Math.min(DISCOVERY_PAGE_SIZE, archiveSearchPool.length);
+  openAccessReleasedCount = 0;
+  sourcePaginationStates = [];
+}
+
+function refreshArchiveSearchPool() {
+  archiveSearchPool = filterDisplayedRecords(localResults);
+}
+
+function getInternalResultsForMerge() {
+  refreshArchiveSearchPool();
+  return archiveSearchPool.slice(0, archiveLoadedCount);
+}
+
+function loadMoreArchivePage() {
+  const next = Math.min(archiveLoadedCount + DISCOVERY_PAGE_SIZE, archiveSearchPool.length);
+  archiveLoadedCount = next;
+}
+
+function canLoadMoreArchive() {
+  refreshArchiveSearchPool();
+  return archiveLoadedCount < archiveSearchPool.length;
+}
+
+function loadMoreOpenAccessReleased() {
+  const total = discoverySections.openAccess?.results?.length || 0;
+  openAccessReleasedCount = Math.min(openAccessReleasedCount + DISCOVERY_PAGE_SIZE, total);
+}
+
+function canLoadMoreOpenAccessReleased() {
+  const section = discoverySections.openAccess;
+  if (!section?.results?.length || section.state === "error") return false;
+  return openAccessReleasedCount < section.results.length;
+}
+
+function getFilteredUnifiedRanked(effectiveQuery) {
+  const rankedAll = mergeAndRankSearchResults({
+    query: effectiveQuery || libraryQuery,
+    internalResults: getInternalResultsForMerge(),
+    includeHandoffs: sourceMode,
+  });
+  return rankedAll.filter((record) => matchesUnifiedStreamFilter(record, unifiedStreamFilter));
+}
+
+function syncSourcePaginationStates() {
+  refreshArchiveSearchPool();
+  const states = [];
+
+  states.push({
+    source: "archive",
+    label: "Archive",
+    hasMore: archiveLoadedCount < archiveSearchPool.length,
+    loading: false,
+    error: null,
+    offset: archiveLoadedCount,
+    total: archiveSearchPool.length,
+    loadedCount: archiveLoadedCount,
+    connected: true,
+  });
+
+  for (const sectionId of UNIFIED_PAGINATED_SECTION_IDS) {
+    const section = discoverySections[sectionId];
+    const label = DISCOVERY_SECTION_LABELS[sectionId]?.title?.replace(/ scholarly results| open access results| publication metadata/gi, "") ||
+      sectionId;
+    const shortLabel =
+      sectionId === "openalex"
+        ? "OpenAlex"
+        : sectionId === "core"
+          ? "CORE"
+          : sectionId === "crossref"
+            ? "Crossref"
+            : sectionId === "semantic-scholar"
+              ? "Semantic Scholar"
+              : sectionId === "wikidata"
+                ? "Wikidata"
+                : sectionId === "smithsonian"
+                  ? "Smithsonian"
+                  : sectionId;
+    const loaded = section?.displayedCount || 0;
+    const hasMore = canLoadMoreDiscoverySection(sectionId);
+    states.push({
+      source: sectionId,
+      label: shortLabel,
+      hasMore,
+      loading: Boolean(section?.loadingMore),
+      error: section?.state === "error" ? section.error || "unavailable" : null,
+      cursor: section?.nextCursor ?? null,
+      offset: section?.nextOffset ?? loaded,
+      total: section?.count ?? null,
+      loadedCount: loaded,
+      connected: true,
+    });
+  }
+
+  const oa = discoverySections.openAccess;
+  states.push({
+    source: "openaccess",
+    label: "Open access",
+    hasMore: canLoadMoreOpenAccessReleased(),
+    loading: Boolean(oa?.loadingMore),
+    error: oa?.state === "error" ? oa.error || "unavailable" : null,
+    offset: openAccessReleasedCount,
+    total: oa?.results?.length ?? null,
+    loadedCount: openAccessReleasedCount,
+    connected: true,
+  });
+
+  const previews = discoverySections.previews;
+  const previewLoaded = previews?.displayedCount || 0;
+  states.push({
+    source: "previews",
+    label: "Catalogues",
+    hasMore: canLoadMorePreviewsSection(),
+    loading: Boolean(previews?.loadingMore),
+    error: previews?.state === "error" ? previews.error || "unavailable" : null,
+    loadedCount: previewLoaded,
+    total: null,
+    connected: true,
+  });
+
+  for (const future of FUTURE_SOURCE_PAGINATION) {
+    states.push({
+      source: future.source,
+      label: future.label,
+      hasMore: false,
+      loading: false,
+      error: null,
+      loadedCount: 0,
+      total: null,
+      connected: false,
+    });
+  }
+
+  sourcePaginationStates = states;
+  return states;
+}
+
+function formatSourcePaginationChip(state) {
+  if (state.connected === false) return `${state.label}: not connected`;
+  if (state.error) return `${state.label}: unavailable`;
+  if (!state.loadedCount && state.source !== "archive") {
+    if (state.source === "core") return "CORE: unavailable";
+    return `${state.label}: empty`;
+  }
+  if (!state.hasMore && state.loadedCount > 0) return `${state.label}: all loaded`;
+  if (state.total != null && state.total > state.loadedCount) {
+    return `${state.label}: ${state.loadedCount} of ${Number(state.total).toLocaleString()}`;
+  }
+  return `${state.label}: ${state.loadedCount} loaded`;
+}
+
+function renderUnifiedSourceChips() {
+  const states = syncSourcePaginationStates();
+  if (!states.length) return "";
+  return `<div class="library-unified-source-chips" aria-label="Results loaded by source">${states
+    .map((state) => {
+      const chipClass = [
+        "library-unified-source-chip",
+        state.error ? "is-error" : "",
+        state.connected === false ? "is-disconnected" : "",
+        !state.hasMore && state.loadedCount ? "is-exhausted" : "",
+        state.loading ? "is-loading" : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
+      return `<span class="${chipClass}">${escapeHtml(formatSourcePaginationChip(state))}</span>`;
+    })
+    .join("")}</div>`;
+}
+
+function getUnifiedSourceKey(record) {
+  const mode = getResultMode(record);
+  if (mode === "local" || mode === "hybrid") return "archive";
+  if (mode === "external_handoff") return "handoff";
+  const hint = String(record.liveSourceHint || "").toLowerCase();
+  if (hint === "openalex") return "openalex";
+  if (hint === "core") return "core";
+  if (hint === "crossref") return "crossref";
+  if (hint === "semantic-scholar") return "semantic-scholar";
+  if (hint === "wikidata") return "wikidata";
+  if (hint === "smithsonian") return "smithsonian";
+  if (hint === "openaccesspack" || isOpenAccessDiscoveryRecord(record)) return "openaccess";
+  if (["openlibrary", "loc", "met", "wikimedia"].includes(hint)) return "archival-external";
+  return "external";
+}
+
+function getUnifiedSourceLabel(sourceKey) {
+  const labels = {
+    archive: "Archive",
+    openalex: "OpenAlex",
+    core: "CORE",
+    crossref: "Crossref",
+    "semantic-scholar": "Semantic Scholar",
+    wikidata: "Wikidata",
+    smithsonian: "Smithsonian",
+    openaccess: "Open access",
+    handoff: "Source handoff",
+    external: "External",
+    "archival-external": "Catalogue",
+  };
+  return labels[sourceKey] || "External";
+}
+
+function getResultKind(record) {
+  const preset = record?.resultKind;
+  if (preset === "primary" || preset === "entity" || preset === "handoff" || preset === "collection") {
+    return preset;
+  }
+
+  const mode = getResultMode(record);
+  if (mode === "external_handoff") return "handoff";
+
+  const id = String(record?.id || "");
+  if (/^handoff-/i.test(id)) return "handoff";
+
+  const category = String(record?.sourceCategoryGroup || "").toLowerCase();
+  if (category === "source_handoffs") return "handoff";
+  if (category === "australian_open_collections" || category === "african_open_collections" || category === "global_open_collections") return "collection";
+
+  const type = String(record?.type || "").toLowerCase();
+  const cat = String(record?.cat || "").toLowerCase();
+  const collection = String(record?.collection || "").toLowerCase();
+  const title = String(record?.title || "").trim();
+
+  if (
+    type.includes("external handoff") ||
+    cat.includes("handoff") ||
+    collection.includes("source handoff") ||
+    collection.includes("external source handoff")
+  ) {
+    return "handoff";
+  }
+
+  if (
+    type.includes("archive pathway") ||
+    cat.includes("external source pathways") ||
+    collection.includes("open collection") ||
+    collection.includes("external source handoffs")
+  ) {
+    return "collection";
+  }
+
+  if (/^search .+/i.test(title) && !record?.doi && !record?.abstract) {
+    return "handoff";
+  }
+
+  const hint = String(record?.liveSourceHint || "").toLowerCase();
+  if (hint === "handoff") return "handoff";
+  if (hint === "wikidata" || /^live-wikidata-/i.test(id) || /^Q\d+$/i.test(id)) return "entity";
+
+  return "primary";
+}
+
+function getResultRankGroup(record) {
+  const kind = getResultKind(record);
+  return kind === "handoff" || kind === "collection" ? 1 : 0;
+}
+
+function ensureResultKind(record) {
+  if (!record || typeof record !== "object") return record;
+  record.resultKind = getResultKind(record);
+  return record;
+}
+
+function extractRecordDoi(record) {
+  const raw = record.doi || record.DOI || "";
+  if (raw) return String(raw).replace(/^https?:\/\/doi\.org\//i, "").trim().toLowerCase();
+  const links = Array.isArray(record.externalLinks) ? record.externalLinks : [];
+  const doiLink = links.find((link) => /doi\.org/i.test(String(link?.url || "")));
+  if (doiLink?.url) return String(doiLink.url).replace(/^https?:\/\/doi\.org\//i, "").trim().toLowerCase();
+  return "";
+}
+
+function unifiedDedupeKey(record) {
+  const doi = extractRecordDoi(record);
+  if (doi) return `doi:${doi}`;
+  const id = String(record.recordIdentifier || record.id || "");
+  if (/openalex\.org\/W/i.test(id) || /^live-openalex-/i.test(record.id)) {
+    return `openalex:${id.replace(/^https?:\/\/openalex\.org\//i, "")}`;
+  }
+  if (/^core-/i.test(record.id)) return `core:${record.id}`;
+  if (/^live-semantic-scholar-/i.test(record.id)) {
+    return `semantic-scholar:${id.replace(/^live-semantic-scholar-/i, "")}`;
+  }
+  if (/^live-wikidata-/i.test(record.id) || /^Q\d+$/i.test(id)) {
+    return `wikidata:${id.replace(/^live-wikidata-/i, "").toUpperCase()}`;
+  }
+  if (/^live-smithsonian-/i.test(record.id)) {
+    return `smithsonian:${id.replace(/^live-smithsonian-/i, "")}`;
+  }
+  return `title:${normalizeComparable(record.title || "")}|${normalizeComparable(record.period || "")}`;
+}
+
+function getRecordYear(record) {
+  const raw = record.period ?? record.year ?? "";
+  const year = Number.parseInt(String(raw).slice(0, 4), 10);
+  return Number.isFinite(year) ? year : 0;
+}
+
+function getCitationCount(record) {
+  if (typeof record.citedByCount === "number") return record.citedByCount;
+  if (typeof record.citationCount === "number") return record.citationCount;
+  const description = Array.isArray(record.description)
+    ? record.description.join(" ")
+    : String(record.description || "");
+  const match = description.match(/Citations:\s*(\d+)/i);
+  return match ? Number.parseInt(match[1], 10) || 0 : 0;
+}
+
+function gatherSearchResultFields(record) {
+  const description = Array.isArray(record.description)
+    ? record.description.join(" ")
+    : String(record.description || "");
+  const authors = [record.creator, ...(record.contributors || [])].filter(Boolean).join(" ");
+  const keywords = [
+    ...(record.tags || []),
+    ...(record.keywords || []),
+    ...(record.concepts || []),
+    ...(record.themes || []),
+  ].join(" ");
+  const geo = [record.country, record.region, record.community, ...(record.countries || []), ...(record.regions || [])]
+    .filter(Boolean)
+    .join(" ");
+  const languages = (record.language || []).join(" ");
+  const sourceLabels = [record.source, record.sourceName, record.institution, record.collection, record.liveSourceHint]
+    .filter(Boolean)
+    .join(" ");
+
+  return {
+    title: foldText(record.title),
+    authors: foldText(authors),
+    summary: foldText([record.abstract, record.summary].filter(Boolean).join(" ")),
+    description: foldText(description),
+    keywords: foldText(keywords),
+    geo: foldText(geo),
+    languages: foldText(languages),
+    sourceLabels: foldText(sourceLabels),
+    fullText: foldText(
+      [record.title, authors, record.abstract, record.summary, description, keywords, geo, languages, sourceLabels]
+        .filter(Boolean)
+        .join(" "),
+    ),
+  };
+}
+
+function countQueryTokenHits(text, tokens) {
+  return tokens.reduce((count, token) => (text.includes(token) ? count + 1 : count), 0);
+}
+
+function fuzzyPartialMatchBoost(text, token) {
+  if (!token || token.length < 4 || text.includes(token)) return 0;
+  if (token.length >= 5) {
+    const prefix = token.slice(0, Math.max(4, token.length - 1));
+    if (text.includes(prefix)) return 2;
+  }
+  return 0;
+}
+
+function scoreSearchResult(record, query, options = {}) {
+  const context = buildQueryContext(query);
+  if (!context.raw) return 0;
+
+  const fields = gatherSearchResultFields(record);
+  const queryFold = foldText(query);
+  const tokens = context.tokens;
+  const sourceKey = options.sourceKey || getUnifiedSourceKey(record);
+  let score = 0;
+
+  if (queryFold && fields.title === queryFold) score += 100;
+  else if (queryFold && fields.title.includes(queryFold)) score += 72;
+
+  if (tokens.length) {
+    const titleHits = countQueryTokenHits(fields.title, tokens);
+    if (titleHits === tokens.length) score += 58;
+    else score += titleHits * 14;
+  }
+
+  if (queryFold && (fields.authors === queryFold || fields.authors.includes(` ${queryFold} `))) {
+    score += 78;
+  } else if (tokens.length && tokens.every((token) => fields.authors.includes(token))) {
+    score += 52;
+  } else {
+    score += countQueryTokenHits(fields.authors, tokens) * 16;
+  }
+
+  for (const phrase of context.phrases) {
+    const foldedPhrase = foldText(phrase);
+    if (!foldedPhrase) continue;
+    if (fields.title.includes(foldedPhrase)) score += 42;
+    else if (fields.fullText.includes(foldedPhrase)) score += 24;
+  }
+
+  for (const token of tokens) {
+    if (fields.summary.includes(token)) score += 9;
+    if (fields.description.includes(token)) score += 8;
+    if (fields.keywords.includes(token)) score += 11;
+    if (fields.geo.includes(token)) score += 7;
+    if (fields.languages.includes(token)) score += 6;
+    if (fields.sourceLabels.includes(token)) score += 5;
+    score += fuzzyPartialMatchBoost(fields.title, token);
+    score += fuzzyPartialMatchBoost(fields.authors, token);
+  }
+
+  const apiScore = Number(record.unifiedRelevanceScore ?? record.relevanceScore ?? 0);
+  if (apiScore > 0) score += Math.min(apiScore * 0.35, 24);
+
+  const citations = getCitationCount(record);
+  if (citations > 0) score += Math.min(Math.log10(citations + 1) * 4, 12);
+
+  const isOpenAccess =
+    options.isOpenAccess ??
+    Boolean(record.is_oa || record.open_access?.is_oa || isOpenAccessDiscoveryRecord(record));
+  if (isOpenAccess) score += 4;
+
+  if (sourceKey === "archive") score += 8;
+  if (sourceKey === "handoff") score -= 15;
+  const kind = getResultKind(record);
+  if (sourceKey === "smithsonian" && (kind === "collection" || kind === "handoff")) score -= 15;
+
+  return score;
+}
+
+function compareUnifiedEntries(a, b, query) {
+  const groupDiff = getResultRankGroup(a.record) - getResultRankGroup(b.record);
+  if (groupDiff) return groupDiff;
+
+  const sortMode = unifiedStreamSort || "relevance";
+
+  if (sortMode === "newest") {
+    return (
+      getRecordYear(b.record) - getRecordYear(a.record) ||
+      b.score - a.score ||
+      String(a.record.title || "").localeCompare(String(b.record.title || ""))
+    );
+  }
+
+  if (sortMode === "cited") {
+    return (
+      getCitationCount(b.record) - getCitationCount(a.record) ||
+      b.score - a.score ||
+      String(a.record.title || "").localeCompare(String(b.record.title || ""))
+    );
+  }
+
+  if (sortMode === "source") {
+    const order = (key) => {
+      const index = UNIFIED_SOURCE_SORT_ORDER.indexOf(String(key || ""));
+      return index === -1 ? UNIFIED_SOURCE_SORT_ORDER.length : index;
+    };
+    return (
+      order(a.sourceKey) - order(b.sourceKey) ||
+      b.score - a.score ||
+      String(a.record.title || "").localeCompare(String(b.record.title || ""))
+    );
+  }
+
+  const scoreDiff = b.score - a.score;
+  if (scoreDiff) return scoreDiff;
+
+  const archiveDiff = (a.sourceKey === "archive" ? 1 : 0) - (b.sourceKey === "archive" ? 1 : 0);
+  if (archiveDiff) return archiveDiff;
+
+  const yearDiff = getRecordYear(b.record) - getRecordYear(a.record);
+  if (yearDiff) return yearDiff;
+
+  const citationDiff = getCitationCount(b.record) - getCitationCount(a.record);
+  if (citationDiff) return citationDiff;
+
+  return String(a.record.title || "").localeCompare(String(b.record.title || ""));
+}
+
+function scoreUnifiedResult(record, query) {
+  const sourceKey = getUnifiedSourceKey(record);
+  return scoreSearchResult(record, query, { sourceKey });
+}
+
+function matchesUnifiedStreamFilter(record, filterId) {
+  if (!filterId || filterId === "all") return true;
+  const key = getUnifiedSourceKey(record);
+  if (filterId === "scholarly") return ["openalex", "core", "crossref", "semantic-scholar"].includes(key);
+  if (filterId === "archival") return key === "archive" || key === "archival-external" || key === "smithsonian";
+  if (filterId === "openaccess") return key === "openaccess" || isOpenAccessDiscoveryRecord(record);
+  return key === filterId;
+}
+
+function collectDiscoveryLiveRecords() {
+  const items = [];
+  for (const sectionId of UNIFIED_STREAM_SECTION_IDS) {
+    const section = discoverySections[sectionId];
+    if (!section?.results?.length) continue;
+    let records = section.results;
+    if (sectionId === "openAccess") {
+      records = section.results.slice(0, openAccessReleasedCount);
+    }
+    for (const record of records) {
+      if (getResultMode(record) === "live") items.push(record);
+    }
+  }
+  return items;
+}
+
+function collectDiscoveryBottomLayerRecords() {
+  const items = [];
+  const seen = new Set();
+
+  const add = (record) => {
+    if (!record || getResultRankGroup(record) === 0) return;
+    const key = String(record.id || unifiedDedupeKey(record));
+    if (seen.has(key)) return;
+    seen.add(key);
+    items.push(record);
+  };
+
+  for (const record of discoverySections.smithsonianCollections?.results || []) add(record);
+
+  for (const record of discoverySections.handoffs?.results || []) add(record);
+
+  const openAccessSection = discoverySections.openAccess;
+  if (openAccessSection?.results?.length) {
+    for (const record of openAccessSection.results.slice(0, openAccessReleasedCount)) {
+      add(record);
+    }
+  }
+
+  return items;
+}
+
+function mergeAndRankSearchResults({ query, internalResults, includeHandoffs = false }) {
+  const entries = [];
+  for (const record of internalResults || []) {
+    entries.push({ record: ensureResultKind(record), sourceKey: "archive", score: 0 });
+  }
+  if (sourceMode) {
+    for (const record of collectDiscoveryLiveRecords()) {
+      entries.push({ record: ensureResultKind(record), sourceKey: getUnifiedSourceKey(record), score: 0 });
+    }
+    if (includeHandoffs) {
+      for (const record of collectDiscoveryBottomLayerRecords()) {
+        entries.push({ record: ensureResultKind(record), sourceKey: getUnifiedSourceKey(record), score: 0 });
+      }
+    }
+  }
+
+  for (const entry of entries) {
+    entry.score = scoreSearchResult(entry.record, query, { sourceKey: entry.sourceKey });
+  }
+  entries.sort((a, b) => compareUnifiedEntries(a, b, query));
+
+  const seen = new Map();
+  const merged = [];
+
+  const pushEntry = (entry) => {
+    const key = unifiedDedupeKey(entry.record);
+    const existing = seen.get(key);
+    if (!existing) {
+      seen.set(key, entry);
+      merged.push(entry);
+      return;
+    }
+    if (entry.sourceKey === "archive" && existing.sourceKey !== "archive") {
+      const alternates = existing.record.alternateSources || [
+        getUnifiedSourceLabel(existing.sourceKey),
+      ];
+      seen.set(key, entry);
+      entry.record = {
+        ...entry.record,
+        alternateSources: alternates.filter(Boolean),
+      };
+      const idx = merged.findIndex((item) => unifiedDedupeKey(item.record) === key);
+      if (idx >= 0) merged[idx] = entry;
+      else merged.push(entry);
+    }
+  };
+
+  for (const entry of entries) pushEntry(entry);
+
+  return merged.map((entry) => {
+    entry.record.unifiedSourceKey = entry.sourceKey;
+    entry.record.unifiedSourceLabel = getUnifiedSourceLabel(entry.sourceKey);
+    entry.record.unifiedRelevanceScore = entry.score;
+    entry.record.resultKind = getResultKind(entry.record);
+    return entry.record;
+  });
+}
+
+function estimateUnifiedTotalCount(rankedAll) {
+  let total = rankedAll.length;
+  for (const sectionId of ["openalex", "core", "crossref", "semantic-scholar", "smithsonian"]) {
+    const section = discoverySections[sectionId];
+    if (section?.count != null && section.count > total) total = section.count;
+  }
+  return total;
+}
+
+function getUnifiedSourceNames(rankedAll) {
+  const names = new Set();
+  for (const record of rankedAll) {
+    names.add(getUnifiedSourceLabel(getUnifiedSourceKey(record)));
+  }
+  return [...names];
+}
+
+function canLoadMorePreviewsSection() {
+  const pag = discoverySections.previews?.previewPagination;
+  if (!pag) return false;
+  return PREVIEW_ADAPTER_IDS.some((id) => pag[id]?.hasMore);
+}
+
+function canLoadMoreUnifiedStream(filteredRanked) {
+  if (unifiedStreamVisibleCount < filteredRanked.length) return true;
+  if (canLoadMoreArchive()) return true;
+  if (canLoadMoreOpenAccessReleased()) return true;
+  if (canLoadMorePreviewsSection()) return true;
+  return UNIFIED_PAGINATED_SECTION_IDS.some((id) => canLoadMoreDiscoverySection(id));
+}
+
+function isUnifiedStreamExhausted(filteredRanked) {
+  return !canLoadMoreUnifiedStream(filteredRanked) && filteredRanked.length > 0;
+}
+
+function getDiscoverySourcesStatusLine() {
+  const parts = ["Archive active"];
+  if (!sourceMode) return parts.join(" · ");
+  const labels = {
+    openalex: "OpenAlex",
+    core: "CORE",
+    crossref: "Crossref",
+    "semantic-scholar": "Semantic Scholar",
+    wikidata: "Wikidata",
+    smithsonian: "Smithsonian",
+    openAccess: "Open access",
+  };
+  for (const [id, label] of Object.entries(labels)) {
+    const section = discoverySections[id];
+    if (!section) continue;
+    if (section.state === "loading") parts.push(`${label} loading`);
+    else if (section.error) parts.push(`${label} unavailable`);
+    else if (section.displayedCount > 0) parts.push(`${label} active`);
+    else parts.push(`${label} empty`);
+  }
+  return parts.join(" · ");
+}
+
 let mobileFiltersOpen = false;
 const COLLECTIONS = [
   {id:"c001",title:"West African Oral Traditions",icon:"◎",count:847,region:"West Africa",desc:"Oral histories, praise poetry, and spoken knowledge systems — Ifa corpus, griots, and community testimony."},
@@ -2245,8 +3026,11 @@ function getPrimaryNarrative(record) {
 }
 
 function getLeadImage(record) {
-  if (!record || !Array.isArray(record.images) || !record.images.length) return null;
-  return record.images[0] || null;
+  if (!record) return null;
+  if (Array.isArray(record.images) && record.images.length) return record.images[0] || null;
+  const thumb = safeUrl(record.thumbnailUrl || record.coverImageUrl || "");
+  if (!thumb) return null;
+  return { src: thumb, alt: record.title || "Cover image", caption: "" };
 }
 
 function getGalleryImages(record) {
@@ -2541,20 +3325,36 @@ function applyRoute(route, options = {}) {
   currentPage = route.page || "home";
   selectedRecordId = route.recordId || null;
   if (currentPage === 'library') hydrateSearchFromLocation();
-  render();
-  if (!options.preserveScroll) {
-    window.scrollTo({top:0, behavior:options.smooth ? 'smooth' : 'auto'});
-  }
-  window.dispatchEvent(new CustomEvent("archive:navigation", {
-    detail:{page:currentPage, recordId:selectedRecordId, path:window.location.pathname}
-  }));
-  if (typeof window !== "undefined") {
-    requestAnimationFrame(() => {
+  const needsRecordHydration =
+    currentPage === 'record' &&
+    selectedRecordId &&
+    !getRecordByIdAny(selectedRecordId) &&
+    /^live-smithsonian-/i.test(selectedRecordId);
+
+  const finishRoute = () => {
+    render();
+    if (!options.preserveScroll) {
+      window.scrollTo({top:0, behavior:options.smooth ? 'smooth' : 'auto'});
+    }
+    window.dispatchEvent(new CustomEvent("archive:navigation", {
+      detail:{page:currentPage, recordId:selectedRecordId, path:window.location.pathname}
+    }));
+    if (typeof window !== "undefined") {
       requestAnimationFrame(() => {
-        window.dispatchEvent(new Event("app:loading:end"));
+        requestAnimationFrame(() => {
+          window.dispatchEvent(new Event("app:loading:end"));
+        });
       });
-    });
+    }
+  };
+
+  if (needsRecordHydration) {
+    render();
+    hydrateLiveRecordIfNeeded(selectedRecordId).then(finishRoute);
+    return;
   }
+
+  finishRoute();
 }
 
 function navigate(page, recordId = null, options = {}) {
@@ -2866,13 +3666,71 @@ function downloadBibTeX(record) {
   URL.revokeObjectURL(url);
 }
 
+const RECORD_METADATA_GROUP_LABELS = {
+  core: "Core metadata",
+  rights: "Rights & access",
+  provenance: "Archive provenance",
+  technical: "Technical identifiers",
+};
+
+const RECORD_METADATA_GROUP_KEYS = {
+  core: ["Title", "Creator", "Contributors", "Institution", "Source", "Country", "Region", "Community", "Period", "Record type", "Collection", "Category"],
+  rights: ["Rights Status", "Licence", "Access Type", "Reuse Permission", "Cultural Sensitivity", "Community Review Status", "Verification Status", "Rights statement"],
+  provenance: ["Provenance", "Source Type", "Date Accessed", "Material", "Medium", "Language", "Script / Writing System"],
+  technical: ["Record ID", "Archive ID", "Mode", "Alternate title"],
+};
+
+function buildRecordMetadataGroups(rows) {
+  const map = new Map(rows);
+  const pick = (labels) => labels.map((label) => [label, map.get(label)]).filter(([, value]) => value);
+  return {
+    core: pick(RECORD_METADATA_GROUP_KEYS.core),
+    rights: pick(RECORD_METADATA_GROUP_KEYS.rights),
+    provenance: pick(RECORD_METADATA_GROUP_KEYS.provenance),
+    technical: pick(RECORD_METADATA_GROUP_KEYS.technical),
+  };
+}
+
+function renderMetadataTableRows(rows) {
+  return rows.map(([label, value]) => `<tr><td>${escapeHtml(label)}</td><td>${escapeHtml(value)}</td></tr>`).join("");
+}
+
+function renderMetadataGroup(title, rows, className = "") {
+  if (!rows.length) return "";
+  return `<div class="record-metadata-group ${className}">
+    <h3 class="record-metadata-group-title">${escapeHtml(title)}</h3>
+    <table class="meta-table record-metadata metadata-table">${renderMetadataTableRows(rows)}</table>
+  </div>`;
+}
+
+function renderRecordMetadataSections(allRows) {
+  const groups = buildRecordMetadataGroups(allRows);
+  const advancedRows = [...groups.provenance, ...groups.technical];
+  const advancedHtml = advancedRows.length
+    ? `<div id="recordAdvancedMetadata" class="record-metadata-advanced" hidden>
+        ${renderMetadataGroup(RECORD_METADATA_GROUP_LABELS.provenance, groups.provenance, "is-advanced")}
+        ${renderMetadataGroup(RECORD_METADATA_GROUP_LABELS.technical, groups.technical, "is-advanced")}
+      </div>
+      <button type="button" class="record-metadata-advanced-toggle" data-record-advanced-toggle aria-expanded="false" aria-controls="recordAdvancedMetadata">Show advanced metadata</button>`
+    : "";
+
+  return `<section class="detail-section record-metadata-section">
+    <h2>Metadata</h2>
+    <div class="record-metadata-panel">
+      ${renderMetadataGroup(RECORD_METADATA_GROUP_LABELS.core, groups.core)}
+      ${renderMetadataGroup(RECORD_METADATA_GROUP_LABELS.rights, groups.rights, "is-rights")}
+      ${advancedHtml}
+    </div>
+  </section>`;
+}
+
 function renderTagSection(label, values, extraClass = "") {
   if (!values || !values.length) return "";
   return `
-    <section class="detail-section">
+    <section class="detail-section alt record-tag-section">
       <h2>${escapeHtml(label)}</h2>
       <div class="tag-row">
-        ${values.map(value => `<span class="tag ${extraClass}">${escapeHtml(value)}</span>`).join("")}
+        ${values.map(value => `<button type="button" class="tag record-tag-chip ${extraClass}" data-tag-search="${escapeHtml(value)}" aria-label="Search archive for ${escapeHtml(value)}">${escapeHtml(value)}</button>`).join("")}
       </div>
     </section>
   `;
@@ -2946,7 +3804,7 @@ function renderRecordWorkspaceTools(record) {
             <span>Search query</span>
             <input class="record-input" name="query" value="${escapeHtml(defaultSearch)}" />
           </label>
-          <button class="record-primary-button" type="submit" ${saving ? "disabled" : ""} aria-busy="${saving ? "true" : "false"}">${saving ? "Saving…" : "Save search"}</button>
+          <button class="record-secondary-button" type="submit" ${saving ? "disabled" : ""} aria-busy="${saving ? "true" : "false"}">${saving ? "Saving…" : "Save search"}</button>
         </form>
 
         <form class="record-tool-form" data-record-tool="add_to_reading_list">
@@ -2980,7 +3838,7 @@ function renderRecordWorkspaceTools(record) {
           <input type="checkbox" name="isPublic" />
           <span>Public list</span>
         </label>
-        <button class="record-primary-button" type="submit" ${saving ? "disabled" : ""} aria-busy="${saving ? "true" : "false"}">${saving ? "Creating…" : "Create list"}</button>
+        <button class="record-secondary-button" type="submit" ${saving ? "disabled" : ""} aria-busy="${saving ? "true" : "false"}">${saving ? "Creating…" : "Create list"}</button>
       </form>
     </section>
   `;
@@ -3382,7 +4240,60 @@ let liveStatus = {state:"idle", message:"", sources:[]};
 /** Populated when the open-access aggregator returns notice copy (DOAB + external disclaimer). */
 let openAccessNotices = null;
 const LIVE_RESULT_CACHE = new Map();
+/** Bump when discovery section shape or Semantic Scholar wiring changes (invalidates stale cache). */
+const LIVE_RESULT_CACHE_VERSION = 4; // includes Smithsonian live EDAN wiring
+const LIVE_RESULT_CACHE_TTL_MS = 10 * 60 * 1000;
 const TRANSIENT_RESULTS_BY_ID = new Map();
+const LIVE_RECORD_STORAGE_KEY = "archive_live_records_v1";
+let recordHydrationToken = 0;
+
+function persistTransientRecord(record) {
+  if (!record || !record.id) return;
+  TRANSIENT_RESULTS_BY_ID.set(record.id, record);
+  try {
+    const cache = JSON.parse(sessionStorage.getItem(LIVE_RECORD_STORAGE_KEY) || "{}");
+    cache[record.id] = record;
+    const ids = Object.keys(cache);
+    if (ids.length > 240) {
+      for (const staleId of ids.slice(0, ids.length - 200)) delete cache[staleId];
+    }
+    sessionStorage.setItem(LIVE_RECORD_STORAGE_KEY, JSON.stringify(cache));
+  } catch (error) {
+    console.warn("[LIVE] could not persist transient record", error);
+  }
+}
+
+function readPersistedTransientRecord(id) {
+  try {
+    const cache = JSON.parse(sessionStorage.getItem(LIVE_RECORD_STORAGE_KEY) || "{}");
+    return cache[id] || null;
+  } catch {
+    return null;
+  }
+}
+
+async function hydrateLiveRecordIfNeeded(recordId) {
+  if (!recordId || getRecordByIdAny(recordId)) return;
+  if (!/^live-smithsonian-/i.test(recordId)) return;
+
+  const edanId = recordId.replace(/^live-smithsonian-/i, "");
+  if (!edanId) return;
+
+  const token = ++recordHydrationToken;
+  try {
+    const response = await fetchWithTimeout(
+      `/api/search/smithsonian/record?id=${encodeURIComponent(edanId)}`,
+      { headers: { Accept: "application/json" } },
+      12000,
+    );
+    const data = await response.json().catch(() => ({}));
+    if (token !== recordHydrationToken) return;
+    if (!response.ok || !data.ok || !data.result) return;
+    persistTransientRecord(normalizeLiveRecord(data.result));
+  } catch (error) {
+    console.warn("[LIVE] Smithsonian record hydration failed", { recordId, error });
+  }
+}
 
 function createHandoffAdapter(id, label, trust) {
   return {
@@ -3412,9 +4323,52 @@ const LIVE_SOURCE_ADAPTERS = [
       if (data.partial) {
         console.warn('[LIVE] CORE returned partial results:', data.warning || 'cluster under load');
       }
-      const incomingHits = Number(data.totalHits || 0); if (incomingHits > 0) coreTotalHits = incomingHits;
-      return Array.isArray(data.results) ? data.results : [];
+      const incomingHits = Number(data.count ?? data.totalHits ?? 0);
+      if (incomingHits > 0) coreTotalHits = incomingHits;
+      const items = Array.isArray(data.results) ? data.results : [];
+      return {
+        items,
+        meta: {
+          count: incomingHits || null,
+          nextOffset: data.nextOffset ?? null,
+          nextCursor: null,
+          displayedCount: data.displayedCount ?? items.length,
+        },
+      };
     }
+  },
+  {
+    id:"semantic-scholar",
+    label:"Semantic Scholar",
+    trust:0.88,
+    async search(query, options = {}) {
+      const offset = Number(options.offset || 0);
+      const limit = Number(options.limit || DISCOVERY_PAGE_SIZE);
+      const response = await fetchWithTimeout(
+        `/api/search/semantic-scholar?q=${encodeURIComponent(query)}&limit=${limit}&offset=${offset}`,
+        {},
+        15000,
+      );
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.ok === false) {
+        return {
+          items: [],
+          error: data.error || data.detail || `Semantic Scholar search failed (${response.status})`,
+          meta: { count: null, nextOffset: null, nextCursor: null, displayedCount: 0 },
+        };
+      }
+      const items = Array.isArray(data.results) ? data.results.map((entry) => normalizeLiveRecord(entry)) : [];
+      const nextOffset = data.hasMore ? data.nextOffset : null;
+      return {
+        items,
+        meta: {
+          count: data.count ?? null,
+          nextOffset,
+          nextCursor: null,
+          displayedCount: data.displayedCount ?? items.length,
+        },
+      };
+    },
   },
   {
     id:"openAccess",
@@ -3436,6 +4390,11 @@ const LIVE_SOURCE_ADAPTERS = [
       console.log("[EXTERNAL API RESULTS]", raw.length, items.slice(0, 2));
       return {
         items,
+        meta: {
+          count: items.length,
+          nextOffset: items.length > DISCOVERY_PAGE_SIZE ? DISCOVERY_PAGE_SIZE : null,
+          displayedCount: items.length,
+        },
         sourceStatuses: Array.isArray(data.sourceStatuses) ? data.sourceStatuses : [],
         notices: data.notices || null,
       };
@@ -3446,7 +4405,6 @@ const LIVE_SOURCE_ADAPTERS = [
   createHandoffAdapter("uac", "United Africa Company", 0.78),
   createHandoffAdapter("britishlibrary", "British Library", 0.75),
   createHandoffAdapter("trove", "Trove", 0.73),
-  createHandoffAdapter("smithsonian", "Smithsonian", 0.74),
   createHandoffAdapter("googlebooks", "Google Books", 0.68),
   createHandoffAdapter("worldcat", "WorldCat", 0.76),
   createHandoffAdapter("nlsa", "National Library of South Africa", 0.78),
@@ -3459,10 +4417,17 @@ const LIVE_SOURCE_ADAPTERS = [
     id:"openlibrary",
     label:"Open Library",
     trust:0.92,
-    async search(query) {
-      const json = await fetchJsonWithTimeout(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=8`, {}, 5500);
-      const docs = Array.isArray(json.docs) ? json.docs.slice(0, 8) : [];
-      return docs.map((doc, index) => normalizeLiveRecord({
+    async search(query, options = {}) {
+      const offset = Number(options.offset || 0);
+      const limit = Number(options.limit || DISCOVERY_PREVIEW_SIZE);
+      const json = await fetchJsonWithTimeout(
+        `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=${limit}&offset=${offset}`,
+        {},
+        5500,
+      );
+      const docs = Array.isArray(json.docs) ? json.docs : [];
+      const total = Number(json.numFound || 0);
+      const mapped = docs.map((doc, index) => normalizeLiveRecord({
         id:`live-openlibrary-${slugify((doc.key || doc.cover_edition_key || doc.title || query) + "-" + index)}`,
         title: doc.title || "Untitled record",
         creator: Array.isArray(doc.author_name) ? doc.author_name.join(", ") : (doc.author_name || "Unknown creator"),
@@ -3498,13 +4463,20 @@ const LIVE_SOURCE_ADAPTERS = [
         trustScore:0.92,
         liveSourceHint:"openlibrary"
       }));
+      const nextOffset = total > offset + mapped.length ? offset + mapped.length : null;
+      return {
+        items: mapped,
+        meta: { count: total || null, nextOffset, nextCursor: null, displayedCount: mapped.length },
+      };
     }
   },
   {
     id:"crossref",
     label:"Crossref",
     trust:0.89,
-    async search(query) {
+    async search(query, options = {}) {
+      const offset = Number(options.offset || 0);
+      const rows = Number(options.limit || DISCOVERY_PAGE_SIZE);
       // NOTE: `language` is NOT a valid Crossref `select` field — including it
       // makes the API reject the entire request with 400. (Authoritative list:
       // https://github.com/fabiobatalha/crossrefapi -> Works.FIELDS_SELECT.)
@@ -3512,9 +4484,11 @@ const LIVE_SOURCE_ADAPTERS = [
       // the field is absent in the response.
       // `mailto` puts us in Crossref's "polite pool" (priority routing /
       // fewer 429s); harmless if you change the address.
-      const json = await fetchJsonWithTimeout(`https://api.crossref.org/works?rows=8&query.bibliographic=${encodeURIComponent(query)}&select=DOI,title,author,issued,abstract,URL,container-title,type,subject,publisher,license,link&mailto=archive@ared.design`, {headers:{Accept:"application/json"}}, 6500);
-      const items = json?.message?.items && Array.isArray(json.message.items) ? json.message.items.slice(0, 8) : [];
-      return items.map((item, index) => {
+      const json = await fetchJsonWithTimeout(`https://api.crossref.org/works?rows=${rows}&offset=${offset}&query.bibliographic=${encodeURIComponent(query)}&select=DOI,title,author,issued,abstract,URL,container-title,type,subject,publisher,license,link&mailto=archive@ared.design`, {headers:{Accept:"application/json"}}, 9000);
+      const rawItems = json?.message?.items && Array.isArray(json.message.items) ? json.message.items : [];
+      const items = rawItems;
+      const total = Number(json?.message?.["total-results"] || 0);
+      const mapped = items.map((item, index) => {
         const authors = Array.isArray(item.author) ? item.author.map(person => [person.given, person.family].filter(Boolean).join(" ").trim()).filter(Boolean) : [];
         const title = Array.isArray(item.title) ? item.title[0] : (item.title || "Untitled record");
         const abstract = stripJats(item.abstract || "");
@@ -3561,16 +4535,33 @@ const LIVE_SOURCE_ADAPTERS = [
           liveSourceHint:"crossref"
         });
       });
+      const nextOffset = total > offset + mapped.length ? offset + mapped.length : null;
+      return {
+        items: mapped,
+        meta: {
+          count: total || null,
+          nextOffset,
+          nextCursor: null,
+          displayedCount: mapped.length,
+        },
+      };
     }
   },
   {
     id:"loc",
     label:"Library of Congress",
     trust:0.9,
-    async search(query) {
-      const json = await fetchJsonWithTimeout(`https://www.loc.gov/search/?fo=json&fa=partof:general%20collections&q=${encodeURIComponent(query)}`, {}, 7000);
-      const items = Array.isArray(json.results) ? json.results.slice(0, 8) : [];
-      return items.map((item, index) => normalizeLiveRecord({
+    async search(query, options = {}) {
+      const page = Number(options.page || 1);
+      const limit = Number(options.limit || DISCOVERY_PREVIEW_SIZE);
+      const json = await fetchJsonWithTimeout(
+        `https://www.loc.gov/search/?fo=json&fa=partof:general%20collections&q=${encodeURIComponent(query)}&sp=${page}&c=${limit}`,
+        {},
+        7000,
+      );
+      const items = Array.isArray(json.results) ? json.results : [];
+      const total = Number(json.pagination?.total || 0);
+      const mapped = items.map((item, index) => normalizeLiveRecord({
         id:`live-loc-${slugify((item.id || item.url || item.title || query) + "-" + index)}`,
         title: item.title || "Untitled record",
         creator: Array.isArray(item.contributor_names) ? item.contributor_names.join(", ") : (item.creator || item.contributor || "Library of Congress"),
@@ -3609,17 +4600,44 @@ const LIVE_SOURCE_ADAPTERS = [
         trustScore:0.9,
         liveSourceHint:"loc"
       }));
+      const hasMore = total ? page * limit < total : items.length >= limit;
+      return {
+        items: mapped,
+        meta: {
+          count: total || null,
+          nextOffset: hasMore ? page + 1 : null,
+          page,
+          displayedCount: mapped.length,
+        },
+      };
     }
   },
   {
     id:"met",
     label:"The Met Collection",
     trust:0.88,
-    async search(query) {
-      const searchJson = await fetchJsonWithTimeout(`https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&q=${encodeURIComponent(query)}`, {}, 7000);
-      const ids = Array.isArray(searchJson.objectIDs) ? searchJson.objectIDs.slice(0, 6) : [];
-      const settled = await Promise.allSettled(ids.map(id => fetchJsonWithTimeout(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`, {}, 7000)));
-      return settled.filter(item => item.status === "fulfilled").map(item => item.value).map((obj, index) => normalizeLiveRecord({
+    async search(query, options = {}) {
+      const idOffset = Number(options.idOffset || 0);
+      const batchSize = Number(options.limit || 6);
+      let allIds = Array.isArray(options.metIds) ? options.metIds : null;
+      if (!allIds) {
+        const searchJson = await fetchJsonWithTimeout(
+          `https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&q=${encodeURIComponent(query)}`,
+          {},
+          7000,
+        );
+        allIds = Array.isArray(searchJson.objectIDs) ? searchJson.objectIDs : [];
+      }
+      const ids = allIds.slice(idOffset, idOffset + batchSize);
+      const settled = await Promise.allSettled(
+        ids.map((id) =>
+          fetchJsonWithTimeout(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`, {}, 7000),
+        ),
+      );
+      const mapped = settled
+        .filter((item) => item.status === "fulfilled")
+        .map((item) => item.value)
+        .map((obj, index) => normalizeLiveRecord({
         id:`live-met-${obj.objectID || index}`,
         title: obj.title || "Untitled object",
         creator: obj.artistDisplayName || obj.culture || "Metropolitan Museum of Art",
@@ -3655,16 +4673,32 @@ const LIVE_SOURCE_ADAPTERS = [
         trustScore:0.88,
         liveSourceHint:"met"
       }));
+      const nextIdOffset = idOffset + ids.length;
+      return {
+        items: mapped,
+        meta: {
+          count: allIds.length || null,
+          nextOffset: nextIdOffset < allIds.length ? nextIdOffset : null,
+          metIds: allIds,
+          displayedCount: mapped.length,
+        },
+      };
     }
   },
   {
     id:"wikimedia",
     label:"Wikimedia Commons",
     trust:0.78,
-    async search(query) {
-      const json = await fetchJsonWithTimeout(`https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=${encodeURIComponent(query)}&gsrlimit=8&prop=imageinfo|info&iiprop=url|extmetadata&inprop=url&format=json&origin=*`, {}, 7000);
-      const pages = json.query?.pages ? Object.values(json.query.pages).slice(0, 8) : [];
-      return pages.map((page, index) => {
+    async search(query, options = {}) {
+      const offset = Number(options.offset || 0);
+      const limit = Number(options.limit || DISCOVERY_PREVIEW_SIZE);
+      const json = await fetchJsonWithTimeout(
+        `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=${encodeURIComponent(query)}&gsrlimit=${limit}&gsroffset=${offset}&prop=imageinfo|info&iiprop=url|extmetadata&inprop=url&format=json&origin=*`,
+        {},
+        7000,
+      );
+      const pages = json.query?.pages ? Object.values(json.query.pages) : [];
+      const mapped = pages.map((page, index) => {
         const ext = page.imageinfo?.[0]?.extmetadata || {};
         return normalizeLiveRecord({
         id:`live-wikimedia-${page.pageid || index}`,
@@ -3704,61 +4738,134 @@ const LIVE_SOURCE_ADAPTERS = [
         liveSourceHint:"wikimedia"
         });
       });
+      const hasMore = Boolean(json.continue?.gsroffset);
+      return {
+        items: mapped,
+        meta: {
+          count: null,
+          nextOffset: hasMore ? Number(json.continue.gsroffset) : null,
+          displayedCount: mapped.length,
+        },
+      };
     }
+  },
+  {
+    id:"wikidata",
+    label:"Wikidata",
+    trust:0.84,
+    async search(query, options = {}) {
+      const offset = Number(options.offset || 0);
+      const limit = Number(options.limit || DISCOVERY_PAGE_SIZE);
+      const response = await fetchWithTimeout(
+        `/api/search/wikidata?q=${encodeURIComponent(query)}&limit=${limit}&offset=${offset}`,
+        {},
+        9000,
+      );
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.ok === false) {
+        throw new Error(data.error || data.detail || "Wikidata search failed");
+      }
+      const items = Array.isArray(data.results) ? data.results.map((entry) => normalizeLiveRecord(entry)) : [];
+      const nextOffset = data.hasMore ? data.nextOffset : null;
+      return {
+        items,
+        meta: {
+          count: data.count ?? null,
+          nextOffset,
+          nextCursor: null,
+          displayedCount: data.displayedCount ?? items.length,
+        },
+      };
+    },
+  },
+  {
+    id:"smithsonian",
+    label:"Smithsonian Open Access",
+    trust:0.88,
+    async search(query, options = {}) {
+      const start = Number(options.offset || 0);
+      const rows = Number(options.limit || DISCOVERY_PAGE_SIZE);
+      const response = await fetchWithTimeout(
+        `/api/search/smithsonian?q=${encodeURIComponent(query)}&rows=${rows}&start=${start}`,
+        { headers: { Accept: "application/json" } },
+        15000,
+      );
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.ok === false) {
+        return {
+          items: [],
+          error: data.error || `Smithsonian search failed (${response.status})`,
+          meta: { count: null, nextOffset: null, nextCursor: null, displayedCount: 0 },
+        };
+      }
+      const items = Array.isArray(data.results)
+        ? data.results.map((entry) => normalizeLiveRecord(entry))
+        : [];
+      const nextOffset = data.hasMore ? (data.nextStart ?? data.nextOffset ?? start + rows) : null;
+      return {
+        items,
+        meta: {
+          count: data.count ?? null,
+          nextOffset,
+          nextCursor: null,
+          displayedCount: data.displayedCount ?? items.length,
+        },
+      };
+    },
+  },
+  {
+    id:"smithsonian-collections",
+    label:"Smithsonian Collections",
+    trust:0.82,
+    async search(query) {
+      const response = await fetchWithTimeout(
+        `/api/search/smithsonian?q=${encodeURIComponent(query)}&mode=collections&limit=8`,
+        { headers: { Accept: "application/json" } },
+        8000,
+      );
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.ok === false) {
+        return {
+          items: [],
+          error: data.error || "Smithsonian collection search failed",
+          meta: { count: 0, nextOffset: null, displayedCount: 0 },
+        };
+      }
+      const items = Array.isArray(data.results)
+        ? data.results.map((entry) => normalizeLiveRecord({ ...entry, resultKind: "collection" }))
+        : [];
+      return {
+        items,
+        meta: { count: items.length, nextOffset: null, displayedCount: items.length },
+      };
+    },
   },
   {
     id:"openalex",
     label:"OpenAlex",
     trust:0.86,
-    async search(query) {
-      const json = await fetchJsonWithTimeout(`https://api.openalex.org/works?per-page=8&search=${encodeURIComponent(query)}&select=id,display_name,publication_year,authorships,primary_location,best_oa_location,concepts,abstract_inverted_index,type,open_access,locations_count`, {}, 7000);
-      const items = Array.isArray(json.results) ? json.results.slice(0, 8) : [];
-      return items.map((item, index) => {
-        const authors = Array.isArray(item.authorships) ? item.authorships.map(author => author.author?.display_name).filter(Boolean) : [];
-        const title = item.display_name || "Untitled work";
-        const abstract = decodeOpenAlexAbstract(item.abstract_inverted_index);
-        const sourceName = item.primary_location?.source?.display_name || "OpenAlex";
-        return normalizeLiveRecord({
-          id:`live-openalex-${slugify((item.id || title) + "-" + index)}`,
-          title,
-          creator: authors.join(", ") || "Unknown creator",
-          summary: abstract ? abstract.slice(0, 320) : `${sourceName} surfaced via OpenAlex external metadata.`,
-          abstract,
-          description:[item.type ? `Type: ${item.type}.` : "", Array.isArray(item.concepts) && item.concepts.length ? `Concepts: ${item.concepts.slice(0, 5).map(concept => concept.display_name).join(", ")}.` : ""].filter(Boolean),
-          period: item.publication_year ? String(item.publication_year) : "",
-          type: mapOpenAlexType(item.type),
-          cat:"Research & scholarly metadata",
-          region: inferRegionFromText([title, ...(item.concepts || []).map(concept => concept.display_name)].join(" ")),
-          country: inferCountryFromText([title, ...(item.concepts || []).map(concept => concept.display_name)].join(" ")),
-          collection:"OpenAlex external discovery",
-          institution: sourceName,
-          source:"OpenAlex",
-          sourceUrl: item.primary_location?.landing_page_url || item.id || `https://api.openalex.org/works?search=${encodeURIComponent(query)}`,
-          licence: firstText(item.primary_location?.license, item.best_oa_location?.license),
-          licence_url: firstText(item.primary_location?.license_url, item.best_oa_location?.license_url),
-          open_access: item.open_access,
-          is_oa: item.open_access?.is_oa,
-          oa_status: item.open_access?.oa_status,
-          full_text_url: item.best_oa_location?.landing_page_url || "",
-          pdf_url: item.best_oa_location?.pdf_url || "",
-          sourceActionLabel:"Open source record",
-          externalLinks: item.id ? [{label:"OpenAlex", url:item.id}] : [],
-          language: [],
-          tags: uniqueValues((item.concepts || []).slice(0, 6).map(concept => concept.display_name)),
-          concepts: inferConceptsFromText([title, ...(item.concepts || []).map(concept => concept.display_name)].join(" ")),
-          themes: inferThemesFromText([title, ...(item.concepts || []).map(concept => concept.display_name)].join(" ")),
-          images: [],
-          rights:"External source rights apply",
-          provenance:"External scholarly metadata pulled from OpenAlex.",
-          citation: buildSimpleCitation(title, authors.join(", ") || "Unknown creator", item.publication_year || "", sourceName),
-          notes:["External-source research metadata from OpenAlex."],
-          recordIdentifier: item.id || "",
-          archiveIdentifier:`OA-${index}`,
-          resultMode:"live",
-          trustScore:0.86,
-          liveSourceHint:"openalex"
-        });
-      });
+    async search(query, options = {}) {
+      const cursor = options.cursor || "*";
+      const limit = Number(options.limit || DISCOVERY_PAGE_SIZE);
+      const response = await fetchWithTimeout(
+        `/api/openalex-search?q=${encodeURIComponent(query)}&limit=${limit}&cursor=${encodeURIComponent(cursor)}`,
+        {},
+        12000
+      );
+      const data = await response.json();
+      if (!response.ok || !data.ok) {
+        throw new Error(data.detail || data.error || "OpenAlex search failed");
+      }
+      const items = Array.isArray(data.results) ? data.results.map((entry) => normalizeLiveRecord(entry)) : [];
+      return {
+        items,
+        meta: {
+          count: data.count ?? null,
+          nextCursor: data.nextCursor ?? null,
+          nextOffset: null,
+          displayedCount: data.displayedCount ?? items.length,
+        },
+      };
     }
   }
 ];
@@ -3782,13 +4889,39 @@ function buildMetImages(obj){ const images = []; if (obj.primaryImageSmall) imag
 function buildWikimediaImages(page){ const src = page.imageinfo?.[0]?.thumburl || page.imageinfo?.[0]?.url; return src ? [{src, alt:(page.title || 'Wikimedia media').replace(/^File:/,''), caption:'Image from Wikimedia Commons'}] : []; }
 function fetchWithTimeout(url, options = {}, timeout = 5500){ const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), timeout); return fetch(url, {...options, signal:controller.signal}).finally(() => clearTimeout(timer)); }
 async function fetchJsonWithTimeout(url, options = {}, timeout = 5500){ const response = await fetchWithTimeout(url, options, timeout); if (!response.ok) throw new Error(`Request failed: ${response.status}`); return response.json(); }
+
+function buildLiveRecordImages(record) {
+  const fromImages = (record.images || [])
+    .filter(image => safeUrl(image.src || image.url))
+    .map(image => ({
+      src: safeUrl(image.src || image.url),
+      alt: image.alt || record.title,
+      caption: image.caption || "",
+    }));
+  if (fromImages.length) return fromImages;
+  const thumb = safeUrl(record.thumbnailUrl || record.coverImageUrl || "");
+  if (!thumb) return [];
+  return [{ src: thumb, alt: record.title || "Cover image", caption: "" }];
+}
+
 function normalizeLiveRecord(record){
   const rights = normalizeExternalRightsMetadata(record);
   const canUseMedia = rights.hasConfirmedReuseRights;
   const safeSourceUrl = rights.sourceUrl || safeUrl(record.sourceUrl);
-  return { id: record.id, title: record.title || 'Untitled record', alternateTitle: record.alternateTitle || '', creator: record.creator || 'Unknown creator', contributors: listify(record.contributors), summary: record.summary || '', abstract: record.abstract || '', description: listify(record.description), region: record.region || 'Global / Comparative', country: record.country || '', community: record.community || '', period: record.period || '', concepts: uniqueValues(record.concepts || []), themes: uniqueValues(record.themes || []), tags: uniqueValues(record.tags || []), rights: record.rights || 'Check original source before reuse.', rightsStatus: rights.rightsStatus, licence: rights.licence, accessType: rights.accessType, reusePermission: record.reusePermission || (canUseMedia ? 'Check Original Source' : 'No Reuse Without Permission'), verificationStatus: rights.verificationStatus, culturalSensitivity: record.culturalSensitivity || 'Public', communityReviewStatus: record.communityReviewStatus || 'Not Required', provenance: record.provenance || '', source: record.source || 'External source', sourceName: record.sourceName || record.source || record.institution || 'External source', sourceType: record.sourceType || inferSourceType(record.source || record.institution || ''), cat: record.cat || 'External source results', type: record.type || 'External record', collection: record.collection || '', institution: record.institution || record.source || '', language: uniqueValues(record.language || []), sourceUrl: safeSourceUrl, sourceActionLabel: record.sourceActionLabel || 'View source', externalLinks: (record.externalLinks || []).filter(link => link && safeUrl(link.url)).map(link => ({label:link.label || 'Open link', url:safeUrl(link.url)})), sourcePathways: uniqueValues(record.sourcePathways || ['External source adapter']), notes: listify(record.notes), archiveIdentifier: record.archiveIdentifier || '', recordIdentifier: record.recordIdentifier || record.id, material: record.material || '', medium: record.medium || '', citation: record.citation || '', relatedRecords: listify(record.relatedRecords), images: canUseMedia ? (record.images || []).filter(image => safeUrl(image.src || image.url)).map(image => ({src:safeUrl(image.src || image.url), alt:image.alt || record.title, caption:image.caption || ''})) : [], resultMode: record.resultMode || 'live', trustScore: Number(record.trustScore || 0.75), liveSourceHint: record.liveSourceHint || '', rightsMetadataFound: rights.verificationStatus !== 'Unverified', externalRightsRow: record.externalRightsRow || null, sourceCategoryGroup: record.sourceCategoryGroup || '' };
+  return ensureResultKind({ id: record.id, title: record.title || 'Untitled record', alternateTitle: record.alternateTitle || '', creator: record.creator || 'Unknown creator', contributors: listify(record.contributors), summary: record.summary || '', abstract: record.abstract || '', description: listify(record.description), region: record.region || 'Global / Comparative', country: record.country || '', community: record.community || '', period: record.period || '', concepts: uniqueValues(record.concepts || []), themes: uniqueValues(record.themes || []), tags: uniqueValues(record.tags || []), rights: record.rights || 'Check original source before reuse.', rightsStatus: rights.rightsStatus, licence: rights.licence, accessType: rights.accessType, reusePermission: record.reusePermission || (canUseMedia ? 'Check Original Source' : 'No Reuse Without Permission'), verificationStatus: rights.verificationStatus, culturalSensitivity: record.culturalSensitivity || 'Public', communityReviewStatus: record.communityReviewStatus || 'Not Required', provenance: record.provenance || '', source: record.source || 'External source', sourceName: record.sourceName || record.source || record.institution || 'External source', sourceType: record.sourceType || inferSourceType(record.source || record.institution || ''), cat: record.cat || 'External source results', type: record.type || 'External record', collection: record.collection || '', institution: record.institution || record.source || '', language: uniqueValues(record.language || []), sourceUrl: safeSourceUrl, sourceActionLabel: record.sourceActionLabel || 'View source', externalLinks: (record.externalLinks || []).filter(link => link && safeUrl(link.url)).map(link => ({label:link.label || 'Open link', url:safeUrl(link.url)})), sourcePathways: uniqueValues(record.sourcePathways || ['External source adapter']), notes: listify(record.notes), archiveIdentifier: record.archiveIdentifier || '', recordIdentifier: record.recordIdentifier || record.id, material: record.material || '', medium: record.medium || '', citation: record.citation || '', relatedRecords: listify(record.relatedRecords), images: canUseMedia ? buildLiveRecordImages(record) : [], resultMode: record.resultMode || 'live', resultKind: record.resultKind || '', trustScore: Number(record.trustScore || 0.75), liveSourceHint: record.liveSourceHint || '', rightsMetadataFound: rights.verificationStatus !== 'Unverified', externalRightsRow: record.externalRightsRow || null, sourceCategoryGroup: record.sourceCategoryGroup || '' });
 }
-function getRecordByIdAny(id){ return RECORDS_BY_ID.get(id) || TRANSIENT_RESULTS_BY_ID.get(id) || null; }
+function getRecordByIdAny(id) {
+  const local = RECORDS_BY_ID.get(id);
+  if (local) return local;
+  const transient = TRANSIENT_RESULTS_BY_ID.get(id);
+  if (transient) return transient;
+  const persisted = readPersistedTransientRecord(id);
+  if (persisted) {
+    TRANSIENT_RESULTS_BY_ID.set(id, persisted);
+    return persisted;
+  }
+  return null;
+}
 function resultModeLabel(mode){ return sourceOriginValue(mode); }
 function getResultMode(record){ if (record.resultMode) return record.resultMode; if (record.source && record.source !== 'Local Bank' && record.source !== 'African Philosophy Working Library') return 'hybrid'; return 'local'; }
 
@@ -3821,6 +4954,7 @@ function buildInstitutionalSearchLinks(query){
     recordIdentifier:`${id}-${slugify(normalized)}`,
     archiveIdentifier:`${id.toUpperCase()}-${slugify(normalized)}`,
     resultMode:'external_handoff',
+    resultKind:'handoff',
     trustScore:trust,
     liveSourceHint:hint
   });
@@ -3849,12 +4983,12 @@ function buildInstitutionalSearchLinks(query){
   ];
 }
 
-function makeExternalFallbacks(query){ return buildExternalDiscovery(query).map((source, index) => normalizeLiveRecord({ id:`handoff-${slugify(source.name + '-' + query + '-' + index)}`, title:`Search ${source.name}`, creator: source.region || 'External archive', summary: source.desc, abstract: `No strong local match was found, so this handoff opens ${source.name} directly for broader archive discovery.`, description:[source.desc], type:'External handoff', cat:'External source pathways', region: source.region || 'Global', collection:'External Source Handoffs', institution: source.name, source: source.name, sourceUrl: source.actionUrl, sourceActionLabel: source.actionLabel || 'Open source', externalLinks: source.url && source.url !== source.actionUrl ? [{label:'Source home', url:source.url}] : [], notes:['This result is a handoff to the source institution or discovery service rather than a hosted local archive record.'], sourcePathways:['Source handoff router', source.name], resultMode:'external_handoff', trustScore:0.55, liveSourceHint:'handoff' })); }
+function makeExternalFallbacks(query){ return buildExternalDiscovery(query).map((source, index) => normalizeLiveRecord({ id:`handoff-${slugify(source.name + '-' + query + '-' + index)}`, title:`Search ${source.name}`, creator: source.region || 'External archive', summary: source.desc, abstract: `No strong local match was found, so this handoff opens ${source.name} directly for broader archive discovery.`, description:[source.desc], type:'External handoff', cat:'External source pathways', region: source.region || 'Global', collection:'External Source Handoffs', institution: source.name, source: source.name, sourceUrl: source.actionUrl, sourceActionLabel: source.actionLabel || 'Open source', externalLinks: source.url && source.url !== source.actionUrl ? [{label:'Source home', url:source.url}] : [], notes:['This result is a handoff to the source institution or discovery service rather than a hosted local archive record.'], sourcePathways:['Source handoff router', source.name], resultMode:'external_handoff', resultKind:'collection', trustScore:0.55, liveSourceHint:'handoff' })); }
 function scoreBlendedResult(record, query){
   const context = buildQueryContext(query);
   const base = scoreRecord(record, context);
   const mode = getResultMode(record);
-  const modeBonus = {local:18, hybrid:12, live:7, external_handoff:2}[mode] || 0;
+  const modeBonus = {local:6, hybrid:4, live:2, external_handoff:0}[mode] || 0;
   const descriptionText = Array.isArray(record.description)
     ? record.description.join(' ')
     : (record.description || '');
@@ -3868,111 +5002,255 @@ function scoreBlendedResult(record, query){
 }
 function dedupeBlendedResults(items, query){ const seen = new Map(); const ranked = items.filter(Boolean).map(item => ({item, score: scoreBlendedResult(item, query || libraryQuery)})).sort((a,b) => b.score - a.score || a.item.title.localeCompare(b.item.title)); for (const entry of ranked){ const key = normalizeComparable([entry.item.title, entry.item.creator, entry.item.period].join(' ')); if (!seen.has(key)) seen.set(key, entry); } return [...seen.values()].map(entry => entry.item); }
 function normalizeAdapterResult(value) {
-  if (Array.isArray(value)) return { items: value, sourceStatuses: [], notices: null, openAccessFetchFailed: false };
+  if (Array.isArray(value)) {
+    return {
+      items: value,
+      meta: null,
+      sourceStatuses: [],
+      notices: null,
+      openAccessFetchFailed: false,
+      adapterError: null,
+    };
+  }
   if (value && typeof value === "object" && Array.isArray(value.items)) {
     return {
       items: value.items,
+      meta: value.meta || null,
       sourceStatuses: Array.isArray(value.sourceStatuses) ? value.sourceStatuses : [],
       notices: value.notices || null,
       openAccessFetchFailed: Boolean(value.openAccessFetchFailed),
+      adapterError: value.error ? String(value.error) : null,
     };
   }
-  return { items: [], sourceStatuses: [], notices: null, openAccessFetchFailed: false };
+  return {
+    items: [],
+    meta: null,
+    sourceStatuses: [],
+    notices: null,
+    openAccessFetchFailed: false,
+    adapterError: null,
+  };
+}
+
+function buildLiveStatusesFromDiscoverySections() {
+  return LIVE_SOURCE_ADAPTERS.map((adapter) => {
+    const sectionId = mapAdapterIdToDiscoverySection(adapter.id);
+    const section = discoverySections[sectionId];
+    if (section?.state === "error") {
+      return {
+        label: adapter.label,
+        state: "fail",
+        count: 0,
+        detail: section.error || "unavailable",
+      };
+    }
+    const count = section?.displayedCount || 0;
+    return {
+      label: adapter.label,
+      state: count > 0 ? "ok" : section?.state === "loading" ? "loading" : "empty",
+      count,
+    };
+  });
 }
 async function fetchLiveResults(query){
   const normalizedQuery = query.trim();
   if (!normalizedQuery) return [];
   console.log('[LIVE] fetchLiveResults start', { query: normalizedQuery });
   if (LIVE_RESULT_CACHE.has(normalizedQuery)) {
-    console.log('[LIVE] cache hit', normalizedQuery);
     const cached = LIVE_RESULT_CACHE.get(normalizedQuery);
-    liveResults = cached;
-    externalDiscovery = cached.filter(item => getResultMode(item) === 'external_handoff');
-    liveStatus = { state: 'done', message: '', sources: liveStatus.sources || [], openAccessWarning: '' };
-    render();
-    return cached;
+    const cacheFresh =
+      typeof cached?.cachedAt === "number" &&
+      Date.now() - cached.cachedAt < LIVE_RESULT_CACHE_TTL_MS;
+    const cacheValid =
+      cacheFresh &&
+      cached?.version === LIVE_RESULT_CACHE_VERSION &&
+      (!cached?.sections?.["semantic-scholar"] ||
+        cached.sections["semantic-scholar"].state !== "error" ||
+        (cached.sections["semantic-scholar"].displayedCount || 0) > 0);
+    if (cacheValid) {
+      console.log("[LIVE] cache hit", normalizedQuery);
+      if (cached?.sections) {
+        discoverySections = cached.sections;
+        syncLiveResultsFromDiscoverySections();
+      } else {
+        liveResults = Array.isArray(cached) ? cached : [];
+        externalDiscovery = liveResults.filter((item) => getResultMode(item) === "external_handoff");
+      }
+      const totalDisplayed = DISCOVERY_SECTION_ORDER.reduce(
+        (sum, id) => sum + (discoverySections[id]?.displayedCount || 0),
+        0,
+      );
+      liveStatus = {
+        state: "done",
+        message: totalDisplayed
+          ? `Showing ${totalDisplayed} external discovery result${totalDisplayed === 1 ? "" : "s"} for “${normalizedQuery}”.`
+          : "",
+        sources: buildLiveStatusesFromDiscoverySections(),
+        openAccessWarning: "",
+      };
+      render();
+      return liveResults;
+    }
+    LIVE_RESULT_CACHE.delete(normalizedQuery);
   }
 
-  // Reset incremental state
+  resetDiscoverySections();
   openAccessNotices = null;
-  const gathered = [];
-  const statuses = LIVE_SOURCE_ADAPTERS.map(adapter => ({ label: adapter.label, state: 'loading' }));
-  let openAccessWarning = '';
+  const statuses = LIVE_SOURCE_ADAPTERS.map((adapter) => ({ label: adapter.label, state: "loading" }));
+  let openAccessWarning = "";
   const fallbacks = makeExternalFallbacks(normalizedQuery);
-  fallbacks.forEach(item => TRANSIENT_RESULTS_BY_ID.set(item.id, item));
+  fallbacks.forEach((item) => persistTransientRecord(item));
+  applyDiscoverySection("handoffs", {
+    results: fallbacks,
+    count: fallbacks.length,
+    state: fallbacks.length ? "done" : "empty",
+    error: null,
+  });
 
-  // Tokenise current query so a slow response that resolves after a new
-  // search doesn't overwrite the visible results.
   fetchLiveResults._token = (fetchLiveResults._token || 0) + 1;
   const token = fetchLiveResults._token;
-  const stillCurrent = () => token === fetchLiveResults._token && getEffectiveSearchQuery().trim() === normalizedQuery;
+  const stillCurrent = () =>
+    token === fetchLiveResults._token && getEffectiveSearchQuery().trim() === normalizedQuery;
 
   const publishProgress = (finalised = false) => {
     if (!stillCurrent()) return;
-    // Build display set: gathered (deduped) + a handful of registry handoffs so the
-    // grid never looks empty while heavier adapters are still pending.
-    const handoffSlots = gathered.length >= 10 ? 0 : Math.max(4, 12 - gathered.length);
-    const fallbackPool = fallbacks.slice(0, handoffSlots);
-    const combined = dedupeBlendedResults([...gathered, ...fallbackPool], normalizedQuery).slice(0, 24);
-    liveResults = combined;
-    externalDiscovery = combined.filter(item => getResultMode(item) === 'external_handoff');
+    syncLiveResultsFromDiscoverySections();
+    const totalDisplayed = DISCOVERY_SECTION_ORDER.reduce(
+      (sum, id) => sum + (discoverySections[id]?.displayedCount || 0),
+      0,
+    );
     liveStatus = {
-      state: finalised ? 'done' : 'loading',
+      state: finalised ? "done" : "loading",
       message: finalised
-        ? (gathered.length ? `Showing ${gathered.length + combined.filter(item => getResultMode(item) === 'external_handoff').length} external source results for “${normalizedQuery}”.` : `External source discovery could not return direct records for “${normalizedQuery}”, so source handoffs are shown instead.`)
+        ? totalDisplayed
+          ? `Showing ${totalDisplayed} external discovery result${totalDisplayed === 1 ? "" : "s"} for “${normalizedQuery}”.`
+          : `External source discovery could not return direct records for “${normalizedQuery}”, so source handoffs are shown instead.`
         : `Searching external sources for “${normalizedQuery}”…`,
       sources: statuses.slice(),
-      openAccessWarning
+      openAccessWarning,
     };
     render();
   };
 
-  // Render the loading state immediately so the UI never sits blank.
   publishProgress(false);
 
-  // Kick all adapters off concurrently, but render after each one resolves
-  // instead of waiting for them all.
   const tasks = LIVE_SOURCE_ADAPTERS.map((adapter, index) => {
     return Promise.resolve()
       .then(() => adapter.search(normalizedQuery))
-      .then(value => {
+      .then((value) => {
         if (!stillCurrent()) return;
-        const { items, sourceStatuses, notices, openAccessFetchFailed } = normalizeAdapterResult(value);
-        items.forEach(item => {
-          TRANSIENT_RESULTS_BY_ID.set(item.id, item);
-          gathered.push(item);
-        });
-        statuses[index] = { label: adapter.label, state: items.length ? 'ok' : 'empty', count: items.length };
+        const { items, meta, sourceStatuses, notices, openAccessFetchFailed, adapterError } =
+          normalizeAdapterResult(value);
+        const sectionId = mapAdapterIdToDiscoverySection(adapter.id);
+        items.forEach((item) => persistTransientRecord(item));
 
-        if (adapter.id === 'openAccess') {
+        if (adapterError && sectionId !== "previews" && sectionId !== "handoffs" && sectionId !== "smithsonianCollections") {
+          applyDiscoverySection(sectionId, {
+            state: "error",
+            error: adapterError,
+          });
+          statuses[index] = {
+            label: adapter.label,
+            state: "fail",
+            count: 0,
+            detail: adapterError,
+          };
+          console.warn("[LIVE] adapter error", { adapter: adapter.label, error: adapterError });
+          publishProgress(false);
+          return;
+        }
+
+        if (sectionId === "previews" || sectionId === "handoffs") {
+          const existing = discoverySections[sectionId]?.results || [];
+          let previewPagination = discoverySections[sectionId]?.previewPagination || {};
+          if (sectionId === "previews") {
+            previewPagination = {
+              ...previewPagination,
+              [adapter.id]: {
+                offset: meta?.nextOffset ?? null,
+                page: meta?.page ?? previewPagination[adapter.id]?.page ?? 1,
+                idOffset: adapter.id === "met" ? meta?.nextOffset ?? 0 : previewPagination[adapter.id]?.idOffset,
+                metIds: meta?.metIds || previewPagination[adapter.id]?.metIds,
+                hasMore: meta?.nextOffset != null,
+              },
+            };
+          }
+          applyDiscoverySection(sectionId, {
+            results: [...existing, ...items],
+            previewPagination: sectionId === "previews" ? previewPagination : undefined,
+            metObjectIds: meta?.metIds || discoverySections.previews?.metObjectIds,
+            count: null,
+            nextCursor: null,
+            nextOffset: null,
+            state: items.length ? "done" : discoverySections[sectionId]?.state || "empty",
+            error: null,
+          });
+        } else {
+          applyDiscoverySection(sectionId, {
+            results: items,
+            count: meta?.count ?? (items.length || null),
+            nextCursor: meta?.nextCursor ?? null,
+            nextOffset: meta?.nextOffset ?? null,
+            state: items.length ? "done" : "empty",
+            error: null,
+          });
+        }
+
+        statuses[index] = {
+          label: adapter.label,
+          state: items.length ? "ok" : "empty",
+          count: items.length,
+        };
+
+        if (adapter.id === "openAccess") {
           if (notices) openAccessNotices = notices;
           if (Array.isArray(sourceStatuses)) {
-            sourceStatuses.forEach(s => {
-              const st = s.state === 'fail' ? 'fail'
-                : (s.state === 'skipped' || s.state === 'unavailable') ? 'fail'
-                : (typeof s.count === 'number' && s.count > 0) ? 'ok' : 'empty';
+            sourceStatuses.forEach((s) => {
+              const st =
+                s.state === "fail"
+                  ? "fail"
+                  : s.state === "skipped" || s.state === "unavailable"
+                    ? "fail"
+                    : typeof s.count === "number" && s.count > 0
+                      ? "ok"
+                      : "empty";
               statuses.push({
-                label: s.label || s.id || 'Source',
+                label: s.label || s.id || "Source",
                 state: st,
-                count: typeof s.count === 'number' ? s.count : undefined
+                count: typeof s.count === "number" ? s.count : undefined,
               });
             });
           }
           if (openAccessFetchFailed) {
-            openAccessWarning = 'The /api/external-open-access request failed (network or HTTP error).';
-          } else if (!items.length && Array.isArray(sourceStatuses) && sourceStatuses.some(s => s.state === 'fail' || s.state === 'unavailable')) {
-            const detail = sourceStatuses.map(s => [s.label || s.id, s.message || s.state].filter(Boolean).join(': ')).filter(Boolean).join(' · ');
-            openAccessWarning = detail || 'External open-access search failed or returned no records.';
+            openAccessWarning = "The /api/external-open-access request failed (network or HTTP error).";
+          } else if (
+            !items.length &&
+            Array.isArray(sourceStatuses) &&
+            sourceStatuses.some((s) => s.state === "fail" || s.state === "unavailable")
+          ) {
+            const detail = sourceStatuses
+              .map((s) => [s.label || s.id, s.message || s.state].filter(Boolean).join(": "))
+              .filter(Boolean)
+              .join(" · ");
+            openAccessWarning = detail || "External open-access search failed or returned no records.";
           }
         }
-        console.log('[LIVE] adapter resolved', { adapter: adapter.label, count: items.length });
+        console.log("[LIVE] adapter resolved", { adapter: adapter.label, count: items.length, sectionId });
         publishProgress(false);
       })
-      .catch(error => {
+      .catch((error) => {
         if (!stillCurrent()) return;
-        console.warn('[LIVE] adapter failed', { adapter: adapter.label, error: String(error) });
-        statuses[index] = { label: adapter.label, state: 'fail', count: 0 };
-        if (adapter.id === 'openAccess' && !openAccessWarning) {
+        console.warn("[LIVE] adapter failed", { adapter: adapter.label, error: String(error) });
+        const failMessage = String(error && error.message ? error.message : error);
+        statuses[index] = { label: adapter.label, state: "fail", count: 0, detail: failMessage };
+        const sectionId = mapAdapterIdToDiscoverySection(adapter.id);
+        if (sectionId !== "handoffs" && sectionId !== "previews") {
+          applyDiscoverySection(sectionId, {
+            state: "error",
+            error: failMessage,
+          });
+        }
+        if (adapter.id === "openAccess" && !openAccessWarning) {
           openAccessWarning = `Open access aggregation failed: ${String(error && error.message ? error.message : error)}`;
         }
         publishProgress(false);
@@ -3980,18 +5258,21 @@ async function fetchLiveResults(query){
   });
 
   await Promise.allSettled(tasks);
-  if (!stillCurrent()) {
-    // A newer query has taken over — bail without touching state.
-    return liveResults;
-  }
+  if (!stillCurrent()) return liveResults;
 
-  const handoffSlots = gathered.length >= 10 ? 0 : Math.max(4, 12 - gathered.length);
-  const fallbackPool = fallbacks.slice(0, handoffSlots);
-  const combined = dedupeBlendedResults([...gathered, ...fallbackPool], normalizedQuery).slice(0, 24);
-  console.log('[LIVE] combined results', { gathered: gathered.length, fallbackPool: fallbackPool.length, combined: combined.length });
-  LIVE_RESULT_CACHE.set(normalizedQuery, combined);
+  console.log("[LIVE] discovery sections complete", {
+    openalex: discoverySections.openalex?.displayedCount,
+    core: discoverySections.core?.displayedCount,
+    crossref: discoverySections.crossref?.displayedCount,
+  });
+  LIVE_RESULT_CACHE.set(normalizedQuery, {
+    version: LIVE_RESULT_CACHE_VERSION,
+    cachedAt: Date.now(),
+    sections: JSON.parse(JSON.stringify(discoverySections)),
+    liveResults: liveResults.slice(),
+  });
   publishProgress(true);
-  return combined;
+  return liveResults;
 }
 function maybeFetchLiveResults(query){
   const normalizedQuery = query.trim();
@@ -4264,6 +5545,7 @@ function renderCard(record) {
   const mode = getResultMode(record);
   const streamOrigin = libraryStreamOriginLabel(record);
   const streamOriginClass = libraryStreamOriginClass(record);
+  const sourceSlug = libraryCardSourceSlug(record);
   const subSource = record.sourceName || record.institution || record.source || 'Archive record';
   const actionHint = mode === 'external_handoff' ? 'Open source' : 'Open record';
   const sourceUrl = safeUrl(record.sourceUrl);
@@ -4279,17 +5561,25 @@ function renderCard(record) {
     ? `<div class="record-card-source">${sourceBits.join(' <span class="record-card-source-dot" aria-hidden="true">·</span> ')}</div>`
     : "";
 
-  const primarySourceControl = sourceUrl
-    ? `<a class="archiveAction archiveActionPrimary" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer" data-stop-card-open="true" aria-label="View source (opens in new tab)">
+  const externalActionLabel = record.sourceActionLabel || "View at source";
+  const externalSourceControl = sourceUrl
+    ? `<a class="archiveAction archiveActionOutline" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer" data-stop-card-open="true" aria-label="${escapeHtml(externalActionLabel)} (opens in new tab)">${escapeHtml(externalActionLabel)} ↗</a>`
+    : "";
+  const primarySourceControl =
+    mode === "live" || (mode === "external_handoff" && getResultKind(record) === "collection")
+      ? `<button type="button" class="archiveAction archiveActionPrimary" data-card-open-record aria-label="View full record details">${mode === "external_handoff" ? "Open collection" : "Open record"}</button>${externalSourceControl}`
+      : sourceUrl
+        ? `<a class="archiveAction archiveActionPrimary" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer" data-stop-card-open="true" aria-label="View source (opens in new tab)">
         <span class="archiveAction__icon archiveAction__iconLeft" aria-hidden="true">→</span>
         <span class="archiveAction__text">View source</span>
         <span class="archiveAction__icon archiveAction__iconRight" aria-hidden="true">→</span>
       </a>`
-    : `<button type="button" class="archiveAction archiveActionOutline" data-card-open-record aria-label="View full record details">View details</button>`;
+        : `<button type="button" class="archiveAction archiveActionOutline" data-card-open-record aria-label="View full record details">View details</button>`;
 
   const recordTypeLabel = escapeHtml(displayCardRecordType(record).toUpperCase());
+  const handoffLayerClass = getResultRankGroup(record) === 1 ? " is-handoff-layer" : "";
 
-  return `<article class="card record-card archive-card archive-record-card${hasThumb ? " has-image has-thumb" : " no-image no-thumb"}" data-id="${escapeHtml(record.id)}" data-mode="${escapeHtml(mode)}" data-origin="${escapeHtml(streamOrigin)}" data-trust="${escapeHtml(trustState)}" ${mode === 'external_handoff' && sourceUrl ? `data-url="${escapeHtml(sourceUrl)}"` : ''} role="button" tabindex="0" aria-label="${escapeHtml(actionHint)} ${escapeHtml(record.title)}">
+  return `<article class="card record-card archive-card archive-record-card search-result-card${handoffLayerClass}${hasThumb ? " has-image has-thumb" : " no-image no-thumb"}" data-id="${escapeHtml(record.id)}" data-mode="${escapeHtml(mode)}" data-source="${escapeHtml(sourceSlug)}" data-origin="${escapeHtml(streamOrigin)}" data-trust="${escapeHtml(trustState)}" data-result-kind="${escapeHtml(getResultKind(record))}" ${mode === 'external_handoff' && sourceUrl ? `data-url="${escapeHtml(sourceUrl)}"` : ''} role="button" tabindex="0" aria-label="${escapeHtml(actionHint)} ${escapeHtml(record.title)}">
     <div class="record-card-body archive-card-body">
       <div class="record-card-label-row">
         <span class="record-card-label type-label">${recordTypeLabel}</span>
@@ -4328,6 +5618,7 @@ function renderCard(record) {
 function renderRecord() {
   const record = getRecordByIdAny(selectedRecordId);
   if (!record) {
+    const isHydratableLiveRecord = /^live-smithsonian-/i.test(String(selectedRecordId || ""));
     return `<div class="page active">
         <div class="detail record-detail-page">
           <div class="detail-shell record-detail-shell">
@@ -4339,9 +5630,8 @@ function renderRecord() {
               <span>Record</span>
             </div>
             <div class="empty record-empty" role="status">
-              <h3>Record not found</h3>
-              <p>The requested record is not available in the archive index or current external result cache. Return to the library and continue browsing.</p>
-            </div>
+              <h3>${isHydratableLiveRecord ? "Loading Smithsonian record…" : "Record not found"}</h3>
+              <p>${isHydratableLiveRecord ? "Fetching live metadata from Smithsonian Open Access. If this takes more than a few seconds, return to the library and open the result again." : "The requested record is not available in the archive index or current external result cache. Return to the library and continue browsing."}</p>
           </div>
         </div>
       </div>`;
@@ -4428,12 +5718,13 @@ function renderRecord() {
           <div class="detail-type">${badges}</div>
           <h1 class="record-detail-title">${escapeHtml(record.title)}</h1>
           ${record.alternateTitle ? `<div class="detail-alt record-alternate-title">${escapeHtml(record.alternateTitle)}</div>` : ''}
-          <div class="detail-creator record-subtitle">${escapeHtml(record.creator)}</div>
-          <div class="detail-subline">
-            ${record.institution ? `<span>${escapeHtml(record.institution)}</span>` : ''}
-            ${record.collection ? `<span>${escapeHtml(record.collection)}</span>` : ''}
+          <div class="detail-creator record-detail-author">${escapeHtml(record.creator)}</div>
+          <div class="detail-subline record-header-meta">
+            <span class="record-header-source">${escapeHtml(libraryStreamOriginLabel(record))}</span>
+            ${record.period ? `<span>${escapeHtml(record.period)}</span>` : ''}
             ${record.country ? `<span>${escapeHtml(record.country)}</span>` : ''}
-            ${record.sourceUrl ? `<span class="detail-outbound"><a class="inline-link" href="${escapeHtml(record.sourceUrl)}" target="_blank" rel="noopener noreferrer">Open original source ↗</a></span>` : ''}
+            ${extractRecordDoi(record) ? `<span class="record-header-doi"><a class="inline-link" href="https://doi.org/${escapeHtml(extractRecordDoi(record))}" target="_blank" rel="noopener noreferrer">doi:${escapeHtml(extractRecordDoi(record))}</a></span>` : ''}
+            ${record.sourceUrl ? `<span class="detail-outbound"><a class="inline-link" href="${escapeHtml(record.sourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(record.sourceActionLabel || "Open original source")} ↗</a></span>` : ''}
           </div>
         </header>
 
@@ -4457,10 +5748,7 @@ function renderRecord() {
               ${primary.content.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join('')}
             </section>
             ${secondary.map(section => `<section class="detail-section alt"><h2>${escapeHtml(section.label)}</h2><div class="detail-copy">${section.content.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join('')}</div></section>`).join('')}
-            <section class="detail-section">
-              <h2>Metadata</h2>
-              <table class="meta-table record-metadata metadata-table">${recordDetailMetadataRows.map(([label, value]) => `<tr><td>${escapeHtml(label)}</td><td>${escapeHtml(value)}</td></tr>`).join('')}</table>
-            </section>
+            ${renderRecordMetadataSections(recordDetailMetadataRows)}
             ${renderTagSection('Concepts', record.concepts, 'concept-tag')}
             ${renderTagSection('Knowledge Areas', record.knowledgeAreas || record.themes, 'theme-chip')}
             ${renderTagSection('Tags', record.tags)}
@@ -4495,7 +5783,16 @@ function renderRecord() {
     </div>
   </div>`;
 }
-function renderLiveStatus(){ const effectiveQuery = getEffectiveSearchQuery(); if (!effectiveQuery || !sourceMode) return ''; const alertText = liveStatus.state === "error" ? [liveStatus.message || "External source discovery failed.", liveStatus.openAccessWarning].filter(Boolean).join(" ") : (liveStatus.openAccessWarning || ""); const alertHtml = alertText ? `<div class="live-status-warning" role="alert">${escapeHtml(alertText)}</div>` : ""; return `<div class="source-status">${alertHtml}<div class="live-status-detail"><div>${escapeHtml(liveStatus.message || 'External source discovery is ready when archive results are sparse.')}</div>${liveStatus.sources && liveStatus.sources.length ? `<div class="live-status-meta">${liveStatus.sources.map(source => `<span class="live-status-chip ${source.state === 'ok' ? 'ok' : source.state === 'fail' ? 'fail' : ''}">${escapeHtml(source.label)}${typeof source.count === 'number' ? ` · ${source.count}` : ''}</span>`).join('')}</div>` : ''}</div></div>`; }
+function renderLiveStatus(){ const effectiveQuery = getEffectiveSearchQuery(); if (!effectiveQuery || !sourceMode) return ''; const alertText = liveStatus.state === "error" ? [liveStatus.message || "External source discovery failed.", liveStatus.openAccessWarning].filter(Boolean).join(" ") : (liveStatus.openAccessWarning || ""); const alertHtml = alertText ? `<div class="live-status-warning" role="alert">${escapeHtml(alertText)}</div>` : ""; return `<div class="source-status">${alertHtml}<div class="live-status-detail"><div>${escapeHtml(liveStatus.message || 'External source discovery is ready when archive results are sparse.')}</div>${liveStatus.sources && liveStatus.sources.length ? `<div class="live-status-meta">${liveStatus.sources.map(source => `<span class="live-status-chip ${source.state === 'ok' ? 'ok' : source.state === 'fail' ? 'fail' : ''}">${formatLiveStatusChip(source)}</span>`).join('')}</div>` : ''}</div></div>`; }
+
+function formatLiveStatusChip(source) {
+  if (source.state === "fail") {
+    const detail = source.detail ? ` — ${source.detail}` : " — unavailable";
+    return `${escapeHtml(source.label)}${escapeHtml(detail)}`;
+  }
+  if (source.state === "loading") return `${escapeHtml(source.label)} · …`;
+  return `${escapeHtml(source.label)}${typeof source.count === "number" ? ` · ${source.count}` : ""}`;
+}
 function renderSearchSaveAction(effectiveQuery){
   if (!effectiveQuery) return "";
   const defaultLabel = effectiveQuery || libraryQuery || "";
@@ -4583,8 +5880,65 @@ function weaveLibraryStreamResults(groups) {
   return dedupeLibraryStreamItems(output);
 }
 
-function libraryStreamOriginLabel(record) {
+/** Slug for `data-source` on unified search cards (matches CSS accent tokens). */
+function libraryCardSourceSlug(record) {
+  const hint = String(record.liveSourceHint || "").toLowerCase();
+  const src = String(
+    [record.source, record.sourceName, record.institution, record.collection, record.sourceType]
+      .filter(Boolean)
+      .join(" "),
+  ).toLowerCase();
+
+  if (hint === "openalex" || record.unifiedSourceKey === "openalex") return "openalex";
+  if (hint === "core" || record.unifiedSourceKey === "core") return "core";
+  if (hint === "crossref" || record.unifiedSourceKey === "crossref") return "crossref";
+  if (hint === "semantic-scholar" || record.unifiedSourceKey === "semantic-scholar") return "semantic-scholar";
+  if (hint === "wikidata" || record.unifiedSourceKey === "wikidata") return "wikidata";
+  if (hint === "smithsonian" || record.unifiedSourceKey === "smithsonian") return "smithsonian";
+  if (hint === "wikimedia") return "catalogue-wikimedia";
+  if (hint === "openlibrary") return "internet-archive";
+  if (hint === "loc") return "catalogue-loc";
+  if (hint === "met") return "catalogue-met";
+  if (hint === "trove" || src.includes("trove")) return "trove";
+  if (hint.includes("semantic") || src.includes("semantic scholar")) return "semantic-scholar";
+
+  if (src.includes("wikidata")) return "wikidata";
+
+  if (
+    record.unifiedSourceKey === "openaccess" ||
+    record.liveSourceHint === "openAccessPack" ||
+    isOpenAccessDiscoveryRecord(record)
+  ) {
+    if (src.includes("doaj")) return "doaj";
+    if (src.includes("europe pmc") || src.includes("europepmc")) return "europe-pmc";
+    if (src.includes("internet archive") || src.includes("archive.org")) return "internet-archive";
+    return "openaccess";
+  }
+
+  if (record.unifiedSourceKey === "handoff" || getResultMode(record) === "external_handoff") {
+    return "handoff";
+  }
+
   const mode = getResultMode(record);
+  if (mode === "local" || mode === "hybrid" || record.unifiedSourceKey === "archive") return "archive";
+
+  if (record.unifiedSourceKey && record.unifiedSourceKey !== "external") {
+    return String(record.unifiedSourceKey).replace(/_/g, "-");
+  }
+
+  return "external";
+}
+
+function libraryStreamOriginLabel(record) {
+  if (record.unifiedSourceLabel) return record.unifiedSourceLabel;
+  const mode = getResultMode(record);
+  const hint = String(record.liveSourceHint || "").toLowerCase();
+  if (hint === "openalex") return "OpenAlex";
+  if (hint === "core") return "CORE";
+  if (hint === "crossref") return "Crossref";
+  if (hint === "semantic-scholar") return "Semantic Scholar";
+  if (hint === "wikidata") return "Wikidata";
+  if (hint === "smithsonian") return "Smithsonian";
   const text = [
     record.liveSourceHint,
     record.sourceType,
@@ -4604,20 +5958,13 @@ function libraryStreamOriginLabel(record) {
     return "Open Access";
   }
   if (mode === "external_handoff") return "Source Handoff";
-  if (mode === "live") return "External Source";
+  if (mode === "live") return getUnifiedSourceLabel(getUnifiedSourceKey(record));
   return "Archive";
 }
 
 function libraryStreamOriginClass(record) {
-  const label = libraryStreamOriginLabel(record);
-  const map = {
-    Archive: "is-origin-archive",
-    "External Source": "is-origin-external",
-    "Open Access": "is-origin-open-access",
-    "Source Handoff": "is-origin-handoff",
-    "Public Domain": "is-origin-public-domain"
-  };
-  return map[label] || "is-origin-archive";
+  const slug = libraryCardSourceSlug(record);
+  return `is-source-${slug}`;
 }
 
 function renderLibraryResultsSection({ className, eyebrow, title, description, countLabel, bodyHtml, loadMoreHtml = "" }) {
@@ -4636,15 +5983,199 @@ function renderLibraryResultsSection({ className, eyebrow, title, description, c
   </section>`;
 }
 
+function isAnyDiscoverySectionLoadingMore() {
+  return DISCOVERY_SECTION_ORDER.some((id) => discoverySections[id]?.loadingMore);
+}
+
+function formatDiscoverySectionCountLabel(sectionId, section, shown) {
+  const meta = DISCOVERY_SECTION_LABELS[sectionId];
+  if (section.count != null && section.count > shown) {
+    return `Showing ${shown} of ${Number(section.count).toLocaleString()} results`;
+  }
+  if (section.count != null) {
+    return `${shown} of ${Number(section.count).toLocaleString()} results`;
+  }
+  if (meta?.preview && shown > 0) {
+    return `Preview: ${shown} results (more available at source)`;
+  }
+  return `${shown} result${shown === 1 ? "" : "s"}`;
+}
+
+function canLoadMoreDiscoverySection(sectionId) {
+  if (sectionId === "previews") return canLoadMorePreviewsSection();
+  if (sectionId === "openAccess") return canLoadMoreOpenAccessReleased();
+  const section = discoverySections[sectionId];
+  const meta = DISCOVERY_SECTION_LABELS[sectionId];
+  if (!sourceMode || !section || !meta?.loadMore) return false;
+  if (section.state === "error") return false;
+  const shown = filterDisplayedRecords(section.results).filter((item) => getResultMode(item) === "live").length;
+  if (!shown && section.state !== "loading") return false;
+  if (section.nextCursor) return true;
+  if (section.nextOffset != null) {
+    if (section.count != null) return shown < section.count;
+    return true;
+  }
+  return false;
+}
+
+/** Per-source blocks (used only inside advanced load-more drawer). */
+function renderDiscoverySourceSections() {
+  const renderOrder = ["openalex", "core", "crossref", "semantic-scholar", "wikidata", "smithsonian", "openAccess", "previews"];
+  return renderOrder
+    .map((sectionId) => {
+      const section = discoverySections[sectionId];
+      const meta = DISCOVERY_SECTION_LABELS[sectionId];
+      if (!section) return "";
+      const cards = filterDisplayedRecords(section.results).filter((item) => getResultMode(item) === "live");
+      if (!cards.length && section.state !== "loading" && !section.error) return "";
+
+      const shown = cards.length;
+      const countLabel = formatDiscoverySectionCountLabel(sectionId, section, shown);
+      const loadMoreHtml = canLoadMoreDiscoverySection(sectionId)
+        ? `<div class="load-more-wrap"><button type="button" class="library-results-load-more load-more-btn" data-discovery-load-more="${sectionId}">${section.loadingMore ? "Loading…" : meta.loadMore}</button></div>`
+        : "";
+      const errorHtml = section.error
+        ? `<p class="library-results-error" role="status">${escapeHtml(section.error)}</p>`
+        : "";
+      const loadingHtml =
+        section.state === "loading" && !shown
+          ? `<p class="library-results-loading" role="status">Loading ${escapeHtml(meta.title.toLowerCase())}…</p>`
+          : "";
+
+      return renderLibraryResultsSection({
+        className: `library-results-discovery library-results-${sectionId}`,
+        eyebrow: "External discovery",
+        title: meta.title,
+        description: meta.preview
+          ? "Browser preview from a public API — use Load more on scholarly sections for full pagination."
+          : "Scholarly and open metadata from this source.",
+        countLabel,
+        bodyHtml: `${errorHtml}${loadingHtml}${cards.length ? `<div class="library-results-grid card-grid results-grid">${cards.map(renderCard).join("")}</div>` : ""}`,
+        loadMoreHtml,
+      });
+    })
+    .filter(Boolean)
+    .join("");
+}
+
+function renderUnifiedSortControls() {
+  const activeLabel =
+    UNIFIED_SORT_OPTIONS.find((option) => option.id === unifiedStreamSort)?.label || "Relevance";
+  const sortHint =
+    unifiedStreamSort === "relevance"
+      ? "Sorted by relevance"
+      : `Sorted by ${activeLabel.toLowerCase()}`;
+
+  return `<div class="library-unified-sortbar">
+    <span class="library-unified-sort-label">${escapeHtml(sortHint)}</span>
+    <label class="library-unified-sort-control">
+      <span class="library-unified-sort-sr">Sort results</span>
+      <select id="unifiedSortSelect" data-unified-sort aria-label="Sort results">
+        ${UNIFIED_SORT_OPTIONS.map(
+          (option) =>
+            `<option value="${option.id}"${unifiedStreamSort === option.id ? " selected" : ""}>${escapeHtml(option.label)}</option>`,
+        ).join("")}
+      </select>
+    </label>
+  </div>`;
+}
+
+function renderUnifiedSourceFilters() {
+  return `<div class="library-unified-filters" role="toolbar" aria-label="Filter results by source">${UNIFIED_SOURCE_FILTERS.map(
+    (filter) =>
+      `<button type="button" class="library-unified-filter${unifiedStreamFilter === filter.id ? " is-active" : ""}" data-unified-filter="${filter.id}">${escapeHtml(filter.label)}</button>`,
+  ).join("")}</div>`;
+}
+
+function renderUnifiedResultsGrid(records) {
+  let dividerShown = false;
+  return records
+    .map((record) => {
+      let html = "";
+      if (!dividerShown && getResultRankGroup(record) === 1) {
+        html += `<div class="library-unified-handoff-divider" role="separator"><span>Related archive platforms and collection handoffs</span></div>`;
+        dividerShown = true;
+      }
+      html += renderCard(record);
+      return html;
+    })
+    .join("");
+}
+
+function renderUnifiedSearchStream(effectiveQuery) {
+  const rankedAll = mergeAndRankSearchResults({
+    query: effectiveQuery || libraryQuery,
+    internalResults: getInternalResultsForMerge(),
+    includeHandoffs: sourceMode,
+  });
+  const filtered = rankedAll.filter((record) => matchesUnifiedStreamFilter(record, unifiedStreamFilter));
+  const visible = filtered.slice(0, unifiedStreamVisibleCount);
+  const estimatedTotal = estimateUnifiedTotalCount(rankedAll);
+  const sourceNames = getUnifiedSourceNames(rankedAll);
+  const canLoadMore = canLoadMoreUnifiedStream(filtered);
+  const streamExhausted = isUnifiedStreamExhausted(filtered);
+  const hasBufferedMore = unifiedStreamVisibleCount < filtered.length;
+  const summaryCount =
+    estimatedTotal > filtered.length
+      ? `Showing ${visible.length} of ${filtered.length.toLocaleString()} loaded (${estimatedTotal.toLocaleString()} reported across sources)`
+      : `Showing ${visible.length} of ${filtered.length.toLocaleString()} results`;
+  const sourceSummary =
+    sourceNames.length > 1
+      ? ` across ${sourceNames.join(", ")}`
+      : sourceNames.length === 1
+        ? ` from ${sourceNames[0]}`
+        : "";
+
+  const statusLine = sourceMode ? getDiscoverySourcesStatusLine() : "Archive search";
+  const openAccessStrip = sourceMode && effectiveQuery ? renderOpenAccessNoticeStrip() : "";
+  const loadingHint =
+    liveStatus.state === "loading"
+      ? `<p class="library-unified-loading" role="status">Searching external sources…</p>`
+      : "";
+
+  const loadMoreLabel = unifiedStreamLoadingMore
+    ? "Loading…"
+    : hasBufferedMore
+      ? "Show more results"
+      : "Load more results";
+
+  const endMessage = streamExhausted
+    ? `<p class="library-unified-end" role="status">You’ve reached the end of available results.</p>`
+    : "";
+
+  const loadMoreBlock = canLoadMore
+    ? `<div class="load-more-wrap library-unified-load-more">
+        <button type="button" id="loadMoreUnifiedBtn" class="library-results-load-more load-more-btn"${unifiedStreamLoadingMore ? " disabled" : ""}>${escapeHtml(loadMoreLabel)}</button>
+      </div>`
+    : streamExhausted
+      ? `<div class="load-more-wrap library-unified-load-more">${endMessage}</div>`
+      : "";
+
+  return renderLibraryResultsSection({
+    className: "library-results-unified",
+    eyebrow: "Search results",
+    title: effectiveQuery ? `Results for “${effectiveQuery}”` : "Archive search",
+    description: "",
+    countLabel: `${visible.length} shown`,
+    bodyHtml: `${openAccessStrip}<p class="library-unified-summary">${escapeHtml(summaryCount)}${escapeHtml(sourceSummary)}.</p><p class="library-unified-status">${escapeHtml(statusLine)}</p>${renderUnifiedSortControls()}${renderUnifiedSourceFilters()}${loadingHint}${
+      visible.length
+        ? `<div class="library-results-grid card-grid results-grid library-unified-grid">${renderUnifiedResultsGrid(visible)}</div>`
+        : `<div class="empty library-empty" role="status"><p>No results match this filter yet. Try another source tab or broaden your search.</p></div>`
+    }`,
+    loadMoreHtml: loadMoreBlock,
+  });
+}
+
 function renderLibraryLoader(){
   const shouldShow = currentPage === 'library' && (
     liveStatus.state === 'loading' ||
-    coreLoadingMore
+    isAnyDiscoverySectionLoadingMore() ||
+    unifiedStreamLoadingMore
   );
 
   if (!shouldShow) return '';
 
-  const label = coreLoadingMore
+  const label = isAnyDiscoverySectionLoadingMore() || unifiedStreamLoadingMore
     ? 'Loading more results…'
     : 'Loading library results…';
 
@@ -4699,18 +6230,15 @@ function renderMobileFilterDrawer(totalResults, activeFilterCount) {
 
 function renderLibrary() {
   const effectiveQuery = getEffectiveSearchQuery();
-  const filteredExternalResults = sourceMode ? filterDisplayedRecords(liveResults) : [];
-  const liveResultsGroup = filteredExternalResults.filter(item => getResultMode(item) === "live");
-  const localArchiveResults = filterDisplayedRecords(localResults);
-  const externalResults = filteredExternalResults.filter(item => getResultMode(item) === "external_handoff");
-
-  const totalGroupedResults = liveResultsGroup.length + localArchiveResults.length + externalResults.length;
-  const displayedOpenAccess = liveResultsGroup.filter(item => isOpenAccessDiscoveryRecord(item));
-  const displayedLiveOther = liveResultsGroup.filter(item => !isOpenAccessDiscoveryRecord(item));
-  const canLoadMoreCore =
-    sourceMode &&
-    displayedLiveOther.length > 0 &&
-    (coreTotalHits === 0 || displayedLiveOther.length < coreTotalHits);
+  const rankedAll = mergeAndRankSearchResults({
+    query: effectiveQuery || libraryQuery,
+    internalResults: getInternalResultsForMerge(),
+    includeHandoffs: sourceMode,
+  });
+  const filteredCount = rankedAll.filter((record) =>
+    matchesUnifiedStreamFilter(record, unifiedStreamFilter),
+  ).length;
+  const totalGroupedResults = Math.min(unifiedStreamVisibleCount, filteredCount) || rankedAll.length;
 
   const relatedSearches = getRelatedSearchSuggestions(effectiveQuery || libraryQuery, 18);
   const collectionSuggestions = getCollectionSuggestions(effectiveQuery || libraryQuery, 8);
@@ -4723,35 +6251,10 @@ function renderLibrary() {
 
   const emptyGuide = `<div class="empty empty-guide library-empty search-empty" role="status"><h3>No matching records yet</h3><p>Try a broader search, clear filters, or explore these discovery paths.</p>${relatedSearches.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Related searches</div>${renderRelatedSearchTags(relatedSearches.slice(0, 8))}</div>` : ""}${topKnowledgeAreas.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Top knowledge areas</div>${renderRelatedSearchTags(topKnowledgeAreas.slice(0, 10))}</div>` : ""}${collectionSuggestions.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Curated collection pathways</div><div class="coll-grid">${collectionSuggestions.slice(0, 4).map(renderCollectionCard).join("")}</div></div>` : ""}${topSources.length ? `<div class="empty-guide-block"><div class="empty-guide-title">Source pathways</div><div class="source-grid">${topSources.map(source => renderSourceCard(source)).join("")}</div></div>` : ""}</div>`;
 
-  const liveSection = renderLibraryResultsSection({
-    className: "library-results-live",
-    eyebrow: "Live results",
-    title: "Live discovery results",
-    description: "Open web, publication and catalogue results returned from external discovery sources.",
-    countLabel: `${liveResultsGroup.length} result${liveResultsGroup.length !== 1 ? "s" : ""}`,
-    bodyHtml: liveResultsGroup.length
-      ? `${sourceMode && effectiveQuery ? renderOpenAccessNoticeStrip() : ""}<div class="library-results-grid card-grid results-grid">${liveResultsGroup.map(renderCard).join("")}</div>`
-      : "",
-    loadMoreHtml: canLoadMoreCore ? `<div class="load-more-wrap"><button id="loadMoreCoreBtn" class="library-results-load-more load-more-btn" type="button">${coreLoadingMore ? "Loading…" : "Load more CORE results"}</button></div>` : ""
-  });
-
-  const localSection = renderLibraryResultsSection({
-    className: "library-results-local",
-    eyebrow: "Local archive results",
-    title: "Archive records",
-    description: "Records held, created or described inside Decolonising Archive.",
-    countLabel: `${localArchiveResults.length} result${localArchiveResults.length !== 1 ? "s" : ""}`,
-    bodyHtml: localArchiveResults.length ? `<div class="library-results-grid card-grid results-grid">${localArchiveResults.map(renderCard).join("")}</div>` : ""
-  });
-
-  const externalSection = renderLibraryResultsSection({
-    className: "library-results-external",
-    eyebrow: "External results",
-    title: "External source records",
-    description: "Institutional catalogues, archive pathways and source handoffs for further discovery.",
-    countLabel: `${externalResults.length} result${externalResults.length !== 1 ? "s" : ""}`,
-    bodyHtml: externalResults.length ? `<div class="library-results-grid card-grid results-grid">${externalResults.map(renderCard).join("")}</div>` : ""
-  });
+  const unifiedSection =
+    rankedAll.length > 0 || liveStatus.state === "loading" || (sourceMode && effectiveQuery)
+      ? renderUnifiedSearchStream(effectiveQuery)
+      : "";
 
   const relatedSection = renderLibraryResultsSection({
     className: "library-results-related",
@@ -4769,19 +6272,41 @@ function renderLibrary() {
     bodyHtml: collectionSuggestions.length ? `<div class="coll-grid">${collectionSuggestions.map(renderCollectionCard).join("")}</div>` : ""
   });
 
-  const groupedResults = [
-    liveSection,
-    localSection,
-    externalSection,
-    relatedSection,
-    collectionsSection
-  ].filter(Boolean).join("");
+  const groupedResults = [unifiedSection, relatedSection, collectionsSection].filter(Boolean).join("");
   const resultsBody = totalGroupedResults > 0 || groupedResults ? groupedResults : emptyGuide;
 
   return `<div class="page active"><div class="library-layout"><aside class="sidebar">${hasFilter ? `<button class="clear-btn" id="clearBtn" type="button">Clear all filters</button>` : ""}${renderQuickFilters()}${METADATA_FILTER_GROUPS.map(group => renderMetadataFilterGroup(group, RECORDS)).join("")}</aside><div class="main-results library-blended-discovery"><div class="search-bar"><input type="text" id="mainSearch" aria-label="Search archive records and metadata" value="${escapeHtml(libraryQuery)}" placeholder="Search metadata, provenance, rights, source, and cultural protocol fields…" autocomplete="off"/><button id="localSearchBtn" type="button">Search</button><button class="secondary ${sourceMode ? "live-on" : "live-off"}" id="sourceSearchBtn" type="button">${sourceMode ? "External sources on" : "External sources off"}</button></div>${renderSearchSuggestions()}${renderRecentSearches("library")}${renderSearchSaveAction(effectiveQuery)}<div class="mobile-filter-bar"><button id="mobileFilterToggle" class="mobile-filter-btn ${mobileFiltersOpen ? "active" : ""}" type="button" aria-expanded="${mobileFiltersOpen ? "true" : "false"}" aria-controls="mobileFilterDrawer">Filters${activeFilterCount ? ` (${activeFilterCount})` : ""}</button>${activeFilterCount ? `<button id="mobileClearFilters" class="mobile-clear-btn" type="button">Clear</button>` : ""}</div>${renderMobileFilterDrawer(totalGroupedResults, activeFilterCount)}${renderLibraryLoader()}${renderLiveStatus()}<div class="results-stack library-results-stack" aria-label="${totalGroupedResults} search result${totalGroupedResults !== 1 ? "s" : ""}${effectiveQuery ? ` for “${qEsc}”` : ""}">${resultsBody}</div></div></div></div>`;
 }
 
-function applyLibraryQuery(value, clearSources = true) { const nextQuery = value.trim(); const queryChanged = nextQuery !== libraryQuery; console.log('[APPLY QUERY]', { value: nextQuery, clearSources, queryChanged, beforeLiveResults: liveResults.length }); libraryQuery = nextQuery; localResults = searchLocalRecords(getEffectiveSearchQuery() || libraryQuery); if (clearSources && queryChanged) { liveResults = []; openAccessNotices = null; externalDiscovery = []; coreOffset = coreLimit; coreTotalHits = 0; liveStatus = {state:'idle', message: getEffectiveSearchQuery() ? 'Archive results loaded. External source discovery is available.' : '', sources:[]}; } refreshBlendedDiscovery(true); }
+function applyLibraryQuery(value, clearSources = true) {
+  const nextQuery = value.trim();
+  const queryChanged = nextQuery !== libraryQuery;
+  console.log("[APPLY QUERY]", { value: nextQuery, clearSources, queryChanged, beforeLiveResults: liveResults.length });
+  libraryQuery = nextQuery;
+  localResults = searchLocalRecords(getEffectiveSearchQuery() || libraryQuery);
+  refreshArchiveSearchPool();
+  if (queryChanged) {
+    archiveLoadedCount = Math.min(DISCOVERY_PAGE_SIZE, archiveSearchPool.length);
+  } else {
+    archiveLoadedCount = Math.min(archiveLoadedCount, archiveSearchPool.length);
+  }
+  if (clearSources && queryChanged) {
+    liveResults = [];
+    openAccessNotices = null;
+    externalDiscovery = [];
+    LIVE_RESULT_CACHE.clear();
+    resetDiscoverySections();
+    resetUnifiedStreamUi();
+    liveStatus = {
+      state: "idle",
+      message: getEffectiveSearchQuery()
+        ? "Archive results loaded. External source discovery is available."
+        : "",
+      sources: [],
+    };
+  }
+  refreshBlendedDiscovery(true);
+}
 
 function closeMobileFilters() {
   mobileFiltersOpen = false;
@@ -4868,41 +6393,197 @@ function bindCardEvents() {
   });
 }
 
-async function loadMoreCoreResults() {
-  if (coreLoadingMore || !sourceMode) return;
+function appendLiveDiscoveryBatch(nextBatch) {
+  if (!Array.isArray(nextBatch) || !nextBatch.length) return 0;
+  const existingIds = new Set(liveResults.map(item => item.id));
+  let added = 0;
+  nextBatch.forEach(item => {
+    persistTransientRecord(item);
+    if (!existingIds.has(item.id)) {
+      liveResults.push(item);
+      existingIds.add(item.id);
+      added += 1;
+    }
+  });
+  return added;
+}
+
+async function loadMoreUnifiedStream() {
+  if (unifiedStreamLoadingMore) return;
+
   const effectiveQuery = getEffectiveSearchQuery();
-  if (!effectiveQuery) return;
-  console.log('[CORE LOAD MORE] start', { query: effectiveQuery, offset: coreOffset, limit: coreLimit });
-  coreLoadingMore = true;
+  const filtered = getFilteredUnifiedRanked(effectiveQuery);
+
+  if (unifiedStreamVisibleCount < filtered.length) {
+    unifiedStreamVisibleCount += UNIFIED_STREAM_STEP;
+    syncSourcePaginationStates();
+    render();
+    return;
+  }
+
+  unifiedStreamLoadingMore = true;
   render();
   try {
-    const coreAdapter = LIVE_SOURCE_ADAPTERS.find(adapter => adapter.id === 'core');
-    if (!coreAdapter) throw new Error('CORE adapter missing');
-    const nextBatch = await coreAdapter.search(effectiveQuery, {
-      offset: coreOffset,
-      limit: coreLimit
-    });
-    console.log('[CORE LOAD MORE] returned', { count: Array.isArray(nextBatch) ? nextBatch.length : 0 });
-    if (Array.isArray(nextBatch) && nextBatch.length) {
-      const existingIds = new Set(liveResults.map(item => item.id));
-      nextBatch.forEach(item => {
-        TRANSIENT_RESULTS_BY_ID.set(item.id, item);
-        if (!existingIds.has(item.id)) {
-          liveResults.push(item);
-        }
+    const tasks = [];
+    if (canLoadMoreArchive()) {
+      tasks.push(Promise.resolve().then(() => loadMoreArchivePage()));
+    }
+    if (canLoadMoreOpenAccessReleased()) {
+      tasks.push(Promise.resolve().then(() => loadMoreOpenAccessReleased()));
+    }
+    for (const sectionId of [...UNIFIED_PAGINATED_SECTION_IDS, "previews"]) {
+      if (canLoadMoreDiscoverySection(sectionId)) {
+        tasks.push(loadMoreDiscoverySection(sectionId, { skipRender: true }));
+      }
+    }
+    if (tasks.length) await Promise.allSettled(tasks);
+    unifiedStreamVisibleCount += UNIFIED_STREAM_STEP;
+  } finally {
+    unifiedStreamLoadingMore = false;
+    syncSourcePaginationStates();
+    render();
+  }
+}
+
+async function loadMorePreviewsSection(options = {}) {
+  const skipRender = Boolean(options.skipRender);
+  const section = discoverySections.previews;
+  if (!section || section.loadingMore || !sourceMode || !canLoadMorePreviewsSection()) return;
+
+  const effectiveQuery = getEffectiveSearchQuery();
+  if (!effectiveQuery) return;
+
+  discoverySections.previews = { ...section, loadingMore: true };
+  if (!skipRender) render();
+
+  const pag = section.previewPagination || {};
+  const tasks = PREVIEW_ADAPTER_IDS.filter((id) => pag[id]?.hasMore).map((adapterId) => {
+    const adapter = LIVE_SOURCE_ADAPTERS.find((item) => item.id === adapterId);
+    if (!adapter) return Promise.resolve();
+    const state = pag[adapterId] || {};
+    const searchOpts = { limit: DISCOVERY_PREVIEW_SIZE };
+    if (adapterId === "openlibrary" || adapterId === "wikimedia") {
+      searchOpts.offset = state.offset ?? 0;
+    } else if (adapterId === "loc") {
+      searchOpts.page = state.offset ?? state.page ?? 2;
+    } else if (adapterId === "met") {
+      searchOpts.idOffset = state.offset ?? state.idOffset ?? 0;
+      searchOpts.metIds = section.metObjectIds || state.metIds;
+    }
+    return adapter
+      .search(effectiveQuery, searchOpts)
+      .then((value) => {
+        const { items, meta } = normalizeAdapterResult(value);
+        const existing = discoverySections.previews?.results || [];
+        const existingIds = new Set(existing.map((item) => item.id));
+        const merged = [...existing];
+        items.forEach((item) => {
+          persistTransientRecord(item);
+          if (!existingIds.has(item.id)) {
+            merged.push(item);
+            existingIds.add(item.id);
+          }
+        });
+        const nextPag = { ...(discoverySections.previews?.previewPagination || {}) };
+        nextPag[adapterId] = {
+          offset: meta?.nextOffset ?? null,
+          page: meta?.page ?? state.page,
+          idOffset: adapterId === "met" ? meta?.nextOffset ?? 0 : state.idOffset,
+          metIds: meta?.metIds || state.metIds,
+          hasMore: meta?.nextOffset != null,
+        };
+        applyDiscoverySection("previews", {
+          results: merged,
+          previewPagination: nextPag,
+          metObjectIds: meta?.metIds || discoverySections.previews?.metObjectIds,
+          state: "done",
+          error: null,
+        });
+      })
+      .catch((error) => {
+        console.warn("[LIVE] preview adapter load-more failed", adapterId, error);
+        const nextPag = { ...(discoverySections.previews?.previewPagination || {}) };
+        nextPag[adapterId] = { ...nextPag[adapterId], hasMore: false, error: String(error?.message || error) };
+        discoverySections.previews = {
+          ...discoverySections.previews,
+          previewPagination: nextPag,
+        };
       });
-      coreOffset += coreLimit;
+  });
+
+  try {
+    await Promise.allSettled(tasks);
+  } finally {
+    discoverySections.previews.loadingMore = false;
+    if (!skipRender) render();
+  }
+}
+
+async function loadMoreDiscoverySection(sectionId, options = {}) {
+  const skipRender = Boolean(options.skipRender);
+  if (sectionId === "previews") return loadMorePreviewsSection(options);
+  if (sectionId === "openAccess") {
+    loadMoreOpenAccessReleased();
+    if (!skipRender) render();
+    return;
+  }
+
+  const section = discoverySections[sectionId];
+  if (!section || section.loadingMore || !sourceMode) return;
+  if (!canLoadMoreDiscoverySection(sectionId)) return;
+
+  const effectiveQuery = getEffectiveSearchQuery();
+  if (!effectiveQuery) return;
+
+  const adapter = LIVE_SOURCE_ADAPTERS.find((item) => item.id === sectionId);
+  if (!adapter) return;
+
+  discoverySections[sectionId] = { ...section, loadingMore: true };
+  if (!skipRender) render();
+
+  try {
+    const searchOpts = { limit: DISCOVERY_PAGE_SIZE };
+    if (sectionId === "openalex") {
+      searchOpts.cursor = section.nextCursor;
+    } else if (sectionId === "core") {
+      searchOpts.offset = section.nextOffset ?? section.results.length;
+      searchOpts.limit = coreLimit;
+    } else if (sectionId === "crossref" || sectionId === "wikidata" || sectionId === "semantic-scholar" || sectionId === "smithsonian") {
+      searchOpts.offset = section.nextOffset ?? section.results.length;
+    }
+
+    const value = await adapter.search(effectiveQuery, searchOpts);
+    const { items, meta } = normalizeAdapterResult(value);
+    const existingIds = new Set(section.results.map((item) => item.id));
+    const merged = [...section.results];
+    items.forEach((item) => {
+      persistTransientRecord(item);
+      if (!existingIds.has(item.id)) {
+        merged.push(item);
+        existingIds.add(item.id);
+      }
+    });
+
+    applyDiscoverySection(sectionId, {
+      results: merged,
+      count: meta?.count ?? section.count,
+      nextCursor: meta?.nextCursor ?? null,
+      nextOffset: meta?.nextOffset ?? null,
+      state: "done",
+      error: null,
+    });
+
+    if (sectionId === "core" && meta?.nextOffset != null) {
+      coreOffset = meta.nextOffset;
     }
   } catch (error) {
-    console.warn('[CORE LOAD MORE] failed', { error: String(error) });
-    liveStatus = {
-      state:'warning',
-      message:'CORE is temporarily busy. Try loading more again.',
-      sources:[{ label:'CORE', state:'fail', count:0 }]
-    };
+    applyDiscoverySection(sectionId, {
+      state: "error",
+      error: String(error && error.message ? error.message : error),
+    });
   } finally {
-    coreLoadingMore = false;
-    render();
+    discoverySections[sectionId].loadingMore = false;
+    if (!skipRender) render();
   }
 }
 
@@ -5000,7 +6681,7 @@ bindSuggestionItemEvents('heroSuggestions', pickHeroSuggestion);
     activeSuggestionIndex = -1;
     updateSuggestionsDOM();
   }
-}); bindSuggestionItemEvents(); } const loadMoreCoreBtn = document.getElementById('loadMoreCoreBtn'); if (loadMoreCoreBtn) { loadMoreCoreBtn.addEventListener('click', () => { loadMoreCoreResults(); }); }
+}); bindSuggestionItemEvents(); } document.querySelectorAll('[data-discovery-load-more]').forEach((btn) => { btn.addEventListener('click', () => { const sectionId = btn.getAttribute('data-discovery-load-more'); if (sectionId) loadMoreDiscoverySection(sectionId); }); }); document.querySelectorAll('[data-unified-filter]').forEach((btn) => { btn.addEventListener('click', () => { const next = btn.getAttribute('data-unified-filter'); if (!next || next === unifiedStreamFilter) return; unifiedStreamFilter = next; unifiedStreamVisibleCount = UNIFIED_STREAM_INITIAL; render(); }); }); const unifiedSortSelect = document.getElementById('unifiedSortSelect'); if (unifiedSortSelect) { unifiedSortSelect.addEventListener('change', () => { const next = unifiedSortSelect.value || 'relevance'; if (next === unifiedStreamSort) return; unifiedStreamSort = next; unifiedStreamVisibleCount = UNIFIED_STREAM_INITIAL; render(); }); } const loadMoreUnifiedBtn = document.getElementById('loadMoreUnifiedBtn'); if (loadMoreUnifiedBtn) { loadMoreUnifiedBtn.addEventListener('click', () => { loadMoreUnifiedStream(); }); }
 const copyCitationBtn = document.getElementById('copyCitationBtn'); if (copyCitationBtn && currentPage === 'record' && selectedRecordId) { copyCitationBtn.addEventListener('click', async () => { try { const record = getRecordByIdAny(selectedRecordId); if (!record) return; await copyCitation(record); const note = document.getElementById('copyCitationNote'); if (note) note.textContent = 'Copied'; window.setTimeout(() => { const resetNote = document.getElementById('copyCitationNote'); if (resetNote) resetNote.textContent = 'Copy archive citation text'; }, 1400); } catch (error) { console.error('Failed to copy citation:', error); } }); }
 const citationStyleSelect = document.getElementById('citationStyleSelect'); if (citationStyleSelect && currentPage === 'record' && selectedRecordId) { citationStyleSelect.addEventListener('change', event => { citationStyle = event.target.value || 'apa'; render(); }); }
 const copyCitationInlineBtn = document.getElementById('copyCitationInlineBtn'); if (copyCitationInlineBtn && currentPage === 'record' && selectedRecordId) { copyCitationInlineBtn.addEventListener('click', async () => { try { const record = getRecordByIdAny(selectedRecordId); if (!record) return; await navigator.clipboard.writeText(generateCitationByStyle(record, citationStyle)); copyCitationInlineBtn.textContent = '✓'; copyCitationInlineBtn.classList.add('copied'); copyCitationInlineBtn.setAttribute('aria-label', 'Citation copied'); window.setTimeout(() => { copyCitationInlineBtn.textContent = '⎘'; copyCitationInlineBtn.classList.remove('copied'); copyCitationInlineBtn.setAttribute('aria-label', 'Copy citation'); }, 1800); } catch(e) { console.warn('copy failed', e); } }); }
@@ -5171,7 +6852,26 @@ if (mobileClearFilters) { mobileClearFilters.addEventListener('click', clearMobi
 });
 const mobileFilterClearDrawer = document.getElementById('mobileFilterClearDrawer');
 if (mobileFilterClearDrawer) mobileFilterClearDrawer.addEventListener('click', clearMobileFilters);
-if (sourceSearchBtn) { sourceSearchBtn.addEventListener('click', () => { console.log('[SOURCE MODE TOGGLE]', { nextOn: !sourceMode }); sourceMode = !sourceMode; if (sourceMode) { refreshBlendedDiscovery(true); } else { liveResults = []; openAccessNotices = null; externalDiscovery = []; liveStatus = {state:'idle', message:'External source discovery is off. Showing archive records only.', sources:[]}; } render(); }); } document.querySelectorAll('input[data-filter-key]').forEach(input => { input.addEventListener('change', () => { const key = input.dataset.filterKey; const checkedValues = [...new Set(Array.from(document.querySelectorAll(`input[data-filter-key="${key}"]:checked`)).map(item => item.value))]; if (checkedValues.length) metadataFilters[key] = checkedValues; else delete metadataFilters[key]; localResults = searchLocalRecords(getEffectiveSearchQuery()); refreshBlendedDiscovery(true); render(); }); }); document.querySelectorAll('input[data-quick-filter]').forEach(input => { input.addEventListener('change', () => { const key = input.dataset.quickFilter; quickFilters[key] = input.checked; localResults = searchLocalRecords(getEffectiveSearchQuery()); refreshBlendedDiscovery(true); render(); }); }); const clearBtn = document.getElementById('clearBtn'); if (clearBtn) { clearBtn.addEventListener('click', () => { clearMetadataFilters(); libraryQuery = ''; localResults = [...RECORDS]; liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'', sources:[]}; render(); }); } bindCardEvents(); document.querySelectorAll('[data-recent-search]').forEach(button => { button.addEventListener('click', () => { const value = button.dataset.recentSearch || ''; if (!value) return; const variant = button.dataset.recentVariant || 'library'; libraryQuery = value; searchSuggestions = []; activeSuggestionIndex = -1; pushRecentSearch(value); applyLibraryQuery(value, true); if (variant === 'hero') { currentPage = 'library'; selectedRecordId = null; navigate('library'); requestAnimationFrame(() => { render(); const ms = document.getElementById('mainSearch'); if (ms) ms.value = value; }); } else { render(); const ms = document.getElementById('mainSearch'); if (ms) ms.value = value; } }); }); const clearRecentBtnLibrary = document.getElementById('clearRecentSearchesBtn'); if (clearRecentBtnLibrary) { clearRecentBtnLibrary.addEventListener('click', () => { clearRecentSearches(); render(); }); } const clearRecentBtnHero = document.getElementById('clearRecentSearchesBtnHero'); if (clearRecentBtnHero) { clearRecentBtnHero.addEventListener('click', () => { clearRecentSearches(); render(); }); } document.querySelectorAll('[data-media-root] img').forEach(image => { image.addEventListener('error', () => { const mediaRoot = image.closest('[data-media-root]'); if (mediaRoot) mediaRoot.classList.add('hidden'); }, {once:true}); }); }
+if (sourceSearchBtn) { sourceSearchBtn.addEventListener('click', () => { console.log('[SOURCE MODE TOGGLE]', { nextOn: !sourceMode }); sourceMode = !sourceMode; if (sourceMode) { refreshBlendedDiscovery(true); } else { liveResults = []; openAccessNotices = null; externalDiscovery = []; liveStatus = {state:'idle', message:'External source discovery is off. Showing archive records only.', sources:[]}; } render(); }); } document.querySelectorAll('input[data-filter-key]').forEach(input => { input.addEventListener('change', () => { const key = input.dataset.filterKey; const checkedValues = [...new Set(Array.from(document.querySelectorAll(`input[data-filter-key="${key}"]:checked`)).map(item => item.value))]; if (checkedValues.length) metadataFilters[key] = checkedValues; else delete metadataFilters[key]; localResults = searchLocalRecords(getEffectiveSearchQuery()); refreshBlendedDiscovery(true); render(); }); }); document.querySelectorAll('input[data-quick-filter]').forEach(input => { input.addEventListener('change', () => { const key = input.dataset.quickFilter; quickFilters[key] = input.checked; localResults = searchLocalRecords(getEffectiveSearchQuery()); refreshBlendedDiscovery(true); render(); }); }); const clearBtn = document.getElementById('clearBtn'); if (clearBtn) { clearBtn.addEventListener('click', () => { clearMetadataFilters(); libraryQuery = ''; localResults = [...RECORDS]; liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'', sources:[]}; render(); }); } document.querySelectorAll('[data-tag-search]').forEach(button => {
+  button.addEventListener('click', event => {
+    event.preventDefault();
+    const query = button.dataset.tagSearch || '';
+    if (!query) return;
+    applyLibraryQuery(query, true);
+    navigate('library');
+  });
+});
+document.querySelectorAll('[data-record-advanced-toggle]').forEach(button => {
+  button.addEventListener('click', () => {
+    const panel = document.getElementById('recordAdvancedMetadata');
+    if (!panel) return;
+    const open = panel.hidden;
+    panel.hidden = !open;
+    button.setAttribute('aria-expanded', open ? 'true' : 'false');
+    button.textContent = open ? 'Hide advanced metadata' : 'Show advanced metadata';
+  });
+});
+bindCardEvents(); document.querySelectorAll('[data-recent-search]').forEach(button => { button.addEventListener('click', () => { const value = button.dataset.recentSearch || ''; if (!value) return; const variant = button.dataset.recentVariant || 'library'; libraryQuery = value; searchSuggestions = []; activeSuggestionIndex = -1; pushRecentSearch(value); applyLibraryQuery(value, true); if (variant === 'hero') { currentPage = 'library'; selectedRecordId = null; navigate('library'); requestAnimationFrame(() => { render(); const ms = document.getElementById('mainSearch'); if (ms) ms.value = value; }); } else { render(); const ms = document.getElementById('mainSearch'); if (ms) ms.value = value; } }); }); const clearRecentBtnLibrary = document.getElementById('clearRecentSearchesBtn'); if (clearRecentBtnLibrary) { clearRecentBtnLibrary.addEventListener('click', () => { clearRecentSearches(); render(); }); } const clearRecentBtnHero = document.getElementById('clearRecentSearchesBtnHero'); if (clearRecentBtnHero) { clearRecentBtnHero.addEventListener('click', () => { clearRecentSearches(); render(); }); } document.querySelectorAll('[data-media-root] img').forEach(image => { image.addEventListener('error', () => { const mediaRoot = image.closest('[data-media-root]'); if (mediaRoot) mediaRoot.classList.add('hidden'); }, {once:true}); }); }
 function syncRouteFromPath(options = {}) {
   const route = parseRouteFromLocation();
   currentPage = route.page;

@@ -48,6 +48,13 @@
   "exclude": [
     "node_modules",
     "app/_payload_disabled",
-    "**/_payload_disabled/**"
+    "**/_payload_disabled/**",
+    "**/*-PY.ts",
+    "**/*-PY.tsx",
+    "**/*-PY.js",
+    "**/*-PY.css",
+    "**/*.backup*",
+    "**/WorkbenchNotesClient.before-*",
+    "**/workbench.before-*"
   ]
 }

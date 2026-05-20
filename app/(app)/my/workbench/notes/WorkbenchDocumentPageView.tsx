@@ -12,6 +12,7 @@ import {
 /** Default page width (US Letter at 96dpi); expands to fill workspace up to the drawer */
 export const DOCUMENT_PAGE_WIDTH_PX = 816;
 export const DOCUMENT_PAGE_MIN_WIDTH_PX = 816;
+export const DOCUMENT_PAGE_MIN_WIDTH_MOBILE_PX = 280;
 export const DOCUMENT_PAGE_MAX_WIDTH_PX = 1680;
 export const DOCUMENT_PAGE_HEIGHT_PX = 1056;
 export const DOCUMENT_PAGE_GAP_PX = 28;
@@ -76,12 +77,15 @@ export default function WorkbenchDocumentPageView({
     if (!scroll) return;
 
     const syncPageWidth = () => {
-      const rightGutter = flushToDrawer ? DRAWER_GAP_PX : PAGE_LEFT_GUTTER_PX;
-      const available = scroll.clientWidth - PAGE_LEFT_GUTTER_PX - rightGutter;
-      const next = Math.min(
-        DOCUMENT_PAGE_MAX_WIDTH_PX,
-        Math.max(DOCUMENT_PAGE_MIN_WIDTH_PX, available),
-      );
+      const isMobile = window.matchMedia("(max-width: 900px)").matches;
+      const leftGutter = isMobile ? 0 : PAGE_LEFT_GUTTER_PX;
+      const rightGutter = flushToDrawer ? DRAWER_GAP_PX : isMobile ? 0 : PAGE_LEFT_GUTTER_PX;
+      const available = Math.max(0, scroll.clientWidth - leftGutter - rightGutter);
+      const minWidth =
+        available < DOCUMENT_PAGE_MIN_WIDTH_PX
+          ? DOCUMENT_PAGE_MIN_WIDTH_MOBILE_PX
+          : DOCUMENT_PAGE_MIN_WIDTH_PX;
+      const next = Math.min(DOCUMENT_PAGE_MAX_WIDTH_PX, Math.max(minWidth, available));
       setPageWidth(next);
     };
 

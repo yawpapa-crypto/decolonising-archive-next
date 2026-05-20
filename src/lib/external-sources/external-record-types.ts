@@ -8,6 +8,8 @@ export type ExternalSourceCategoryGroup =
   | "open_textbooks_oer"
   | "public_domain_texts"
   | "australian_open_collections"
+  | "african_open_collections"
+  | "global_open_collections"
   | "institutional_presses"
   | "source_handoffs";
 

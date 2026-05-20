@@ -14,7 +14,15 @@ export type WorkbenchActivityEventType =
   | "board_card_sent_to_document"
   | "canvas_block_created"
   | "task_created"
-  | "export_created";
+  | "export_created"
+  | "extraction_field_created"
+  | "extraction_upserted"
+  | "assignment_created"
+  | "comment_created"
+  | "search_saved"
+  | "source_handoff_clicked"
+  | "record_viewed"
+  | "screening_decision";
 
 export type WorkbenchActivityEntityType =
   | "record"
@@ -26,7 +34,12 @@ export type WorkbenchActivityEntityType =
   | "canvas_block"
   | "citation"
   | "task"
-  | "export";
+  | "export"
+  | "search"
+  | "review_screening"
+  | "review_extraction"
+  | "assignment"
+  | "review_comment";
 
 import type { WorkbenchUserPreferences } from "@/lib/workbench-intelligence-types";
 
@@ -196,4 +209,26 @@ export async function listRecentWorkbenchActivity(limit = 12) {
     project_id: string | null;
     created_at: string;
   }>;
+}
+
+export async function refreshIntelligenceSnapshot() {
+  revalidatePath(INTELLIGENCE_PATH);
+  return { ok: true as const };
+}
+
+export async function clearResearchActivity() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false as const, error: "Not signed in." };
+
+  const { error } = await supabase
+    .from("workbench_activity_events")
+    .delete()
+    .eq("user_id", user.id);
+
+  if (error) return { ok: false as const, error: error.message };
+  revalidatePath(INTELLIGENCE_PATH);
+  return { ok: true as const };
 }

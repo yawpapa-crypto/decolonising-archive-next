@@ -1,0 +1,1185 @@
+/* ═══════════════════════════════════════════════════════════════════
+   WORKBENCH CITATION PICKER — Minimalist restyle
+   ─────────────────────────────────────────────────────────────────
+   Scoped to .workbench-citation-modal / .workbench-citation-picker
+   Loaded AFTER workbench.css so it wins cascade ties.
+   Uses high specificity + !important to override legacy chrome.
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root {
+  --cite-paper: #ffffff;
+  --cite-paper-soft: #faf9f5;
+  --cite-ink: #11110f;
+  --cite-text: #1f1f1c;
+  --cite-muted: #6b675e;
+  --cite-muted-2: #9b988f;
+  --cite-line: rgba(0, 0, 0, 0.08);
+  --cite-line-strong: rgba(0, 0, 0, 0.14);
+  --cite-hover: rgba(15, 17, 15, 0.04);
+  --cite-tint: rgba(15, 17, 15, 0.06);
+  --cite-accent: #dfff35;
+  --cite-accent-soft: #f3ffb6;
+  --cite-link: #2c5cdb;
+  --cite-radius: 18px;
+  --cite-radius-sm: 10px;
+  --cite-radius-md: 12px;
+  --cite-shadow: 0 24px 70px rgba(0, 0, 0, 0.12);
+  --cite-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* -------------------------------------------------------------------
+   1. Backdrop
+   ------------------------------------------------------------------- */
+
+.citation-modal-overlay,
+.workbench-citation-modal,
+.workbench-citation-picker,
+.workbench-shell .workbench-citation-modal,
+.workbench-shell .workbench-citation-picker {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 24px !important;
+  background: rgba(0, 0, 0, 0.28) !important;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: cite-backdrop-in 200ms var(--cite-ease) both;
+}
+
+@keyframes cite-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* -------------------------------------------------------------------
+   2. Panel — soft white card
+   ------------------------------------------------------------------- */
+
+.citation-picker-dialog,
+.workbench-citation-modal .workbench-citation-panel,
+.workbench-citation-modal .workbench-citation-picker-panel,
+.workbench-citation-picker .workbench-citation-panel,
+.workbench-citation-picker .workbench-citation-picker-panel,
+.workbench-shell .workbench-citation-modal .workbench-citation-panel,
+.workbench-shell .workbench-citation-modal .workbench-citation-picker-panel {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  width: min(620px, calc(100vw - 48px)) !important;
+  height: auto !important;
+  max-height: calc(100vh - 48px) !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: var(--cite-paper) !important;
+  border: 1px solid var(--cite-line) !important;
+  border-radius: var(--cite-radius) !important;
+  box-shadow: var(--cite-shadow) !important;
+  overflow: hidden !important;
+  font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  color: var(--cite-text) !important;
+  animation: cite-panel-in 320ms var(--cite-ease) both;
+}
+
+@keyframes cite-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* -------------------------------------------------------------------
+   3. Header — kicker + title, no heavy line
+   ------------------------------------------------------------------- */
+
+.workbench-citation-modal .workbench-citation-header,
+.workbench-shell .workbench-citation-modal .workbench-citation-header {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  flex-shrink: 0 !important;
+  padding: 20px 24px 12px !important;
+  border: 0 !important;
+  background: var(--cite-paper) !important;
+}
+
+.workbench-citation-modal .workbench-citation-picker-kicker,
+.workbench-shell .workbench-citation-modal .workbench-citation-picker-kicker {
+  margin: 0 0 4px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  color: var(--cite-muted-2) !important;
+}
+
+.workbench-citation-modal .workbench-citation-header h2,
+.workbench-shell .workbench-citation-modal .workbench-citation-header h2 {
+  margin: 0 !important;
+  font-family: "Inter Tight", sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.005em !important;
+  color: var(--cite-ink) !important;
+}
+
+.workbench-citation-modal .workbench-citation-close,
+.workbench-citation-modal .workbench-citation-header > button,
+.workbench-shell .workbench-citation-modal .workbench-citation-close,
+.workbench-shell .workbench-citation-modal .workbench-citation-header > button {
+  height: 28px !important;
+  min-height: 28px !important;
+  padding: 0 12px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: var(--cite-hover) !important;
+  color: var(--cite-text) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  transition: background 160ms var(--cite-ease) !important;
+}
+
+.workbench-citation-modal .workbench-citation-close:hover,
+.workbench-citation-modal .workbench-citation-header > button:hover {
+  background: var(--cite-tint) !important;
+}
+
+/* -------------------------------------------------------------------
+   4. Body — generous vertical rhythm
+   ------------------------------------------------------------------- */
+
+.citation-picker-body,
+.workbench-citation-modal .workbench-citation-body,
+.workbench-shell .workbench-citation-modal .workbench-citation-body {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  padding: 4px 24px 24px !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  background: var(--cite-paper) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+}
+
+.workbench-citation-modal .workbench-citation-style-select,
+.workbench-citation-modal .workbench-citation-picker-tabs,
+.workbench-citation-modal .workbench-citation-search,
+.workbench-citation-modal .workbench-citation-custom-fields,
+.workbench-shell .workbench-citation-modal .workbench-citation-style-select,
+.workbench-shell .workbench-citation-modal .workbench-citation-picker-tabs,
+.workbench-shell .workbench-citation-modal .workbench-citation-search,
+.workbench-shell .workbench-citation-modal .workbench-citation-custom-fields {
+  flex-shrink: 0 !important;
+}
+
+/* Soft top fade so content "disappears" under the header instead of cutting */
+.workbench-citation-modal .workbench-citation-body {
+  -webkit-mask-image: none;
+          mask-image: none;
+}
+
+/* Scrollbar polish */
+.workbench-citation-modal .workbench-citation-body::-webkit-scrollbar {
+  width: 8px;
+}
+.workbench-citation-modal .workbench-citation-body::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 999px;
+}
+
+/* -------------------------------------------------------------------
+   5. Style / Insert-mode grids — flat chip rows
+   ------------------------------------------------------------------- */
+
+.workbench-citation-modal .workbench-citation-style-select,
+.workbench-shell .workbench-citation-modal .workbench-citation-style-select {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.workbench-citation-modal .workbench-citation-style-select > span,
+.workbench-shell .workbench-citation-modal .workbench-citation-style-select > span {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--cite-muted-2) !important;
+}
+
+.workbench-citation-modal .workbench-citation-style-grid,
+.workbench-citation-modal .workbench-citation-insert-mode-grid,
+.workbench-shell .workbench-citation-modal .workbench-citation-style-grid,
+.workbench-shell .workbench-citation-modal .workbench-citation-insert-mode-grid {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.workbench-citation-modal .workbench-citation-style-grid button,
+.workbench-citation-modal .workbench-citation-insert-mode-grid button,
+.workbench-citation-modal .workbench-citation-style-option,
+.workbench-shell .workbench-citation-modal .workbench-citation-style-grid button,
+.workbench-shell .workbench-citation-modal .workbench-citation-insert-mode-grid button,
+.workbench-shell .workbench-citation-modal .workbench-citation-style-option {
+  height: 30px !important;
+  min-height: 30px !important;
+  padding: 0 12px !important;
+  border: 1px solid var(--cite-line) !important;
+  border-radius: 999px !important;
+  background: var(--cite-paper) !important;
+  color: var(--cite-text) !important;
+  font-family: inherit !important;
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  transition: background 160ms var(--cite-ease), border-color 160ms var(--cite-ease), color 160ms var(--cite-ease) !important;
+}
+
+.workbench-citation-modal .workbench-citation-style-grid button:hover,
+.workbench-citation-modal .workbench-citation-insert-mode-grid button:hover,
+.workbench-citation-modal .workbench-citation-style-option:hover,
+.workbench-shell .workbench-citation-modal .workbench-citation-style-grid button:hover,
+.workbench-shell .workbench-citation-modal .workbench-citation-insert-mode-grid button:hover,
+.workbench-shell .workbench-citation-modal .workbench-citation-style-option:hover {
+  background: var(--cite-hover) !important;
+  border-color: var(--cite-line-strong) !important;
+}
+
+.workbench-citation-modal .workbench-citation-style-grid button.is-active,
+.workbench-citation-modal .workbench-citation-insert-mode-grid button.is-active,
+.workbench-citation-modal .workbench-citation-style-option.is-active,
+.workbench-citation-modal .workbench-citation-style-grid button[aria-pressed="true"],
+.workbench-citation-modal .workbench-citation-insert-mode-grid button[aria-pressed="true"],
+.workbench-shell .workbench-citation-modal .workbench-citation-style-grid button.is-active,
+.workbench-shell .workbench-citation-modal .workbench-citation-insert-mode-grid button.is-active,
+.workbench-shell .workbench-citation-modal .workbench-citation-style-option.is-active,
+.workbench-shell .workbench-citation-modal .workbench-citation-style-grid button[aria-pressed="true"],
+.workbench-shell .workbench-citation-modal .workbench-citation-insert-mode-grid button[aria-pressed="true"] {
+  background: var(--cite-ink) !important;
+  border-color: var(--cite-ink) !important;
+  color: #ffffff !important;
+}
+
+/* -------------------------------------------------------------------
+   6. Source filter tabs
+   ------------------------------------------------------------------- */
+
+.workbench-citation-modal .workbench-citation-picker-tabs,
+.workbench-shell .workbench-citation-modal .workbench-citation-picker-tabs {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 2px !important;
+  padding: 4px !important;
+  border: 1px solid var(--cite-line) !important;
+  border-radius: 999px !important;
+  background: var(--cite-paper-soft) !important;
+}
+
+.workbench-citation-modal .workbench-citation-picker-tabs button,
+.workbench-shell .workbench-citation-modal .workbench-citation-picker-tabs button {
+  height: 28px !important;
+  padding: 0 14px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  color: var(--cite-text) !important;
+  font-family: inherit !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  cursor: pointer !important;
+  transition: background 160ms var(--cite-ease), color 160ms var(--cite-ease) !important;
+}
+
+.workbench-citation-modal .workbench-citation-picker-tabs button:hover,
+.workbench-shell .workbench-citation-modal .workbench-citation-picker-tabs button:hover {
+  background: var(--cite-hover) !important;
+}
+
+.workbench-citation-modal .workbench-citation-picker-tabs button.is-active,
+.workbench-citation-modal .workbench-citation-picker-tabs button[aria-selected="true"],
+.workbench-shell .workbench-citation-modal .workbench-citation-picker-tabs button.is-active,
+.workbench-shell .workbench-citation-modal .workbench-citation-picker-tabs button[aria-selected="true"] {
+  background: var(--cite-ink) !important;
+  color: #ffffff !important;
+}
+
+/* -------------------------------------------------------------------
+   7. Search field
+   ------------------------------------------------------------------- */
+
+.workbench-citation-modal .workbench-citation-search,
+.workbench-shell .workbench-citation-modal .workbench-citation-search {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.workbench-citation-modal .workbench-citation-search > span,
+.workbench-shell .workbench-citation-modal .workbench-citation-search > span {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--cite-muted-2) !important;
+}
+
+.workbench-citation-modal .workbench-citation-search input,
+.workbench-shell .workbench-citation-modal .workbench-citation-search input {
+  width: 100% !important;
+  height: 40px !important;
+  padding: 0 14px !important;
+  border: 1px solid var(--cite-line) !important;
+  border-radius: 12px !important;
+  background: var(--cite-paper-soft) !important;
+  color: var(--cite-text) !important;
+  font-family: inherit !important;
+  font-size: 13.5px !important;
+  font-weight: 400 !important;
+  box-shadow: none !important;
+  transition: background 160ms var(--cite-ease), border-color 160ms var(--cite-ease) !important;
+}
+
+.workbench-citation-modal .workbench-citation-search input::placeholder {
+  color: var(--cite-muted-2) !important;
+}
+
+.workbench-citation-modal .workbench-citation-search input:focus,
+.workbench-citation-modal .workbench-citation-search input:focus-visible {
+  outline: 0 !important;
+  background: var(--cite-paper) !important;
+  border-color: var(--cite-line-strong) !important;
+}
+
+/* -------------------------------------------------------------------
+   8. Record list — clean rows
+   ------------------------------------------------------------------- */
+
+.workbench-citation-modal .workbench-citation-record-list,
+.workbench-shell .workbench-citation-modal .workbench-citation-record-list,
+.citation-picker-results,
+.citation-picker-record-list,
+.workbench-citation-results,
+.workbench-citation-source-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  flex: 1 1 auto !important;
+  flex-shrink: 0 !important;
+  min-height: 280px !important;
+  max-height: 420px !important;
+  margin: 0 !important;
+  padding: 4px !important;
+  border: 1px solid var(--cite-line) !important;
+  border-radius: 14px !important;
+  background: var(--cite-paper) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  box-shadow: none !important;
+}
+
+.workbench-citation-modal .workbench-citation-record-list::-webkit-scrollbar,
+.workbench-shell .workbench-citation-modal .workbench-citation-record-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.workbench-citation-modal .workbench-citation-record-list::-webkit-scrollbar-thumb,
+.workbench-shell .workbench-citation-modal .workbench-citation-record-list::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 999px;
+}
+
+.workbench-citation-modal .workbench-citation-record-option,
+.workbench-shell .workbench-citation-modal .workbench-citation-record-option {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 6px !important;
+  width: 100% !important;
+  padding: 12px 14px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: transparent !important;
+  color: var(--cite-text) !important;
+  font-family: inherit !important;
+  font-size: 13px !important;
+  text-align: left !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  transition: background 160ms var(--cite-ease), transform 280ms var(--cite-ease) !important;
+}
+
+.workbench-citation-modal .workbench-citation-record-option:hover,
+.workbench-shell .workbench-citation-modal .workbench-citation-record-option:hover {
+  background: var(--cite-hover) !important;
+  transform: translateX(1px);
+}
+
+.workbench-citation-modal .workbench-citation-record-option.is-selected,
+.workbench-citation-modal .workbench-citation-record-option[aria-selected="true"],
+.workbench-shell .workbench-citation-modal .workbench-citation-record-option.is-selected,
+.workbench-shell .workbench-citation-modal .workbench-citation-record-option[aria-selected="true"] {
+  background: var(--cite-paper-soft) !important;
+  box-shadow: inset 0 0 0 1px var(--cite-line) !important;
+}
+
+.workbench-citation-modal .workbench-citation-record-option.is-selected::before,
+.workbench-citation-modal .workbench-citation-record-option[aria-selected="true"]::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  border-radius: 999px;
+  background: var(--cite-ink);
+}
+
+.workbench-citation-modal .workbench-citation-record-option.is-selected,
+.workbench-citation-modal .workbench-citation-record-option[aria-selected="true"] {
+  padding-left: 18px !important;
+}
+
+.workbench-citation-modal .workbench-citation-record-top-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+}
+
+.workbench-citation-modal .workbench-citation-record-title,
+.workbench-citation-modal .workbench-citation-record-option strong,
+.workbench-shell .workbench-citation-modal .workbench-citation-record-title,
+.workbench-shell .workbench-citation-modal .workbench-citation-record-option strong {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-family: inherit !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+  color: var(--cite-ink) !important;
+  letter-spacing: -0.002em !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.workbench-citation-modal .workbench-citation-record-meta,
+.workbench-shell .workbench-citation-modal .workbench-citation-record-meta {
+  display: block !important;
+  margin: 0 !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+  color: var(--cite-muted) !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.workbench-citation-modal .workbench-citation-source-badges,
+.workbench-shell .workbench-citation-modal .workbench-citation-source-badges {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 4px !important;
+  margin-top: 2px !important;
+}
+
+.workbench-citation-modal .workbench-citation-source-badge,
+.workbench-shell .workbench-citation-modal .workbench-citation-source-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  height: 18px !important;
+  padding: 0 8px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: var(--cite-paper-soft) !important;
+  color: var(--cite-muted) !important;
+  font-size: 10.5px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+}
+
+.workbench-citation-modal .workbench-citation-recommendation-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  height: 20px !important;
+  padding: 0 8px !important;
+  border-radius: 999px !important;
+  background: var(--cite-accent-soft) !important;
+  color: var(--cite-ink) !important;
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+}
+
+.workbench-citation-modal .workbench-citation-empty,
+.workbench-shell .workbench-citation-modal .workbench-citation-empty {
+  margin: 0 !important;
+  padding: 16px !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  color: var(--cite-muted) !important;
+  text-align: center !important;
+  background: transparent !important;
+}
+
+/* -------------------------------------------------------------------
+   9. Custom fields
+   ------------------------------------------------------------------- */
+
+.workbench-citation-modal .workbench-citation-custom-fields,
+.workbench-shell .workbench-citation-modal .workbench-citation-custom-fields {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.workbench-citation-modal .workbench-citation-custom-fields label {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
+
+.workbench-citation-modal .workbench-citation-custom-fields label > span {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--cite-muted-2) !important;
+}
+
+.workbench-citation-modal .workbench-citation-custom-fields input,
+.workbench-citation-modal .workbench-citation-custom-fields textarea,
+.workbench-citation-modal .workbench-citation-custom-textarea {
+  width: 100% !important;
+  padding: 10px 12px !important;
+  border: 1px solid var(--cite-line) !important;
+  border-radius: 10px !important;
+  background: var(--cite-paper-soft) !important;
+  color: var(--cite-text) !important;
+  font-family: inherit !important;
+  font-size: 13.5px !important;
+  line-height: 1.45 !important;
+  box-shadow: none !important;
+  transition: background 160ms var(--cite-ease), border-color 160ms var(--cite-ease) !important;
+}
+
+.workbench-citation-modal .workbench-citation-custom-fields input {
+  height: 38px !important;
+}
+
+.workbench-citation-modal .workbench-citation-custom-textarea {
+  min-height: 80px !important;
+  resize: vertical !important;
+}
+
+.workbench-citation-modal .workbench-citation-custom-fields input:focus,
+.workbench-citation-modal .workbench-citation-custom-fields textarea:focus,
+.workbench-citation-modal .workbench-citation-custom-textarea:focus {
+  outline: 0 !important;
+  background: var(--cite-paper) !important;
+  border-color: var(--cite-line-strong) !important;
+}
+
+/* -------------------------------------------------------------------
+   10. Preview cards
+   ------------------------------------------------------------------- */
+
+.workbench-citation-modal .workbench-citation-preview-grid,
+.workbench-shell .workbench-citation-modal .workbench-citation-preview-grid,
+.citation-picker-preview-grid,
+.workbench-citation-preview-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 10px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  flex-shrink: 0 !important;
+  max-height: 190px !important;
+}
+
+.workbench-citation-modal .workbench-citation-preview,
+.workbench-citation-modal .workbench-citation-preview-card,
+.workbench-shell .workbench-citation-modal .workbench-citation-preview,
+.workbench-shell .workbench-citation-modal .workbench-citation-preview-card {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  min-height: 0 !important;
+  padding: 12px 14px !important;
+  border: 1px solid var(--cite-line) !important;
+  border-radius: 12px !important;
+  background: var(--cite-paper-soft) !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+.workbench-citation-modal .workbench-citation-preview-label,
+.workbench-shell .workbench-citation-modal .workbench-citation-preview-label {
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--cite-muted-2) !important;
+}
+
+.workbench-citation-modal .workbench-citation-preview p,
+.workbench-citation-modal .workbench-citation-preview-card p {
+  margin: 0 !important;
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  color: var(--cite-text) !important;
+  word-break: break-word !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  max-height: 132px !important;
+  overflow-y: auto !important;
+}
+
+/* -------------------------------------------------------------------
+   11. Footer — compact actions
+   ------------------------------------------------------------------- */
+
+.citation-picker-footer,
+.workbench-citation-modal .workbench-citation-actions,
+.workbench-citation-modal .workbench-citation-footer,
+.workbench-shell .workbench-citation-modal .workbench-citation-actions,
+.workbench-shell .workbench-citation-modal .workbench-citation-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+  flex: 0 0 auto !important;
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 2 !important;
+  padding: 12px 24px 16px !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+  background: var(--cite-paper) !important;
+  box-shadow: none !important;
+}
+
+.workbench-citation-modal .workbench-citation-actions button,
+.workbench-citation-modal .workbench-citation-footer button,
+.workbench-shell .workbench-citation-modal .workbench-citation-actions button,
+.workbench-shell .workbench-citation-modal .workbench-citation-footer button {
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 0 16px !important;
+  border: 1px solid var(--cite-line) !important;
+  border-radius: 999px !important;
+  background: var(--cite-paper) !important;
+  color: var(--cite-text) !important;
+  font-family: inherit !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  transition: background 160ms var(--cite-ease), border-color 160ms var(--cite-ease), color 160ms var(--cite-ease), transform 220ms var(--cite-ease) !important;
+}
+
+.workbench-citation-modal .workbench-citation-cancel,
+.workbench-shell .workbench-citation-modal .workbench-citation-cancel {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: var(--cite-muted) !important;
+}
+
+.workbench-citation-modal .workbench-citation-cancel:hover,
+.workbench-shell .workbench-citation-modal .workbench-citation-cancel:hover {
+  background: var(--cite-hover) !important;
+  color: var(--cite-text) !important;
+}
+
+.workbench-citation-modal .workbench-citation-insert,
+.workbench-citation-modal .workbench-citation-insert.is-primary,
+.workbench-citation-modal .workbench-citation-actions button:last-child,
+.workbench-citation-modal .workbench-citation-footer button:last-child,
+.workbench-shell .workbench-citation-modal .workbench-citation-insert,
+.workbench-shell .workbench-citation-modal .workbench-citation-insert.is-primary,
+.workbench-shell .workbench-citation-modal .workbench-citation-actions button:last-child,
+.workbench-shell .workbench-citation-modal .workbench-citation-footer button:last-child {
+  background: var(--cite-ink) !important;
+  border-color: var(--cite-ink) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.workbench-citation-modal .workbench-citation-insert:hover:not(:disabled),
+.workbench-citation-modal .workbench-citation-actions button:last-child:hover:not(:disabled),
+.workbench-citation-modal .workbench-citation-footer button:last-child:hover:not(:disabled),
+.workbench-shell .workbench-citation-modal .workbench-citation-insert:hover:not(:disabled),
+.workbench-shell .workbench-citation-modal .workbench-citation-actions button:last-child:hover:not(:disabled),
+.workbench-shell .workbench-citation-modal .workbench-citation-footer button:last-child:hover:not(:disabled) {
+  background: #2a2722 !important;
+  border-color: #2a2722 !important;
+  transform: translateY(-1px);
+}
+
+.workbench-citation-modal .workbench-citation-insert:disabled,
+.workbench-citation-modal .workbench-citation-actions button:disabled,
+.workbench-citation-modal .workbench-citation-footer button:disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+.workbench-citation-modal .workbench-citation-insert:active:not(:disabled),
+.workbench-citation-modal .workbench-citation-actions button:active:not(:disabled),
+.workbench-citation-modal .workbench-citation-footer button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* -------------------------------------------------------------------
+   12. Focus rings
+   ------------------------------------------------------------------- */
+
+/* Higher specificity than legacy workbench.css + notes-figma.css focus rings */
+.workbench-notes-page-premium .workbench-citation-modal button:focus-visible,
+.workbench-notes-page-premium .workbench-citation-modal input:focus-visible,
+.workbench-notes-page-premium .workbench-citation-modal textarea:focus-visible,
+.workbench-shell .workbench-notes-page-premium .workbench-citation-modal button:focus-visible,
+.workbench-shell .workbench-citation-modal button:focus-visible,
+.workbench-shell .workbench-citation-modal input:focus-visible,
+.workbench-shell .workbench-citation-modal textarea:focus-visible,
+.workbench-citation-modal button:focus-visible,
+.workbench-citation-modal input:focus-visible,
+.workbench-citation-modal textarea:focus-visible {
+  outline: 2px solid var(--cite-ink) !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
+}
+
+/* Suppress focus-ring on active chips so the dark fill reads clean */
+.workbench-notes-page-premium .workbench-citation-modal .workbench-citation-style-option.is-active:focus-visible,
+.workbench-notes-page-premium .workbench-citation-modal .workbench-citation-style-grid button[aria-pressed="true"]:focus-visible,
+.workbench-notes-page-premium .workbench-citation-modal .workbench-citation-insert-mode-grid button[aria-pressed="true"]:focus-visible,
+.workbench-notes-page-premium .workbench-citation-modal .workbench-citation-picker-tabs button.is-active:focus-visible,
+.workbench-notes-page-premium .workbench-citation-modal .workbench-citation-picker-tabs button[aria-selected="true"]:focus-visible,
+.workbench-shell .workbench-citation-modal .workbench-citation-style-option.is-active:focus-visible,
+.workbench-shell .workbench-citation-modal .workbench-citation-style-grid button[aria-pressed="true"]:focus-visible,
+.workbench-shell .workbench-citation-modal .workbench-citation-insert-mode-grid button[aria-pressed="true"]:focus-visible,
+.workbench-shell .workbench-citation-modal .workbench-citation-picker-tabs button.is-active:focus-visible,
+.workbench-shell .workbench-citation-modal .workbench-citation-picker-tabs button[aria-selected="true"]:focus-visible,
+.workbench-citation-modal .workbench-citation-style-option.is-active:focus-visible,
+.workbench-citation-modal .workbench-citation-style-grid button[aria-pressed="true"]:focus-visible,
+.workbench-citation-modal .workbench-citation-insert-mode-grid button[aria-pressed="true"]:focus-visible,
+.workbench-citation-modal .workbench-citation-picker-tabs button.is-active:focus-visible,
+.workbench-citation-modal .workbench-citation-picker-tabs button[aria-selected="true"]:focus-visible {
+  outline: 0 !important;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.18) !important;
+}
+
+/* -------------------------------------------------------------------
+   13. Reduced motion
+   ------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .workbench-citation-modal,
+  .workbench-citation-modal .workbench-citation-panel,
+  .workbench-citation-modal .workbench-citation-picker-panel,
+  .workbench-citation-modal button,
+  .workbench-citation-modal input,
+  .workbench-citation-modal textarea {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   IN-TEXT CITATION LINKS + REFERENCE LIST (EndNote-style)
+   ─────────────────────────────────────────────────────────────────
+   Anchors are clickable and openable in an inline edit popover;
+   they also jump to a matching entry in the auto-generated
+   `<section class="workbench-reference-list">` block.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.workbench-rich-editor .workbench-citation-link,
+.workbench-rich-editor a.workbench-citation-link {
+  color: #1f5fbf !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 1px !important;
+  text-underline-offset: 3px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  border-radius: 4px !important;
+  padding: 0 2px !important;
+  margin: 0 -2px !important;
+  transition: background 160ms cubic-bezier(0.22, 1, 0.36, 1), color 160ms cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.workbench-rich-editor .workbench-citation-link:hover {
+  color: #b3261e !important;
+  background: rgba(179, 38, 30, 0.08) !important;
+}
+
+.workbench-rich-editor .workbench-citation-link.is-editing,
+.workbench-rich-editor .workbench-citation-link:focus-visible {
+  background: rgba(223, 255, 53, 0.35) !important;
+  outline: 1px solid #dfff35 !important;
+  outline-offset: 0 !important;
+  color: #11110f !important;
+}
+
+/* Legacy in-text span — same interactive affordance so old notes work */
+.workbench-rich-editor span[data-workbench-citation] {
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 0 2px;
+  margin: 0 -2px;
+  transition: background 160ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.workbench-rich-editor span[data-workbench-citation]:hover {
+  background: rgba(31, 95, 191, 0.08);
+}
+
+/* Reference list block */
+.workbench-rich-editor .workbench-reference-list,
+.workbench-rich-editor section[data-workbench-references="true"] {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.workbench-rich-editor .workbench-reference-list h2 {
+  font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: #11110f;
+  margin: 0 0 16px;
+}
+
+.workbench-rich-editor .workbench-reference-list ol {
+  margin: 0;
+  padding-left: 22px;
+  list-style: decimal;
+}
+
+.workbench-rich-editor .workbench-reference-entry {
+  padding: 6px 8px;
+  margin: 2px -8px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: #1f1f1c;
+  transition: background 240ms cubic-bezier(0.22, 1, 0.36, 1), outline-color 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  outline: 2px solid transparent;
+  outline-offset: 0;
+}
+
+.workbench-rich-editor .workbench-reference-entry__source {
+  margin-left: 6px;
+  color: #1f5fbf;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 500;
+}
+
+.workbench-rich-editor .workbench-reference-entry:target,
+.workbench-rich-editor .workbench-reference-entry.is-jump-highlight {
+  background: rgba(223, 255, 53, 0.35);
+  outline-color: #dfff35;
+  border-radius: 8px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CITATION EDIT POPOVER (click-to-edit panel anchored near the link)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.workbench-citation-edit-popover {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #1f1f1c;
+  animation: cite-popover-in 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes cite-popover-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.workbench-citation-edit-popover__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px 8px;
+}
+
+.workbench-citation-edit-popover__title-wrap {
+  min-width: 0;
+  flex: 1;
+}
+
+.workbench-citation-edit-popover__kicker {
+  margin: 0 0 2px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9b988f;
+}
+
+.workbench-citation-edit-popover__title {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #11110f;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workbench-citation-edit-popover__close {
+  flex-shrink: 0;
+  height: 24px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(15, 17, 15, 0.04);
+  color: #1f1f1c;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 160ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.workbench-citation-edit-popover__close:hover {
+  background: rgba(15, 17, 15, 0.08);
+}
+
+.workbench-citation-edit-popover__body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 16px 12px;
+}
+
+.workbench-citation-edit-popover__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.workbench-citation-edit-popover__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.workbench-citation-edit-popover__field > span {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #9b988f;
+}
+
+.workbench-citation-edit-popover__field input {
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  background: #faf9f5;
+  color: #1f1f1c;
+  font-family: inherit;
+  font-size: 13px;
+  transition: background 160ms cubic-bezier(0.22, 1, 0.36, 1), border-color 160ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.workbench-citation-edit-popover__field input:focus {
+  outline: 0;
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.18);
+}
+
+.workbench-citation-edit-popover__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 10px 16px 14px;
+  box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04);
+}
+
+.workbench-citation-edit-popover__foot-left,
+.workbench-citation-edit-popover__foot-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.workbench-citation-edit-popover__btn {
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #1f1f1c;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 160ms cubic-bezier(0.22, 1, 0.36, 1), border-color 160ms cubic-bezier(0.22, 1, 0.36, 1), transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.workbench-citation-edit-popover__btn:hover {
+  background: rgba(15, 17, 15, 0.04);
+}
+
+.workbench-citation-edit-popover__btn--primary {
+  background: #11110f;
+  border-color: #11110f;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.workbench-citation-edit-popover__btn--primary:hover:not(:disabled) {
+  background: #2a2722;
+  border-color: #2a2722;
+  transform: translateY(-1px);
+}
+
+.workbench-citation-edit-popover__btn--primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.workbench-citation-edit-popover__btn--danger {
+  background: transparent;
+  border-color: transparent;
+  color: #b3261e;
+}
+
+.workbench-citation-edit-popover__btn--danger:hover {
+  background: rgba(179, 38, 30, 0.08);
+}
+
+.workbench-citation-edit-popover__btn:focus-visible {
+  outline: 2px solid #11110f;
+  outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  .workbench-citation-edit-popover:not(.workbench-citation-edit-popover--sheet) {
+    width: calc(100vw - 24px) !important;
+    left: 12px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workbench-rich-editor .workbench-citation-link,
+  .workbench-rich-editor .workbench-reference-entry,
+  .workbench-citation-edit-popover,
+  .workbench-citation-edit-popover *,
+  .workbench-citation-edit-popover__btn {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* -------------------------------------------------------------------
+   14. Responsive (mobile)
+   ------------------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .citation-modal-overlay,
+  .workbench-citation-modal,
+  .workbench-citation-picker {
+    padding: 12px !important;
+    align-items: flex-end !important;
+  }
+
+  .workbench-citation-modal .workbench-citation-panel,
+  .workbench-citation-modal .workbench-citation-picker-panel,
+  .citation-picker-dialog {
+    width: 100% !important;
+    max-height: calc(100vh - 24px) !important;
+    border-radius: 18px !important;
+  }
+
+  .workbench-citation-modal .workbench-citation-header,
+  .workbench-citation-modal .workbench-citation-body,
+  .workbench-citation-modal .workbench-citation-actions,
+  .workbench-citation-modal .workbench-citation-footer {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+
+  .workbench-citation-modal .workbench-citation-record-list,
+  .workbench-shell .workbench-citation-modal .workbench-citation-record-list,
+  .citation-picker-results,
+  .citation-picker-record-list,
+  .workbench-citation-results,
+  .workbench-citation-source-list {
+    min-height: 220px !important;
+    max-height: 45vh !important;
+  }
+
+  .workbench-citation-modal .workbench-citation-preview-grid,
+  .citation-picker-preview-grid,
+  .workbench-citation-preview-grid {
+    grid-template-columns: 1fr !important;
+    max-height: none !important;
+  }
+
+  .workbench-citation-modal .workbench-citation-preview p,
+  .workbench-citation-modal .workbench-citation-preview-card p {
+    max-height: 96px !important;
+  }
+}

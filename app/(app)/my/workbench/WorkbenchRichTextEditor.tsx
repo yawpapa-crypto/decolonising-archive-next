@@ -120,6 +120,7 @@ type Props = {
   compactToolbar?: boolean;
   hideToolbar?: boolean;
   onOpenCitation?: (event?: MouseEvent<HTMLButtonElement>) => void;
+  onOpenAICitation?: () => void;
 };
 
 function payloadFromEditor(ed: NonNullable<ReturnType<typeof useEditor>>): WorkbenchEditorPayload {
@@ -147,6 +148,7 @@ export default function WorkbenchRichTextEditor({
   compactToolbar = false,
   hideToolbar = false,
   onOpenCitation,
+  onOpenAICitation,
 }: Props) {
   const onChangeRef = useRef(onChange);
   const [slashOpen, setSlashOpen] = useState(false);
@@ -323,6 +325,7 @@ export default function WorkbenchRichTextEditor({
           noteId={noteId}
           onImageError={onImageError}
           onOpenCitation={onOpenCitation}
+          onOpenAICitation={onOpenAICitation}
         />
       ) : null}
       {slashOpen ? (

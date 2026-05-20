@@ -1,13 +1,12 @@
 import WorkbenchOverviewClient, { type WorkbenchRecordOption } from "./WorkbenchOverviewClient";
 import {
-  getWorkbenchOverviewContext,
   listAllWorkbenchAnnotations,
   listAllWorkbenchCollaborators,
   listAllWorkbenchProjectRecords,
   listAllWorkbenchTasks,
   listWorkbenchProjects,
 } from "@/lib/workbench-data";
-import { getMemberWorkspaceData, workspaceRecordTitle } from "@/src/lib/member-workspace";
+import { getWorkbenchOverviewWorkspace, workspaceRecordTitle } from "@/src/lib/member-workspace";
 import { createClient } from "@/src/lib/supabase/server";
 
 type SearchParams = Promise<{ updated?: string; error?: string }>;
@@ -32,20 +31,18 @@ export default async function WorkbenchOverviewPage({
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [overview, projectsRes, tasksRes, projectRecordsRes, annotationsRes, collaboratorsRes, workspace] =
+  const [projectsRes, tasksRes, projectRecordsRes, annotationsRes, collaboratorsRes, workspace] =
     await Promise.all([
-      getWorkbenchOverviewContext(),
       listWorkbenchProjects(),
       listAllWorkbenchTasks(300),
       listAllWorkbenchProjectRecords(300),
       listAllWorkbenchAnnotations(200),
       listAllWorkbenchCollaborators(200),
-      getMemberWorkspaceData("/my/workbench"),
+      getWorkbenchOverviewWorkspace(user?.id ?? null),
     ]);
 
   const errors = [
     sp.error,
-    !overview.ok ? overview.error : "",
     !projectsRes.ok ? projectsRes.error : "",
     !tasksRes.ok ? tasksRes.error : "",
     !projectRecordsRes.ok ? projectRecordsRes.error : "",
@@ -54,9 +51,6 @@ export default async function WorkbenchOverviewPage({
   ].filter(Boolean);
 
   const recordOptionMap = new Map<string, WorkbenchRecordOption>();
-  workspace.records.slice(0, 300).forEach((record) => {
-    addRecordOption(recordOptionMap, record.id, workspaceRecordTitle(workspace.recordsById, record.id));
-  });
   workspace.bookmarks.forEach((bookmark) => {
     addRecordOption(
       recordOptionMap,
@@ -93,8 +87,8 @@ export default async function WorkbenchOverviewPage({
       collaborators={collaboratorsRes.ok ? collaboratorsRes.collaborators : []}
       currentUserId={user?.id ?? null}
       recordOptions={Array.from(recordOptionMap.values())}
-      savedRecordsCount={workspace.bookmarks.length}
-      readingListsCount={workspace.readingLists.length}
+      savedRecordsCount={workspace.bookmarksCount}
+      readingListsCount={workspace.readingListsCount}
       initialNotice={sp.updated}
       initialError={errors.join(" ")}
     />

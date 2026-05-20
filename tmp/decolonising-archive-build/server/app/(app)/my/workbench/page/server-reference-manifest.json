@@ -1,0 +1,89 @@
+{
+  "node": {
+    "403f2bb8f1b39ef68a936c33667cb3dc304a066082": {
+      "workers": {
+        "app/(app)/my/workbench/page": {
+          "moduleId": 51484,
+          "async": false,
+          "exportedName": "createWorkbenchProjectInline",
+          "filename": "lib/workbench-inline-actions.ts"
+        }
+      },
+      "exportedName": "createWorkbenchProjectInline",
+      "filename": "lib/workbench-inline-actions.ts"
+    },
+    "40cf78e732a9feeed66804b448d17157ed1f206059": {
+      "workers": {
+        "app/(app)/my/workbench/page": {
+          "moduleId": 51484,
+          "async": false,
+          "exportedName": "createWorkbenchTaskInline",
+          "filename": "lib/workbench-inline-actions.ts"
+        }
+      },
+      "exportedName": "createWorkbenchTaskInline",
+      "filename": "lib/workbench-inline-actions.ts"
+    },
+    "401be1d4ca332fa92b6b48981d19dbb19ed224d812": {
+      "workers": {
+        "app/(app)/my/workbench/page": {
+          "moduleId": 51484,
+          "async": false,
+          "exportedName": "deleteWorkbenchProjectInline",
+          "filename": "lib/workbench-inline-actions.ts"
+        }
+      },
+      "exportedName": "deleteWorkbenchProjectInline",
+      "filename": "lib/workbench-inline-actions.ts"
+    },
+    "403e778681a2cb25f4f820c3c417122d00136e7b9f": {
+      "workers": {
+        "app/(app)/my/workbench/page": {
+          "moduleId": 51484,
+          "async": false,
+          "exportedName": "deleteWorkbenchTaskInline",
+          "filename": "lib/workbench-inline-actions.ts"
+        }
+      },
+      "exportedName": "deleteWorkbenchTaskInline",
+      "filename": "lib/workbench-inline-actions.ts"
+    },
+    "409eb480b0f07e333b6305e10c4d0036d0a587a787": {
+      "workers": {
+        "app/(app)/my/workbench/page": {
+          "moduleId": 51484,
+          "async": false,
+          "exportedName": "patchWorkbenchTask",
+          "filename": "lib/workbench-inline-actions.ts"
+        }
+      },
+      "exportedName": "patchWorkbenchTask",
+      "filename": "lib/workbench-inline-actions.ts"
+    },
+    "40e4ef1746915c4b5da917fcc3a4bd7dcc5ae767b2": {
+      "workers": {
+        "app/(app)/my/workbench/page": {
+          "moduleId": 51484,
+          "async": false,
+          "exportedName": "renameWorkbenchProjectInline",
+          "filename": "lib/workbench-inline-actions.ts"
+        }
+      },
+      "exportedName": "renameWorkbenchProjectInline",
+      "filename": "lib/workbench-inline-actions.ts"
+    },
+    "40e9175e0f5ff2f18ed6e9fc0f13f5bec590b1fa53": {
+      "workers": {
+        "app/(app)/my/workbench/page": {
+          "moduleId": 51484,
+          "async": false,
+          "exportedName": "updateWorkbenchProjectInline",
+          "filename": "lib/workbench-inline-actions.ts"
+        }
+      },
+      "exportedName": "updateWorkbenchProjectInline",
+      "filename": "lib/workbench-inline-actions.ts"
+    }
+  },
+  "edge": {}
+}

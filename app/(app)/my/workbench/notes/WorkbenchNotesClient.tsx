@@ -3,15 +3,26 @@
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
   useTransition,
   type CSSProperties,
   type KeyboardEvent as ReactKeyboardEvent,
-  type MouseEvent,
+  type MouseEvent as ReactMouseEvent,
   type PointerEvent as ReactPointerEvent,
 } from "react";
+import { createPortal } from "react-dom";
+import {
+  CircleHelp,
+  Eye,
+  FileText,
+  Pencil,
+  PlusSquare,
+  type LucideIcon,
+} from "lucide-react";
+import type { ChainedCommands } from "@tiptap/core";
 import type { Editor } from "@tiptap/react";
 import { extractHeadingsFromHtml, type NoteHeading } from "@/lib/workbench-note-headings";
 import type {
@@ -52,10 +63,9 @@ import {
   readingMinutesFromWordCount,
   shouldAutoGenerateNoteTitle,
 } from "@/lib/workbench-note-utils";
-import WorkbenchRichTextEditor, {
-  type WorkbenchEditorPayload,
-} from "../WorkbenchRichTextEditor";
 import WorkbenchEditorToolbar from "../WorkbenchEditorToolbar";
+import AICitationFloatingTrigger from "./AICitationFloatingTrigger";
+import type { WorkbenchEditorPayload } from "../WorkbenchRichTextEditor";
 import WorkbenchNotesLinkedRecords, {
   type LinkedRecordView,
 } from "./WorkbenchNotesLinkedRecords";
@@ -65,32 +75,54 @@ import WorkbenchNotesCommandPalette, {
 import WorkbenchNotesQuickSwitcher from "./WorkbenchNotesQuickSwitcher";
 import WorkbenchNotesDocumentOutline from "./WorkbenchNotesDocumentOutline";
 import WorkbenchDocumentPageView from "./WorkbenchDocumentPageView";
-import WorkbenchNoteBoard, {
-  type BoardCardColour,
-  type BoardCardType,
-  type WorkbenchBoardCard,
-  type WorkbenchBoardData,
-  createDefaultBoardCard,
-  normalizeCardType,
-} from "./WorkbenchNoteBoard";
+import dynamic from "next/dynamic";
 import {
   boardCardsToMarkdownSummary,
   normalizeCardOrder,
 } from "./workbench-board-utils";
 import type { WorkbenchBoardSettings } from "./workbench-board-types";
-import WorkbenchNoteCanvas, {
-  type CanvasBlockType,
-  type WorkbenchCanvasBlock,
-  type WorkbenchCanvasData,
-} from "./WorkbenchNoteCanvas";
+import type { BoardCardColour, BoardCardType, WorkbenchBoardCard, WorkbenchBoardData } from "./workbench-board-types";
+import { createDefaultBoardCard, normalizeCardType } from "./workbench-note-board-core";
+import type { CanvasBlockType, WorkbenchCanvasBlock, WorkbenchCanvasData } from "./WorkbenchNoteCanvas";
 import { useWorkbenchNotesShortcuts } from "./useWorkbenchNotesShortcuts";
 import { ResearchInspector } from "./surfaces/ResearchInspector";
 import { DocumentMetadataBar } from "./surfaces/DocumentMetadataBar";
 import WorkbenchDocumentTopBar, { type DocumentSidebarTab } from "./WorkbenchDocumentTopBar";
+import WorkbenchIconTip from "./WorkbenchIconTip";
 import WorkbenchDocumentDrawer from "./WorkbenchDocumentDrawer";
+import {
+  clampDocumentZoom,
+  getCitationPopoverLayout,
+  getDocumentViewportProfile,
+  type CitationPopoverLayout,
+} from "./document-mobile";
 import WorkbenchDocumentFormatPanel from "./WorkbenchDocumentFormatPanel";
 import WorkbenchDocumentDetailsSections from "./WorkbenchDocumentDetailsSections";
 import type { NoteMode } from "./workbench-note-types";
+
+const WorkbenchRichTextEditor = dynamic(() => import("../WorkbenchRichTextEditor"), {
+  loading: () => <div className="workbench-rich-editor workbench-rich-editor--loading" aria-busy="true" />,
+});
+
+const WorkbenchNoteBoard = dynamic(() => import("./WorkbenchNoteBoard"), {
+  loading: () => (
+    <div className="workbench-mode-loading" aria-busy="true">
+      Loading board…
+    </div>
+  ),
+});
+
+const WorkbenchNoteCanvas = dynamic(() => import("./WorkbenchNoteCanvas"), {
+  loading: () => (
+    <div className="workbench-mode-loading" aria-busy="true">
+      Loading canvas…
+    </div>
+  ),
+});
+
+const AICitationAssistant = dynamic(() => import("./AICitationAssistant"), {
+  ssr: false,
+});
 
 type SaveState = "unsaved" | "saving" | "saved" | "error";
 type WorkbenchCitationStyle =
@@ -122,9 +154,15 @@ type WorkbenchNoteCitation = {
   endnoteText: string;
   bibliographyText?: string | null;
   customText?: string | null;
+  /* EndNote-style editable in-text citation fields */
+  referenceId?: string;
+  displayText?: string;
+  prefix?: string;
+  suffix?: string;
+  pages?: string;
 };
 
-type CitationCandidate = {
+export type CitationCandidate = {
   id: string;
   recordId?: string;
   sourceType?: WorkbenchCitationSourceType | "custom";
@@ -311,7 +349,7 @@ function getBoardData(json: Record<string, unknown> | null): WorkbenchBoardData 
 function getCitations(json: Record<string, unknown> | null): WorkbenchNoteCitation[] {
   if (!Array.isArray(json?.workbenchCitations)) return EMPTY_CITATIONS;
   return json.workbenchCitations.filter(isRecord).map((citation, index) => {
-    const rawStyle = stringValue(citation.style, "custom");
+    const rawStyle = stringValue(citation.style, "apa7");
     const style: WorkbenchCitationStyle =
       rawStyle === "apa7" ||
       rawStyle === "chicago_notes" ||
@@ -365,6 +403,15 @@ function getCitations(json: Record<string, unknown> | null): WorkbenchNoteCitati
       bibliographyText:
         typeof citation.bibliographyText === "string" ? citation.bibliographyText : null,
       customText: typeof citation.customText === "string" ? citation.customText : null,
+      referenceId:
+        typeof citation.referenceId === "string" && citation.referenceId
+          ? citation.referenceId
+          : undefined,
+      displayText:
+        typeof citation.displayText === "string" ? citation.displayText : undefined,
+      prefix: typeof citation.prefix === "string" ? citation.prefix : undefined,
+      suffix: typeof citation.suffix === "string" ? citation.suffix : undefined,
+      pages: typeof citation.pages === "string" ? citation.pages : undefined,
     };
   });
 }
@@ -439,6 +486,233 @@ function refreshEndnotesHtml(html: string, citations: WorkbenchNoteCitation[]) {
   return endnotes ? `${withoutEndnotes}${endnotes}` : withoutEndnotes;
 }
 
+/* ───────── EndNote-style editable in-text citation helpers ───────── */
+
+function slugifyCitationKey(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80) || "untitled";
+}
+
+/**
+ * Derive a stable reference ID for a citation. The same source cited multiple
+ * times always returns the same reference ID so the reference list does not
+ * duplicate entries.
+ */
+function computeReferenceId(input: {
+  recordId?: string | null;
+  bookmarkId?: string | null;
+  readingListId?: string | null;
+  title?: string | null;
+  creator?: string | null;
+  date?: string | null;
+}): string {
+  if (input.recordId) return `record-${slugifyCitationKey(input.recordId)}`;
+  if (input.bookmarkId) return `bookmark-${slugifyCitationKey(input.bookmarkId)}`;
+  if (input.readingListId) return `reading-${slugifyCitationKey(input.readingListId)}`;
+  const key = [input.creator, input.date, input.title].filter(Boolean).join(" ");
+  return `custom-${slugifyCitationKey(key || "untitled")}`;
+}
+
+function citationReferenceId(citation: WorkbenchNoteCitation): string {
+  return (
+    citation.referenceId ||
+    computeReferenceId({
+      recordId: citation.recordId,
+      bookmarkId: citation.bookmarkId,
+      readingListId: citation.readingListId,
+      title: citation.title,
+      creator: citation.creator,
+      date: citation.date,
+    })
+  );
+}
+
+function citationDisplayValue(citation: WorkbenchNoteCitation): string {
+  return (citation.displayText && citation.displayText.trim()) || citation.inTextCitation || citation.citationText || citation.title;
+}
+
+/**
+ * Compose the visible in-text label: prefix + display + (pages) + suffix.
+ * Used for both the anchor inner text and any markdown/plain-text export.
+ */
+function composeCitationDisplay(citation: WorkbenchNoteCitation): string {
+  if (shouldUseApaInTextDisplay(citation)) {
+    return formatApaInTextCitation({
+      authors: citation.creator,
+      year: getCitationYear(citationCandidateFromCitation(citation)),
+      title: citation.title,
+      pages: citation.pages,
+      prefix: citation.prefix,
+      suffix: citation.suffix,
+      narrative: citation.insertMode === "narrative",
+    });
+  }
+  const display = citationDisplayValue(citation);
+  const prefix = citation.prefix?.trim() ? `${citation.prefix.trim()} ` : "";
+  const pages = citation.pages?.trim() ? `, ${citation.pages.trim()}` : "";
+  const suffix = citation.suffix?.trim() ? ` ${citation.suffix.trim()}` : "";
+  const core = `${display}${pages}`.trim();
+  return `${prefix}${core}${suffix}`.trim();
+}
+
+/**
+ * Build the EndNote-style in-text anchor HTML for a citation. Used by both
+ * the initial insert flow and the click-to-edit save flow.
+ */
+function buildCitationLinkHtml(citation: WorkbenchNoteCitation): string {
+  const refId = citationReferenceId(citation);
+  const display = composeCitationDisplay(citation);
+  const doi = extractDoiFromUrl(citation.sourceUrl);
+  return [
+    `<a class="workbench-citation-link"`,
+    `href="#ref-workbench-citation-${escapeHtml(refId)}"`,
+    `data-citation-id="${escapeHtml(citation.id)}"`,
+    `data-reference-id="${escapeHtml(refId)}"`,
+    citation.recordId ? `data-record-id="${escapeHtml(citation.recordId)}"` : "",
+    `data-title="${escapeHtml(citation.title)}"`,
+    formatAuthorsPipe(citation.creator)
+      ? `data-authors="${escapeHtml(formatAuthorsPipe(citation.creator))}"`
+      : "",
+    `data-year="${escapeHtml(citationYearFromCitation(citation))}"`,
+    `data-source="${escapeHtml(citationSourceLabel(citation))}"`,
+    citation.sourceUrl ? `data-url="${escapeHtml(citation.sourceUrl)}"` : "",
+    doi ? `data-doi="${escapeHtml(doi)}"` : "",
+    `data-citation-display="${escapeHtml(citationDisplayValue(citation))}"`,
+    `data-citation-prefix="${escapeHtml(citation.prefix ?? "")}"`,
+    `data-citation-suffix="${escapeHtml(citation.suffix ?? "")}"`,
+    `data-citation-pages="${escapeHtml(citation.pages ?? "")}"`,
+    `aria-label="Edit citation and jump to reference: ${escapeHtml(citation.title)}"`,
+    `>${escapeHtml(display)}</a> `,
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+/**
+ * Strip legacy endnotes and every known generated References section variant
+ * so refreshReferenceListHtml can append one canonical list.
+ */
+function stripReferenceList(html: string): string {
+  if (!html) return "";
+  if (typeof DOMParser !== "undefined") {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    doc
+      .querySelectorAll(
+        '.workbench-reference-list,[data-workbench-references="true"],[data-workbench-endnotes="true"]',
+      )
+      .forEach((node) => node.remove());
+    doc.querySelectorAll("h1,h2,h3,h4,h5,h6").forEach((heading) => {
+      const label = heading.textContent?.trim().toLowerCase();
+      if (label !== "references" && label !== "endnotes") return;
+      let node: ChildNode | null = heading;
+      while (node) {
+        const next: ChildNode | null = node.nextSibling;
+        node.parentNode?.removeChild(node);
+        node = next;
+      }
+    });
+    return doc.body.innerHTML.trim() || "<p></p>";
+  }
+  return html
+    .replace(
+      /<section\b[^>]*class=["'][^"']*\bworkbench-reference-list\b[^"']*["'][^>]*>[\s\S]*?<\/section>/gi,
+      "",
+    )
+    .replace(
+      /<section\b[^>]*data-workbench-references=["']true["'][^>]*>[\s\S]*?<\/section>/gi,
+      "",
+    )
+    .replace(
+      /<section\b[^>]*data-workbench-endnotes=["']true["'][^>]*>[\s\S]*?<\/section>/gi,
+      "",
+    )
+    .replace(/<h[1-6]\b[^>]*>\s*(?:References|Endnotes)\s*<\/h[1-6]>[\s\S]*$/i, "");
+}
+
+function refreshReferenceListHtml(html: string, _citations: WorkbenchNoteCitation[]): string {
+  return stripReferenceList(html || "<p></p>").trim() || "<p></p>";
+}
+
+function captureWorkbenchEditorScroll() {
+  if (typeof window === "undefined" || typeof document === "undefined") {
+    return () => {};
+  }
+
+  const windowX = window.scrollX;
+  const windowY = window.scrollY;
+  const scrollSelectors = [
+    ".workbench-document-pages-scroll",
+    ".workbench-reading-surface-host",
+    ".workbench-note-editor-shell",
+    ".workbench-rich-editor-wrap",
+    ".ProseMirror",
+  ];
+  const elementPositions = scrollSelectors
+    .flatMap((selector) => Array.from(document.querySelectorAll<HTMLElement>(selector)))
+    .map((element) => ({
+      element,
+      scrollLeft: element.scrollLeft,
+      scrollTop: element.scrollTop,
+    }));
+
+  return () => {
+    requestAnimationFrame(() => {
+      window.scrollTo(windowX, windowY);
+      elementPositions.forEach(({ element, scrollLeft, scrollTop }) => {
+        element.scrollLeft = scrollLeft;
+        element.scrollTop = scrollTop;
+      });
+    });
+  };
+}
+
+/**
+ * After a citation update, rewrite every in-text anchor for the citation's
+ * id with fresh display text and data attributes. Returns the new HTML.
+ */
+function rewriteCitationAnchors(html: string, citation: WorkbenchNoteCitation): string {
+  if (!html || typeof DOMParser === "undefined") return html;
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const safeId = citation.id.replace(/"/g, "");
+  const safeRefId = citationReferenceId(citation).replace(/"/g, "");
+  const nodes = doc.querySelectorAll(
+    `a.workbench-citation-link[data-citation-id="${safeId}"],a.workbench-citation-link[href="#ref-workbench-citation-${safeRefId}"]`,
+  );
+  if (!nodes.length) return html;
+  const fresh = new DOMParser()
+    .parseFromString(`<div>${buildCitationLinkHtml(citation)}</div>`, "text/html")
+    .body.firstElementChild?.firstElementChild as HTMLAnchorElement | null;
+  if (!fresh) return html;
+  nodes.forEach((node) => {
+    const replacement = fresh.cloneNode(true) as HTMLAnchorElement;
+    node.replaceWith(replacement);
+  });
+  return doc.body.innerHTML;
+}
+
+function rewriteAllCitationAnchors(html: string, citations: WorkbenchNoteCitation[]): string {
+  return citations.reduce((nextHtml, citation) => rewriteCitationAnchors(nextHtml, citation), html);
+}
+
+/**
+ * Remove all in-text anchors for a citation id from the HTML. Returns the new HTML.
+ */
+function removeCitationAnchors(html: string, citationId: string): string {
+  if (!html || typeof DOMParser === "undefined") return html;
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const safe = citationId.replace(/"/g, "");
+  doc
+    .querySelectorAll(
+      `a.workbench-citation-link[data-citation-id="${safe}"],[data-workbench-citation="${safe}"]`,
+    )
+    .forEach((node) => node.remove());
+  return doc.body.innerHTML;
+}
+
 function citationsToMarkdown(citations: WorkbenchNoteCitation[]) {
   if (!citations.length) return "";
   const items = citations
@@ -482,6 +756,304 @@ function getCitationTitle(source: CitationCandidate | null) {
   return source?.title?.trim() || "Untitled source";
 }
 
+function formatAuthorsPipe(authors?: string | null) {
+  if (!authors?.trim()) return "";
+  return normaliseCitationAuthors(authors).join("|");
+}
+
+function citationSourceLabel(citation: WorkbenchNoteCitation) {
+  if (citation.sourceType === "bookmark") return "Saved bookmark";
+  if (citation.sourceType === "reading_list") {
+    return citation.readingListTitle ? `Reading list: ${citation.readingListTitle}` : "Reading list";
+  }
+  if (citation.sourceType === "linked") return "Archive record";
+  if (citation.institution?.trim()) return citation.institution.trim();
+  return "Custom";
+}
+
+function extractDoiFromUrl(url?: string | null) {
+  if (!url?.trim()) return "";
+  const match = url.match(/10\.\d{4,9}\/[-._;()/:A-Z0-9]+/i);
+  return match?.[0] ?? "";
+}
+
+function citationYearFromCitation(citation: WorkbenchNoteCitation) {
+  return getCitationYear({
+    id: citation.id,
+    title: citation.title,
+    creator: citation.creator,
+    date: citation.date,
+    institution: citation.institution,
+  });
+}
+
+function normaliseCitationAuthors(authors: string[] | string | null | undefined) {
+  if (Array.isArray(authors)) {
+    return authors.map((author) => author.trim()).filter(Boolean);
+  }
+  const value = authors?.trim();
+  if (!value) return [];
+
+  const splitIfPersonalNames = (parts: string[]) => {
+    const cleaned = parts.map((part) => part.trim()).filter(Boolean);
+    return cleaned.length > 1 && cleaned.every(looksLikePersonalAuthorName) ? cleaned : null;
+  };
+
+  const apaNameMatches = value.match(/[^,;&]+,\s*(?:[A-Z]\.\s*)+/g);
+  if (apaNameMatches && apaNameMatches.length > 1) {
+    return apaNameMatches.map((author) => author.trim()).filter(Boolean);
+  }
+  const semicolonParts = splitIfPersonalNames(value.split(";"));
+  if (semicolonParts) return semicolonParts;
+
+  const ampersandParts = splitIfPersonalNames(value.split(/\s+&\s+/));
+  if (ampersandParts) return ampersandParts;
+
+  const andParts = splitIfPersonalNames(value.split(/\s+\band\b\s+/i));
+  if (andParts) return andParts;
+
+  const commaParts = splitIfPersonalNames(value.split(","));
+  if (commaParts) return commaParts;
+
+  return value
+    .split(/\s*;\s*/i)
+    .map((author) => author.trim())
+    .filter(Boolean);
+}
+
+function looksLikePersonalAuthorName(value: string) {
+  const cleaned = value.replace(/\s+/g, " ").trim();
+  if (!cleaned) return false;
+  const lower = cleaned.toLowerCase();
+  const organisationWords = /\b(institute|institution|university|archive|library|museum|department|council|government|society|organisation|organization|centre|center|press|service|agency|foundation|college|school|ministry|office|corporation|company|association|committee|board|national|international|aboriginal|torres strait)\b/i;
+  if (organisationWords.test(lower)) return false;
+  const words = cleaned.split(" ").filter(Boolean);
+  if (words.length > 3) return false;
+  return words.every((word) => /^[A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ'.-]*\.?$/.test(word));
+}
+
+function citationFamilyName(author: string) {
+  const cleaned = author.replace(/\s+/g, " ").trim();
+  if (!cleaned) return "";
+  if (/^unknown author$/i.test(cleaned)) return "";
+  if (/^[^,]+,\s*(?:[A-Z]\.\s*)+$/i.test(cleaned)) {
+    return cleaned.split(",")[0]?.trim() || cleaned;
+  }
+  if (!looksLikePersonalAuthorName(cleaned)) return cleaned;
+  if (cleaned.includes(",")) return cleaned.split(",")[0]?.trim() || cleaned;
+  const parts = cleaned.split(" ").filter(Boolean);
+  return parts.length > 1 ? parts[parts.length - 1] : cleaned;
+}
+
+function shortenCitationTitle(title?: string | null) {
+  const words = (title || "Untitled source")
+    .replace(/[“”"]/g, "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+  return `"${words.slice(0, 4).join(" ") || "Untitled source"}"`;
+}
+
+function formatApaAuthorDate(authors: string[] | string | null | undefined, title?: string | null) {
+  const names = normaliseCitationAuthors(authors)
+    .map(citationFamilyName)
+    .filter(Boolean);
+  if (names.length === 0) return shortenCitationTitle(title);
+  if (names.length === 1) return names[0];
+  if (names.length === 2) return `${names[0]} & ${names[1]}`;
+  return `${names[0]} et al.`;
+}
+
+function formatApaPages(pages?: string | null) {
+  const value = pages?.trim();
+  if (!value) return "";
+  const normalised = value.replace(/^(pp?\.?\s*)/i, "").trim();
+  const label = /[-–,]/.test(normalised) ? "pp." : "p.";
+  return `${label} ${normalised}`;
+}
+
+function formatApaYear(year?: string | null) {
+  const value = year?.trim();
+  return value || "n.d.";
+}
+
+function formatApaReferenceAuthorName(author: string) {
+  const cleaned = author.replace(/\s+/g, " ").trim();
+  if (!cleaned || /^unknown author$/i.test(cleaned)) return "";
+  if (/^[^,]+,\s/.test(cleaned)) return cleaned;
+  if (!looksLikePersonalAuthorName(cleaned)) return cleaned;
+  const parts = cleaned.split(" ").filter(Boolean);
+  if (parts.length === 1) return parts[0];
+  const last = parts[parts.length - 1];
+  const initials = parts
+    .slice(0, -1)
+    .map((part) => `${part.replace(/\.$/, "").charAt(0)}.`)
+    .join(" ");
+  return `${last}, ${initials}`;
+}
+
+function formatApaReferenceAuthors(authors: string[] | string | null | undefined) {
+  const names = normaliseCitationAuthors(authors)
+    .map(formatApaReferenceAuthorName)
+    .filter(Boolean);
+  if (names.length === 0) return "";
+  if (names.length === 1) return names[0];
+  if (names.length === 2) return `${names[0]}, & ${names[1]}`;
+  return `${names.slice(0, -1).join(", ")}, & ${names[names.length - 1]}`;
+}
+
+function formatApaDoiUrl(doi?: string | null, url?: string | null) {
+  const doiValue = doi?.trim();
+  if (doiValue) {
+    if (/^https?:\/\//i.test(doiValue)) return doiValue;
+    const bare = doiValue.replace(/^https?:\/\/doi.org\//i, "").replace(/^doi:/i, "").trim();
+    return bare ? `https://doi.org/${bare}` : "";
+  }
+  return url?.trim() || "";
+}
+
+function formatApaReferenceEntry({
+  authors,
+  year,
+  title,
+  source,
+  institution,
+  url,
+  doi,
+}: {
+  authors?: string[] | string | null;
+  year?: string | null;
+  title?: string | null;
+  source?: string | null;
+  institution?: string | null;
+  url?: string | null;
+  doi?: string | null;
+}) {
+  const cleanTitle = (title?.trim() || "Untitled source").replace(/\.$/, "").trim();
+  const citationYear = formatApaYear(year);
+  const authorPart = formatApaReferenceAuthors(authors);
+  const sourceLabel = source?.trim();
+  const institutionLabel = institution?.trim();
+  const container =
+    sourceLabel && institutionLabel && sourceLabel !== institutionLabel
+      ? `${sourceLabel}. ${institutionLabel}`
+      : sourceLabel || institutionLabel || "";
+  const accessLink = formatApaDoiUrl(doi || extractDoiFromUrl(url), url);
+
+  if (!authorPart) {
+    const parts = [`${cleanTitle}.`, `(${citationYear}).`];
+    if (container) parts.push(`${container}.`);
+    if (accessLink) parts.push(accessLink);
+    return parts.join(" ");
+  }
+
+  const parts = [`${authorPart}`, `(${citationYear}).`, `${cleanTitle}.`];
+  if (container) parts.push(`${container}.`);
+  if (accessLink) parts.push(accessLink);
+  return parts.join(" ");
+}
+
+function looksLikeApaInTextCitation(text?: string | null) {
+  const value = text?.trim();
+  if (!value) return false;
+  return /^\([^)]*(?:\d{4}|n\.d\.)[^)]*\)$/i.test(value);
+}
+
+function looksLikeRawAuthorListInParentheses(text?: string | null) {
+  const value = text?.trim();
+  if (!value || !/^\(.+\)$/.test(value)) return false;
+  const inner = value.slice(1, -1);
+  if (/\bet al\./i.test(inner)) return false;
+  return (inner.match(/,/g) ?? []).length >= 2;
+}
+
+function isPlaceholderTitle(title?: string | null) {
+  const value = title?.trim();
+  return !value || /^untitled source$/i.test(value);
+}
+
+function isPlaceholderReferenceEntry(text: string) {
+  return /^Untitled source\.\s*\(n\.d\.\)\.?(?:\s|$)/i.test(text.trim());
+}
+
+function parseApaParenthetical(text?: string | null) {
+  const value = text?.trim();
+  if (!value) return null;
+  const wrapped = value.match(/^\((.+)\)$/);
+  const inner = (wrapped ? wrapped[1] : value).trim();
+  const yearMatch = inner.match(/,\s*((?:\d{4}|n\.d\.))(?:,\s*.+)?$/i);
+  if (!yearMatch || yearMatch.index == null) return null;
+  const year = yearMatch[1];
+  const authorPart = inner.slice(0, yearMatch.index).replace(/,\s*$/, "").trim();
+  if (!authorPart) return null;
+  const authors = authorPart.includes("&")
+    ? authorPart
+        .split(/\s*&\s*/)
+        .map((author) => author.trim())
+        .filter(Boolean)
+        .join("|")
+    : authorPart;
+  return { authors, year };
+}
+
+function readLinkDataAttr(link: HTMLAnchorElement, name: string) {
+  const value = link.getAttribute(name)?.trim();
+  return value || undefined;
+}
+
+function citationCandidateFromCitation(citation: WorkbenchNoteCitation): CitationCandidate {
+  return {
+    id: citation.id,
+    recordId: citation.recordId,
+    title: citation.title,
+    creator: citation.creator,
+    date: citation.date,
+    institution: citation.institution,
+    sourceUrl: citation.sourceUrl,
+  };
+}
+
+function shouldUseApaInTextDisplay(citation: WorkbenchNoteCitation) {
+  if (citation.insertMode === "endnote" || citation.insertMode === "full_block") return false;
+  if (citation.style === "apa7" || citation.style === "harvard" || citation.style === "chicago_author_date") {
+    return true;
+  }
+  const label = citation.displayText || citation.inTextCitation || citation.citationText;
+  return looksLikeRawAuthorListInParentheses(label);
+}
+
+function formatApaInTextCitation({
+  authors,
+  year,
+  title,
+  pages,
+  prefix,
+  suffix,
+  narrative = false,
+}: {
+  authors?: string[] | string | null;
+  year?: string | null;
+  title?: string | null;
+  pages?: string | null;
+  prefix?: string | null;
+  suffix?: string | null;
+  narrative?: boolean;
+}) {
+  const author = formatApaAuthorDate(authors, title);
+  const citationYear = formatApaYear(year);
+  const pageText = formatApaPages(pages);
+  const prefixText = prefix?.trim();
+  const suffixText = suffix?.trim();
+  const details = [citationYear, pageText, suffixText].filter(Boolean).join(", ");
+
+  if (narrative) {
+    const lead = [prefixText, author].filter(Boolean).join(" ");
+    return `${lead} (${details})`.trim();
+  }
+
+  return `(${[prefixText, author, details].filter(Boolean).join(", ")})`;
+}
+
 // Lightweight citation formatters, not CSL-level scholarly citation validation.
 function formatInTextCitation(
   source: CitationCandidate | null,
@@ -497,14 +1069,20 @@ function formatInTextCitation(
   if (style === "custom") return custom || `[${marker}]`;
   if (insertMode === "endnote" || style === "chicago_notes") return `[${marker}]`;
   if (insertMode === "full_block") return formatEndnoteCitation(source, style, customText);
+  if (style === "apa7" || style === "harvard" || style === "chicago_author_date") {
+    return formatApaInTextCitation({
+      authors: source?.creator,
+      year,
+      title: source?.title,
+      narrative: insertMode === "narrative",
+    });
+  }
 
   if (insertMode === "narrative") {
     if (style === "mla") return author;
-    if (style === "chicago_author_date") return `${author} (${year})`;
     return `${author} (${year})`;
   }
 
-  if (style === "chicago_author_date") return `(${author} ${year})`;
   if (style === "mla") return `(${author})`;
   return `(${author}, ${year})`;
 }
@@ -515,7 +1093,10 @@ function formatEndnoteCitation(
   customText: string,
 ) {
   if (style === "custom" && customText.trim()) return customText.trim();
-  if (source?.citationText && style !== "custom") return source.citationText;
+  if (source?.citationText && style !== "custom") {
+    const text = source.citationText.trim();
+    if (!looksLikeApaInTextCitation(text)) return text;
+  }
 
   const author = getCitationAuthor(source);
   const year = getCitationYear(source);
@@ -524,9 +1105,15 @@ function formatEndnoteCitation(
   const url = source?.sourceUrl?.trim();
 
   if (style === "apa7") {
-    return [author ? `${author}.` : "", `(${year}).`, `${title}.`, institution ? `${institution}.` : "", url]
-      .filter(Boolean)
-      .join(" ");
+    return formatApaReferenceEntry({
+      authors: source?.creator,
+      year,
+      title,
+      source: source?.sourceLabel,
+      institution,
+      url,
+      doi: extractDoiFromUrl(url),
+    });
   }
 
   if (style === "mla") {
@@ -553,12 +1140,30 @@ function formatBibliographyCitation(
 }
 
 
+const NOTE_MENU_ICONS: Record<string, LucideIcon> = {
+  file: FileText,
+  edit: Pencil,
+  view: Eye,
+  insert: PlusSquare,
+  help: CircleHelp,
+};
+
+const NOTE_MENU_TIPS: Record<string, { tip: string; info: string }> = {
+  file: { tip: "File", info: "New, save, export" },
+  edit: { tip: "Edit", info: "Undo & clipboard" },
+  view: { tip: "View", info: "Outline & zoom" },
+  insert: { tip: "Insert", info: "Blocks & media" },
+  help: { tip: "Help", info: "Shortcuts & guides" },
+};
+
 function WorkbenchNoteMenuBar({
   menus,
   className,
+  iconOnly = false,
 }: {
   menus: NoteMenu[];
   className?: string;
+  iconOnly?: boolean;
 }) {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
@@ -586,23 +1191,47 @@ function WorkbenchNoteMenuBar({
 
   return (
     <nav
-      className={["workbench-note-menu-bar", className].filter(Boolean).join(" ")}
+      className={[
+        "workbench-note-menu-bar",
+        iconOnly ? "workbench-note-menu-bar--icons" : null,
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
       aria-label="Note editor menu"
       ref={ref}
     >
       {menus.map((menu) => {
         const isOpen = openMenu === menu.id;
+        const MenuIcon = NOTE_MENU_ICONS[menu.id];
+        const menuTip = NOTE_MENU_TIPS[menu.id] ?? { tip: menu.label, info: "Open menu" };
+        const menuButton = (
+          <button
+            type="button"
+            className="workbench-note-menu-button"
+            aria-haspopup="menu"
+            aria-expanded={isOpen}
+            aria-label={
+              iconOnly ? `${menuTip.tip} — ${menuTip.info}` : undefined
+            }
+            onClick={() => setOpenMenu((current) => (current === menu.id ? null : menu.id))}
+          >
+            {iconOnly && MenuIcon ? (
+              <MenuIcon size={16} strokeWidth={1.75} aria-hidden />
+            ) : (
+              menu.label
+            )}
+          </button>
+        );
         return (
           <div key={menu.id} className="workbench-note-menu-item">
-            <button
-              type="button"
-              className="workbench-note-menu-button"
-              aria-haspopup="menu"
-              aria-expanded={isOpen}
-              onClick={() => setOpenMenu((current) => (current === menu.id ? null : menu.id))}
-            >
-              {menu.label}
-            </button>
+            {iconOnly ? (
+              <WorkbenchIconTip tip={menuTip.tip} info={menuTip.info}>
+                {menuButton}
+              </WorkbenchIconTip>
+            ) : (
+              menuButton
+            )}
             {isOpen ? (
               <div className="workbench-note-menu-dropdown" role="menu">
                 {menu.sections.map((section, sectionIndex) => (
@@ -640,11 +1269,237 @@ function WorkbenchNoteMenuBar({
   );
 }
 
+function WorkbenchCitationEditPopover({
+  citation,
+  rect,
+  canEdit,
+  onSave,
+  onCancel,
+  onJump,
+  onOpenSource,
+  onRemove,
+}: {
+  citation: WorkbenchNoteCitation;
+  rect: { top: number; left: number; bottom: number; right: number; width: number; height: number };
+  canEdit: boolean;
+  onSave: (patch: { displayText: string; prefix: string; suffix: string; pages: string }) => void;
+  onCancel: () => void;
+  onJump: () => void;
+  onOpenSource: () => void;
+  onRemove: () => void;
+}) {
+  const [display, setDisplay] = useState(citation.displayText ?? citation.inTextCitation ?? citation.citationText ?? "");
+  const [prefix, setPrefix] = useState(citation.prefix ?? "");
+  const [suffix, setSuffix] = useState(citation.suffix ?? "");
+  const [pages, setPages] = useState(citation.pages ?? "");
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [popoverLayout, setPopoverLayout] = useState<CitationPopoverLayout>(() =>
+    typeof window !== "undefined"
+      ? getCitationPopoverLayout(rect, window.innerWidth, window.innerHeight)
+      : getCitationPopoverLayout(rect, 1280, 800),
+  );
+
+  useEffect(() => {
+    setDisplay(citation.displayText ?? citation.inTextCitation ?? citation.citationText ?? "");
+    setPrefix(citation.prefix ?? "");
+    setSuffix(citation.suffix ?? "");
+    setPages(citation.pages ?? "");
+  }, [citation.id]);
+
+  useLayoutEffect(() => {
+    function measure() {
+      const measuredHeight = rootRef.current?.offsetHeight ?? 320;
+      setPopoverLayout(
+        getCitationPopoverLayout(rect, window.innerWidth, window.innerHeight, measuredHeight),
+      );
+    }
+
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [rect, display, prefix, suffix, pages, citation.id]);
+
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") onCancel();
+      if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+        onSave({ displayText: display.trim(), prefix: prefix.trim(), suffix: suffix.trim(), pages: pages.trim() });
+      }
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [display, prefix, suffix, pages, onCancel, onSave]);
+
+  useEffect(() => {
+    function onClickAway(event: Event) {
+      const node = rootRef.current;
+      if (!node) return;
+      const target = event.target as HTMLElement | null;
+      if (!target) return;
+      if (node.contains(target)) return;
+      /* Don't close when clicking another citation anchor — the editor click handler reopens it */
+      if (target.closest("a.workbench-citation-link,[data-workbench-citation]")) return;
+      onCancel();
+    }
+    document.addEventListener("mousedown", onClickAway);
+    return () => document.removeEventListener("mousedown", onClickAway);
+  }, [onCancel]);
+
+  const isSheet = popoverLayout.mode === "sheet";
+  const popoverStyle: CSSProperties =
+    popoverLayout.mode === "sheet"
+      ? {
+          position: "fixed",
+          left: 0,
+          right: 0,
+          bottom: `${popoverLayout.bottom}px`,
+          width: "100%",
+          maxHeight: `${popoverLayout.maxHeight}px`,
+          zIndex: 1300,
+        }
+      : {
+          position: "fixed",
+          top: `${popoverLayout.top}px`,
+          left: `${popoverLayout.left}px`,
+          width: `${popoverLayout.width}px`,
+          maxHeight: `${popoverLayout.maxHeight}px`,
+          zIndex: 1300,
+        };
+
+  return (
+    <>
+      {isSheet ? (
+        <button
+          type="button"
+          className="workbench-citation-edit-popover-backdrop"
+          aria-label="Close citation editor"
+          onClick={onCancel}
+        />
+      ) : null}
+      <div
+        ref={rootRef}
+        className={`workbench-citation-edit-popover${isSheet ? " workbench-citation-edit-popover--sheet" : ""}`}
+        role="dialog"
+        aria-label="Edit citation"
+        style={popoverStyle}
+      >
+      <header className="workbench-citation-edit-popover__head">
+        <div className="workbench-citation-edit-popover__title-wrap">
+          <p className="workbench-citation-edit-popover__kicker">Citation</p>
+          <strong className="workbench-citation-edit-popover__title">{citation.title}</strong>
+        </div>
+        <button
+          type="button"
+          className="workbench-citation-edit-popover__close"
+          onClick={onCancel}
+          aria-label="Close citation editor"
+        >
+          Close
+        </button>
+      </header>
+
+      <div className="workbench-citation-edit-popover__body">
+        <label className="workbench-citation-edit-popover__field">
+          <span>Display</span>
+          <input
+            type="text"
+            value={display}
+            onChange={(e) => setDisplay(e.target.value)}
+            readOnly={!canEdit}
+            placeholder={citation.inTextCitation || "Author, Year"}
+          />
+        </label>
+        <div className="workbench-citation-edit-popover__row">
+          <label className="workbench-citation-edit-popover__field">
+            <span>Prefix</span>
+            <input
+              type="text"
+              value={prefix}
+              onChange={(e) => setPrefix(e.target.value)}
+              readOnly={!canEdit}
+              placeholder="see"
+            />
+          </label>
+          <label className="workbench-citation-edit-popover__field">
+            <span>Suffix</span>
+            <input
+              type="text"
+              value={suffix}
+              onChange={(e) => setSuffix(e.target.value)}
+              readOnly={!canEdit}
+              placeholder="emphasis added"
+            />
+          </label>
+        </div>
+        <label className="workbench-citation-edit-popover__field">
+          <span>Page / locator</span>
+          <input
+            type="text"
+            value={pages}
+            onChange={(e) => setPages(e.target.value)}
+            readOnly={!canEdit}
+            placeholder="pp. 23–45"
+          />
+        </label>
+      </div>
+
+      <footer className="workbench-citation-edit-popover__foot">
+        <div className="workbench-citation-edit-popover__foot-left">
+          <button
+            type="button"
+            className="workbench-citation-edit-popover__btn"
+            onClick={onJump}
+          >
+            Jump to reference
+          </button>
+          {citation.sourceUrl ? (
+            <button
+              type="button"
+              className="workbench-citation-edit-popover__btn"
+              onClick={onOpenSource}
+            >
+              Open source
+            </button>
+          ) : null}
+        </div>
+        <div className="workbench-citation-edit-popover__foot-right">
+          {canEdit ? (
+            <button
+              type="button"
+              className="workbench-citation-edit-popover__btn workbench-citation-edit-popover__btn--danger"
+              onClick={onRemove}
+            >
+              Remove
+            </button>
+          ) : null}
+          <button
+            type="button"
+            className="workbench-citation-edit-popover__btn workbench-citation-edit-popover__btn--primary"
+            disabled={!canEdit}
+            onClick={() =>
+              onSave({
+                displayText: display.trim(),
+                prefix: prefix.trim(),
+                suffix: suffix.trim(),
+                pages: pages.trim(),
+              })
+            }
+          >
+            Save
+          </button>
+        </div>
+      </footer>
+    </div>
+    </>
+  );
+}
+
 function WorkbenchCitationPicker({
   open,
   candidates,
   citations,
   initialCandidateId,
+  recommendedCandidateIds,
   onClose,
   onInsert,
 }: {
@@ -652,6 +1507,7 @@ function WorkbenchCitationPicker({
   candidates: CitationCandidate[];
   citations: WorkbenchNoteCitation[];
   initialCandidateId?: string | null;
+  recommendedCandidateIds?: string[];
   onClose: () => void;
   onInsert: (input: {
     candidate: CitationCandidate | null;
@@ -669,7 +1525,12 @@ function WorkbenchCitationPicker({
   const [insertMode, setInsertMode] = useState<WorkbenchCitationInsertMode>("parenthetical");
   const [customTitle, setCustomTitle] = useState("");
   const [customText, setCustomText] = useState("");
+  const [mounted, setMounted] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -697,7 +1558,19 @@ function WorkbenchCitationPicker({
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [open, onClose]);
 
-  if (!open) return null;
+  useEffect(() => {
+    if (!open) return;
+    const previousOverflow = document.body.style.overflow;
+    const previousOverscroll = document.body.style.overscrollBehavior;
+    document.body.style.overflow = "hidden";
+    document.body.style.overscrollBehavior = "none";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.body.style.overscrollBehavior = previousOverscroll;
+    };
+  }, [open]);
+
+  if (!open || !mounted) return null;
 
   const filteredCandidates = candidates.filter((candidate) => {
     const types = candidate.sourceTypes ?? (candidate.sourceType ? [candidate.sourceType] : []);
@@ -739,9 +1612,9 @@ function WorkbenchCitationPicker({
   const endnotePreview = formatEndnoteCitation(candidate, style, customText);
   const canInsert = Boolean(candidate || customText.trim());
 
-  return (
+  return createPortal(
     <div
-      className="workbench-citation-picker workbench-citation-modal"
+      className="workbench-citation-picker workbench-citation-modal citation-modal-overlay"
       role="dialog"
       aria-modal="true"
       aria-label="Insert citation"
@@ -749,7 +1622,10 @@ function WorkbenchCitationPicker({
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <div className="workbench-citation-picker-panel workbench-citation-panel" ref={panelRef}>
+      <div
+        className="workbench-citation-picker-panel workbench-citation-panel citation-picker-dialog"
+        ref={panelRef}
+      >
         <header className="workbench-citation-header">
           <div>
             <p className="workbench-citation-picker-kicker">Insert citation</p>
@@ -760,7 +1636,7 @@ function WorkbenchCitationPicker({
           </button>
         </header>
 
-        <div className="workbench-citation-body">
+        <div className="workbench-citation-body citation-picker-body">
           <div className="workbench-citation-style-select">
             <span>Citation style</span>
             <div className="workbench-citation-style-grid" role="group" aria-label="Citation style">
@@ -843,34 +1719,44 @@ function WorkbenchCitationPicker({
           ) : null}
 
           {activeFilter !== "custom" && candidates.length ? (
-            <div className="workbench-citation-record-list" role="listbox" aria-label="Citation sources">
-              {filteredCandidates.length ? filteredCandidates.map((candidateOption) => (
-                <button
-                  key={candidateOption.id}
-                  type="button"
-                  className={`workbench-citation-record-option${
-                    selectedId === candidateOption.id ? " is-selected" : ""
-                  }`}
-                  aria-selected={selectedId === candidateOption.id}
-                  onClick={() => setSelectedId(candidateOption.id)}
-                >
-                  <strong className="workbench-citation-record-title">
-                    {candidateOption.title}
-                  </strong>
-                  <span className="workbench-citation-record-meta">
-                    {[candidateOption.creator, candidateOption.date, candidateOption.institution]
-                      .filter(Boolean)
-                      .join(" · ") || "Archive record"}
-                  </span>
-                  <span className="workbench-citation-source-badges">
-                    {(candidateOption.sourceLabels ?? [candidateOption.sourceLabel ?? "Archive record"]).map((label) => (
-                      <span key={label} className="workbench-citation-source-badge">
-                        {label}
+            <div className="workbench-citation-record-list citation-picker-record-list workbench-citation-results" role="listbox" aria-label="Citation sources">
+              {filteredCandidates.length ? (
+                filteredCandidates.map((candidateOption) => {
+                  const isRecommended = recommendedCandidateIds?.includes(candidateOption.id);
+                  return (
+                    <button
+                      key={candidateOption.id}
+                      type="button"
+                      className={`workbench-citation-record-option${
+                        selectedId === candidateOption.id ? " is-selected" : ""
+                      }${isRecommended ? " is-recommended" : ""}`}
+                      aria-selected={selectedId === candidateOption.id}
+                      onClick={() => setSelectedId(candidateOption.id)}
+                    >
+                      <div className="workbench-citation-record-top-row">
+                        <strong className="workbench-citation-record-title">
+                          {candidateOption.title}
+                        </strong>
+                        {isRecommended ? (
+                          <span className="workbench-citation-recommendation-badge">AI suggested</span>
+                        ) : null}
+                      </div>
+                      <span className="workbench-citation-record-meta">
+                        {[candidateOption.creator, candidateOption.date, candidateOption.institution]
+                          .filter(Boolean)
+                          .join(" · ") || "Archive record"}
                       </span>
-                    ))}
-                  </span>
-                </button>
-              )) : (
+                      <span className="workbench-citation-source-badges">
+                        {(candidateOption.sourceLabels ?? [candidateOption.sourceLabel ?? "Archive record"]).map((label) => (
+                          <span key={label} className="workbench-citation-source-badge">
+                            {label}
+                          </span>
+                        ))}
+                      </span>
+                    </button>
+                  );
+                })
+              ) : (
                 <p className="workbench-citation-empty">No citation sources match this search.</p>
               )}
               <button
@@ -918,7 +1804,7 @@ function WorkbenchCitationPicker({
             </div>
           ) : null}
 
-          <div className="workbench-citation-preview-grid">
+          <div className="workbench-citation-preview-grid citation-picker-preview-grid">
             <div className="workbench-citation-preview workbench-citation-preview-card">
               <span className="workbench-citation-preview-label">In-text preview</span>
               <p>{inTextPreview || "Choose a record or enter a citation."}</p>
@@ -930,7 +1816,7 @@ function WorkbenchCitationPicker({
           </div>
         </div>
 
-        <footer className="workbench-citation-actions workbench-citation-footer">
+        <footer className="workbench-citation-actions workbench-citation-footer citation-picker-footer">
           <button type="button" className="workbench-citation-cancel" onClick={onClose}>
             Cancel
           </button>
@@ -944,7 +1830,8 @@ function WorkbenchCitationPicker({
           </button>
         </footer>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -953,6 +1840,315 @@ function citationsForEndnotes(html: string, citations: WorkbenchNoteCitation[]) 
     html.includes('data-workbench-endnotes="true"') ||
     /<h[1-3][^>]*>\s*Endnotes\s*<\/h[1-3]>/i.test(html);
   return hasEndnotes ? citations : citations.filter((citation) => citation.insertMode === "endnote");
+}
+
+type GeneratedReferenceEntry = {
+  referenceId: string;
+  citationId?: string;
+  recordId?: string;
+  text: string;
+  sourceUrl?: string | null;
+};
+
+function referenceApaFieldsFromCitation(
+  citation: WorkbenchNoteCitation,
+  parsed?: ParsedCitedReference | null,
+) {
+  const parsedInText = parseApaParenthetical(
+    citation.inTextCitation || citation.displayText || citation.citationText || parsed?.displayText,
+  );
+  const linkAuthors = parsed?.authors
+    ?.split("|")
+    .map((author) => author.trim())
+    .filter(Boolean);
+  const sourceLabel = citationSourceLabel(citation);
+  return {
+    authors: citation.creator || (linkAuthors?.length ? linkAuthors : parsedInText?.authors),
+    year: citation.date || parsed?.year || parsedInText?.year || citationYearFromCitation(citation),
+    title: !isPlaceholderTitle(citation.title) ? citation.title : parsed?.title,
+    source: sourceLabel !== "Custom" ? sourceLabel : parsed?.source,
+    institution: citation.institution,
+    url: citation.sourceUrl || parsed?.url,
+    doi: parsed?.doi || extractDoiFromUrl(citation.sourceUrl),
+  };
+}
+
+function referenceTextFromCitation(
+  citation: WorkbenchNoteCitation,
+  parsed?: ParsedCitedReference | null,
+) {
+  const stored = [citation.bibliographyText, citation.endnoteText, citation.citationText]
+    .map((value) => value?.trim())
+    .find((value) => value && !looksLikeApaInTextCitation(value));
+  if (stored) return `${stored}${citationSourceSuffix(citation)}`.trim();
+
+  return `${formatApaReferenceEntry(referenceApaFieldsFromCitation(citation, parsed))}${citationSourceSuffix(citation)}`.trim();
+}
+
+function resolveCitationForParsed(
+  parsed: ParsedCitedReference,
+  citationsById: Map<string, WorkbenchNoteCitation>,
+  citationsByReferenceId: Map<string, WorkbenchNoteCitation>,
+) {
+  if (parsed.citationId) {
+    const byId = citationsById.get(parsed.citationId);
+    if (byId) return byId;
+  }
+  return citationsByReferenceId.get(parsed.referenceId);
+}
+
+function isCitationCitedInHtml(citation: WorkbenchNoteCitation, html: string) {
+  if (!html) return false;
+  const referenceId = citationReferenceId(citation);
+  if (
+    html.includes(citation.id) ||
+    html.includes(referenceId) ||
+    html.includes(`#ref-workbench-citation-${referenceId}`)
+  ) {
+    return true;
+  }
+  const label = citation.inTextCitation?.trim();
+  return Boolean(label && html.includes(label));
+}
+
+function sourceToCitationCandidate(source: WorkbenchCitationSource): CitationCandidate {
+  return {
+    id: source.id,
+    recordId: source.recordId,
+    sourceType: source.sourceType,
+    sourceLabel: source.sourceLabel,
+    readingListId: source.readingListId,
+    readingListTitle: source.readingListTitle,
+    bookmarkId: source.bookmarkId,
+    title: source.title,
+    creator: source.creator,
+    date: source.date,
+    institution: source.institution,
+    sourceUrl: source.sourceUrl,
+    recordType: source.recordType,
+    citationText: source.citationText,
+  };
+}
+
+function referenceTextFromSource(source: WorkbenchCitationSource) {
+  return formatBibliographyCitation(sourceToCitationCandidate(source), "apa7", "");
+}
+
+function referenceTextFromLinkedRecord(record: LinkedRecordView) {
+  return [record.title, record.source_type ? `Source: ${record.source_type}.` : ""]
+    .filter(Boolean)
+    .join(" ");
+}
+
+type ParsedCitedReference = {
+  citationId?: string;
+  recordId?: string;
+  referenceId: string;
+  title?: string;
+  authors?: string;
+  year?: string;
+  source?: string;
+  url?: string;
+  doi?: string;
+  displayText?: string;
+};
+
+function readParsedCitationLink(link: HTMLAnchorElement): ParsedCitedReference | null {
+  const citationId = readLinkDataAttr(link, "data-citation-id");
+  const recordId = readLinkDataAttr(link, "data-record-id");
+  const referenceId =
+    readLinkDataAttr(link, "data-reference-id") ||
+    link.getAttribute("href")?.replace(/^#ref-workbench-citation-/, "").trim() ||
+    (recordId ? `record-${slugifyCitationKey(recordId)}` : citationId);
+  if (!referenceId) return null;
+  return {
+    citationId,
+    recordId,
+    referenceId,
+    title: readLinkDataAttr(link, "data-title"),
+    authors: readLinkDataAttr(link, "data-authors"),
+    year: readLinkDataAttr(link, "data-year"),
+    source: readLinkDataAttr(link, "data-source"),
+    url: readLinkDataAttr(link, "data-url"),
+    doi: readLinkDataAttr(link, "data-doi"),
+    displayText:
+      readLinkDataAttr(link, "data-citation-display") || link.textContent?.trim() || undefined,
+  };
+}
+
+function referenceTextFromLinkMetadata(parsed: ParsedCitedReference) {
+  const authors = parsed.authors
+    ?.split("|")
+    .map((author) => author.trim())
+    .filter(Boolean);
+  const parsedInText = parseApaParenthetical(parsed.displayText);
+  return formatApaReferenceEntry({
+    authors: authors?.length ? authors : parsedInText?.authors,
+    year: parsed.year || parsedInText?.year,
+    title: parsed.title,
+    source: parsed.source,
+    url: parsed.url,
+    doi: parsed.doi,
+  });
+}
+
+function parseCitedReferencesFromHtml(html: string) {
+  const refs: ParsedCitedReference[] = [];
+  if (!html) return refs;
+
+  if (typeof DOMParser !== "undefined") {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    doc
+      .querySelectorAll<HTMLAnchorElement>(
+        '.workbench-citation-link[data-citation-id],.workbench-citation-link,a[href^="#ref-workbench-citation-"]',
+      )
+      .forEach((link) => {
+        const parsed = readParsedCitationLink(link);
+        if (parsed) refs.push(parsed);
+      });
+    return refs;
+  }
+
+  const linkPattern =
+    /<a\b(?=[^>]*(?:class=["'][^"']*\bworkbench-citation-link\b[^"']*["']|href=["']#ref-workbench-citation-))[^>]*>/gi;
+  const attrPattern =
+    /\s(data-citation-id|data-record-id|data-reference-id|data-title|data-authors|data-year|data-source|data-url|data-doi|data-citation-display|href)=["']([^"']+)["']/gi;
+  let match: RegExpExecArray | null;
+  while ((match = linkPattern.exec(html)) !== null) {
+    const attrs = new Map<string, string>();
+    let attr: RegExpExecArray | null;
+    while ((attr = attrPattern.exec(match[0])) !== null) attrs.set(attr[1], attr[2]);
+    const citationId = attrs.get("data-citation-id") || undefined;
+    const recordId = attrs.get("data-record-id") || undefined;
+    const referenceId =
+      attrs.get("data-reference-id") ||
+      attrs.get("href")?.replace(/^#ref-workbench-citation-/, "") ||
+      (recordId ? `record-${slugifyCitationKey(recordId)}` : citationId);
+    if (!referenceId) continue;
+    refs.push({
+      citationId,
+      recordId,
+      referenceId,
+      title: attrs.get("data-title") || undefined,
+      authors: attrs.get("data-authors") || undefined,
+      year: attrs.get("data-year") || undefined,
+      source: attrs.get("data-source") || undefined,
+      url: attrs.get("data-url") || undefined,
+      doi: attrs.get("data-doi") || undefined,
+      displayText: attrs.get("data-citation-display") || undefined,
+    });
+  }
+  return refs;
+}
+
+function WorkbenchGeneratedReferences({
+  editorHtml,
+  citations,
+  linkedRecordsForSelected,
+  citationSources,
+  revision,
+}: {
+  editorHtml: string;
+  citations: WorkbenchNoteCitation[];
+  linkedRecordsForSelected: LinkedRecordView[];
+  citationSources: WorkbenchCitationSource[];
+  revision: number;
+}) {
+  const references = useMemo(() => {
+    void revision;
+    const citationsById = new Map(citations.map((citation) => [citation.id, citation]));
+    const citationsByReferenceId = new Map(
+      citations.map((citation) => [citationReferenceId(citation), citation]),
+    );
+    const sourcesByRecordId = new Map(citationSources.map((source) => [source.recordId, source]));
+    const linkedByRecordId = new Map(linkedRecordsForSelected.map((record) => [record.record_id, record]));
+    const seen = new Set<string>();
+    const entries: GeneratedReferenceEntry[] = [];
+
+    const appendReference = (
+      referenceId: string,
+      citation: WorkbenchNoteCitation | undefined,
+      parsed: ParsedCitedReference | null,
+      source?: WorkbenchCitationSource,
+      linked?: LinkedRecordView,
+    ) => {
+      if (!referenceId || seen.has(referenceId)) return;
+      const text =
+        (citation ? referenceTextFromCitation(citation, parsed) : "") ||
+        (parsed ? referenceTextFromLinkMetadata(parsed) : "") ||
+        (source ? referenceTextFromSource(source) : "") ||
+        (linked ? referenceTextFromLinkedRecord(linked) : "") ||
+        "";
+      if (!text.trim() || isPlaceholderReferenceEntry(text)) return;
+
+      seen.add(referenceId);
+      entries.push({
+        referenceId,
+        citationId: citation?.id ?? parsed?.citationId,
+        recordId: citation?.recordId ?? parsed?.recordId,
+        text,
+        sourceUrl:
+          citation?.sourceUrl ??
+          parsed?.url ??
+          source?.sourceUrl ??
+          (parsed?.doi ? `https://doi.org/${parsed.doi}` : null),
+      });
+    };
+
+    for (const parsed of parseCitedReferencesFromHtml(editorHtml)) {
+      const citation = resolveCitationForParsed(parsed, citationsById, citationsByReferenceId);
+      const referenceId = citation ? citationReferenceId(citation) : parsed.referenceId;
+      const source = parsed.recordId ? sourcesByRecordId.get(parsed.recordId) : undefined;
+      const linked = parsed.recordId ? linkedByRecordId.get(parsed.recordId) : undefined;
+      appendReference(referenceId, citation, parsed, source, linked);
+    }
+
+    for (const citation of citations) {
+      const referenceId = citationReferenceId(citation);
+      if (seen.has(referenceId) || !isCitationCitedInHtml(citation, editorHtml)) continue;
+      const source = citation.recordId ? sourcesByRecordId.get(citation.recordId) : undefined;
+      const linked = citation.recordId ? linkedByRecordId.get(citation.recordId) : undefined;
+      appendReference(referenceId, citation, null, source, linked);
+    }
+
+    if (process.env.NODE_ENV !== "production") {
+      console.log("[WorkbenchGeneratedReferences]", {
+        citationLinksFound: parseCitedReferencesFromHtml(editorHtml).length,
+        generatedReferences: entries.length,
+      });
+    }
+
+    return entries;
+  }, [citationSources, citations, editorHtml, linkedRecordsForSelected, revision]);
+
+  if (!references.length) return null;
+
+  return (
+    <section className="workbench-generated-references" aria-label="References">
+      <h2>References</h2>
+      <ol>
+        {references.map((reference) => (
+          <li
+            key={reference.referenceId}
+            id={`ref-workbench-citation-${reference.referenceId}`}
+            className="workbench-generated-reference-entry"
+            data-citation-id={reference.citationId}
+            data-record-id={reference.recordId}
+          >
+            <span>{reference.text}</span>
+            {reference.sourceUrl ? (
+              <>
+                {" "}
+                <a href={reference.sourceUrl} target="_blank" rel="noopener noreferrer">
+                  Open source
+                </a>
+              </>
+            ) : null}
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
 }
 
 function normalizeNote(note: WorkbenchNoteWithProject): WorkbenchNoteWithProject {
@@ -1206,7 +2402,14 @@ export default function WorkbenchNotesClient(props: {
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [citationPickerOpen, setCitationPickerOpen] = useState(false);
   const [citationPreselectId, setCitationPreselectId] = useState<string | null>(null);
+  const [citationRevision, setCitationRevision] = useState(0);
+  const [editingCitation, setEditingCitation] = useState<{
+    citationId: string;
+    rect: { top: number; left: number; bottom: number; right: number; width: number; height: number };
+  } | null>(null);
   const [citationAnchorRect, setCitationAnchorRect] = useState<DOMRect | null>(null);
+  const [aiAssistantOpen, setAIAssistantOpen] = useState(false);
+  const [aiRecommendedCandidateIds, setAiRecommendedCandidateIds] = useState<string[]>([]);
   const [isFocusMode, setIsFocusMode] = useState(false);
   const [noteMode, setNoteMode] = useState<NoteMode>("document");
   const [isBoardFullscreen, setIsBoardFullscreen] = useState(false);
@@ -1561,16 +2764,65 @@ export default function WorkbenchNotesClient(props: {
   const overlayOpen =
     commandOpen || switcherOpen || newNoteMenuOpen || citationPickerOpen;
 
-  function handleOpenCitation(event?: MouseEvent<HTMLButtonElement>) {
+  function handleOpenCitation(event?: ReactMouseEvent<HTMLButtonElement>) {
     if (event?.currentTarget) {
       setCitationAnchorRect(event.currentTarget.getBoundingClientRect());
     }
     setCitationPickerOpen(true);
   }
 
+  function handleOpenAICitation() {
+    setAIAssistantOpen(true);
+  }
+
+  function handleToggleAICitation() {
+    setAIAssistantOpen((open) => !open);
+  }
+
+  function handleSelectAICandidate(candidate: CitationCandidate) {
+    setCitationPreselectId(candidate.id);
+    setCitationPickerOpen(true);
+    setAIAssistantOpen(false);
+  }
+
+  function handleInsertScholarlyResult(result: {
+    id: string;
+    title: string;
+    creator: string;
+    year: string;
+    journal?: string;
+    publisher?: string;
+    source: string;
+    url: string;
+    citationLine: string;
+  }) {
+    const candidate: CitationCandidate = {
+      id: result.id,
+      title: result.title,
+      creator: result.creator,
+      date: result.year || null,
+      institution: result.journal || result.publisher || result.source,
+      sourceUrl: result.url,
+      citationText: result.citationLine,
+      sourceType: "custom",
+      sourceLabel: result.source,
+    };
+    handleInsertCitation({
+      candidate,
+      style: "apa7",
+      insertMode: "parenthetical",
+      customText: "",
+    });
+    setAIAssistantOpen(false);
+  }
+
   useEffect(() => {
     function onKeyDown(event: globalThis.KeyboardEvent) {
       if (event.key !== "Escape") return;
+      if (aiAssistantOpen) {
+        setAIAssistantOpen(false);
+        return;
+      }
       if (citationPickerOpen || commandOpen || switcherOpen) return;
       setNotesDrawerOpen(false);
       setInspectorOpen(false);
@@ -1578,7 +2830,7 @@ export default function WorkbenchNotesClient(props: {
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [citationPickerOpen, commandOpen, switcherOpen]);
+  }, [aiAssistantOpen, citationPickerOpen, commandOpen, switcherOpen]);
 
   const sidebarMin = isFocusMode ? NOTES_SIDEBAR_FOCUS_MIN : NOTES_SIDEBAR_MIN;
   const sidebarMax = isFocusMode ? NOTES_SIDEBAR_FOCUS_MAX : NOTES_SIDEBAR_MAX;
@@ -1904,7 +3156,10 @@ export default function WorkbenchNotesClient(props: {
   }
 
   function handleEditorChange(payload: WorkbenchEditorPayload) {
-    const nextJson = mergeWorkbenchModeData(payload.json, contentJson);
+    const nextJson = {
+      ...mergeWorkbenchModeData(payload.json, contentJson),
+      workbenchCitations: getCitations(contentJson),
+    };
     setContentHtml(payload.html);
     setContentJson(nextJson);
     setPlainText(payload.plainText);
@@ -2162,7 +3417,7 @@ export default function WorkbenchNotesClient(props: {
     });
   }
 
-  function handleTogglePin(note: WorkbenchNoteWithProject, event: MouseEvent) {
+  function handleTogglePin(note: WorkbenchNoteWithProject, event: ReactMouseEvent) {
     event.stopPropagation();
     if (!noteCanEdit(note, props.currentUserId, ownerSet, editorSet)) return;
     startTransition(async () => {
@@ -2208,8 +3463,8 @@ export default function WorkbenchNotesClient(props: {
   }
 
 
-function editorChain(editor: Editor): any {
-  return editor.chain().focus() as any;
+function editorChain(editor: Editor): ChainedCommands {
+  return editor.chain().focus();
 }
 
   function runEditorCommand(command: (editor: Editor) => void) {
@@ -2297,9 +3552,146 @@ function editorChain(editor: Editor): any {
 
   function handleRefreshEndnotesSection() {
     if (!editorInstance || !canEditSelected) return;
-    const nextHtml = refreshEndnotesHtml(editorInstance.getHTML(), citations);
+    const nextHtml = refreshReferenceListHtml(editorInstance.getHTML(), citations);
     editorInstance.commands.setContent(nextHtml, { emitUpdate: false });
     commitEditorHtml(nextHtml, citations);
+    setCitationRevision((value) => value + 1);
+  }
+
+  /* ─── EndNote-style click handling on in-text citation anchors ─── */
+
+  function rectFromAnchor(anchor: HTMLElement) {
+    const r = anchor.getBoundingClientRect();
+    return {
+      top: r.top,
+      left: r.left,
+      bottom: r.bottom,
+      right: r.right,
+      width: r.width,
+      height: r.height,
+    };
+  }
+
+  function openCitationEditor(citationId: string, anchor: HTMLElement) {
+    setEditingCitation({ citationId, rect: rectFromAnchor(anchor) });
+    /* Visual editing state on the clicked anchor */
+    document
+      .querySelectorAll(".workbench-citation-link.is-editing")
+      .forEach((el) => el.classList.remove("is-editing"));
+    anchor.classList.add("is-editing");
+  }
+
+  function jumpToReference(referenceId: string) {
+    const target = document.querySelector<HTMLElement>(
+      `#ref-workbench-citation-${CSS.escape(referenceId)}`,
+    );
+    if (!target) return;
+    target.scrollIntoView({ behavior: "smooth", block: "center" });
+    /* Manually highlight (acts like :target without changing the URL) */
+    target.classList.add("is-jump-highlight");
+    window.setTimeout(() => target.classList.remove("is-jump-highlight"), 1800);
+  }
+
+  useEffect(() => {
+    if (!editorInstance || editorInstance.isDestroyed) return undefined;
+    const root = editorInstance.view.dom;
+
+    const handleClick = (event: Event) => {
+      const target = event.target as HTMLElement | null;
+      if (!target) return;
+      const anchor = target.closest<HTMLElement>(
+        "a.workbench-citation-link,[data-workbench-citation]",
+      );
+      if (!anchor) return;
+      let citationId =
+        anchor.getAttribute("data-citation-id") ||
+        anchor.getAttribute("data-workbench-citation") ||
+        "";
+      const refIdFromAnchor =
+        anchor.getAttribute("data-reference-id") ||
+        anchor.getAttribute("href")?.replace(/^#ref-workbench-citation-/, "").trim() ||
+        "";
+      if (!citationId && refIdFromAnchor) {
+        citationId =
+          citations.find((citation) => citationReferenceId(citation) === refIdFromAnchor)?.id ?? "";
+      }
+      if (!citationId) return;
+      const mouse = event as globalThis.MouseEvent;
+      const isJumpModifier = mouse.metaKey || mouse.ctrlKey;
+      event.preventDefault();
+      if (isJumpModifier) {
+        const refId =
+          refIdFromAnchor ||
+          (citations.find((c) => c.id === citationId)
+            ? citationReferenceId(citations.find((c) => c.id === citationId)!)
+            : "");
+        if (refId) jumpToReference(refId);
+        return;
+      }
+      openCitationEditor(citationId, anchor);
+    };
+
+    root.addEventListener("click", handleClick);
+    return () => {
+      root.removeEventListener("click", handleClick);
+    };
+  }, [editorInstance, citations]);
+
+  useEffect(() => {
+    if (!editorInstance || editorInstance.isDestroyed || !canEditSelected || !citations.length) return;
+
+    const currentHtml = editorInstance.getHTML();
+    const rewrittenHtml = rewriteAllCitationAnchors(currentHtml, citations);
+    if (rewrittenHtml === currentHtml) return;
+
+    const nextHtml = refreshReferenceListHtml(rewrittenHtml, citations);
+    editorInstance.commands.setContent(nextHtml, { emitUpdate: false });
+    commitEditorHtml(nextHtml, citations);
+    setCitationRevision((value) => value + 1);
+  }, [canEditSelected, citations, editorInstance, selectedId]);
+
+  /* Save edits made in the popover */
+  function saveCitationEdits(
+    citationId: string,
+    patch: { displayText?: string; prefix?: string; suffix?: string; pages?: string },
+  ) {
+    if (!editorInstance || editorInstance.isDestroyed) return;
+    const target = citations.find((c) => c.id === citationId);
+    if (!target) return;
+    const updated: WorkbenchNoteCitation = {
+      ...target,
+      displayText: patch.displayText ?? target.displayText ?? target.inTextCitation,
+      prefix: patch.prefix ?? target.prefix ?? "",
+      suffix: patch.suffix ?? target.suffix ?? "",
+      pages: patch.pages ?? target.pages ?? "",
+      referenceId: citationReferenceId(target),
+    };
+    const nextCitations = citations.map((c) => (c.id === citationId ? updated : c));
+    /* Rewrite every in-text anchor for this citation, then refresh the reference list */
+    let nextHtml = rewriteCitationAnchors(editorInstance.getHTML(), updated);
+    nextHtml = refreshReferenceListHtml(nextHtml, nextCitations);
+    editorInstance.commands.setContent(nextHtml, { emitUpdate: false });
+    commitEditorHtml(nextHtml, nextCitations);
+    setCitationRevision((value) => value + 1);
+    setEditingCitation(null);
+  }
+
+  function removeCitation(citationId: string) {
+    if (!editorInstance || editorInstance.isDestroyed) return;
+    const nextCitations = citations.filter((c) => c.id !== citationId);
+    let nextHtml = removeCitationAnchors(editorInstance.getHTML(), citationId);
+    nextHtml = refreshReferenceListHtml(nextHtml, nextCitations);
+    editorInstance.commands.setContent(nextHtml, { emitUpdate: false });
+    commitEditorHtml(nextHtml, nextCitations);
+    setCitationRevision((value) => value + 1);
+    setEditingCitation(null);
+  }
+
+  function closeCitationEditor() {
+    document
+      .querySelectorAll(".workbench-citation-link.is-editing")
+      .forEach((el) => el.classList.remove("is-editing"));
+    setEditingCitation(null);
   }
 
   function handleInsertCitation(input: {
@@ -2329,6 +3721,15 @@ function editorChain(editor: Editor): any {
           : input.candidate?.sourceTypes?.includes("linked")
             ? "linked"
             : input.candidate?.sourceType ?? "custom";
+    /* Compute stable reference id; reuse existing reference entry for the same source */
+    const referenceId = computeReferenceId({
+      recordId: input.candidate?.recordId,
+      bookmarkId: input.candidate?.bookmarkId,
+      readingListId: input.candidate?.readingListId,
+      title: input.candidate?.title,
+      creator: input.candidate?.creator,
+      date: input.candidate?.date,
+    });
     const citation: WorkbenchNoteCitation = {
       id: createWorkbenchNoteId("citation"),
       marker,
@@ -2349,21 +3750,32 @@ function editorChain(editor: Editor): any {
       endnoteText,
       bibliographyText,
       customText: input.customText.trim() || null,
+      referenceId,
+      displayText: inTextCitation,
+      prefix: "",
+      suffix: "",
+      pages: "",
     };
     const nextCitations = [...citations, citation];
+    /* Full block stays as a blockquote excerpt; everything else becomes an editable anchor */
     const insertedHtml =
       input.insertMode === "full_block"
-        ? `<blockquote data-workbench-citation="${escapeHtml(citation.id)}"><p>${escapeHtml(citationText)}</p></blockquote><p></p>`
-        : `<span data-workbench-citation="${escapeHtml(citation.id)}">${escapeHtml(citationText)}</span>`;
+        ? `<blockquote data-workbench-citation="${escapeHtml(citation.id)}" data-reference-id="${escapeHtml(referenceId)}"><p>${escapeHtml(citationText)}</p></blockquote><p></p>`
+        : buildCitationLinkHtml(citation);
 
+    const restoreScroll = captureWorkbenchEditorScroll();
     setNoteMode("document");
     editorChain(editorInstance).insertContent(insertedHtml).run();
-    const nextHtml =
-      input.insertMode === "endnote"
-        ? refreshEndnotesHtml(editorInstance.getHTML(), nextCitations.filter((item) => item.insertMode === "endnote"))
-        : editorInstance.getHTML();
-    editorInstance.commands.setContent(nextHtml, { emitUpdate: false });
+    const cursorAfterCitation = editorInstance.state.selection.to;
+    /* Always refresh the reference list so it stays in sync */
+    const nextHtml = refreshReferenceListHtml(editorInstance.getHTML(), nextCitations);
+    if (nextHtml !== editorInstance.getHTML()) {
+      editorInstance.commands.setContent(nextHtml, { emitUpdate: false });
+      editorInstance.commands.setTextSelection(Math.min(cursorAfterCitation, editorInstance.state.doc.content.size));
+    }
     commitEditorHtml(nextHtml, nextCitations);
+    setCitationRevision((value) => value + 1);
+    restoreScroll();
     if (input.candidate?.recordId) {
       updateBoardData({
         ...boardData,
@@ -2553,8 +3965,35 @@ function editorChain(editor: Editor): any {
     if (!selectedId || typeof window === "undefined") return;
     const stored = window.localStorage.getItem(`workbench-note-document-zoom-${selectedId}`);
     const parsed = stored ? Number(stored) : 100;
-    setDocumentZoom(Number.isFinite(parsed) ? Math.min(200, Math.max(50, parsed)) : 100);
+    const profile = getDocumentViewportProfile();
+    setDocumentZoom(
+      clampDocumentZoom(Number.isFinite(parsed) ? parsed : 100, profile),
+    );
   }, [selectedId]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const syncZoomForViewport = () => {
+      setDocumentZoom((current) => clampDocumentZoom(current, getDocumentViewportProfile()));
+    };
+    syncZoomForViewport();
+    window.addEventListener("resize", syncZoomForViewport);
+    return () => window.removeEventListener("resize", syncZoomForViewport);
+  }, []);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const active = isEditorialReading && documentDrawerOpen;
+    document.body.classList.toggle("workbench-format-drawer-open", active);
+    document.body.classList.toggle(
+      "workbench-format-drawer-pinned",
+      active && documentDrawerPinned,
+    );
+    return () => {
+      document.body.classList.remove("workbench-format-drawer-open");
+      document.body.classList.remove("workbench-format-drawer-pinned");
+    };
+  }, [isEditorialReading, documentDrawerOpen, documentDrawerPinned]);
 
   useEffect(() => {
     if (!selectedId || typeof window === "undefined") return;
@@ -2566,7 +4005,7 @@ function editorChain(editor: Editor): any {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const mq = window.matchMedia("(max-width: 640px)");
+    const mq = window.matchMedia("(max-width: 900px)");
     const sync = () => document.body.classList.toggle("workbench-notes-mobile", mq.matches);
     sync();
     mq.addEventListener("change", sync);
@@ -3056,11 +4495,20 @@ function editorChain(editor: Editor): any {
           noteMode === "board" && (isFocusMode || isBoardFullscreen) ? "is-board-fullscreen" : "",
           isEditorialReading ? "workbench-editorial-reading" : "",
           isEditorialReading && isFocusMode ? "is-focus-mode" : "",
+          isEditorialReading && documentDrawerOpen ? "has-format-drawer-open" : "",
         ]
           .filter(Boolean)
           .join(" ")
       }
     >
+      <AICitationFloatingTrigger
+        visible={Boolean(isEditorialReading && selectedNote)}
+        active={aiAssistantOpen}
+        disabled={!canEditSelected}
+        formatDrawerOpen={documentDrawerOpen}
+        onToggle={handleToggleAICitation}
+      />
+
       {notes.length && !isEditorialReading ? (
         <>
           <button
@@ -3321,6 +4769,7 @@ function editorChain(editor: Editor): any {
                             <WorkbenchNoteMenuBar
                               menus={noteMenuItems}
                               className="workbench-note-menu-bar--topbar"
+                              iconOnly
                             />
                           }
                           zoom={documentZoom}
@@ -3368,21 +4817,36 @@ function editorChain(editor: Editor): any {
                             />
                           }
                           editor={
-                            <div className="workbench-rich-editor-shell">
-                              <WorkbenchRichTextEditor
-                                key={`${selectedId}-${editorRevision}`}
-                                noteId={selectedId}
-                                contentHtml={contentHtml}
-                                editable={canEditSelected}
-                                hideToolbar
-                                onChange={handleEditorChange}
-                                onImageError={setImageError}
-                                insertHtml={insertHtml}
-                                onInsertHtmlApplied={() => setInsertHtml(null)}
-                                onEditorReady={setEditorInstance}
-                                onOpenCitation={() => setCitationPickerOpen(true)}
+                            <>
+                              <div className="workbench-rich-editor-shell">
+                                <WorkbenchRichTextEditor
+                                  key={`${selectedId}-${editorRevision}`}
+                                  noteId={selectedId}
+                                  contentHtml={contentHtml}
+                                  editable={canEditSelected}
+                                  hideToolbar
+                                  onChange={handleEditorChange}
+                                  onImageError={setImageError}
+                                  insertHtml={insertHtml}
+                                  onInsertHtmlApplied={() => setInsertHtml(null)}
+                                  onEditorReady={setEditorInstance}
+                                  onOpenCitation={() => setCitationPickerOpen(true)}
+                                  onOpenAICitation={handleOpenAICitation}
+                                />
+                              </div>
+                              <WorkbenchGeneratedReferences
+                                key={citationRevision}
+                                editorHtml={
+                                  editorInstance && !editorInstance.isDestroyed
+                                    ? editorInstance.getHTML()
+                                    : contentHtml
+                                }
+                                citations={citations}
+                                linkedRecordsForSelected={linkedRecordsForSelected}
+                                citationSources={props.citationSources}
+                                revision={citationRevision}
                               />
-                            </div>
+                            </>
                           }
                         />
                       </div>
@@ -3568,22 +5032,39 @@ function editorChain(editor: Editor): any {
                 ) : null}
 
                 {noteMode === "document" ? (
-                  <WorkbenchRichTextEditor
-                    key={`${selectedId}-${editorRevision}`}
-                    noteId={selectedId}
-                    contentHtml={contentHtml}
-                    editable={canEditSelected}
-                    compactToolbar
-                    onChange={handleEditorChange}
-                    onImageError={setImageError}
-                    insertHtml={insertHtml}
-                    onInsertHtmlApplied={() => setInsertHtml(null)}
-                    onEditorReady={setEditorInstance}
-                    onOpenCitation={() => {
-                      setNoteMode("document");
-                      setCitationPickerOpen(true);
-                    }}
-                  />
+                  <>
+                    <div className="workbench-rich-editor-shell">
+                      <WorkbenchRichTextEditor
+                        key={`${selectedId}-${editorRevision}`}
+                        noteId={selectedId}
+                        contentHtml={contentHtml}
+                        editable={canEditSelected}
+                        compactToolbar
+                        onChange={handleEditorChange}
+                        onImageError={setImageError}
+                        insertHtml={insertHtml}
+                        onInsertHtmlApplied={() => setInsertHtml(null)}
+                        onEditorReady={setEditorInstance}
+                        onOpenCitation={() => {
+                          setNoteMode("document");
+                          setCitationPickerOpen(true);
+                        }}
+                        onOpenAICitation={handleOpenAICitation}
+                      />
+                    </div>
+                    <WorkbenchGeneratedReferences
+                      key={citationRevision}
+                      editorHtml={
+                        editorInstance && !editorInstance.isDestroyed
+                          ? editorInstance.getHTML()
+                          : contentHtml
+                      }
+                      citations={citations}
+                      linkedRecordsForSelected={linkedRecordsForSelected}
+                      citationSources={props.citationSources}
+                      revision={citationRevision}
+                    />
+                  </>
                 ) : noteMode === "canvas" ? (
                   <WorkbenchNoteCanvas
                     data={canvasData}
@@ -3640,11 +5121,24 @@ function editorChain(editor: Editor): any {
         commands={commandItems}
         onClose={() => setCommandOpen(false)}
       />
+      <AICitationAssistant
+        open={aiAssistantOpen}
+        onClose={() => setAIAssistantOpen(false)}
+        candidates={citationCandidates}
+        noteId={selectedId}
+        noteContentHtml={contentHtml}
+        canEdit={canEditSelected}
+        formatDrawerOpen={documentDrawerOpen}
+        onSelectCandidate={handleSelectAICandidate}
+        onInsertScholarlyResult={handleInsertScholarlyResult}
+        onRecommendedCandidateIdsChange={setAiRecommendedCandidateIds}
+      />
       <WorkbenchCitationPicker
         open={citationPickerOpen}
         candidates={citationCandidates}
         citations={citations}
         initialCandidateId={citationPreselectId}
+        recommendedCandidateIds={aiRecommendedCandidateIds}
         onClose={() => {
           setCitationPickerOpen(false);
           setCitationPreselectId(null);
@@ -3652,6 +5146,29 @@ function editorChain(editor: Editor): any {
         }}
         onInsert={handleInsertCitation}
       />
+      {editingCitation
+        ? (() => {
+            const target = citations.find((c) => c.id === editingCitation.citationId);
+            if (!target) return null;
+            return (
+              <WorkbenchCitationEditPopover
+                citation={target}
+                rect={editingCitation.rect}
+                canEdit={canEditSelected}
+                onSave={(patch) => saveCitationEdits(target.id, patch)}
+                onCancel={closeCitationEditor}
+                onJump={() => {
+                  jumpToReference(citationReferenceId(target));
+                  closeCitationEditor();
+                }}
+                onOpenSource={() => {
+                  if (target.sourceUrl) window.open(target.sourceUrl, "_blank", "noopener,noreferrer");
+                }}
+                onRemove={() => removeCitation(target.id)}
+              />
+            );
+          })()
+        : null}
       <WorkbenchNotesQuickSwitcher
         open={switcherOpen}
         notes={notes}

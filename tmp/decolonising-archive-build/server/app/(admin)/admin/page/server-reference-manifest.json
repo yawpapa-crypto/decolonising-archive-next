@@ -1,0 +1,185 @@
+{
+  "node": {
+    "408b953d0c4cd0bb00d160d69193b138869bcfb7ce": {
+      "workers": {
+        "app/(admin)/admin/page": {
+          "moduleId": 50652,
+          "async": false,
+          "exportedName": "createAdminKanbanTask",
+          "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+        }
+      },
+      "exportedName": "createAdminKanbanTask",
+      "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+    },
+    "4082849b2b49b5c8a1d2b04f47f38a34f71564cfab": {
+      "workers": {
+        "app/(admin)/admin/page": {
+          "moduleId": 50652,
+          "async": false,
+          "exportedName": "deleteAdminKanbanTask",
+          "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+        }
+      },
+      "exportedName": "deleteAdminKanbanTask",
+      "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+    },
+    "0016adcffc4bbb83736f37f4d9e94162e6c312be59": {
+      "workers": {
+        "app/(admin)/admin/page": {
+          "moduleId": 50652,
+          "async": false,
+          "exportedName": "fetchAdminKanbanTasks",
+          "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+        }
+      },
+      "exportedName": "fetchAdminKanbanTasks",
+      "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+    },
+    "009ea113c56eab506c1979d6c80932dd29be2ee1b5": {
+      "workers": {
+        "app/(admin)/admin/page": {
+          "moduleId": 50652,
+          "async": false,
+          "exportedName": "fetchAdminProjects",
+          "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+        }
+      },
+      "exportedName": "fetchAdminProjects",
+      "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+    },
+    "4094bda2b1e6dcf1eab3d921b767608e2fb848f5f2": {
+      "workers": {
+        "app/(admin)/admin/page": {
+          "moduleId": 50652,
+          "async": false,
+          "exportedName": "saveAdminKanbanOrder",
+          "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+        }
+      },
+      "exportedName": "saveAdminKanbanOrder",
+      "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+    },
+    "6020a643a55433ab2e9994198cec34722f823dd708": {
+      "workers": {
+        "app/(admin)/admin/page": {
+          "moduleId": 50652,
+          "async": false,
+          "exportedName": "updateAdminKanbanTask",
+          "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+        }
+      },
+      "exportedName": "updateAdminKanbanTask",
+      "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+    },
+    "404bb613c1fff34e6ed5817414282afc493ef31296": {
+      "workers": {
+        "app/(admin)/admin/page": {
+          "moduleId": 50652,
+          "async": false,
+          "exportedName": "createAdminCalendarEvent",
+          "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+        }
+      },
+      "exportedName": "createAdminCalendarEvent",
+      "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+    },
+    "40e2bc0d12260c9c0f99998f04cd7a26390dc173d9": {
+      "workers": {
+        "app/(admin)/admin/page": {
+          "moduleId": 50652,
+          "async": false,
+          "exportedName": "deleteAdminCalendarEvent",
+          "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+        }
+      },
+      "exportedName": "deleteAdminCalendarEvent",
+      "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+    },
+    "00efcc0d68a66966d1814eb9f24ab5b10d83e041f8": {
+      "workers": {
+        "app/(admin)/admin/page": {
+          "moduleId": 50652,
+          "async": false,
+          "exportedName": "fetchAdminCalendarEvents",
+          "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+        }
+      },
+      "exportedName": "fetchAdminCalendarEvents",
+      "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+    },
+    "605765aadc32cfe9a6dad2401860ee2b250e4e7b52": {
+      "workers": {
+        "app/(admin)/admin/page": {
+          "moduleId": 50652,
+          "async": false,
+          "exportedName": "updateAdminCalendarEvent",
+          "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+        }
+      },
+      "exportedName": "updateAdminCalendarEvent",
+      "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+    },
+    "40cb75c12ac089579521af6ff06755be17669e1072": {
+      "workers": {
+        "app/(admin)/admin/page": {
+          "moduleId": 50652,
+          "async": false,
+          "exportedName": "createAdminProject",
+          "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+        }
+      },
+      "exportedName": "createAdminProject",
+      "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+    },
+    "401cd65c0eb8d4ffc7454c132cec8e17ece71ce200": {
+      "workers": {
+        "app/(admin)/admin/page": {
+          "moduleId": 50652,
+          "async": false,
+          "exportedName": "deleteAdminProject",
+          "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+        }
+      },
+      "exportedName": "deleteAdminProject",
+      "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+    },
+    "6071f7b456e1deaf6067056c81129b337b387527ea": {
+      "workers": {
+        "app/(admin)/admin/page": {
+          "moduleId": 50652,
+          "async": false,
+          "exportedName": "updateAdminProject",
+          "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+        }
+      },
+      "exportedName": "updateAdminProject",
+      "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+    },
+    "00ea198ce20b5eccaa3189ad43742e28c30c68a6e7": {
+      "workers": {
+        "app/(admin)/admin/page": {
+          "moduleId": 50652,
+          "async": false,
+          "exportedName": "fetchAdminChatMessages",
+          "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+        }
+      },
+      "exportedName": "fetchAdminChatMessages",
+      "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+    },
+    "4046b3cf8a6c38b0b926b269cd12ce114dc07ff6de": {
+      "workers": {
+        "app/(admin)/admin/page": {
+          "moduleId": 50652,
+          "async": false,
+          "exportedName": "sendAdminChatMessage",
+          "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+        }
+      },
+      "exportedName": "sendAdminChatMessage",
+      "filename": "app/(admin)/admin/workspace-tools/actions.ts"
+    }
+  },
+  "edge": {}
+}

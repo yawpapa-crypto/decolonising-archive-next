@@ -6,6 +6,7 @@ import { readRecords } from "@/lib/records";
 import { requireMember } from "@/src/lib/auth";
 import { trackWorkbenchActivity } from "@/lib/workbench-activity-actions";
 import { createClient } from "@/src/lib/supabase/server";
+import { normalizeSavedRecord } from "@/src/lib/saved-record-normalization";
 
 function text(formData: FormData, key: string) {
   return String(formData.get(key) ?? "").trim();
@@ -18,6 +19,23 @@ function optionalText(formData: FormData, key: string) {
 
 function redirectTarget(formData: FormData) {
   return text(formData, "redirectTo") || "/workspace";
+}
+
+function readingListGroupType(formData: FormData) {
+  const value = text(formData, "group_type") || "theme";
+  return [
+    "project",
+    "theme",
+    "source_type",
+    "media_type",
+    "course_research_paper",
+  ].includes(value)
+    ? value
+    : "theme";
+}
+
+function isMissingReadingListGroupingError(error: { message?: string } | null) {
+  return Boolean(error?.message?.includes("reading_lists.group_"));
 }
 
 function fail(message: string, redirectTo = "/workspace"): never {
@@ -46,6 +64,16 @@ export async function createBookmark(formData: FormData) {
     {
       user_id: profile.id,
       record_id: recordId,
+      record_title: recordTitle,
+      record_source: recordSource,
+      record_source_url: recordSourceUrl,
+      record_type: recordType,
+      record_year: recordYear,
+      record_metadata: {
+        normalizedType: recordType || undefined,
+        normalizedSource: recordSource || undefined,
+        sourceLabel: recordSource || undefined,
+      },
       note: note || null,
     },
     { onConflict: "user_id,record_id" },
@@ -133,21 +161,171 @@ export async function updateReadingList(formData: FormData) {
   const id = text(formData, "id");
   const title = text(formData, "title");
   const description = text(formData, "description");
+  const groupType = readingListGroupType(formData);
+  const groupLabel = text(formData, "group_label");
   const isPublic = formData.get("is_public") === "on";
 
   if (!id) fail("Reading list not found.", redirectTo);
   if (!title) fail("Reading list title is required.", redirectTo);
 
   const supabase = await createClient();
-  const { error } = await supabase
+  let { error } = await supabase
     .from("reading_lists")
-    .update({ title, description: description || null, is_public: isPublic })
+    .update({
+      title,
+      description: description || null,
+      group_type: groupType,
+      group_label: groupLabel || null,
+      is_public: isPublic,
+    })
     .eq("id", id)
     .eq("user_id", profile.id);
+
+  if (isMissingReadingListGroupingError(error)) {
+    const fallback = await supabase
+      .from("reading_lists")
+      .update({ title, description: description || null, is_public: isPublic })
+      .eq("id", id)
+      .eq("user_id", profile.id);
+    error = fallback.error;
+  }
 
   if (error) fail(error.message, redirectTo);
   revalidatePath(redirectTo);
   done("Reading list updated.", redirectTo);
+}
+
+async function addBookmarkSnapshotToReadingList(
+  bookmarkId: string,
+  readingListId: string,
+  profileId: string,
+  redirectTo: string,
+) {
+  const supabase = await createClient();
+  const { data: list, error: listError } = await supabase
+    .from("reading_lists")
+    .select("id")
+    .eq("id", readingListId)
+    .eq("user_id", profileId)
+    .maybeSingle();
+
+  if (listError) fail(listError.message, redirectTo);
+  if (!list) fail("Reading list not found.", redirectTo);
+
+  const { data: bookmark, error: bookmarkError } = await supabase
+    .from("bookmarks")
+    .select(
+      "id, record_id, record_title, record_source, record_source_url, record_type, record_year, record_metadata, note, created_at",
+    )
+    .eq("id", bookmarkId)
+    .eq("user_id", profileId)
+    .maybeSingle();
+
+  if (bookmarkError) fail(bookmarkError.message, redirectTo);
+  if (!bookmark) fail("Bookmark not found.", redirectTo);
+
+  const { count } = await supabase
+    .from("reading_list_items")
+    .select("id", { count: "exact", head: true })
+    .eq("reading_list_id", readingListId);
+
+  const metadata =
+    bookmark.record_metadata && typeof bookmark.record_metadata === "object"
+      ? (bookmark.record_metadata as Record<string, unknown>)
+      : {};
+  const normalized = normalizeSavedRecord(bookmark);
+
+  const { error } = await supabase.from("reading_list_items").upsert(
+    {
+      reading_list_id: readingListId,
+      record_id: bookmark.record_id,
+      position: count ?? 0,
+      record_title: bookmark.record_title,
+      record_author: normalized.authorLabel || null,
+      record_source: bookmark.record_source,
+      record_source_url: bookmark.record_source_url,
+      record_type: bookmark.record_type || normalized.typeLabel,
+      record_year: bookmark.record_year || (normalized.year ? String(normalized.year) : null),
+      record_metadata: {
+        ...metadata,
+        normalizedType: normalized.normalizedType,
+        normalizedSource: normalized.normalizedSource,
+        mediaTypes: normalized.mediaTypes,
+        sourceLabel: normalized.sourceLabel,
+      },
+      note: bookmark.note,
+    },
+    { onConflict: "reading_list_id,record_id" },
+  );
+
+  if (error) fail(error.message, redirectTo);
+
+  return bookmark;
+}
+
+export async function addBookmarkToReadingList(formData: FormData) {
+  const profile = await requireMember();
+  const redirectTo = redirectTarget(formData);
+  const bookmarkId = text(formData, "bookmark_id");
+  const readingListId = text(formData, "reading_list_id");
+
+  if (!bookmarkId || !readingListId) {
+    fail("Choose a saved record and reading list.", redirectTo);
+  }
+
+  const bookmark = await addBookmarkSnapshotToReadingList(
+    bookmarkId,
+    readingListId,
+    profile.id,
+    redirectTo,
+  );
+
+  void trackWorkbenchActivity({
+    eventType: "record_added_to_reading_list",
+    entityType: "reading_list_item",
+    entityId: bookmark.record_id,
+    metadata: { reading_list_id: readingListId },
+  });
+  revalidatePath(redirectTo);
+  revalidatePath("/my/lists");
+  done("Saved record added to reading list.", redirectTo);
+}
+
+export async function moveBookmarkToReadingList(formData: FormData) {
+  const profile = await requireMember();
+  const redirectTo = redirectTarget(formData);
+  const bookmarkId = text(formData, "bookmark_id");
+  const readingListId = text(formData, "reading_list_id");
+
+  if (!bookmarkId || !readingListId) {
+    fail("Choose a saved record and reading list.", redirectTo);
+  }
+
+  const bookmark = await addBookmarkSnapshotToReadingList(
+    bookmarkId,
+    readingListId,
+    profile.id,
+    redirectTo,
+  );
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("bookmarks")
+    .delete()
+    .eq("id", bookmarkId)
+    .eq("user_id", profile.id);
+
+  if (error) fail(error.message, redirectTo);
+
+  void trackWorkbenchActivity({
+    eventType: "record_added_to_reading_list",
+    entityType: "reading_list_item",
+    entityId: bookmark.record_id,
+    metadata: { reading_list_id: readingListId, moved_from_bookmarks: true },
+  });
+  revalidatePath(redirectTo);
+  revalidatePath("/my/lists");
+  done("Saved record moved to reading list.", redirectTo);
 }
 
 export async function deleteReadingListItem(formData: FormData) {
@@ -176,14 +354,20 @@ export async function createSavedSearch(formData: FormData) {
   if (!query) fail("Enter a search query to save.", redirectTo);
 
   const supabase = await createClient();
-  const { error } = await supabase.from("saved_searches").insert({
+  const { data, error } = await supabase.from("saved_searches").insert({
     user_id: profile.id,
     label,
     query,
     filters: {},
-  });
+  }).select("id").single();
 
   if (error) fail(error.message, redirectTo);
+  void trackWorkbenchActivity({
+    eventType: "search_saved",
+    entityType: "search",
+    entityId: data?.id ?? query,
+    metadata: { label, query },
+  });
   revalidatePath(redirectTo);
   done("Search saved.", redirectTo);
 }
@@ -235,17 +419,31 @@ export async function createReadingList(formData: FormData) {
   const redirectTo = redirectTarget(formData);
   const title = text(formData, "title");
   const description = text(formData, "description");
+  const groupType = readingListGroupType(formData);
+  const groupLabel = text(formData, "group_label");
   const isPublic = formData.get("is_public") === "on";
 
   if (!title) fail("Give the reading list a title.", redirectTo);
 
   const supabase = await createClient();
-  const { error } = await supabase.from("reading_lists").insert({
+  let { error } = await supabase.from("reading_lists").insert({
     user_id: profile.id,
     title,
     description: description || null,
+    group_type: groupType,
+    group_label: groupLabel || null,
     is_public: isPublic,
   });
+
+  if (isMissingReadingListGroupingError(error)) {
+    const fallback = await supabase.from("reading_lists").insert({
+      user_id: profile.id,
+      title,
+      description: description || null,
+      is_public: isPublic,
+    });
+    error = fallback.error;
+  }
 
   if (error) fail(error.message, redirectTo);
   revalidatePath(redirectTo);

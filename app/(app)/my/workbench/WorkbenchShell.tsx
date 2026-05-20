@@ -1,9 +1,7 @@
 "use client";
 
-import "@/app/workbench-board-immersive.css";
 import "@/app/styles/editorial/editorial.css";
 import "@/app/workbench.css";
-import "@/app/styles/archive/notes-figma.css";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
@@ -26,12 +24,15 @@ export default function WorkbenchShell({ children }: { children: ReactNode }) {
   const isProjectsIndexRoute = pathname === "/my/workbench/projects";
   const isProjectDetailRoute = pathname.startsWith("/my/workbench/projects/");
   const isNotesRoute = pathname === "/my/workbench/notes" || pathname.startsWith("/my/workbench/notes/");
+  const isIntelligenceRoute =
+    pathname === "/my/workbench/intelligence" || pathname.startsWith("/my/workbench/intelligence/");
 
   const outerClasses = [
     "dashboard-canvas-outer",
     "dashboard-shell--member",
     "workbench-member-canvas",
     isNotesRoute ? "workbench-shell--notes-premium" : "",
+    isIntelligenceRoute ? "workbench-member-canvas--intelligence" : "",
   ]
     .filter(Boolean)
     .join(" ");
@@ -40,6 +41,7 @@ export default function WorkbenchShell({ children }: { children: ReactNode }) {
     "workbench-shell",
     "workbench-shell--stable",
     isNotesRoute ? "workbench-shell--notes-premium" : "",
+    isIntelligenceRoute ? "workbench-shell--intelligence" : "",
     isProjectsIndexRoute ? "is-projects-index-route" : "",
     isProjectDetailRoute ? "is-project-detail-route" : "",
   ]

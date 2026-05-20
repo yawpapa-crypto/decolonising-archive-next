@@ -1,6 +1,7 @@
 import type { BookmarkRow, ReadingListItemRow, ReadingListRow } from "@/src/lib/member-workspace";
 import { getMemberWorkspaceData, workspaceRecordTitle } from "@/src/lib/member-workspace";
 import type { ArchiveRecord } from "@/lib/records";
+import { readRecords } from "@/lib/records";
 import {
   listAllWorkbenchProjectRecords,
   listAllWorkbenchTasks,
@@ -28,6 +29,14 @@ import {
   getWorkbenchUserPreferences,
   listRecentWorkbenchActivity,
 } from "@/lib/workbench-activity-actions";
+import { buildIntelligenceDashboard } from "@/lib/workbench-intelligence-enrich";
+import {
+  buildPrismaCounts,
+  buildReviewIntelligenceKpis,
+  buildReviewScreeningRecords,
+  mapReviewProjectRow,
+} from "@/lib/workbench-intelligence-review";
+import { createClient } from "@/src/lib/supabase/server";
 import type {
   IntelligenceCollection,
   IntelligenceItem,
@@ -917,14 +926,132 @@ export function buildWorkbenchIntelligenceSnapshot(input: {
     profile,
     preferences: null,
     recordRelations,
+    dashboard: {
+      totalRecords: 0,
+      userSavedRecords: input.bookmarks.length,
+      activeSources: 0,
+      countriesCovered: 0,
+      pendingReview: summary.needs_metadata + summary.needs_cultural_care,
+      openAccessPercent: 0,
+      metadataCompletenessPercent: 0,
+    },
+    worldMap: [],
+    locations: [],
+    comparisons: [],
+    cityPlaces: [],
+    sources: [],
+    gaps: [],
+    facets: {
+      years: [],
+      types: [],
+      themes: [],
+      creators: [],
+      institutions: [],
+      continents: [],
+      regions: [],
+      countries: [],
+      cities: [],
+      sourceDatabases: [],
+      statuses: [],
+    },
+    literatureReview: {
+      corpusSize: 0,
+      uniqueRecords: 0,
+      citedCount: 0,
+      uncitedCount: 0,
+      usedInWritingCount: 0,
+      inReadingLists: 0,
+      inProjects: 0,
+      slrReadinessPercent: 0,
+      themeClusters: [],
+      yearSpread: [],
+      geographySpread: [],
+      topCreators: [],
+      sourceMix: [],
+      lastActivityAt: null,
+    },
+    behaviorInsights: [],
+    activityFeed: [],
+    readingPatterns: [],
+    reviewProjects: [],
+    reviewScreenings: [],
+    prismaCounts: {
+      recordsIdentified: 0,
+      duplicatesRemoved: 0,
+      recordsScreened: 0,
+      recordsExcluded: 0,
+      fullTextAssessed: 0,
+      finalIncluded: 0,
+      awaitingScreening: 0,
+    },
+    reviewKpis: {
+      activeReviewProjects: 0,
+      awaitingScreening: 0,
+      finalIncludedRecords: 0,
+      strongestTheme: null,
+      weakestGeography: null,
+      missingMetadata: 0,
+    },
+    savedSearchInsights: [],
     errors,
   };
 }
 
+async function loadReviewData(userId: string) {
+  try {
+    const supabase = await createClient();
+
+    const [projectsRes, screeningsRes, searchesRes] = await Promise.all([
+      supabase
+        .from("workbench_review_projects")
+        .select("*")
+        .eq("user_id", userId)
+        .order("updated_at", { ascending: false }),
+      supabase
+        .from("workbench_review_screenings")
+        .select("*")
+        .eq("user_id", userId)
+        .order("updated_at", { ascending: false }),
+      supabase
+        .from("saved_searches")
+        .select("id, label, query, created_at")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(20),
+    ]);
+
+    return {
+      projects: projectsRes.data ?? [],
+      screenings: screeningsRes.data ?? [],
+      savedSearches: searchesRes.data ?? [],
+      errors: [
+        projectsRes.error?.message,
+        screeningsRes.error?.message,
+        searchesRes.error?.message,
+      ].filter(Boolean) as string[],
+    };
+  } catch (error) {
+    return {
+      projects: [],
+      screenings: [],
+      savedSearches: [],
+      errors: [
+        error instanceof Error ?
+          error.message
+        : "Could not load review workspace data.",
+      ],
+    };
+  }
+}
+
 export async function loadWorkbenchIntelligenceSnapshot(): Promise<IntelligenceSnapshot> {
   const errors: string[] = [];
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  const [workspace, projectsRes, notesRes, tasksRes, projectRecordsRes, preferences, recentActivity] =
+  const [workspace, projectsRes, notesRes, tasksRes, projectRecordsRes, preferences, recentActivity, reviewData] =
     await Promise.all([
       getMemberWorkspaceData("/my/workbench/intelligence"),
       listWorkbenchProjects(),
@@ -932,13 +1059,15 @@ export async function loadWorkbenchIntelligenceSnapshot(): Promise<IntelligenceS
       listAllWorkbenchTasks(300),
       listAllWorkbenchProjectRecords(400),
       getWorkbenchUserPreferences(),
-      listRecentWorkbenchActivity(12),
+      listRecentWorkbenchActivity(50),
+      user ? loadReviewData(user.id) : Promise.resolve({ projects: [], screenings: [], savedSearches: [], errors: [] }),
     ]);
 
   if (!projectsRes.ok) errors.push(projectsRes.error ?? "Could not load projects.");
   if (!notesRes.ok) errors.push(notesRes.error ?? "Could not load notes.");
   if (!tasksRes.ok) errors.push(tasksRes.error ?? "Could not load tasks.");
   if (!projectRecordsRes.ok) errors.push(projectRecordsRes.error ?? "Could not load project records.");
+  errors.push(...reviewData.errors);
 
   const snapshot = buildWorkbenchIntelligenceSnapshot({
     bookmarks: workspace.bookmarks,
@@ -958,8 +1087,63 @@ export async function loadWorkbenchIntelligenceSnapshot(): Promise<IntelligenceS
     })),
   });
 
+  let archiveRecords: ArchiveRecord[] = [];
+  try {
+    archiveRecords = await readRecords();
+  } catch {
+    archiveRecords = [...workspace.recordsById.values()];
+  }
+
+  const dashboardLayer = buildIntelligenceDashboard({
+    archiveRecords,
+    items: snapshot.items,
+    profile: snapshot.profile,
+    savedSearches: reviewData.savedSearches.map((row) => ({
+      id: row.id as string,
+      label: row.label as string,
+      query: row.query as string,
+      createdAt: row.created_at as string,
+    })),
+  });
+
+  const reviewProjects = reviewData.projects.map((row) =>
+    mapReviewProjectRow(row as Parameters<typeof mapReviewProjectRow>[0]),
+  );
+  const reviewScreenings = buildReviewScreeningRecords({
+    screenings: reviewData.screenings as Parameters<typeof buildReviewScreeningRecords>[0]["screenings"],
+    items: dashboardLayer.items,
+    archiveRecords,
+  });
+  const prismaCounts = buildPrismaCounts(
+    reviewData.screenings as Parameters<typeof buildPrismaCounts>[0],
+  );
+  const reviewKpis = buildReviewIntelligenceKpis({
+    reviewProjects,
+    prismaCounts,
+    literatureReview: dashboardLayer.literatureReview,
+    missingMetadata: snapshot.summary.needs_metadata,
+  });
+
   return {
     ...snapshot,
+    items: dashboardLayer.items,
+    dashboard: dashboardLayer.dashboard,
+    worldMap: dashboardLayer.worldMap,
+    locations: dashboardLayer.locations,
+    comparisons: dashboardLayer.comparisons,
+    cityPlaces: dashboardLayer.cityPlaces,
+    sources: dashboardLayer.sources,
+    gaps: dashboardLayer.gaps,
+    facets: dashboardLayer.facets,
+    literatureReview: dashboardLayer.literatureReview,
+    behaviorInsights: dashboardLayer.behaviorInsights,
+    activityFeed: dashboardLayer.activityFeed,
+    readingPatterns: dashboardLayer.readingPatterns,
+    savedSearchInsights: dashboardLayer.savedSearchInsights,
+    reviewProjects,
+    reviewScreenings,
+    prismaCounts,
+    reviewKpis,
     preferences,
     errors: [...snapshot.errors, ...errors],
   };

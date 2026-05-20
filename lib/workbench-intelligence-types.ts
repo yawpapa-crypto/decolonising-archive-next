@@ -33,7 +33,8 @@ export type IntelligenceWorkflowStatus =
   | "used"
   | "ready"
   | "needs_metadata"
-  | "needs_cultural_care";
+  | "needs_cultural_care"
+  | "pending_review";
 
 export type IntelligenceFilter =
   | "all"
@@ -63,6 +64,171 @@ export type IntelligenceSummaryKey =
 
 export type SuggestionConfidence = "low" | "medium" | "high";
 
+export type IntelligenceGeoPlaceKind = "continent" | "region" | "country" | "city" | "diaspora";
+
+export type IntelligenceConfidence = "high" | "medium" | "low";
+
+export type IntelligenceFacetFilters = {
+  year?: string | null;
+  type?: string | null;
+  openAccess?: "open" | "closed" | "unknown" | null;
+  theme?: string | null;
+  creator?: string | null;
+  institution?: string | null;
+  continent?: string | null;
+  region?: string | null;
+  country?: string | null;
+  city?: string | null;
+  diaspora?: boolean | null;
+  placeId?: string | null;
+  sourceDatabase?: string | null;
+  status?: IntelligenceWorkflowStatus | null;
+};
+
+export type IntelligenceWorldMapPoint = {
+  placeId: string;
+  kind: IntelligenceGeoPlaceKind;
+  label: string;
+  continent: string | null;
+  latitude: number;
+  longitude: number;
+  x: number;
+  y: number;
+  count: number;
+  intensity: number;
+};
+
+export type IntelligenceLocationCard = {
+  placeId: string;
+  kind: IntelligenceGeoPlaceKind;
+  label: string;
+  subtitle: string | null;
+  recordCount: number;
+  userRecordCount: number;
+  topThemes: string[];
+  openAccessPercent: number;
+  strongestSources: string[];
+  metadataGaps: string[];
+  lastSynced: string | null;
+};
+
+export type IntelligencePlaceComparison = {
+  id: string;
+  label: string;
+  recordCount: number;
+  userRecordCount: number;
+  openAccessPercent: number;
+  topTheme: string | null;
+  topSource: string | null;
+};
+
+export type IntelligenceCityPlace = {
+  placeId: string;
+  label: string;
+  country: string | null;
+  recordCount: number;
+  userRecordCount: number;
+};
+
+export type IntelligenceSourceStatus = "active" | "degraded" | "offline" | "planned";
+
+export type IntelligenceSourcePerformance = {
+  id: string;
+  name: string;
+  status: IntelligenceSourceStatus;
+  recordCount: number;
+  userRecordCount: number;
+  failureCount: number;
+  lastSynced: string | null;
+  description?: string;
+};
+
+export type IntelligenceResearchGap = {
+  id: string;
+  title: string;
+  detail: string;
+  severity: "low" | "medium" | "high";
+  metric?: string;
+  filterHint?: Partial<IntelligenceFacetFilters>;
+};
+
+export type IntelligenceDashboardKpis = {
+  totalRecords: number;
+  userSavedRecords: number;
+  activeSources: number;
+  countriesCovered: number;
+  pendingReview: number;
+  openAccessPercent: number;
+  metadataCompletenessPercent: number;
+  citedRecords?: number;
+  activityEvents?: number;
+  slrReadinessPercent?: number;
+};
+
+export type IntelligenceBehaviorInsight = {
+  id: string;
+  category: "reading" | "location" | "citation" | "gap" | "activity";
+  title: string;
+  detail: string;
+  metric?: string;
+  filterHint?: Partial<IntelligenceFacetFilters>;
+};
+
+export type IntelligenceActivityEntry = {
+  id: string;
+  eventType: string;
+  entityType: string;
+  entityId: string | null;
+  label: string;
+  createdAt: string;
+};
+
+export type IntelligenceReadingPattern = {
+  id: string;
+  category: "theme" | "location" | "creator";
+  label: string;
+  recordCount: number;
+  citedCount: number;
+  detail: string;
+};
+
+export type IntelligenceLiteratureReview = {
+  corpusSize: number;
+  uniqueRecords: number;
+  citedCount: number;
+  uncitedCount: number;
+  usedInWritingCount: number;
+  inReadingLists: number;
+  inProjects: number;
+  slrReadinessPercent: number;
+  themeClusters: Array<{ theme: string; total: number; cited: number; countries: string[] }>;
+  yearSpread: Array<{ year: string; count: number; cited: number }>;
+  geographySpread: Array<{ label: string; kind: string; count: number; cited: number }>;
+  topCreators: Array<{ name: string; count: number; cited: number }>;
+  sourceMix: Array<{ source: string; count: number }>;
+  lastActivityAt: string | null;
+};
+
+export type IntelligenceFacetOption = {
+  value: string;
+  label: string;
+  count: number;
+};
+
+export type IntelligenceFacets = {
+  years: IntelligenceFacetOption[];
+  types: IntelligenceFacetOption[];
+  themes: IntelligenceFacetOption[];
+  creators: IntelligenceFacetOption[];
+  institutions: IntelligenceFacetOption[];
+  continents: IntelligenceFacetOption[];
+  regions: IntelligenceFacetOption[];
+  countries: IntelligenceFacetOption[];
+  cities: IntelligenceFacetOption[];
+  sourceDatabases: IntelligenceFacetOption[];
+  statuses: IntelligenceFacetOption[];
+};
+
 export type IntelligenceRelation = {
   kind: string;
   label: string;
@@ -87,7 +253,21 @@ export type IntelligenceItem = {
   usedInWriting: boolean;
   creator?: string | null;
   date?: string | null;
+  year?: string | null;
   sourceLabel?: string | null;
+  region?: string | null;
+  continent?: string | null;
+  country?: string | null;
+  city?: string | null;
+  diaspora?: boolean;
+  placeIds?: string[];
+  institution?: string | null;
+  theme?: string | null;
+  recordType?: string | null;
+  openAccess?: boolean | null;
+  confidence?: IntelligenceConfidence | null;
+  lastSynced?: string | null;
+  engagementScore?: number;
   openHref?: string;
   collections: string[];
   relations: IntelligenceRelation[];
@@ -142,6 +322,92 @@ export type UserResearchProfile = {
   }>;
 };
 
+export type ReviewProjectType =
+  | "systematic_review"
+  | "scoping_review"
+  | "mapping_review"
+  | "narrative_review";
+
+export type ReviewScreeningStatus =
+  | "imported"
+  | "title_abstract_screening"
+  | "included"
+  | "excluded"
+  | "full_text_review"
+  | "final_included";
+
+export type ReviewExclusionReason =
+  | "wrong_topic"
+  | "wrong_geography"
+  | "wrong_method"
+  | "duplicate"
+  | "no_full_text"
+  | "outside_date_range"
+  | "other";
+
+export type ReviewProject = {
+  id: string;
+  title: string;
+  reviewType: ReviewProjectType;
+  researchQuestion: string | null;
+  inclusionCriteria: string | null;
+  exclusionCriteria: string | null;
+  searchStrings: string[];
+  databasesSearched: string[];
+  dateRangeStart: string | null;
+  dateRangeEnd: string | null;
+  notes: string | null;
+  status: "active" | "paused" | "completed";
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ReviewScreeningRecord = {
+  id: string;
+  projectId: string;
+  recordId: string;
+  title: string;
+  creator: string | null;
+  year: string | null;
+  source: string | null;
+  doiOrUrl: string | null;
+  country: string | null;
+  region: string | null;
+  theme: string | null;
+  method: string | null;
+  openAccess: boolean | null;
+  screeningStatus: ReviewScreeningStatus;
+  exclusionReason: ReviewExclusionReason | null;
+  notes: string | null;
+  updatedAt: string;
+};
+
+export type PrismaFlowCounts = {
+  recordsIdentified: number;
+  duplicatesRemoved: number;
+  recordsScreened: number;
+  recordsExcluded: number;
+  fullTextAssessed: number;
+  finalIncluded: number;
+  awaitingScreening: number;
+};
+
+export type ReviewIntelligenceKpis = {
+  activeReviewProjects: number;
+  awaitingScreening: number;
+  finalIncludedRecords: number;
+  strongestTheme: string | null;
+  weakestGeography: string | null;
+  missingMetadata: number;
+};
+
+export type SavedSearchInsight = {
+  id: string;
+  label: string;
+  query: string;
+  createdAt: string;
+};
+
 export type IntelligenceSnapshot = {
   items: IntelligenceItem[];
   collections: IntelligenceCollection[];
@@ -154,5 +420,22 @@ export type IntelligenceSnapshot = {
     title: string;
     relations: IntelligenceRelation[];
   }>;
+  dashboard: IntelligenceDashboardKpis;
+  worldMap: IntelligenceWorldMapPoint[];
+  locations: IntelligenceLocationCard[];
+  comparisons: IntelligencePlaceComparison[];
+  cityPlaces: IntelligenceCityPlace[];
+  sources: IntelligenceSourcePerformance[];
+  gaps: IntelligenceResearchGap[];
+  facets: IntelligenceFacets;
+  literatureReview: IntelligenceLiteratureReview;
+  behaviorInsights: IntelligenceBehaviorInsight[];
+  activityFeed: IntelligenceActivityEntry[];
+  readingPatterns: IntelligenceReadingPattern[];
+  reviewProjects: ReviewProject[];
+  reviewScreenings: ReviewScreeningRecord[];
+  prismaCounts: PrismaFlowCounts;
+  reviewKpis: ReviewIntelligenceKpis;
+  savedSearchInsights: SavedSearchInsight[];
   errors: string[];
 };

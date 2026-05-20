@@ -1,0 +1,3 @@
+{
+  "/(app)/api/curator/media/[id]/route": "app/(app)/api/curator/media/[id]/route.js"
+}
