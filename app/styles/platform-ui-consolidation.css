@@ -356,31 +356,26 @@
 /* ── 13. Mobile patterns ───────────────────────────────────────── */
 
 @media (max-width: 900px) {
+  .platform-ui .workbench-shell {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: auto minmax(0, 1fr) !important;
+    min-width: 0;
+  }
+
+  .platform-ui .workbench-shell.is-sidebar-collapsed {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
   .platform-ui .workbench-main {
+    grid-column: 1 / -1;
+    grid-row: 2;
     padding: var(--platform-space-sm) var(--platform-space-md) calc(var(--platform-space-xl) + env(safe-area-inset-bottom, 0px));
   }
 
-  .platform-ui .workbench-sidebar[data-wb-sidebar="2"] {
-    position: static;
-    max-height: none;
-    border-right: none;
-    border-bottom: 1px solid var(--platform-border-fine);
-  }
-
-  .platform-ui .workbench-nav {
-    flex-direction: row;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scrollbar-width: none;
-    padding-bottom: var(--platform-space-xs);
-  }
-
-  .platform-ui .workbench-nav::-webkit-scrollbar {
-    display: none;
-  }
-
-  .platform-ui .workbench-sidebar-head .workbench-sidebar-title {
-    font-size: 12px;
+  .platform-ui .workbench-mobile-nav-bar {
+    grid-column: 1 / -1;
+    grid-row: 1;
   }
 }
 

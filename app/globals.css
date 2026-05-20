@@ -19382,6 +19382,7 @@ form.search-save-inline button.search-save-inline-button::after,
   body.filters-open,
   body.menu-open,
   body.workspace-drawer-open,
+  body.workbench-mobile-drawer-open,
   body.drawer-open,
   body.modal-open {
     overflow: hidden !important;
