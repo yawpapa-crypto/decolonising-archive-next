@@ -21,6 +21,11 @@ export type RankableSearchRecord = {
   institution?: string;
   collection?: string;
   liveSourceHint?: string;
+  decolonialSignal?: boolean;
+  mediaTypes?: string[];
+  audioUrl?: string;
+  videoUrl?: string;
+  imageUrl?: string;
   period?: string | number;
   year?: string | number;
   citedByCount?: number;
@@ -49,6 +54,7 @@ export type QueryContext = {
 export type ScoreSearchResultOptions = {
   sourceKey?: string;
   isOpenAccess?: boolean;
+  decolonialMode?: boolean;
 };
 
 function foldText(value: unknown): string {
@@ -195,6 +201,15 @@ export function scoreSearchResult(
 
   if (options.isOpenAccess) score += 4;
 
+  if (options.sourceKey === "library-of-congress") {
+    const mediaTypes = (record.mediaTypes || []).join(" ").toLowerCase();
+    const hasMedia = Boolean(record.audioUrl || record.videoUrl || record.imageUrl);
+    if (hasMedia) score += 10;
+    if (/audio|video|oral history|sound|recording|film|photograph/.test(mediaTypes)) score += 8;
+    if (record.decolonialSignal) score += 14;
+    if (options.decolonialMode && record.decolonialSignal) score += 12;
+  }
+
   if (options.sourceKey === "archive") score += 8;
   const kind = getResultKind(record);
   if (options.sourceKey === "handoff" || options.sourceKey === "aodl") {
@@ -284,6 +299,7 @@ const SOURCE_SORT_ORDER = [
   "semantic-scholar",
   "wikidata",
   "openaccess",
+  "library-of-congress",
   "archival-external",
   "aodl",
   "smithsonian",

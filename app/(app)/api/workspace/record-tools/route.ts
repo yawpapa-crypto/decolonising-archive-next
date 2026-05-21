@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getCurrentProfile } from "@/src/lib/auth";
 import { createClient } from "@/src/lib/supabase/server";
+import { normalizeSavedRecord } from "@/src/lib/saved-record-normalization";
 
 type WorkspaceAction =
   | "bookmark"
@@ -121,7 +122,7 @@ function buildRecordSnapshot(
       ),
     ) || null;
 
-  return {
+  const snapshot = {
     record_title: title,
     record_author: author,
     record_source: source,
@@ -138,6 +139,21 @@ function buildRecordSnapshot(
       source_url: sourceUrl ?? undefined,
       type: type ?? undefined,
       year: year ?? undefined,
+    },
+  };
+  const normalized = normalizeSavedRecord({
+    record_id: recordId,
+    ...snapshot,
+  });
+
+  return {
+    ...snapshot,
+    record_metadata: {
+      ...snapshot.record_metadata,
+      normalizedType: normalized.normalizedType,
+      normalizedSource: normalized.normalizedSource,
+      mediaTypes: normalized.mediaTypes,
+      sourceLabel: normalized.sourceLabel,
     },
   };
 }

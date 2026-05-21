@@ -127,35 +127,53 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(cached);
   }
 
-  const batch = await searchSmithsonianRecords({
-    query: q,
-    rows,
-    start,
-    sort,
-    type,
-    rowGroup,
-    category,
-    media,
-  });
+  try {
+    const batch = await searchSmithsonianRecords({
+      query: q,
+      rows,
+      start,
+      sort,
+      type,
+      rowGroup,
+      category,
+      media,
+    });
 
-  const results = batch.results.map((item, index) => smithsonianRecordToLibraryLive(item, index));
+    const results = batch.results.map((item, index) =>
+      smithsonianRecordToLibraryLive(item, index),
+    );
 
-  const payload = {
-    ok: !batch.error || results.length > 0,
-    source: batch.source,
-    query: batch.query,
-    results,
-    count: batch.count,
-    displayedCount: batch.displayedCount,
-    nextStart: batch.nextStart,
-    nextOffset: batch.nextStart,
-    hasMore: batch.hasMore,
-    error: batch.error,
-  };
+    const payload = {
+      ok: !batch.error || results.length > 0,
+      source: batch.source,
+      query: batch.query,
+      results,
+      count: batch.count,
+      displayedCount: batch.displayedCount,
+      nextStart: batch.nextStart,
+      nextOffset: batch.nextStart,
+      hasMore: batch.hasMore,
+      error: batch.error,
+    };
 
-  if (!batch.error) {
-    setCachedSearch(cacheKey, payload);
+    if (!batch.error) {
+      setCachedSearch(cacheKey, payload);
+    }
+
+    return NextResponse.json(payload);
+  } catch (error) {
+    const message = safePublicError(error, "Smithsonian search failed");
+    return NextResponse.json({
+      ok: false,
+      source: "smithsonian",
+      query: q,
+      results: [],
+      count: null,
+      displayedCount: 0,
+      nextStart: null,
+      nextOffset: null,
+      hasMore: false,
+      error: message,
+    });
   }
-
-  return NextResponse.json(payload);
 }

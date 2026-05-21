@@ -11,6 +11,7 @@ export type UnifiedSearchSource =
   | "openaccess"
   | "aodl"
   | "smithsonian"
+  | "library-of-congress"
   | "handoff"
   | "external"
   | "archival-external";
@@ -57,6 +58,7 @@ export type SourcePaginationSource =
   | "trove"
   | "wikidata"
   | "smithsonian"
+  | "library-of-congress"
   | "openaccess"
   | "previews";
 

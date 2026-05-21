@@ -617,6 +617,10 @@ function mergeImageSupplementResults(
 }
 
 const SMITHSONIAN_RERANK_POOL_CAP = 100;
+const SMITHSONIAN_IMAGE_CATEGORY_FALLBACKS: SmithsonianCategory[] = [
+  "history_culture",
+  "art_design",
+];
 
 /** Live EDAN item search — server-side only. Requires SMITHSONIAN_API_KEY. */
 export async function searchSmithsonianRecords(
@@ -701,29 +705,33 @@ export async function searchSmithsonianRecords(
 
     if (
       start === 0 &&
-      media === "all" &&
       type === "all" &&
       !category &&
-      isVisualMediaQuery(normalized)
+      (media === "image" || (media === "all" && isVisualMediaQuery(normalized)))
     ) {
       const supplementQueries = buildImageSupplementQueries(normalized);
       const imageRecords: SmithsonianRecordResult[] = [];
-      for (const supplementQuery of supplementQueries) {
-        const imageBatch = await fetchEdanSearchRows(supplementQuery, {
-          apiKey,
-          start: 0,
-          rows: 20,
-          sort,
-          type: "edanmdm",
-          rowGroup: "objects",
-        });
-        imageBatch.rows
-          .map((row) => mapEdanRowToRecord(row, normalized))
-          .filter((row): row is SmithsonianRecordResult => Boolean(row && row.imageUrl))
-          .forEach((row) => imageRecords.push(row));
-        if (imageRecords.length >= 8) break;
+      for (const fallbackCategory of SMITHSONIAN_IMAGE_CATEGORY_FALLBACKS) {
+        for (const supplementQuery of supplementQueries) {
+          const imageBatch = await fetchEdanSearchRows(supplementQuery, {
+            apiKey,
+            start: 0,
+            rows: 20,
+            sort,
+            type: "edanmdm",
+            rowGroup: "objects",
+            category: fallbackCategory,
+          });
+          imageBatch.rows
+            .map((row) => mapEdanRowToRecord(row, normalized))
+            .filter((row): row is SmithsonianRecordResult => Boolean(row && row.imageUrl))
+            .filter((row) => matchesMediaFilter(row, media))
+            .forEach((row) => imageRecords.push(row));
+          if (imageRecords.length >= rows) break;
+        }
+        if (imageRecords.length >= rows) break;
       }
-      ranked = mergeImageSupplementResults(ranked, imageRecords, 8);
+      ranked = mergeImageSupplementResults(ranked, imageRecords, media === "image" ? rows : 8);
     }
 
     const mapped = shouldExpandRankPool
