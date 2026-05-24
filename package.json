@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -H 0.0.0.0",
+    "dev": "WATCHPACK_POLLING=true next dev -H 0.0.0.0 --webpack",
+    "dev:turbo": "WATCHPACK_POLLING=true next dev -H 0.0.0.0",
+    "dev:reset": "lsof -tiTCP:3000 -sTCP:LISTEN | xargs kill -9 2>/dev/null || true; rm -rf .next/dev/lock .next/dev; WATCHPACK_POLLING=true next dev -H 0.0.0.0 --webpack",
+    "serve": "npm run build && next start -H 0.0.0.0",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

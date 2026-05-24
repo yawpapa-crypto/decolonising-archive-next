@@ -5,6 +5,9 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+const AUTH_REFRESH_TIMEOUT_MS =
+  process.env.NODE_ENV === "production" ? 3000 : 1500;
+
 export async function updateSession(request: NextRequest) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
@@ -38,7 +41,18 @@ export async function updateSession(request: NextRequest) {
 
   // IMPORTANT: do NOT remove this `getUser()` call. It refreshes the session
   // when needed and must come immediately after `createServerClient`.
-  await supabase.auth.getUser();
+  const authRefresh = supabase.auth.getUser().catch((error: unknown) => {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn("[supabase proxy] auth refresh failed", error);
+    }
+    return null;
+  });
+
+  const timeout = new Promise<null>((resolve) => {
+    setTimeout(() => resolve(null), AUTH_REFRESH_TIMEOUT_MS);
+  });
+
+  await Promise.race([authRefresh, timeout]);
 
   return supabaseResponse;
 }

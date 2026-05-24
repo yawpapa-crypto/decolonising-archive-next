@@ -1,0 +1,324 @@
+/* Portal immersive shell (Phase 1) — body chrome hidden, full viewport */
+
+body.workbench-canvas-immersive {
+  overflow: hidden;
+}
+
+body.workbench-canvas-immersive .nav,
+body.workbench-canvas-immersive .site-header,
+body.workbench-canvas-immersive header.site-header,
+body.workbench-canvas-immersive .global-header,
+body.workbench-canvas-immersive .page-header,
+body.workbench-canvas-immersive .app-header,
+body.workbench-canvas-immersive .site-disclaimer,
+body.workbench-canvas-immersive .workbench-sidebar,
+body.workbench-canvas-immersive .site-footer,
+body.workbench-canvas-immersive .page-footer,
+body.workbench-canvas-immersive footer,
+body.workbench-canvas-immersive .workbench-floating-notes-menu,
+body.workbench-canvas-immersive .workbench-notes-popover {
+  display: none !important;
+}
+
+body.workbench-canvas-immersive .workbench-shell,
+body.workbench-canvas-immersive .workbench-main,
+body.workbench-canvas-immersive .workbench-notes-page,
+body.workbench-canvas-immersive .workbench-notes-view {
+  width: 100vw;
+  max-width: none;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.workbench-canvas-immersive.is-immersive,
+.workbench-canvas-immersive.is-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  width: 100vw;
+  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
+  background: var(--wrc-canvas);
+  box-sizing: border-box;
+  font-family: var(--font-sans, system-ui, -apple-system, "Segoe UI", sans-serif);
+}
+
+.workbench-canvas-immersive .workbench-research-canvas {
+  grid-row: 1;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+/* Top chrome — self-contained (portaled outside .workbench-shell) */
+
+.workbench-canvas-immersive-chrome {
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 16px 20px;
+  min-height: 56px;
+  padding: 8px 20px;
+  padding-top: max(8px, env(safe-area-inset-top, 0px));
+  border-bottom: 1px solid var(--wrc-border-soft);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 1px 0 rgba(11, 15, 20, 0.04), 0 8px 24px rgba(11, 15, 20, 0.06);
+  z-index: 2;
+  font-family: var(--font-sans, system-ui, -apple-system, "Segoe UI", sans-serif);
+  color: var(--wrc-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+.workbench-canvas-immersive-chrome__leading {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.workbench-canvas-immersive-chrome__eyebrow {
+  margin: 0;
+  font-size: var(--wrc-font-label);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--wrc-muted);
+  line-height: 1.2;
+}
+
+.workbench-canvas-immersive-chrome__title {
+  display: block;
+  width: 100%;
+  max-width: min(420px, 100%);
+  margin: 0;
+  padding: 4px 0;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--wrc-ink);
+  font-family: inherit;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: var(--wrc-line-tight);
+  outline: none;
+  appearance: none;
+  box-shadow: none;
+}
+
+.workbench-canvas-immersive-chrome__title::placeholder {
+  color: var(--wrc-muted-soft);
+  font-weight: 500;
+}
+
+.workbench-canvas-immersive-chrome__title:hover:not(:read-only) {
+  border-bottom-color: rgba(11, 15, 20, 0.12);
+}
+
+.workbench-canvas-immersive-chrome__title:focus {
+  border-bottom-color: var(--wrc-ink);
+}
+
+.workbench-canvas-immersive-chrome__title:read-only {
+  cursor: default;
+  opacity: 0.92;
+}
+
+.workbench-canvas-immersive-chrome__mode-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  padding: 3px;
+  border-radius: var(--wrc-radius-md);
+  background: rgba(11, 15, 20, 0.04);
+  border: 1px solid var(--wrc-border-soft);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.workbench-canvas-immersive-chrome__mode-btn {
+  appearance: none;
+  margin: 0;
+  height: 34px;
+  min-width: 88px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--wrc-muted);
+  font-family: inherit;
+  font-size: var(--wrc-font-ui);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 160ms var(--wrc-ease),
+    color 160ms var(--wrc-ease),
+    border-color 160ms var(--wrc-ease),
+    box-shadow 160ms var(--wrc-ease);
+}
+
+.workbench-canvas-immersive-chrome__mode-btn:hover:not(.is-active) {
+  color: var(--wrc-ink);
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(11, 15, 20, 0.08);
+}
+
+.workbench-canvas-immersive-chrome__mode-btn:focus-visible {
+  outline: 2px solid var(--wrc-lemon);
+  outline-offset: 2px;
+}
+
+.workbench-canvas-immersive-chrome__mode-btn.is-active {
+  background: var(--wrc-lemon);
+  border-color: rgba(11, 15, 20, 0.22);
+  color: var(--wrc-ink);
+  box-shadow:
+    0 1px 2px rgba(11, 15, 20, 0.08),
+    inset 0 -2px 0 rgba(11, 15, 20, 0.85);
+}
+
+.workbench-canvas-immersive-chrome__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.workbench-canvas-immersive-chrome__status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: var(--wrc-radius-pill);
+  font-size: var(--wrc-font-ui);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.workbench-canvas-immersive-chrome__status--unsaved {
+  color: var(--wrc-muted);
+  background: rgba(11, 15, 20, 0.04);
+}
+
+.workbench-canvas-immersive-chrome__status--saving {
+  color: #5a6040;
+  background: rgba(217, 255, 63, 0.25);
+}
+
+.workbench-canvas-immersive-chrome__status--saved {
+  color: #1f5a38;
+  background: rgba(24, 120, 70, 0.1);
+}
+
+.workbench-canvas-immersive-chrome__status--error {
+  color: #8b1c2e;
+  background: rgba(180, 35, 24, 0.1);
+}
+
+.workbench-canvas-immersive-chrome__save {
+  appearance: none;
+  margin: 0;
+  height: 36px;
+  min-width: 88px;
+  padding: 0 18px;
+  border-radius: var(--wrc-radius-md);
+  border: 1px solid rgba(11, 15, 20, 0.14);
+  background: #fff;
+  color: var(--wrc-muted);
+  font-family: inherit;
+  font-size: var(--wrc-font-ui);
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background 160ms var(--wrc-ease),
+    border-color 160ms var(--wrc-ease),
+    color 160ms var(--wrc-ease),
+    transform 120ms var(--wrc-ease);
+}
+
+.workbench-canvas-immersive-chrome__save.is-dirty {
+  background: var(--wrc-lemon);
+  border-color: var(--wrc-ink);
+  color: var(--wrc-ink);
+  box-shadow: 0 2px 8px rgba(11, 15, 20, 0.1);
+}
+
+.workbench-canvas-immersive-chrome__save.is-dirty:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(11, 15, 20, 0.12);
+}
+
+.workbench-canvas-immersive-chrome__save.is-quiet:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.workbench-canvas-immersive-chrome__save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.workbench-canvas-immersive-chrome__save:focus-visible {
+  outline: 2px solid var(--wrc-lemon);
+  outline-offset: 2px;
+}
+
+/* In-page placeholder while canvas portals to body */
+.workbench-notes-view.is-canvas-immersive .workbench-canvas-immersive-placeholder {
+  min-height: clamp(480px, 70vh, 900px);
+  width: 100%;
+  background: var(--wrc-paper);
+  border-radius: var(--wrc-radius-lg);
+}
+
+.workbench-notes-view.is-canvas-immersive .workbench-notes-layout,
+.workbench-notes-view.is-canvas-immersive .workbench-note-editor-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+}
+
+@media (max-width: 900px) {
+  .workbench-canvas-immersive-chrome {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
+    gap: 10px 12px;
+    padding: 10px 14px;
+  }
+
+  .workbench-canvas-immersive-chrome__leading {
+    grid-column: 1 / -1;
+  }
+
+  .workbench-canvas-immersive-chrome__mode-switch {
+    justify-self: start;
+  }
+
+  .workbench-canvas-immersive-chrome__mode-btn {
+    min-width: 72px;
+    padding: 0 12px;
+  }
+}

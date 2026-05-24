@@ -40,8 +40,6 @@ type ReviewTab = "projects" | "screening" | "flow" | "pipeline";
 const REVIEW_TYPES: ReviewProjectType[] = [
   "systematic_review",
   "scoping_review",
-  "rapid_review",
-  "evidence_map",
   "mapping_review",
   "narrative_review",
 ];
@@ -51,7 +49,6 @@ const SCREENING_STATUSES: ReviewScreeningStatus[] = [
   "title_abstract_screening",
   "included",
   "excluded",
-  "maybe",
   "full_text_review",
   "final_included",
 ];
@@ -119,7 +116,7 @@ export default function IntelligenceReviewWorkspace({
       setActiveProjectId(result.projectId);
       setModalOpen(false);
       setMessage("Review project created.");
-      router.push(`/my/workbench/reviews/${result.projectId}`);
+      router.refresh();
     });
   }
 
@@ -356,9 +353,9 @@ export default function IntelligenceReviewWorkspace({
       </div>
 
       {modalOpen ? (
-        <div className="ri-modal ri-modal--review-create" role="presentation" onClick={() => setModalOpen(false)}>
+        <div className="ri-modal" role="presentation" onClick={() => setModalOpen(false)}>
           <div
-            className="ri-modal__panel ri-modal__panel--review-create"
+            className="ri-modal__panel"
             role="dialog"
             aria-modal="true"
             aria-labelledby="ri-review-modal-title"

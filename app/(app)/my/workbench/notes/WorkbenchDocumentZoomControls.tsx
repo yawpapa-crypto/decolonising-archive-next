@@ -7,7 +7,9 @@ import {
   getDocumentViewportProfile,
   getDocumentZoomPresets,
 } from "./document-mobile";
-import WorkbenchIconTip from "./WorkbenchIconTip";
+
+const ICON_SIZE = 18;
+const ICON_STROKE = 1.75;
 
 type Props = {
   zoom: number;
@@ -35,14 +37,17 @@ export default function WorkbenchDocumentZoomControls({ zoom, onZoomChange }: Pr
 
   if (profile.isPhone) {
     return (
-      <WorkbenchIconTip tip="Fit" info="Matches screen width">
-        <span
-          className="workbench-document-zoom-controls workbench-document-zoom-controls--mobile-fit"
-          aria-label="Fit — matches screen width"
+      <div className="workbench-document-taskbar-zoom" role="group" aria-label="Document zoom">
+        <button
+          type="button"
+          className="workbench-document-taskbar-button workbench-document-zoom-button"
+          aria-label="Fit to width"
+          data-tooltip="Fit"
+          onClick={() => onZoomChange(100)}
         >
-          <Maximize2 size={15} strokeWidth={1.75} aria-hidden />
-        </span>
-      </WorkbenchIconTip>
+          <Maximize2 size={ICON_SIZE} strokeWidth={ICON_STROKE} aria-hidden />
+        </button>
+      </div>
     );
   }
 
@@ -55,57 +60,48 @@ export default function WorkbenchDocumentZoomControls({ zoom, onZoomChange }: Pr
   }
 
   return (
-    <div
-      className="workbench-document-zoom-controls workbench-document-zoom-controls--premium workbench-document-zoom-controls--icons"
-      role="group"
-      aria-label="Document zoom"
-    >
-      <WorkbenchIconTip tip="Zoom out" info="Smaller text">
-        <button
-          type="button"
-          className="workbench-document-top-bar__icon-btn workbench-document-zoom-button"
-          aria-label="Zoom out — smaller text"
-          disabled={zoom <= 50}
-          onClick={() => step(-10)}
-        >
-          <Minus size={15} strokeWidth={1.75} aria-hidden />
-        </button>
-      </WorkbenchIconTip>
-      <WorkbenchIconTip tip="Zoom" info={`Currently ${currentZoom}%`}>
-        <select
-          className="workbench-document-zoom-select workbench-document-zoom-select--compact"
-          value={currentZoom}
-          aria-label={`Zoom — currently ${currentZoom}%`}
-          onChange={(event) => onZoomChange(clampDocumentZoom(Number(event.target.value), profile))}
-        >
-          {presets.map((value) => (
-            <option key={value} value={value}>
-              {value}%
-            </option>
-          ))}
-        </select>
-      </WorkbenchIconTip>
-      <WorkbenchIconTip tip="Zoom in" info="Larger text">
-        <button
-          type="button"
-          className="workbench-document-top-bar__icon-btn workbench-document-zoom-button"
-          aria-label="Zoom in — larger text"
-          disabled={zoom >= maxZoom}
-          onClick={() => step(10)}
-        >
-          <Plus size={15} strokeWidth={1.75} aria-hidden />
-        </button>
-      </WorkbenchIconTip>
-      <WorkbenchIconTip tip="Fit width" info="Reset to 100%">
-        <button
-          type="button"
-          className="workbench-document-top-bar__icon-btn workbench-document-zoom-button"
-          aria-label="Fit width — reset to 100%"
-          onClick={() => onZoomChange(100)}
-        >
-          <Maximize2 size={15} strokeWidth={1.75} aria-hidden />
-        </button>
-      </WorkbenchIconTip>
+    <div className="workbench-document-taskbar-zoom" role="group" aria-label="Document zoom">
+      <button
+        type="button"
+        className="workbench-document-taskbar-button workbench-document-zoom-button"
+        aria-label="Zoom out"
+        data-tooltip="Zoom out"
+        disabled={zoom <= 50}
+        onClick={() => step(-10)}
+      >
+        <Minus size={ICON_SIZE} strokeWidth={ICON_STROKE} aria-hidden />
+      </button>
+      <select
+        className="workbench-document-taskbar-zoom-value workbench-document-zoom-select workbench-document-zoom-select--compact"
+        value={currentZoom}
+        aria-label={`Zoom ${currentZoom}%`}
+        onChange={(event) => onZoomChange(clampDocumentZoom(Number(event.target.value), profile))}
+      >
+        {presets.map((value) => (
+          <option key={value} value={value}>
+            {value}%
+          </option>
+        ))}
+      </select>
+      <button
+        type="button"
+        className="workbench-document-taskbar-button workbench-document-zoom-button"
+        aria-label="Zoom in"
+        data-tooltip="Zoom in"
+        disabled={zoom >= maxZoom}
+        onClick={() => step(10)}
+      >
+        <Plus size={ICON_SIZE} strokeWidth={ICON_STROKE} aria-hidden />
+      </button>
+      <button
+        type="button"
+        className="workbench-document-taskbar-button workbench-document-zoom-button"
+        aria-label="Fit width"
+        data-tooltip="Fit width"
+        onClick={() => onZoomChange(100)}
+      >
+        <Maximize2 size={ICON_SIZE} strokeWidth={ICON_STROKE} aria-hidden />
+      </button>
     </div>
   );
 }

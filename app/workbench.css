@@ -33929,3 +33929,5 @@ body.workbench-mobile-drawer-open {
   stroke: currentColor !important;
   opacity: 1 !important;
 }
+
+/* Research canvas layout: see workbench-research-canvas.css (portal immersive shell). */

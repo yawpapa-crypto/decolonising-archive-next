@@ -29,8 +29,7 @@ export default function ReviewScreeningClient({ snapshot }: { snapshot: Workbenc
   const [exclusionReason, setExclusionReason] = useState<ReviewExclusionReason>("wrong_topic");
   const [view, setView] = useState<QueueView>("awaiting");
   const project = snapshot.activeProject;
-  if (!project) return null;
-  const projectId = project.id;
+  const projectId = project?.id ?? "";
 
   const openConflicts = useMemo(
     () => snapshot.conflicts.filter((row) => row.status === "open"),
@@ -94,6 +93,8 @@ export default function ReviewScreeningClient({ snapshot }: { snapshot: Workbenc
       router.refresh();
     });
   }
+
+  if (!project) return null;
 
   return (
     <ReviewProjectShell project={project} snapshot={snapshot} activeSegment="screening">

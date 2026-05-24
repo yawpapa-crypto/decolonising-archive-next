@@ -6,9 +6,19 @@
 // pages via the helpers in src/lib/auth.ts.
 
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { updateSession } from "@/src/lib/supabase/proxy";
 
 export async function proxy(request: NextRequest) {
+  // Dev and explicit opt-out: never block HTML on Supabase auth refresh.
+  const skipAuthRefresh =
+    process.env.NODE_ENV !== "production" ||
+    process.env.SUPABASE_PROXY_SKIP_AUTH === "1";
+
+  if (skipAuthRefresh) {
+    return NextResponse.next({ request });
+  }
+
   return updateSession(request);
 }
 

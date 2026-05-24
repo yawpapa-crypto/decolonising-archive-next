@@ -347,15 +347,8 @@
     border-radius: 12px !important;
   }
 
-  .workbench-shell .workbench-notes-page-premium .workbench-note-canvas-toolbar {
-    padding: 6px 10px !important;
-    gap: 6px !important;
-    min-height: 40px;
-  }
-
-  .workbench-shell .workbench-notes-page-premium .workbench-note-canvas-viewport {
-    min-height: min(58vh, calc(100dvh - 260px)) !important;
-    border-radius: 12px !important;
+  body.workbench-canvas-immersive .workbench-research-canvas-toolbar {
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
 
@@ -645,8 +638,30 @@ body.workbench-format-drawer-open .ai-citation-floating-trigger {
     min-height: 240px !important;
   }
 
-  .workbench-shell .workbench-notes-page-premium .workbench-note-canvas-viewport {
-    min-height: min(68vh, calc(100dvh - 150px)) !important;
+  body.workbench-canvas-immersive .workbench-canvas-immersive-chrome {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto auto !important;
+    gap: 10px !important;
+    padding: 10px 12px !important;
+    padding-top: max(10px, env(safe-area-inset-top, 0px)) !important;
+    padding-left: max(12px, env(safe-area-inset-left, 0px)) !important;
+    padding-right: max(12px, env(safe-area-inset-right, 0px)) !important;
+  }
+
+  body.workbench-canvas-immersive .workbench-canvas-immersive-chrome__mode-switch {
+    width: 100% !important;
+    justify-content: stretch !important;
+  }
+
+  body.workbench-canvas-immersive .workbench-canvas-immersive-chrome__mode-btn {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    padding: 0 8px !important;
+  }
+
+  body.workbench-canvas-immersive .workbench-canvas-immersive-chrome__actions {
+    width: 100% !important;
+    justify-content: space-between !important;
   }
 
   .workbench-member-canvas:has(.workbench-editorial-reading) .ai-citation-floating-trigger,

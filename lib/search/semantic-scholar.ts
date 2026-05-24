@@ -1,4 +1,9 @@
 import { clampPageSize, SEARCH_DEFAULT_PAGE_SIZE } from "@/lib/search-pagination";
+import {
+  expandQueryTerms,
+  getAuthorBoostsForQuery,
+  normalizeComparable,
+} from "@/lib/search/query-expansion";
 import { withSemanticScholarRateLimit } from "@/lib/search/semantic-scholar-rate-limit";
 
 export type SemanticScholarPaperResult = {
@@ -86,18 +91,45 @@ function getSemanticScholarApiKey(): string | null {
 }
 
 function scorePaper(paper: S2Paper, query: string): number {
-  const q = query.trim().toLowerCase();
-  if (!q) return 0;
+  const normalized = normalizeComparable(query);
+  if (!normalized) return 0;
+  const tokens = normalized.split(/\s+/).filter(Boolean);
+  const { expandedPhrases, expandedTerms } = expandQueryTerms(normalized, tokens);
+  const phrases = [normalized, ...expandedPhrases.map((phrase) => normalizeComparable(phrase))].filter(
+    Boolean,
+  );
+
   const title = String(paper.title || "").toLowerCase();
   const abstract = String(paper.abstract || "").toLowerCase();
+  const authors = Array.isArray(paper.authors)
+    ? paper.authors.map((author) => String(author.name || "").toLowerCase()).join(" ")
+    : "";
+  const fullText = `${title} ${abstract} ${authors}`;
+
   let score = 0;
-  if (title === q) score += 48;
-  else if (title.includes(q)) score += 32;
-  const tokens = q.split(/\s+/).filter(Boolean);
-  const tokenHits = tokens.filter(
-    (token) => title.includes(token) || abstract.includes(token),
-  ).length;
+  if (title === normalized) score += 48;
+  else if (title.includes(normalized)) score += 32;
+
+  if (authors.includes(normalized)) score += 44;
+
+  for (const phrase of phrases) {
+    if (!phrase) continue;
+    if (title.includes(phrase)) score += 28;
+    if (abstract.includes(phrase)) score += 22;
+    if (authors.includes(phrase)) score += 20;
+  }
+
+  const searchTokens = expandedTerms.length ? expandedTerms : tokens;
+  const tokenHits = searchTokens.filter((token) => fullText.includes(token)).length;
   score += tokenHits * 8;
+
+  getAuthorBoostsForQuery(normalized, tokens).forEach((author) => {
+    if (authors.includes(author)) score += 36;
+  });
+
+  if (abstract.length >= 80) score += 6;
+  else if (!abstract.length) score -= 4;
+
   if (paper.citationCount && paper.citationCount > 20) score += 4;
   if (paper.isOpenAccess) score += 3;
   return score;

@@ -22,22 +22,9 @@ export default async function WorkbenchCollaboratorsPage() {
     }),
   );
 
-  const editorProjectIds = new Set<string>();
-  if (user?.id) {
-    const { data: editorRows } = await supabase
-      .from("workbench_collaborators")
-      .select("project_id")
-      .eq("user_id", user.id)
-      .eq("role", "editor");
-    for (const row of editorRows ?? []) {
-      editorProjectIds.add((row as { project_id: string }).project_id);
-    }
-  }
-
-  function canManageProject(projectId: string, ownerId: string) {
+  function canManageProject(_projectId: string, ownerId: string) {
     if (!user?.id) return false;
-    if (ownerId === user.id) return true;
-    return editorProjectIds.has(projectId);
+    return ownerId === user.id;
   }
 
   return (

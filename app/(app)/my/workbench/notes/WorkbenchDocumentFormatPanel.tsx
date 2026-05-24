@@ -2,28 +2,22 @@
 
 import { useState, type ReactNode } from "react";
 import type { Editor } from "@tiptap/react";
+import { DOCUMENT_FONT_SIZES } from "./workbench-document-typography";
 import {
-  DOCUMENT_FONT_FAMILIES,
-  type DocumentFontFamilyId,
-} from "../workbench-editor-font-family";
-
-const FONT_SIZES = ["12", "14", "16", "18", "20", "24", "28", "32"];
+  WORKBENCH_DOCUMENT_FONT_OPTIONS,
+  isWorkbenchDocumentFontId,
+  type WorkbenchDocumentFontId,
+} from "./workbench-font-options";
 
 function editorChain(editor: Editor): ReturnType<Editor["chain"]> {
   return editor.chain().focus();
 }
 
-function resolveFontFamilyId(fontFamily: string | undefined): string {
-  if (!fontFamily) return "";
-  const normalized = fontFamily.replace(/['"]/g, "").toLowerCase();
-  const match = DOCUMENT_FONT_FAMILIES.find((entry) =>
-    entry.value.replace(/['"]/g, "").toLowerCase().includes(normalized.split(",")[0]?.trim() ?? ""),
-  );
-  return match?.id ?? "";
-}
-
 type Props = {
   editor: Editor;
+  documentFontFamilyId: WorkbenchDocumentFontId;
+  onDocumentFontFamilyChange: (fontFamilyId: WorkbenchDocumentFontId) => void;
+  onResetTypography: () => void;
   onOpenCitation?: () => void;
   onInsertPageBreak?: () => void;
 };
@@ -63,6 +57,9 @@ function Chip({
 
 export default function WorkbenchDocumentFormatPanel({
   editor,
+  documentFontFamilyId,
+  onDocumentFontFamilyChange,
+  onResetTypography,
   onOpenCitation,
   onInsertPageBreak,
 }: Props) {
@@ -73,10 +70,6 @@ export default function WorkbenchDocumentFormatPanel({
 
   const currentFontSize =
     (editor.getAttributes("textStyle").fontSize as string | undefined)?.replace("px", "") ?? "";
-  const currentFontFamily = resolveFontFamilyId(
-    editor.getAttributes("textStyle").fontFamily as string | undefined,
-  );
-
   function run(command: () => boolean) {
     command();
     editorChain(editor);
@@ -115,54 +108,59 @@ export default function WorkbenchDocumentFormatPanel({
         </div>
       </Section>
 
-      <Section label="Font">
-        <label className="workbench-format-panel__field">
-          <span className="workbench-format-panel__field-label">Family</span>
-          <select
-            className="workbench-format-panel__select"
-            value={currentFontFamily}
-            aria-label="Font family"
-            onChange={(event) => {
-              const id = event.target.value as DocumentFontFamilyId | "";
-              const entry = DOCUMENT_FONT_FAMILIES.find((item) => item.id === id);
-              if (entry) {
-                run(() => editorChain(editor).setFontFamily(entry.value).run());
-              } else {
-                run(() => editorChain(editor).unsetFontFamily().run());
-              }
-            }}
-          >
-            <option value="">Default</option>
-            {DOCUMENT_FONT_FAMILIES.map((entry) => (
-              <option key={entry.id} value={entry.id}>
-                {entry.label}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="workbench-format-panel__field">
-          <span className="workbench-format-panel__field-label">Size</span>
-          <select
-            className="workbench-format-panel__select"
-            value={currentFontSize}
-            aria-label="Font size"
-            onChange={(event) => {
-              const size = event.target.value;
-              if (size) {
-                run(() => editorChain(editor).setFontSize(`${size}px`).run());
-              } else {
-                run(() => editorChain(editor).unsetFontSize().run());
-              }
-            }}
-          >
-            <option value="">Auto</option>
-            {FONT_SIZES.map((size) => (
-              <option key={size} value={size}>
-                {size} pt
-              </option>
-            ))}
-          </select>
-        </label>
+      <Section label="Typography">
+        <div className="workbench-format-panel__typography-row">
+          <label className="workbench-format-panel__field">
+            <span className="workbench-format-panel__field-label">Font</span>
+            <select
+              className="workbench-format-panel__select"
+              value={documentFontFamilyId}
+              aria-label="Document font"
+              onChange={(event) => {
+                const id = event.target.value;
+                if (isWorkbenchDocumentFontId(id)) {
+                  onDocumentFontFamilyChange(id);
+                }
+              }}
+            >
+              {WORKBENCH_DOCUMENT_FONT_OPTIONS.map((font) => (
+                <option key={font.id} value={font.id}>
+                  {font.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="workbench-format-panel__field">
+            <span className="workbench-format-panel__field-label">Size</span>
+            <select
+              className="workbench-format-panel__select"
+              value={currentFontSize}
+              aria-label="Font size"
+              onChange={(event) => {
+                const size = event.target.value;
+                if (size) {
+                  run(() => editorChain(editor).setFontSize(`${size}px`).run());
+                } else {
+                  run(() => editorChain(editor).unsetFontSize().run());
+                }
+              }}
+            >
+              <option value="">Auto</option>
+              {DOCUMENT_FONT_SIZES.map((size) => (
+                <option key={size} value={size}>
+                  {size} pt
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <button
+          type="button"
+          className="workbench-format-panel__reset workbench-format-panel__reset--inline"
+          onClick={() => onResetTypography()}
+        >
+          Reset typography
+        </button>
       </Section>
 
       <Section label="Character">

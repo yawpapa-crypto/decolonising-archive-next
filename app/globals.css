@@ -1793,10 +1793,37 @@ body:has(footer.site-disclaimer) footer.site-footer {
 
 .detail-main, .detail-side { display: flex; flex-direction: column; gap: 24px; min-width: 0 }
 
-.detail-summary { border-left: 2px solid #000; padding: 18px 20px; background: var(--grey-100) }
-.detail-summary .label { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--grey-500); margin-bottom: 8px }
-.detail-summary p { font-size: 14px; line-height: 1.8; color: #000 }
-.detail-summary p + p { margin-top: 14px }
+.detail-summary {
+  border: 1px solid rgba(20, 24, 33, 0.08);
+  border-left: 3px solid rgba(15, 61, 46, 0.35);
+  border-radius: 20px;
+  padding: 20px 22px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 10px 28px rgba(20, 24, 33, 0.04);
+}
+.detail-summary .label { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--grey-500); margin-bottom: 10px }
+.detail-summary p { font-size: 15px; line-height: 1.75; color: #11161b; max-width: 72ch }
+.detail-summary p + p { margin-top: 16px }
+
+.record-rights-box.rights-alert,
+.record-detail-page .rights-alert {
+  border: 1px solid rgba(37, 99, 235, 0.18) !important;
+  border-radius: 16px !important;
+  background: rgba(37, 99, 235, 0.06) !important;
+  box-shadow: none !important;
+  padding: 14px 16px !important;
+  margin: 0 0 16px !important;
+}
+.record-rights-box.rights-alert .label,
+.record-detail-page .rights-alert .label {
+  color: rgba(30, 64, 175, 0.78) !important;
+}
+.record-rights-box.rights-alert p,
+.record-detail-page .rights-alert p {
+  color: rgba(30, 41, 59, 0.82) !important;
+  line-height: 1.55 !important;
+  max-width: 68ch !important;
+}
 
 .detail-section { border: var(--border); padding: 20px; background: #fff; overflow: hidden }
 .detail-section.alt { background: var(--grey-100) }
@@ -3936,6 +3963,39 @@ footer span, footer a { font-size: 11px; color: var(--grey-500); overflow-wrap: 
 
 .search-suggestions.empty,
 .search-suggestions[hidden] { display: none; }
+
+.source-diagnostics-panel {
+  margin: 12px 0 16px;
+  padding: 12px 14px;
+  border: 1px dashed rgba(15, 61, 46, 0.22);
+  border-radius: 12px;
+  background: rgba(15, 61, 46, 0.03);
+  font-size: 12px;
+}
+
+.source-diagnostics-panel summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.source-diagnostics-note {
+  margin: 8px 0;
+  color: rgba(15, 61, 46, 0.7);
+}
+
+.source-diagnostics-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.source-diagnostics-table th,
+.source-diagnostics-table td {
+  border: 1px solid rgba(15, 61, 46, 0.12);
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: top;
+}
 
 /* Items: these selectors are more specific than .hero-search button and
    .search-bar button, so the black-button styling does not bleed in. */
@@ -12770,8 +12830,32 @@ button.workspace-link-danger:hover {
   line-height: 1.35 !important;
 }
 
-.archive-record-card .record-card-summary {
+.record-card-summary-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0 0 18px;
+}
+
+.record-card-summary-badge {
+  align-self: flex-start;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(15, 61, 46, 0.72);
+  background: rgba(15, 61, 46, 0.06);
+  border: 1px solid rgba(15, 61, 46, 0.1);
+  border-radius: 999px;
+  padding: 3px 8px;
+}
+
+.archive-record-card .record-card-summary-row {
   margin: 0 0 18px !important;
+}
+
+.archive-record-card .record-card-summary {
+  margin: 0 !important;
   color: #3f3f3f !important;
   font-size: 16px !important;
   line-height: 1.45 !important;
@@ -20251,13 +20335,13 @@ form.search-save-inline button.search-save-inline-button::after,
 }
 
 /* Legacy main content boxes */
-.record-detail-enhanced main section,
-.record-detail-main section,
-.record-detail-page main section,
-.record-page main section,
-.archive-record-page main section,
-.record-detail-enhanced .record-main section,
-.record-detail-enhanced .record-content section {
+.record-detail-enhanced main section:not(.detail-summary):not(.rights-alert),
+.record-detail-main section:not(.detail-summary):not(.rights-alert),
+.record-detail-page main section:not(.detail-summary):not(.rights-alert),
+.record-page main section:not(.detail-summary):not(.rights-alert),
+.archive-record-page main section:not(.detail-summary):not(.rights-alert),
+.record-detail-enhanced .record-main section:not(.detail-summary):not(.rights-alert),
+.record-detail-enhanced .record-content section:not(.detail-summary):not(.rights-alert) {
   border: 1px solid rgba(20, 24, 33, 0.075) !important;
   border-radius: 24px !important;
   background:

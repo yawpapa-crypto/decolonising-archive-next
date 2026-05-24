@@ -7,7 +7,7 @@
 // /workspace (signed-in but under-privileged).
 
 import { redirect } from "next/navigation";
-import { createClient } from "@/src/lib/supabase/server";
+import { createClient, getAuthenticatedUser } from "@/src/lib/supabase/server";
 
 export type Role = "member" | "curator" | "admin";
 
@@ -30,17 +30,12 @@ const ROLE_RANK: Record<Role, number> = {
 
 export async function getCurrentUser() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  return user;
+  return getAuthenticatedUser(supabase);
 }
 
 export async function getCurrentProfile(): Promise<Profile | null> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser(supabase);
   if (!user) return null;
 
   // Prefer full row (member profile migration). If 0007 columns are missing,

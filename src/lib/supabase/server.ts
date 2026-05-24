@@ -6,7 +6,30 @@
 // session refresh writes happen.
 
 import { createServerClient } from "@supabase/ssr";
+import type { SupabaseClient, User } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
+
+const GET_USER_TIMEOUT_MS =
+  process.env.NODE_ENV === "production" ? 5000 : 2000;
+
+/** Never let `auth.getUser()` block page render indefinitely (slow/offline Supabase). */
+export async function getAuthenticatedUser(
+  supabase: SupabaseClient,
+): Promise<User | null> {
+  const authRequest = supabase.auth.getUser().catch((error: unknown) => {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn("[supabase] getUser failed", error);
+    }
+    return { data: { user: null }, error };
+  });
+
+  const timeout = new Promise<{ data: { user: null } }>((resolve) => {
+    setTimeout(() => resolve({ data: { user: null } }), GET_USER_TIMEOUT_MS);
+  });
+
+  const { data } = await Promise.race([authRequest, timeout]);
+  return data.user;
+}
 
 export async function createClient() {
   const cookieStore = await cookies();

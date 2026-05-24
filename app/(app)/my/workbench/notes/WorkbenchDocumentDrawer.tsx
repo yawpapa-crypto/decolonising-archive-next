@@ -84,7 +84,6 @@ export default function WorkbenchDocumentDrawer({
                   ? "Unlock panel — tap the document to dismiss"
                   : "Lock panel — keep open while editing"
               }
-              title={pinned ? "Unlock" : "Lock open"}
             >
               <span className="workbench-pages-drawer__icon" aria-hidden>
                 {pinned ? "▣" : "▢"}
@@ -98,7 +97,6 @@ export default function WorkbenchDocumentDrawer({
               className="workbench-pages-drawer__icon-btn"
               onClick={onClose}
               aria-label="Close panel"
-              title="Close"
             >
               ×
             </button>

@@ -1,0 +1,133 @@
+/* Viewport, spatial background, lines (Phase 4 atmosphere + Phase 5 paint containment) */
+
+.workbench-research-canvas-stage-wrap {
+  position: relative;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.workbench-research-canvas-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: grab;
+  overscroll-behavior: none;
+  touch-action: none;
+  background-color: var(--wrc-canvas-deep);
+}
+
+.workbench-research-canvas-viewport::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 120% 85% at 50% 0%, rgba(255, 255, 255, 0.5), transparent 58%),
+    radial-gradient(ellipse 95% 70% at 50% 100%, rgba(11, 15, 20, 0.05), transparent 52%),
+    radial-gradient(ellipse 75% 55% at 50% 50%, transparent 35%, var(--wrc-paper-vignette) 100%);
+}
+
+.workbench-research-canvas-viewport::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.9;
+  background: radial-gradient(
+    circle at 1px 1px,
+    rgba(11, 15, 20, 0.04) 1px,
+    transparent 0
+  );
+  background-size: 22px 22px;
+}
+
+.workbench-research-canvas-viewport.is-pan-tool,
+.workbench-research-canvas.is-panning .workbench-research-canvas-viewport {
+  cursor: grabbing;
+}
+
+.workbench-research-canvas-viewport.is-panning {
+  cursor: grabbing;
+}
+
+.workbench-research-canvas.is-connector-editing .workbench-research-canvas-viewport {
+  cursor: crosshair;
+}
+
+.workbench-research-canvas-world {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  transform-origin: 0 0;
+  will-change: transform;
+  contain: layout style;
+}
+
+.workbench-research-canvas.is-fitting .workbench-research-canvas-world {
+  transition: transform 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.workbench-research-canvas.is-panning .workbench-research-canvas-world,
+.workbench-research-canvas.is-dragging .workbench-research-canvas-world,
+.workbench-research-canvas.is-zooming .workbench-research-canvas-world {
+  transition: none;
+}
+
+.workbench-research-canvas-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.workbench-research-canvas-line {
+  pointer-events: all;
+  cursor: pointer;
+}
+
+.workbench-research-canvas-line-stroke {
+  pointer-events: none;
+}
+
+.workbench-research-canvas-line-hit {
+  pointer-events: stroke;
+  cursor: pointer;
+}
+
+.workbench-research-canvas-line.is-preview {
+  pointer-events: none;
+  opacity: 0.65;
+}
+
+.workbench-research-canvas-line.is-hovered .workbench-research-canvas-line-stroke {
+  filter: drop-shadow(0 0 3px rgba(217, 255, 63, 0.45));
+}
+
+.workbench-research-canvas-line.is-selected .workbench-research-canvas-line-stroke {
+  stroke: rgba(11, 15, 20, 0.78);
+}
+
+.workbench-research-canvas-line.is-draft {
+  pointer-events: none;
+}
+
+.workbench-research-canvas-line-handle {
+  fill: var(--wrc-lemon);
+  stroke: var(--wrc-ink);
+  stroke-width: 1.5;
+  cursor: grab;
+  pointer-events: all;
+}
+
+.workbench-research-canvas-line-handle:active {
+  cursor: grabbing;
+}

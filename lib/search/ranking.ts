@@ -1,3 +1,10 @@
+import {
+  expandQueryTerms,
+  getAuthorBoostsForQuery,
+  queryMatchesExpansionKey,
+} from "@/lib/search/query-expansion";
+import { getRecordNarrativeRankingBoost } from "@/lib/search/record-quality";
+
 export type RankableSearchRecord = {
   id?: string;
   title?: string;
@@ -49,6 +56,7 @@ export type QueryContext = {
   normalized: string;
   tokens: string[];
   phrases: string[];
+  expandedTerms?: string[];
 };
 
 export type ScoreSearchResultOptions = {
@@ -72,11 +80,14 @@ export function buildRankingQueryContext(query: string): QueryContext {
   const raw = String(query || "").trim();
   const normalized = normalizeComparable(raw);
   const tokens = normalized.split(/\s+/).filter(Boolean);
+  const { expandedPhrases, expandedTerms } = expandQueryTerms(normalized, tokens);
+  const phrases = raw ? [raw, ...expandedPhrases] : expandedPhrases;
   return {
     raw,
     normalized,
     tokens,
-    phrases: raw ? [raw] : [],
+    phrases,
+    expandedTerms,
   };
 }
 
@@ -180,9 +191,26 @@ export function scoreSearchResult(
     if (!foldedPhrase) continue;
     if (fields.title.includes(foldedPhrase)) score += 42;
     else if (fields.fullText.includes(foldedPhrase)) score += 24;
+    if (fields.keywords.includes(foldedPhrase)) score += 32;
   }
 
-  for (const token of tokens) {
+  if (tokens.length >= 2) {
+    const joined = tokens.join(" ");
+    if (fields.keywords.includes(joined)) score += 36;
+    if (fields.fullText.includes(joined)) score += 30;
+    if (fields.title.includes(joined)) score += 48;
+  }
+
+  getAuthorBoostsForQuery(context.normalized, tokens).forEach((author) => {
+    if (fields.authors.includes(author)) score += 50;
+    if (fields.keywords.includes(author)) score += 24;
+    if (fields.title.includes(author)) score += 18;
+  });
+
+  score += getRecordNarrativeRankingBoost(record);
+
+  const expandedTokens = context.expandedTerms?.length ? context.expandedTerms : tokens;
+  for (const token of expandedTokens) {
     if (fields.summary.includes(token)) score += 9;
     if (fields.description.includes(token)) score += 8;
     if (fields.keywords.includes(token)) score += 11;

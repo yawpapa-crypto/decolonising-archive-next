@@ -37,7 +37,11 @@ import type {
   WorkbenchNoteWithProject,
   WorkbenchProjectRow,
 } from "@/lib/workbench-data";
-import { copyNoteToClipboard } from "@/lib/workbench-note-export";
+import {
+  copyNoteToClipboard,
+  exportDocumentPagesAsJpeg,
+  type WorkbenchNoteExportFormat,
+} from "@/lib/workbench-note-export";
 import {
   createWorkbenchNote,
   deleteWorkbenchNote,
@@ -87,11 +91,28 @@ import {
 import type { WorkbenchBoardSettings } from "./workbench-board-types";
 import type { BoardCardColour, BoardCardType, WorkbenchBoardCard, WorkbenchBoardData } from "./workbench-board-types";
 import { createDefaultBoardCard, normalizeCardType } from "./workbench-note-board-core";
-import type { CanvasBlockType, WorkbenchCanvasBlock, WorkbenchCanvasData } from "./WorkbenchNoteCanvas";
+import type { CanvasBlockType, WorkbenchCanvasData } from "./WorkbenchNoteCanvas";
+import { WorkbenchCanvasManager } from "./WorkbenchCanvasManager";
+import { createCanvasObject, nextZIndex } from "./workbench-canvas-data";
+import {
+  activeCanvasData,
+  getActiveCanvasRecord,
+  normalizeWorkbenchCanvasState,
+  serializeWorkbenchCanvasState,
+  updateActiveCanvasObjects,
+  updateActiveCanvasSettings,
+  updateActiveCanvasViewport,
+  type CanvasSettings,
+  type CanvasViewport,
+  type WorkbenchCanvasState,
+} from "./workbench-canvas-state";
+import { CANVAS_AUTOSAVE_DELAY_MS } from "./workbench-canvas-viewport-motion";
+import { EMPTY_CANVAS_DATA } from "./workbench-canvas-types";
 import { useWorkbenchNotesShortcuts } from "./useWorkbenchNotesShortcuts";
 import { ResearchInspector } from "./surfaces/ResearchInspector";
 import { DocumentMetadataBar } from "./surfaces/DocumentMetadataBar";
 import WorkbenchDocumentTopBar, { type DocumentSidebarTab } from "./WorkbenchDocumentTopBar";
+import WorkbenchDocumentTypographyControls from "./WorkbenchDocumentTypographyControls";
 import WorkbenchIconTip from "./WorkbenchIconTip";
 import WorkbenchDocumentDrawer from "./WorkbenchDocumentDrawer";
 import {
@@ -102,7 +123,27 @@ import {
 } from "./document-mobile";
 import WorkbenchDocumentFormatPanel from "./WorkbenchDocumentFormatPanel";
 import WorkbenchDocumentDetailsSections from "./WorkbenchDocumentDetailsSections";
-import type { NoteMode } from "./workbench-note-types";
+import {
+  deriveProjectPermissions,
+  type WorkbenchProjectAccessRole,
+} from "@/lib/workbench-collaboration";
+import { WorkbenchShareProjectModal } from "./WorkbenchShareProjectModal";
+import { WorkbenchProjectSettingsModal } from "./WorkbenchProjectSettingsModal";
+import { WorkbenchSharedProjectWelcome } from "./WorkbenchSharedProjectWelcome";
+import { WorkbenchCollaborationBar } from "./WorkbenchCollaborationBar";
+import { useWorkbenchProjectCollaboration } from "./useWorkbenchProjectCollaboration";
+import {
+  type NoteMode,
+  WORKBENCH_LAST_NOTE_MODE_KEY,
+  isWorkbenchNoteMode,
+  resolveWorkbenchNoteMode,
+} from "./workbench-note-types";
+import {
+  DEFAULT_WORKBENCH_DOCUMENT_FONT_ID,
+  getWorkbenchDocumentFontOption,
+  isWorkbenchDocumentFontId,
+  type WorkbenchDocumentFontId,
+} from "./workbench-font-options";
 
 const WorkbenchRichTextEditor = dynamic(() => import("../WorkbenchRichTextEditor"), {
   loading: () => <div className="workbench-rich-editor workbench-rich-editor--loading" aria-busy="true" />,
@@ -116,13 +157,19 @@ const WorkbenchNoteBoard = dynamic(() => import("./WorkbenchNoteBoard"), {
   ),
 });
 
-const WorkbenchNoteCanvas = dynamic(() => import("./WorkbenchNoteCanvas"), {
-  loading: () => (
-    <div className="workbench-mode-loading" aria-busy="true">
-      Loading canvas…
-    </div>
-  ),
-});
+const WorkbenchCanvasImmersiveView = dynamic(
+  () =>
+    import("./WorkbenchCanvasImmersiveView").then((mod) => ({
+      default: mod.WorkbenchCanvasImmersiveView,
+    })),
+  {
+    loading: () => (
+      <div className="workbench-mode-loading" aria-busy="true">
+        Loading canvas…
+      </div>
+    ),
+  },
+);
 
 const AICitationAssistant = dynamic(() => import("./AICitationAssistant"), {
   ssr: false,
@@ -222,12 +269,23 @@ const NOTE_MODES: { id: NoteMode; label: string }[] = [
   { id: "board", label: "Board" },
 ];
 
-const EMPTY_CANVAS_DATA: WorkbenchCanvasData = { blocks: [] };
 const EMPTY_BOARD_DATA: WorkbenchBoardData = { cards: [], settings: {} };
 const EMPTY_CITATIONS: WorkbenchNoteCitation[] = [];
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value && typeof value === "object" && !Array.isArray(value));
+}
+
+function getDocumentSettings(json: Record<string, unknown> | null) {
+  const rawSettings = isRecord(json?.documentSettings) ? json.documentSettings : {};
+  const fontFamilyId = isWorkbenchDocumentFontId(rawSettings.fontFamilyId)
+    ? rawSettings.fontFamilyId
+    : DEFAULT_WORKBENCH_DOCUMENT_FONT_ID;
+
+  return {
+    ...(isRecord(rawSettings) ? rawSettings : {}),
+    fontFamilyId,
+  };
 }
 
 function createWorkbenchNoteId(prefix: string) {
@@ -243,40 +301,6 @@ function stringValue(value: unknown, fallback = "") {
 
 function numberValue(value: unknown, fallback: number) {
   return typeof value === "number" && Number.isFinite(value) ? value : fallback;
-}
-
-function defaultCanvasBlockSize(type: CanvasBlockType) {
-  if (type === "sticky") return { width: 220, height: 150 };
-  if (type === "imagePlaceholder") return { width: 240, height: 168 };
-  return { width: 260, height: 132 };
-}
-
-function getCanvasData(json: Record<string, unknown> | null): WorkbenchCanvasData {
-  if (!isRecord(json?.workbenchCanvas)) return EMPTY_CANVAS_DATA;
-  const rawBlocks = Array.isArray(json.workbenchCanvas.blocks) ? json.workbenchCanvas.blocks : [];
-  return {
-    blocks: rawBlocks.filter(isRecord).map((block, index): WorkbenchCanvasBlock => {
-      const rawType = stringValue(block.type, "text");
-      const type: CanvasBlockType =
-        rawType === "sticky" ||
-        rawType === "quote" ||
-        rawType === "archiveRecord" ||
-        rawType === "imagePlaceholder"
-          ? rawType
-          : "text";
-      const size = defaultCanvasBlockSize(type);
-      return {
-        id: stringValue(block.id, `canvas-${index}`),
-        type,
-        x: numberValue(block.x, 80 + index * 24),
-        y: numberValue(block.y, 80 + index * 24),
-        width: numberValue(block.width, size.width),
-        height: numberValue(block.height, size.height),
-        content: stringValue(block.content, ""),
-        linkedRecordId: typeof block.linkedRecordId === "string" ? block.linkedRecordId : null,
-      };
-    }),
-  };
 }
 
 function normalizeBoardCardType(raw: string): BoardCardType {
@@ -427,7 +451,10 @@ function mergeWorkbenchModeData(
   const base = isRecord(nextJson) ? nextJson : { type: "doc" };
   return {
     ...base,
-    workbenchCanvas: getCanvasData(previousJson),
+    documentSettings: getDocumentSettings(previousJson),
+    workbenchCanvas: serializeWorkbenchCanvasState(
+      normalizeWorkbenchCanvasState(previousJson),
+    ),
     workbenchBoard: getBoardData(previousJson),
     workbenchCitations: getCitations(previousJson),
   };
@@ -1155,6 +1182,14 @@ const NOTE_MENU_TIPS: Record<string, { tip: string; info: string }> = {
   help: { tip: "Help", info: "Shortcuts & guides" },
 };
 
+const DOCUMENT_TASKBAR_MENU_IDS = new Set(["file", "edit", "view"]);
+const DOCUMENT_TASKBAR_INSERT_ITEM_IDS = new Set([
+  "insert-citation",
+  "insert-page-break",
+  "insert-image",
+  "insert-table",
+]);
+
 function WorkbenchNoteMenuBar({
   menus,
   className,
@@ -1188,6 +1223,8 @@ function WorkbenchNoteMenuBar({
     };
   }, [openMenu]);
 
+  const isTaskbar = Boolean(className?.includes("workbench-note-menu-bar--topbar"));
+
   return (
     <nav
       className={[
@@ -1207,16 +1244,22 @@ function WorkbenchNoteMenuBar({
         const menuButton = (
           <button
             type="button"
-            className="workbench-note-menu-button"
+            className={[
+              "workbench-note-menu-button",
+              isTaskbar && iconOnly ? "workbench-document-taskbar-button" : null,
+              isTaskbar && iconOnly ? `workbench-note-menu-button--${menu.id}` : null,
+            ]
+              .filter(Boolean)
+              .join(" ")}
             aria-haspopup="menu"
             aria-expanded={isOpen}
-            aria-label={
-              iconOnly ? `${menuTip.tip} — ${menuTip.info}` : undefined
-            }
+            aria-label={iconOnly ? menuTip.tip : undefined}
+            title={iconOnly ? menuTip.tip : undefined}
+            data-tooltip={isTaskbar && iconOnly ? menuTip.tip : undefined}
             onClick={() => setOpenMenu((current) => (current === menu.id ? null : menu.id))}
           >
             {iconOnly && MenuIcon ? (
-              <MenuIcon size={16} strokeWidth={1.75} aria-hidden />
+              <MenuIcon size={18} strokeWidth={1.75} aria-hidden />
             ) : (
               menu.label
             )}
@@ -1224,13 +1267,7 @@ function WorkbenchNoteMenuBar({
         );
         return (
           <div key={menu.id} className="workbench-note-menu-item">
-            {iconOnly ? (
-              <WorkbenchIconTip tip={menuTip.tip} info={menuTip.info}>
-                {menuButton}
-              </WorkbenchIconTip>
-            ) : (
-              menuButton
-            )}
+            {menuButton}
             {isOpen ? (
               <div className="workbench-note-menu-dropdown" role="menu">
                 {menu.sections.map((section, sectionIndex) => (
@@ -2269,12 +2306,19 @@ export default function WorkbenchNotesClient(props: {
   citationSources: WorkbenchCitationSource[];
   noteRecordIdsByNote: Record<string, string[]>;
   currentUserId: string | null;
+  currentUserDisplayName?: string | null;
   ownerProjectIds: string[];
   editorProjectIds: string[];
+  viewerProjectIds?: string[];
+  initialPreferredNoteMode?: string | null;
   initialError?: string;
 }) {
   const ownerSet = useMemo(() => new Set(props.ownerProjectIds), [props.ownerProjectIds]);
   const editorSet = useMemo(() => new Set(props.editorProjectIds), [props.editorProjectIds]);
+  const viewerSet = useMemo(
+    () => new Set(props.viewerProjectIds ?? []),
+    [props.viewerProjectIds],
+  );
   const linkableById = useMemo(
     () => new Map(props.linkableRecords.map((r) => [r.record_id, r])),
     [props.linkableRecords],
@@ -2286,6 +2330,10 @@ export default function WorkbenchNotesClient(props: {
   );
   const initialNote = initialNotes[0] ?? null;
   const initialSnapshot = initialNote ? snapshotFromNote(initialNote) : null;
+
+  const serverPreferredNoteMode = isWorkbenchNoteMode(props.initialPreferredNoteMode)
+    ? props.initialPreferredNoteMode
+    : null;
 
   const [notes, setNotes] = useState(initialNotes);
   const [noteRecordIdsByNote, setNoteRecordIdsByNote] = useState(props.noteRecordIdsByNote);
@@ -2325,7 +2373,9 @@ export default function WorkbenchNotesClient(props: {
   const [aiAssistantOpen, setAIAssistantOpen] = useState(false);
   const [aiRecommendedCandidateIds, setAiRecommendedCandidateIds] = useState<string[]>([]);
   const [isFocusMode, setIsFocusMode] = useState(false);
-  const [noteMode, setNoteMode] = useState<NoteMode>("document");
+  const [noteMode, setNoteMode] = useState<NoteMode>(
+    () => serverPreferredNoteMode ?? "document",
+  );
   const [isBoardFullscreen, setIsBoardFullscreen] = useState(false);
   const [notesDrawerOpen, setNotesDrawerOpen] = useState(false);
   const [notesMenuPosition, setNotesMenuPosition] = useState({ x: 0, y: 0 });
@@ -2338,8 +2388,28 @@ export default function WorkbenchNotesClient(props: {
   const [documentDrawerTab, setDocumentDrawerTab] = useState<DocumentSidebarTab>("format");
   const [documentDrawerOpen, setDocumentDrawerOpen] = useState(true);
   const [documentDrawerPinned, setDocumentDrawerPinned] = useState(true);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [settingsModalOpen, setSettingsModalOpen] = useState(false);
+  const [saveConflict, setSaveConflict] = useState("");
+  const [canvasInteracting, setCanvasInteracting] = useState(false);
   const documentImageInputRef = useRef<HTMLInputElement>(null);
   const noteModePrefRef = useRef<NoteMode | null>(null);
+
+  useLayoutEffect(() => {
+    if (typeof window === "undefined") return;
+    const resolved = resolveWorkbenchNoteMode({
+      serverPreferred: serverPreferredNoteMode,
+      localStorageValue: window.localStorage.getItem(WORKBENCH_LAST_NOTE_MODE_KEY),
+    });
+    setNoteMode((current) => (current === resolved ? current : resolved));
+    window.localStorage.setItem(WORKBENCH_LAST_NOTE_MODE_KEY, resolved);
+    noteModePrefRef.current = resolved;
+  }, [serverPreferredNoteMode]);
+
+  const handleNoteModeChange = useCallback((mode: string) => {
+    if (!isWorkbenchNoteMode(mode)) return;
+    setNoteMode(mode);
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -2485,6 +2555,8 @@ export default function WorkbenchNotesClient(props: {
   }
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(WORKBENCH_LAST_NOTE_MODE_KEY, noteMode);
     if (noteModePrefRef.current === null) {
       noteModePrefRef.current = noteMode;
       return;
@@ -2502,6 +2574,7 @@ export default function WorkbenchNotesClient(props: {
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const savingRef = useRef(false);
+  const lastLoadedUpdatedAtRef = useRef<string | null>(null);
   const selectedIdRef = useRef(selectedId);
   const titleWasEditedRef = useRef(false);
   const notesLayoutRef = useRef<HTMLDivElement>(null);
@@ -2511,13 +2584,99 @@ export default function WorkbenchNotesClient(props: {
     [notes, selectedId],
   );
 
-  const canEditSelected = useMemo(
-    () =>
-      selectedNote
-        ? noteCanEdit(selectedNote, props.currentUserId, ownerSet, editorSet)
-        : false,
-    [selectedNote, props.currentUserId, ownerSet, editorSet],
+  const selectedProjectAccessRole = useMemo((): WorkbenchProjectAccessRole => {
+    if (!selectedNote?.project_id || !props.currentUserId) return "none";
+    if (ownerSet.has(selectedNote.project_id)) return "owner";
+    if (editorSet.has(selectedNote.project_id)) return "editor";
+    if (viewerSet.has(selectedNote.project_id)) return "viewer";
+    return "none";
+  }, [selectedNote, props.currentUserId, ownerSet, editorSet, viewerSet]);
+
+  const projectPermissions = useMemo(
+    () => deriveProjectPermissions(selectedProjectAccessRole),
+    [selectedProjectAccessRole],
   );
+
+  const canEditSelected = useMemo(() => {
+    if (!selectedNote || !props.currentUserId) return false;
+    if (selectedNote.project_id) return projectPermissions.canEdit;
+    return noteCanEdit(selectedNote, props.currentUserId, ownerSet, editorSet);
+  }, [selectedNote, props.currentUserId, ownerSet, editorSet, projectPermissions.canEdit]);
+
+  const selectedProjectMeta = useMemo(() => {
+    if (!selectedNote?.project_id) return null;
+    const project = props.projects.find((p) => p.id === selectedNote.project_id);
+    return {
+      id: selectedNote.project_id,
+      title: selectedNote.project_title || project?.title || "Project",
+      ownerId: project?.owner_id ?? null,
+    };
+  }, [selectedNote, props.projects]);
+
+  const projectAccessBadge = useMemo(() => {
+    if (selectedProjectAccessRole === "none" || selectedProjectAccessRole === "owner") {
+      return null;
+    }
+    if (selectedProjectAccessRole === "viewer") {
+      return { label: "View only", className: "is-viewer" };
+    }
+    return { label: "Editor", className: "is-editor" };
+  }, [selectedProjectAccessRole]);
+
+  const resolvedShareProjectId = selectedNote?.project_id ?? projectId ?? null;
+
+  const openShareModal = useCallback((event?: ReactMouseEvent<HTMLButtonElement>) => {
+    event?.preventDefault();
+    event?.stopPropagation();
+    setShareModalOpen(true);
+  }, []);
+
+  const shareProjectHeaderExtra = useMemo(() => {
+    if (!selectedNote) return null;
+    return (
+      <>
+        {projectAccessBadge ? (
+          <span
+            className={`workbench-project-access-badge ${projectAccessBadge.className}`}
+            title={projectAccessBadge.label}
+          >
+            {projectAccessBadge.label}
+          </span>
+        ) : null}
+        {projectPermissions.canRenameProject ? (
+          <button
+            type="button"
+            className="workbench-notes-settings-btn"
+            onClick={() => setSettingsModalOpen(true)}
+            title="Project settings"
+          >
+            Settings
+          </button>
+        ) : null}
+        <button
+          type="button"
+          className="workbench-notes-share-btn"
+          onClick={openShareModal}
+          aria-haspopup="dialog"
+          aria-expanded={shareModalOpen}
+          title={
+            resolvedShareProjectId
+              ? "Share project with collaborators"
+              : "Assign a project before inviting collaborators"
+          }
+        >
+          Share
+        </button>
+      </>
+    );
+  }, [
+    selectedNote,
+    projectAccessBadge,
+    openShareModal,
+    shareModalOpen,
+    resolvedShareProjectId,
+    projectPermissions.canRenameProject,
+  ]);
 
   const currentSnapshot = useMemo<SavedSnapshot>(
     () => ({
@@ -2539,6 +2698,50 @@ export default function WorkbenchNotesClient(props: {
     () => Boolean(savedSnapshot && !snapshotsEqual(currentSnapshot, savedSnapshot)),
     [currentSnapshot, savedSnapshot],
   );
+
+  const collaborationEnabled = Boolean(selectedNote?.project_id && props.currentUserId);
+
+  const applyRemoteNote = useCallback(
+    (row: WorkbenchNoteRow) => {
+      const normalized = normalizeNote({
+        ...(selectedNote ?? row),
+        ...row,
+        project_title:
+          props.projects.find((p) => p.id === row.project_id)?.title ??
+          selectedNote?.project_title ??
+          "Project",
+      });
+      const snap = snapshotFromNote(normalized);
+      setTitle(snap.title);
+      setProjectId(snap.projectId);
+      setNoteStatus(snap.status);
+      setContentHtml(snap.contentHtml);
+      setContentJson(snap.contentJson);
+      setPlainText(snap.plainText);
+      setWordCount(snap.wordCount);
+      setCharacterCount(snap.characterCount);
+      setSavedSnapshot(snap);
+      setSaveState("saved");
+      setEditorRevision((value) => value + 1);
+      setNotes((prev) =>
+        sortNotes(prev.map((n) => (n.id === normalized.id ? normalized : n))),
+      );
+    },
+    [props.projects, selectedNote],
+  );
+
+  const collaboration = useWorkbenchProjectCollaboration({
+    enabled: collaborationEnabled,
+    projectId: selectedNote?.project_id ?? null,
+    noteId: selectedId || null,
+    noteMode,
+    currentUserId: props.currentUserId,
+    displayName: props.currentUserDisplayName ?? null,
+    isDirty,
+    isSaving: saveState === "saving",
+    isCanvasInteracting: canvasInteracting,
+    onRemoteNote: applyRemoteNote,
+  });
 
   const filteredNotes = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -2667,8 +2870,18 @@ export default function WorkbenchNotesClient(props: {
   const defaultProjectId = props.projects[0]?.id ?? "";
   const readMinutes = readingMinutesFromWordCount(wordCount);
   const documentHeadings = useMemo(() => extractHeadingsFromHtml(contentHtml), [contentHtml]);
-  const canvasData = useMemo(() => getCanvasData(contentJson), [contentJson]);
+  const canvasState = useMemo(
+    () => normalizeWorkbenchCanvasState(isRecord(contentJson) ? contentJson : {}),
+    [contentJson],
+  );
+  const activeCanvas = useMemo(() => getActiveCanvasRecord(canvasState), [canvasState]);
+  const canvasData = useMemo(() => activeCanvasData(canvasState), [canvasState]);
   const boardData = useMemo(() => getBoardData(contentJson), [contentJson]);
+  const documentSettings = useMemo(() => getDocumentSettings(contentJson), [contentJson]);
+  const selectedDocumentFont = useMemo(
+    () => getWorkbenchDocumentFontOption(documentSettings.fontFamilyId),
+    [documentSettings.fontFamilyId],
+  );
 
   const overlayOpen =
     commandOpen || switcherOpen || newNoteMenuOpen || citationPickerOpen;
@@ -2877,6 +3090,12 @@ export default function WorkbenchNotesClient(props: {
     }
   }, [selectedId, isFocusMode]);
 
+  useEffect(() => {
+    if (noteMode === "canvas" && isFocusMode) {
+      setIsFocusMode(false);
+    }
+  }, [noteMode, isFocusMode]);
+
   function toggleFocusMode() {
     if (!selectedId) return;
     setNewNoteMenuOpen(false);
@@ -2972,6 +3191,7 @@ export default function WorkbenchNotesClient(props: {
       savingRef.current = true;
       setSaveState("saving");
       setSaveError("");
+      setSaveConflict("");
 
       let saveTitle = snapshot.title;
       if (shouldAutoGenerateNoteTitle(saveTitle, titleWasEditedRef.current, snapshot.plainText)) {
@@ -2989,17 +3209,32 @@ export default function WorkbenchNotesClient(props: {
         characterCount: snapshot.characterCount,
         projectId: snapshot.projectId,
         status: snapshot.status,
+        saveContext: {
+          mode: noteMode,
+          activityAction: "note_saved",
+        },
+        expectedUpdatedAt: lastLoadedUpdatedAtRef.current,
       });
 
       savingRef.current = false;
 
       if (!result.ok) {
+        if (result.conflict) {
+          setSaveConflict(
+            result.error ||
+              "New changes are available. Review or reload before saving.",
+          );
+          setSaveState("unsaved");
+          setSaveError("");
+          return;
+        }
         setSaveState("error");
         setSaveError(result.error || "Could not save note.");
         return;
       }
 
       if (result.note) {
+        lastLoadedUpdatedAtRef.current = result.note.updated_at;
         const nextSnapshot = snapshotFromNote(result.note);
         setSavedSnapshot(nextSnapshot);
         setNotes((prev) =>
@@ -3022,17 +3257,28 @@ export default function WorkbenchNotesClient(props: {
       }
       setSaveState("saved");
     },
-    [props.projects],
+    [noteMode, props.projects],
   );
+
+  const flushSaveNow = useCallback(() => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+      debounceRef.current = null;
+    }
+    const noteId = selectedIdRef.current;
+    if (!noteId || !canEditSelected) return;
+    void persist(noteId, snapshotRef.current);
+  }, [canEditSelected, persist]);
 
   const scheduleSave = useCallback(() => {
     const noteId = selectedIdRef.current;
     if (!noteId || !canEditSelected) return;
     if (debounceRef.current) clearTimeout(debounceRef.current);
+    const delay = noteMode === "canvas" ? CANVAS_AUTOSAVE_DELAY_MS : 1000;
     debounceRef.current = setTimeout(() => {
       void persist(noteId, snapshotRef.current);
-    }, 1000);
-  }, [canEditSelected, persist]);
+    }, delay);
+  }, [canEditSelected, noteMode, persist]);
 
   function selectNote(note: WorkbenchNoteWithProject) {
     if (debounceRef.current) {
@@ -3053,8 +3299,9 @@ export default function WorkbenchNotesClient(props: {
     setSavedSnapshot(snap);
     setSaveState("saved");
     setSaveError("");
+    setSaveConflict("");
     setImageError("");
-    setNoteMode("document");
+    lastLoadedUpdatedAtRef.current = normalized.updated_at;
     titleWasEditedRef.current = !isDefaultUntitled(snap.title);
     setEditorRevision((v) => v + 1);
     setNotesDrawerOpen(false);
@@ -3094,21 +3341,68 @@ export default function WorkbenchNotesClient(props: {
     scheduleSave();
   }
 
-  function updateCanvasData(nextCanvasData: WorkbenchCanvasData) {
+  function updateDocumentSettings(
+    patch: Partial<{ fontFamilyId: WorkbenchDocumentFontId }>,
+  ) {
+    const base = isRecord(contentJson) ? contentJson : { type: "doc" };
+    const currentSettings = getDocumentSettings(base);
+    updateContentJson({
+      ...base,
+      documentSettings: {
+        ...currentSettings,
+        ...patch,
+      },
+      workbenchCanvas: serializeWorkbenchCanvasState(
+        normalizeWorkbenchCanvasState(base),
+      ),
+      workbenchBoard: getBoardData(base),
+      workbenchCitations: getCitations(base),
+    });
+  }
+
+  function handleDocumentFontChange(fontFamilyId: WorkbenchDocumentFontId) {
+    if (!isWorkbenchDocumentFontId(fontFamilyId)) return;
+    updateDocumentSettings({ fontFamilyId });
+    const font = getWorkbenchDocumentFontOption(fontFamilyId);
+    if (editorInstance && !editorInstance.isDestroyed) {
+      editorChain(editorInstance).setFontFamily(font.fontFamily).run();
+    }
+  }
+
+  function handleResetDocumentTypography() {
+    updateDocumentSettings({ fontFamilyId: DEFAULT_WORKBENCH_DOCUMENT_FONT_ID });
+    if (!editorInstance || editorInstance.isDestroyed) return;
+    editorChain(editorInstance).unsetFontFamily().unsetFontSize().run();
+  }
+
+  function persistWorkbenchCanvasState(nextState: WorkbenchCanvasState) {
     const base = isRecord(contentJson) ? contentJson : { type: "doc" };
     updateContentJson({
       ...base,
-      workbenchCanvas: nextCanvasData,
+      workbenchCanvas: serializeWorkbenchCanvasState(nextState),
       workbenchBoard: getBoardData(contentJson),
       workbenchCitations: getCitations(contentJson),
     });
+  }
+
+  function mutateWorkbenchCanvas(
+    updater: (state: WorkbenchCanvasState) => WorkbenchCanvasState,
+  ) {
+    const current = normalizeWorkbenchCanvasState(isRecord(contentJson) ? contentJson : {});
+    persistWorkbenchCanvasState(updater(current));
+  }
+
+  function updateCanvasData(nextCanvasData: WorkbenchCanvasData) {
+    mutateWorkbenchCanvas((state) =>
+      updateActiveCanvasObjects(state, nextCanvasData.objects),
+    );
   }
 
   function updateBoardData(nextBoardData: WorkbenchBoardData) {
     const base = isRecord(contentJson) ? contentJson : { type: "doc" };
     updateContentJson({
       ...base,
-      workbenchCanvas: getCanvasData(contentJson),
+      workbenchCanvas: serializeWorkbenchCanvasState(canvasState),
       workbenchBoard: nextBoardData,
       workbenchCitations: getCitations(contentJson),
     });
@@ -3130,7 +3424,7 @@ export default function WorkbenchNotesClient(props: {
     scheduleSave();
   }
 
-  function exportCurrentNote(format: "txt" | "md" | "html" | "json" | "doc" | "pdf") {
+  function exportCurrentNote(format: WorkbenchNoteExportFormat) {
     void trackWorkbenchActivity({
       eventType: "export_created",
       entityType: "export",
@@ -3164,29 +3458,12 @@ export default function WorkbenchNotesClient(props: {
       return;
     }
 
-    if (format === "json") {
-      const content = JSON.stringify(
-        {
-          title: noteTitle,
-          projectId,
-          projectTitle: selectedNote?.project_title ?? null,
-          contentHtml: exportHtml,
-          contentJson: {
-            ...(isRecord(contentJson) ? contentJson : {}),
-            workbenchBoard: boardData,
-            workbenchCitations: citations,
-          },
-          workbenchBoard: boardData,
-          workbenchCitations: citations,
-          plainText,
-          wordCount,
-          characterCount,
-          updatedAt: selectedNote?.updated_at ?? null,
-        },
-        null,
-        2,
-      );
-      downloadNoteFile(`${baseName}.json`, "application/json;charset=utf-8", content);
+    if (format === "jpeg") {
+      void exportDocumentPagesAsJpeg(`${baseName}.jpg`).catch((error) => {
+        setSaveError(
+          error instanceof Error ? error.message : "Could not export JPEG. Try again in Document mode.",
+        );
+      });
       return;
     }
 
@@ -3709,37 +3986,28 @@ function editorChain(editor: Editor): ChainedCommands {
 
   function addCanvasBlockFromMenu(type: CanvasBlockType) {
     if (!canEditSelected) return;
+    const map = {
+      text: "text",
+      sticky: "sticky",
+      quote: "quote",
+      archiveRecord: "source",
+      imagePlaceholder: "image",
+    } as const;
+    const objectType = map[type];
     const record = type === "archiveRecord" ? linkableForSelected[0] : undefined;
-    const size = defaultCanvasBlockSize(type);
-    const blockId = createWorkbenchNoteId("canvas");
-    updateCanvasData({
-      blocks: [
-        ...canvasData.blocks,
-        {
-          id: blockId,
-          type,
-          x: 80 + (canvasData.blocks.length % 4) * 28,
-          y: 80 + canvasData.blocks.length * 24,
-          width: size.width,
-          height: size.height,
-          content:
-            type === "sticky"
-              ? "Working thought"
-              : type === "quote"
-                ? "Quote or interpretive note"
-                : type === "archiveRecord"
-                  ? (record?.title ?? "Archive source card")
-                  : type === "imagePlaceholder"
-                    ? "Image placeholder"
-                    : "Text block",
-          linkedRecordId: record?.record_id ?? null,
-        },
-      ],
+    const obj = createCanvasObject({
+      type: objectType,
+      x: 80 + (canvasData.objects.length % 4) * 28,
+      y: 80 + canvasData.objects.length * 24,
+      zIndex: nextZIndex(canvasData.objects),
+      record,
+      patch: { id: createWorkbenchNoteId("canvas") },
     });
+    updateCanvasData({ version: canvasData.version, objects: [...canvasData.objects, obj] });
     void trackWorkbenchActivity({
       eventType: "canvas_block_created",
       entityType: "canvas_block",
-      entityId: blockId,
+      entityId: obj.id,
       projectId: projectId,
       metadata: { block_type: type },
     });
@@ -3772,35 +4040,36 @@ function editorChain(editor: Editor): ChainedCommands {
 
   function sendBoardCardToCanvas(card: WorkbenchBoardCard) {
     if (!canEditSelected) return;
-    const type = normalizeCardType(card.type);
-    const size = defaultCanvasBlockSize(type === "image" ? "imagePlaceholder" : type === "quote" ? "quote" : "text");
-    let blockType: CanvasBlockType =
-      type === "image" ? "imagePlaceholder" : type === "quote" ? "quote" : "text";
-    let content = card.body?.trim() || card.title || "Canvas block";
-    let linkedRecordId: string | null = card.linkedRecordId ?? null;
-    if (type === "image" && card.imageUrl?.trim()) {
-      content = card.imageUrl.trim();
-    }
-    if (type === "source" && card.linkedRecordId) {
-      blockType = "archiveRecord";
-      content = card.title || "Archive source";
-      linkedRecordId = card.linkedRecordId;
-    }
-    updateCanvasData({
-      blocks: [
-        ...canvasData.blocks,
-        {
-          id: createWorkbenchNoteId("canvas"),
-          type: blockType,
-          x: 80 + (canvasData.blocks.length % 4) * 28,
-          y: 80 + canvasData.blocks.length * 24,
-          width: size.width,
-          height: size.height,
-          content,
-          linkedRecordId,
-        },
-      ],
+    const cardType = normalizeCardType(card.type);
+    const objectType =
+      cardType === "image"
+        ? "image"
+        : cardType === "quote"
+          ? "quote"
+          : cardType === "source"
+            ? "source"
+            : cardType === "question"
+              ? "question"
+              : cardType === "task"
+                ? "task"
+                : cardType === "link"
+                  ? "link"
+                  : "text";
+    const obj = createCanvasObject({
+      type: objectType,
+      x: 80 + (canvasData.objects.length % 4) * 28,
+      y: 80 + canvasData.objects.length * 24,
+      zIndex: nextZIndex(canvasData.objects),
+      patch: {
+        id: createWorkbenchNoteId("canvas"),
+        title: card.title || "Canvas block",
+        body: card.body?.trim() || "",
+        linkedRecordId: card.linkedRecordId ?? null,
+        imageUrl: cardType === "image" ? card.imageUrl?.trim() || undefined : undefined,
+        sourceOrigin: card.linkedRecordId ? "archive" : undefined,
+      },
     });
+    updateCanvasData({ version: canvasData.version, objects: [...canvasData.objects, obj] });
     setNoteMode("canvas");
   }
 
@@ -3829,7 +4098,7 @@ function editorChain(editor: Editor): ChainedCommands {
       : saveState === "saved"
         ? "Saved"
         : saveState === "error"
-          ? "Could not save"
+          ? "Save failed — retry"
           : isDirty
             ? "Unsaved"
             : canEditSelected
@@ -3965,7 +4234,7 @@ function editorChain(editor: Editor): ChainedCommands {
               { id: "file-export-txt", label: "Export plain text", onClick: () => exportCurrentNote("txt"), disabled: !selectedNote },
               { id: "file-export-md", label: "Export Markdown", onClick: () => exportCurrentNote("md"), disabled: !selectedNote },
               { id: "file-export-html", label: "Export HTML", onClick: () => exportCurrentNote("html"), disabled: !selectedNote },
-              { id: "file-export-json", label: "Export JSON", onClick: () => exportCurrentNote("json"), disabled: !selectedNote },
+              { id: "file-export-jpeg", label: "Export JPEG", onClick: () => exportCurrentNote("jpeg"), disabled: !selectedNote },
               { id: "file-print", label: "Print", onClick: handlePrintNote, disabled: !selectedNote },
             ],
           },
@@ -4041,17 +4310,17 @@ function editorChain(editor: Editor): ChainedCommands {
               {
                 id: "view-document-mode",
                 label: noteMode === "document" ? "Document mode ✓" : "Document mode",
-                onClick: () => setNoteMode("document"),
+                onClick: () => handleNoteModeChange("document"),
               },
               {
                 id: "view-canvas-mode",
                 label: noteMode === "canvas" ? "Canvas mode ✓" : "Canvas mode",
-                onClick: () => setNoteMode("canvas"),
+                onClick: () => handleNoteModeChange("canvas"),
               },
               {
                 id: "view-board-mode",
                 label: noteMode === "board" ? "Board mode ✓" : "Board mode",
-                onClick: () => setNoteMode("board"),
+                onClick: () => handleNoteModeChange("board"),
               },
               {
                 id: "view-focus",
@@ -4334,6 +4603,135 @@ function editorChain(editor: Editor): ChainedCommands {
     ],
   );
 
+  const documentTaskbarMenus = useMemo(
+    () => noteMenuItems.filter((menu) => DOCUMENT_TASKBAR_MENU_IDS.has(menu.id)),
+    [noteMenuItems],
+  );
+
+  const documentTaskbarInsertMenus = useMemo(() => {
+    const insertMenu = noteMenuItems.find((menu) => menu.id === "insert");
+    if (!insertMenu) return [];
+    return [
+      {
+        ...insertMenu,
+        sections: insertMenu.sections
+          .map((section) => ({
+            ...section,
+            items: section.items.filter((item) =>
+              DOCUMENT_TASKBAR_INSERT_ITEM_IDS.has(item.id),
+            ),
+          }))
+          .filter((section) => section.items.length > 0),
+      },
+    ];
+  }, [noteMenuItems]);
+
+  const documentTaskbarMoreItems = useMemo(
+    () => [
+      {
+        id: "more-citation",
+        label: "Citation",
+        onClick: () => setCitationPickerOpen(true),
+        disabled: !editorInstance || !canEditSelected,
+      },
+      {
+        id: "more-page-break",
+        label: "Page break",
+        onClick: handleInsertDocumentPageBreak,
+        disabled: !canEditSelected,
+      },
+      {
+        id: "more-image",
+        label: "Image",
+        onClick: handleInsertImageUrl,
+        disabled: !editorInstance || !canEditSelected,
+      },
+      {
+        id: "more-table",
+        label: "Table",
+        onClick: () =>
+          runEditorCommand((editor) =>
+            editorChain(editor).insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
+          ),
+        disabled: !editorInstance || !canEditSelected,
+      },
+      {
+        id: "more-link",
+        label: "Link",
+        onClick: handleInsertLink,
+        disabled: !editorInstance || !canEditSelected,
+      },
+    ],
+    [
+      editorInstance,
+      canEditSelected,
+      handleInsertDocumentPageBreak,
+      handleInsertImageUrl,
+      handleInsertLink,
+      runEditorCommand,
+    ],
+  );
+
+  const documentTaskbarCollaboration = useMemo(() => {
+    if (!selectedNote || !isEditorialReading) return null;
+    return (
+      <WorkbenchCollaborationBar
+        peers={collaborationEnabled ? collaboration.peers : []}
+        activities={collaborationEnabled ? collaboration.activities : []}
+        remoteChangesPending={
+          collaborationEnabled ? collaboration.remoteChangesPending : false
+        }
+        onApplyRemoteChanges={() => void collaboration.applyRemoteNote()}
+        onDismissRemoteChanges={collaboration.dismissRemoteChanges}
+        projectId={resolvedShareProjectId}
+        noteId={selectedId}
+        canEdit={canEditSelected}
+        canRestoreVersions={canEditSelected && collaborationEnabled}
+        onVersionRestored={applyRemoteNote}
+        comments={collaborationEnabled ? collaboration.comments : []}
+        onCommentsChange={() => void collaboration.refreshComments()}
+        currentUserId={props.currentUserId}
+        peerNamesByUserId={Object.fromEntries(
+          collaboration.peers.map((peer) => [peer.userId, peer.displayName]),
+        )}
+        onShareClick={() => openShareModal()}
+        shareOpen={shareModalOpen}
+        compact
+        documentMoreActions={{
+          showSettings: projectPermissions.canRenameProject,
+          onOpenSettings: () => setSettingsModalOpen(true),
+          onOpenHelp: () => setCommandOpen(true),
+          inspectorOpen,
+          onToggleInspector: () => setInspectorOpen((open) => !open),
+          onModeChange: handleNoteModeChange,
+          extraMenuItems: documentTaskbarMoreItems,
+        }}
+      />
+    );
+  }, [
+    selectedNote,
+    isEditorialReading,
+    collaborationEnabled,
+    collaboration.peers,
+    collaboration.activities,
+    collaboration.remoteChangesPending,
+    collaboration.comments,
+    collaboration.applyRemoteNote,
+    collaboration.dismissRemoteChanges,
+    collaboration.refreshComments,
+    resolvedShareProjectId,
+    selectedId,
+    canEditSelected,
+    applyRemoteNote,
+    props.currentUserId,
+    openShareModal,
+    shareModalOpen,
+    projectPermissions.canRenameProject,
+    inspectorOpen,
+    handleNoteModeChange,
+    documentTaskbarMoreItems,
+  ]);
+
   const toggleDocumentDetails = useCallback(() => {
     setDetailsOpen((open) => {
       const next = !open;
@@ -4405,7 +4803,9 @@ function editorChain(editor: Editor): ChainedCommands {
           "workbench-notes-figma-shell",
           isFocusMode ? "workbench-notes-focus-mode workbench-notes-fullscreen-mode" : "",
           isFocusMode && noteMode === "board" ? "workbench-notes-board-focus" : "",
+          noteMode === "document" ? "is-document-mode" : "",
           noteMode === "board" ? "is-board-mode" : "",
+          noteMode === "canvas" ? "is-canvas-mode is-canvas-immersive" : "",
           noteMode === "board" && (isFocusMode || isBoardFullscreen) ? "is-board-fullscreen" : "",
           isEditorialReading ? "workbench-editorial-reading" : "",
           isEditorialReading && isFocusMode ? "is-focus-mode" : "",
@@ -4423,7 +4823,7 @@ function editorChain(editor: Editor): ChainedCommands {
         onToggle={handleToggleAICitation}
       />
 
-      {notes.length && !isEditorialReading ? (
+      {notes.length && !isEditorialReading && noteMode !== "canvas" ? (
         <>
           <button
             type="button"
@@ -4534,7 +4934,7 @@ function editorChain(editor: Editor): ChainedCommands {
         </>
       ) : null}
 
-      {!isEditorialReading ? (
+      {!isEditorialReading && noteMode !== "canvas" ? (
       <header className="workbench-notes-header workbench-notes-header--fixed workbench-notes-page-header">
         {selectedNote ? (
           <div className="workbench-notes-header-menu-row">
@@ -4568,7 +4968,7 @@ function editorChain(editor: Editor): ChainedCommands {
                       role="tab"
                       className={`workbench-note-mode-button${noteMode === mode.id ? " is-active" : ""}`}
                       aria-selected={noteMode === mode.id}
-                      onClick={() => setNoteMode(mode.id)}
+                      onClick={() => handleNoteModeChange(mode.id)}
                     >
                       {mode.label}
                     </button>
@@ -4622,6 +5022,9 @@ function editorChain(editor: Editor): ChainedCommands {
               </span>
             </>
           )}
+          {shareProjectHeaderExtra ? (
+            <div className="workbench-notes-header-share">{shareProjectHeaderExtra}</div>
+          ) : null}
           <button
             type="button"
             className="workbench-note-details-toggle"
@@ -4653,23 +5056,133 @@ function editorChain(editor: Editor): ChainedCommands {
         </p>
       ) : null}
 
+      {saveConflict ? (
+        <p className="workbench-flag workbench-save-conflict" role="alert">
+          {saveConflict}{" "}
+          <button type="button" className="workbench-button" onClick={() => void collaboration.applyRemoteNote()}>
+            Reload
+          </button>
+        </p>
+      ) : null}
+
+      {selectedNote &&
+      resolvedShareProjectId &&
+      selectedProjectAccessRole !== "owner" &&
+      selectedProjectAccessRole !== "none" &&
+      isNoteContentEmpty(plainText) &&
+      wordCount < 2 ? (
+        <WorkbenchSharedProjectWelcome
+          role={selectedProjectAccessRole}
+          projectTitle={selectedProjectMeta?.title ?? "Project"}
+          noteModes={NOTE_MODES}
+          activeMode={noteMode}
+          onModeChange={handleNoteModeChange}
+        />
+      ) : null}
+
+      {selectedNote && !isEditorialReading ? (
+        <WorkbenchCollaborationBar
+          peers={collaborationEnabled ? collaboration.peers : []}
+          activities={collaborationEnabled ? collaboration.activities : []}
+          remoteChangesPending={collaborationEnabled ? collaboration.remoteChangesPending : false}
+          onApplyRemoteChanges={() => void collaboration.applyRemoteNote()}
+          onDismissRemoteChanges={collaboration.dismissRemoteChanges}
+          projectId={resolvedShareProjectId}
+          noteId={selectedId}
+          canEdit={canEditSelected}
+          canRestoreVersions={canEditSelected && collaborationEnabled}
+          onVersionRestored={applyRemoteNote}
+          comments={collaborationEnabled ? collaboration.comments : []}
+          onCommentsChange={() => void collaboration.refreshComments()}
+          currentUserId={props.currentUserId}
+          peerNamesByUserId={Object.fromEntries(
+            collaboration.peers.map((peer) => [peer.userId, peer.displayName]),
+          )}
+          onShareClick={() => openShareModal()}
+          shareOpen={shareModalOpen}
+        />
+      ) : null}
+
       {notes.length ? (
         <>
           <div
             ref={notesLayoutRef}
-            className="workbench-notes-layout-premium workbench-notes-layout workbench-notes-layout--editor-only"
+            className={[
+              "workbench-notes-layout-premium",
+              "workbench-notes-layout",
+              "workbench-notes-layout--editor-only",
+              noteMode === "canvas" ? "is-canvas-layout" : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
           >
           <section
             className={[
               "workbench-note-editor-shell",
               noteMode === "board" ? "is-board-editor-active" : "",
+              noteMode === "canvas" ? "is-canvas-editor-active" : "",
             ]
               .filter(Boolean)
               .join(" ")}
             aria-label="Note editor"
           >
             {selectedNote ? (
-              isEditorialReading ? (
+              noteMode === "canvas" ? (
+                <>
+                  <WorkbenchCanvasImmersiveView
+                    key={activeCanvas.id}
+                    canvasInstanceId={activeCanvas.id}
+                    initialViewport={activeCanvas.viewport}
+                    initialSettings={activeCanvas.settings}
+                    onViewportChange={(viewport: CanvasViewport) =>
+                      mutateWorkbenchCanvas((state) =>
+                        updateActiveCanvasViewport(state, viewport),
+                      )
+                    }
+                    onSettingsChange={(patch: Partial<CanvasSettings>) =>
+                      mutateWorkbenchCanvas((state) =>
+                        updateActiveCanvasSettings(state, patch),
+                      )
+                    }
+                    shell={{
+                      projectTitle: title,
+                      onProjectTitleChange: handleTitleChange,
+                      canEditTitle: canEditSelected,
+                      canvasSwitcher: (
+                        <WorkbenchCanvasManager
+                          state={canvasState}
+                          canEdit={canEditSelected}
+                          onStateChange={(next) => persistWorkbenchCanvasState(next)}
+                        />
+                      ),
+                      modes: NOTE_MODES,
+                      activeMode: noteMode,
+                      onModeChange: handleNoteModeChange,
+                      statusLabel,
+                      saveState,
+                      onSave: handleManualSave,
+                      isDirty,
+                      isPending,
+                      saveDisabled: !canEditSelected,
+                      headerExtra: shareProjectHeaderExtra,
+                    }}
+                    data={canvasData}
+                    linkableRecords={linkableForSelected}
+                    citationSources={props.citationSources}
+                    canEdit={canEditSelected}
+                    onChange={updateCanvasData}
+                    onPersistNow={flushSaveNow}
+                    collaborationNoteId={selectedId}
+                    collaborationUserId={props.currentUserId}
+                    collaborationLocks={collaboration.canvasLocks}
+                    onCollaborationInteractionChange={setCanvasInteracting}
+                    onSendToDocument={sendHtmlToDocument}
+                    onOpenRecord={openBoardRecord}
+                    onCiteRecord={handleCiteInspectorRecord}
+                  />
+                  <div className="workbench-canvas-immersive-placeholder" aria-hidden />
+                </>
+              ) : isEditorialReading ? (
                 <div className="workbench-editorial-workspace workbench-pages-layout">
                   <div
                     className={`workbench-pages-shell${
@@ -4679,18 +5192,44 @@ function editorChain(editor: Editor): ChainedCommands {
                     <div className="workbench-pages-main">
                       {editorInstance && !editorInstance.isDestroyed ? (
                         <WorkbenchDocumentTopBar
+                          collaborationControls={documentTaskbarCollaboration}
                           menuBar={
                             <WorkbenchNoteMenuBar
-                              menus={noteMenuItems}
+                              menus={documentTaskbarMenus}
                               className="workbench-note-menu-bar--topbar"
                               iconOnly
                             />
+                          }
+                          insertMenu={
+                            <WorkbenchNoteMenuBar
+                              menus={documentTaskbarInsertMenus}
+                              className="workbench-note-menu-bar--topbar"
+                              iconOnly
+                            />
+                          }
+                          typographyControls={
+                            <WorkbenchDocumentTypographyControls
+                              editor={editorInstance}
+                              documentFontFamilyId={documentSettings.fontFamilyId}
+                              onDocumentFontFamilyChange={handleDocumentFontChange}
+                              disabled={!canEditSelected}
+                            />
+                          }
+                          workspaceBadge={
+                            projectAccessBadge ? (
+                              <span
+                                className={`workbench-project-access-badge ${projectAccessBadge.className}`}
+                                aria-label={projectAccessBadge.label}
+                              >
+                                {projectAccessBadge.label}
+                              </span>
+                            ) : null
                           }
                           zoom={documentZoom}
                           onZoomChange={setDocumentZoom}
                           noteModes={NOTE_MODES}
                           activeMode={noteMode}
-                          onModeChange={(mode) => setNoteMode(mode as NoteMode)}
+                          onModeChange={handleNoteModeChange}
                           formatPanelOpen={documentDrawerOpen}
                           onToggleFormatPanel={() => {
                             setDocumentDrawerOpen((open) => {
@@ -4699,25 +5238,28 @@ function editorChain(editor: Editor): ChainedCommands {
                               return next;
                             });
                           }}
-                          inspectorOpen={inspectorOpen}
-                          onToggleInspector={() => setInspectorOpen((open) => !open)}
-                          canEdit={canEditSelected}
-                          onInsertPageBreak={handleInsertDocumentPageBreak}
-                          onInsertCitation={() => setCitationPickerOpen(true)}
-                          onInsertImage={() => documentImageInputRef.current?.click()}
-                          onInsertTable={() =>
-                            runEditorCommand((editor) =>
-                              editorChain(editor)
-                                .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
-                                .run(),
-                            )
-                          }
+                          quickActions={{
+                            onInsertLink: handleInsertLink,
+                            onInsertTable: () =>
+                              runEditorCommand((editor) =>
+                                editorChain(editor)
+                                  .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+                                  .run(),
+                              ),
+                            onInsertImage: handleInsertImageUrl,
+                            onOpenSettings: projectPermissions.canRenameProject
+                              ? () => setSettingsModalOpen(true)
+                              : undefined,
+                            insertDisabled: !editorInstance || !canEditSelected,
+                            settingsDisabled: !projectPermissions.canRenameProject,
+                          }}
                         />
                       ) : null}
                       <div className="workbench-document-pane">
                         <WorkbenchDocumentPageView
                           zoom={documentZoom}
                           wordCount={wordCount}
+                          documentFontFamily={selectedDocumentFont.fontFamily}
                           flushToDrawer={documentDrawerOpen}
                           title={
                             <input
@@ -4773,6 +5315,9 @@ function editorChain(editor: Editor): ChainedCommands {
                       formatPanel={
                         <WorkbenchDocumentFormatPanel
                           editor={editorInstance}
+                          documentFontFamilyId={documentSettings.fontFamilyId}
+                          onDocumentFontFamilyChange={handleDocumentFontChange}
+                          onResetTypography={handleResetDocumentTypography}
                           onOpenCitation={handleOpenCitation}
                           onInsertPageBreak={handleInsertDocumentPageBreak}
                         />
@@ -4971,14 +5516,6 @@ function editorChain(editor: Editor): ChainedCommands {
                       revision={citationRevision}
                     />
                   </>
-                ) : noteMode === "canvas" ? (
-                  <WorkbenchNoteCanvas
-                    data={canvasData}
-                    linkableRecords={linkableForSelected}
-                    canEdit={canEditSelected}
-                    onChange={updateCanvasData}
-                    onSendToDocument={sendHtmlToDocument}
-                  />
                 ) : (
                   <WorkbenchNoteBoard
                     data={boardData}
@@ -5081,6 +5618,44 @@ function editorChain(editor: Editor): ChainedCommands {
         activeId={selectedId}
         onSelect={selectNote}
         onClose={() => setSwitcherOpen(false)}
+      />
+      <WorkbenchShareProjectModal
+        open={shareModalOpen}
+        projectId={resolvedShareProjectId}
+        projectTitle={
+          selectedProjectMeta?.title ??
+          props.projects.find((p) => p.id === resolvedShareProjectId)?.title ??
+          (resolvedShareProjectId ? "Project" : "Personal workbench")
+        }
+        ownerId={
+          selectedProjectMeta?.ownerId ??
+          props.projects.find((p) => p.id === resolvedShareProjectId)?.owner_id ??
+          null
+        }
+        currentUserId={props.currentUserId}
+        accessRole={selectedProjectAccessRole}
+        noteTitle={title}
+        canExportNote={Boolean(selectedNote)}
+        onExportNote={(format) => exportCurrentNote(format)}
+        onOpenSettings={() => {
+          setShareModalOpen(false);
+          setSettingsModalOpen(true);
+        }}
+        onClose={() => setShareModalOpen(false)}
+      />
+      <WorkbenchProjectSettingsModal
+        open={settingsModalOpen}
+        project={
+          resolvedShareProjectId
+            ? props.projects.find((p) => p.id === resolvedShareProjectId) ?? null
+            : null
+        }
+        accessRole={selectedProjectAccessRole}
+        onOpenShare={() => {
+          setSettingsModalOpen(false);
+          setShareModalOpen(true);
+        }}
+        onClose={() => setSettingsModalOpen(false)}
       />
     </div>
   );

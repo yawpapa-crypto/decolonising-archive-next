@@ -1,0 +1,20 @@
+/**
+ * Research canvas styles (scoped).
+ * Does not use legacy .workbench-note-canvas rules in workbench.css.
+ * Load via notes/layout.tsx — not on the global workbench bundle.
+ */
+
+/**
+ * Research canvas stylesheet bundle (production).
+ * Scoped to .workbench-research-canvas — does not use legacy .workbench-note-canvas in workbench.css.
+ */
+@import "./_tokens.css";
+@import "./_layout.css";
+@import "./_immersive-shell.css";
+@import "./_overlays.css";
+@import "./_ui.css";
+@import "./_stage.css";
+@import "./_objects.css";
+@import "./_shapes.css";
+@import "./_canvas-manage.css";
+@import "./_inspector-form.css";

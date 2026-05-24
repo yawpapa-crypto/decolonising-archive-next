@@ -110,12 +110,14 @@ body.workbench-notes-document-mode
 
 body.workbench-notes-document-mode
   .workbench-notes-page-premium.workbench-editorial-reading
-  .workbench-document-top-bar {
+  .workbench-document-taskbar {
   position: sticky !important;
   top: 0 !important;
-  z-index: 95 !important;
+  z-index: 120 !important;
   flex-shrink: 0 !important;
-  background: #ffffff !important;
+  background: linear-gradient(180deg, rgba(255, 255, 254, 0.98), rgba(250, 249, 246, 0.96)) !important;
+  backdrop-filter: blur(18px) saturate(1.08);
+  -webkit-backdrop-filter: blur(18px) saturate(1.08);
 }
 
 body.workbench-notes-document-mode

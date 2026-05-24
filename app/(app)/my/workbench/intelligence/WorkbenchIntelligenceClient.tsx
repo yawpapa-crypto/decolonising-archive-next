@@ -44,22 +44,14 @@ import IntelligenceResearchCorpus from "./components/IntelligenceResearchCorpus"
 import IntelligenceReviewStats from "./components/IntelligenceReviewStats";
 import IntelligenceReviewWorkspace from "./components/IntelligenceReviewWorkspace";
 import IntelligenceSourcesPanel from "./components/IntelligenceSourcesPanel";
+import IntelligenceSectionSwitcher, {
+  type IntelligenceSectionId,
+} from "./components/IntelligenceSectionSwitcher";
 import IntelligenceTimeline from "./components/IntelligenceTimeline";
 import { cn } from "@/lib/cn";
 import "@/app/styles/workbench-intelligence-dashboard.css";
 
-const INTELLIGENCE_TABS = [
-  { id: "overview", label: "Overview" },
-  { id: "sources", label: "Sources" },
-  { id: "geography", label: "Geography" },
-  { id: "timeline", label: "Timeline" },
-  { id: "reviews", label: "Reviews" },
-  { id: "citations", label: "Citations" },
-  { id: "recommendations", label: "Recommendations" },
-  { id: "records", label: "Records" },
-] as const;
-
-type IntelligenceTabId = (typeof INTELLIGENCE_TABS)[number]["id"];
+type IntelligenceTabId = IntelligenceSectionId;
 
 const WorkbenchGeographyMap = dynamic(() => import("./components/WorkbenchGeographyMap"), {
   ssr: false,
@@ -187,16 +179,22 @@ export default function WorkbenchIntelligenceClient({
   }
 
   function revealRecords() {
-    setActiveTab("records");
-    window.requestAnimationFrame(scrollToRecordsPanel);
+    handleSectionChange("records");
+  }
+
+  function handleSectionChange(tab: IntelligenceTabId) {
+    setActiveTab(tab);
+    window.requestAnimationFrame(() => {
+      document.getElementById("ri-section-anchor")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (tab === "records") scrollToRecordsPanel();
+    });
   }
 
   function applyFacetUpdate(next: Partial<IntelligenceFacetFilters>, nextFilter?: IntelligenceFilter) {
     resetPlaceState();
     if (nextFilter) setFilter(nextFilter);
     setFacets({ ...EMPTY_FACETS, ...next });
-    setActiveTab("records");
-    window.requestAnimationFrame(scrollToRecordsPanel);
+    handleSectionChange("records");
   }
 
   function applyPlaceFilter(placeId: string | null) {
@@ -242,8 +240,7 @@ export default function WorkbenchIntelligenceClient({
     }
 
     setFacets(next);
-    setActiveTab("records");
-    window.requestAnimationFrame(scrollToRecordsPanel);
+    handleSectionChange("records");
   }
 
   function applyComparisonFilter(presetId: string | null) {
@@ -256,8 +253,7 @@ export default function WorkbenchIntelligenceClient({
     }
 
     setFacets({ ...EMPTY_FACETS, ...COMPARISON_FACETS[presetId] });
-    setActiveTab("records");
-    window.requestAnimationFrame(scrollToRecordsPanel);
+    handleSectionChange("records");
   }
 
   function applyCountryFilter(country: string | null) {
@@ -386,28 +382,18 @@ export default function WorkbenchIntelligenceClient({
         </p>
       ) : null}
 
+      <IntelligenceSectionSwitcher active={activeTab} onChange={handleSectionChange} />
+      <div id="ri-section-anchor" className="ri-section-anchor" aria-hidden />
+
+      {activeTab === "overview" ? (
+        <>
       <div id="ri-overview" className="ri-zone ri-zone--overview">
         <IntelligenceKpis kpis={snapshot.dashboard} reviewKpis={snapshot.reviewKpis} />
       </div>
 
-      <nav className="workbench-intelligence-tabs" aria-label="Research intelligence sections">
-        {INTELLIGENCE_TABS.map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            className={cn(activeTab === tab.id && "is-active")}
-            aria-current={activeTab === tab.id ? "page" : undefined}
-            onClick={() => setActiveTab(tab.id)}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </nav>
-
       <div
         id="ri-overview-panel"
         className="ri-zone ri-zone--panel workbench-intelligence-tab-panel"
-        hidden={activeTab !== "overview"}
       >
         <IntelligenceOverviewPanel
           overview={snapshot.overviewMetrics}
@@ -424,7 +410,7 @@ export default function WorkbenchIntelligenceClient({
                   : action.targetId === "ri-reviews"
                     ? "reviews"
                     : "overview";
-              setActiveTab(targetTab);
+              handleSectionChange(targetTab);
               window.requestAnimationFrame(() => {
                 document.getElementById(action.targetId)?.scrollIntoView({ behavior: "smooth", block: "start" });
               });
@@ -432,11 +418,11 @@ export default function WorkbenchIntelligenceClient({
             }
             if (action.kind === "filter") {
               applyFacetUpdate({}, action.filter);
-              setActiveTab("records");
+              handleSectionChange("records");
               return;
             }
             applyFacetUpdate({ openAccess: action.value });
-            setActiveTab("records");
+            handleSectionChange("records");
           }}
         />
 
@@ -469,11 +455,13 @@ export default function WorkbenchIntelligenceClient({
           </div>
         ) : null}
       </div>
+        </>
+      ) : null}
 
+      {activeTab === "sources" ? (
       <div
         id="ri-sources"
         className="ri-zone ri-zone--panel workbench-intelligence-tab-panel"
-        hidden={activeTab !== "sources"}
       >
         <IntelligenceSourcesPanel
           sources={snapshot.sourceIntelligence}
@@ -481,11 +469,12 @@ export default function WorkbenchIntelligenceClient({
           onSourceSelect={applySourceFilter}
         />
       </div>
+      ) : null}
 
+      {activeTab === "geography" ? (
       <div
         id="ri-geography"
         className="ri-zone ri-zone--panel workbench-intelligence-tab-panel"
-        hidden={activeTab !== "geography"}
       >
         <WorkbenchGeographyMap
           selectedCountry={selectedCountry}
@@ -499,11 +488,12 @@ export default function WorkbenchIntelligenceClient({
           onSelectPreset={applyComparisonFilter}
         />
       </div>
+      ) : null}
 
+      {activeTab === "timeline" ? (
       <div
         id="ri-timeline"
         className="ri-zone ri-zone--panel workbench-intelligence-tab-panel"
-        hidden={activeTab !== "timeline"}
       >
         <IntelligenceTimeline
           temporal={temporalCoverage}
@@ -511,11 +501,12 @@ export default function WorkbenchIntelligenceClient({
           onYearSelect={applyYearFilter}
         />
       </div>
+      ) : null}
 
+      {activeTab === "reviews" ? (
       <div
         id="ri-reviews"
         className="ri-zone ri-zone--panel workbench-intelligence-tab-panel"
-        hidden={activeTab !== "reviews"}
       >
         <IntelligenceReviewStats reviews={reviewIntelligence} />
         <IntelligenceReviewWorkspace
@@ -526,11 +517,12 @@ export default function WorkbenchIntelligenceClient({
           pipelineStages={pipelineStages}
         />
       </div>
+      ) : null}
 
+      {activeTab === "citations" ? (
       <div
         id="ri-citations"
         className="ri-zone ri-zone--panel workbench-intelligence-tab-panel"
-        hidden={activeTab !== "citations"}
       >
         <IntelligenceCitationPanel
           citation={snapshot.citationIntelligence}
@@ -538,15 +530,16 @@ export default function WorkbenchIntelligenceClient({
           onAuthorSelect={applyAuthorFilter}
           onFilterRecords={(nextFilter) => {
             applyFacetUpdate({}, nextFilter);
-            setActiveTab("records");
+            handleSectionChange("records");
           }}
         />
       </div>
+      ) : null}
 
+      {activeTab === "recommendations" ? (
       <div
         id="ri-recommendations"
         className="ri-zone ri-zone--panel workbench-intelligence-tab-panel"
-        hidden={activeTab !== "recommendations"}
       >
         <IntelligenceResearchCorpus
           review={snapshot.literatureReview}
@@ -590,11 +583,12 @@ export default function WorkbenchIntelligenceClient({
           </section>
         ) : null}
       </div>
+      ) : null}
 
+      {activeTab === "records" ? (
       <div
         id="ri-records"
         className="ri-zone ri-zone--panel workbench-intelligence-tab-panel"
-        hidden={activeTab !== "records"}
       >
         <div className="ri-section-shell">
           <div className="ri-section-shell__head">
@@ -647,6 +641,7 @@ export default function WorkbenchIntelligenceClient({
 
         <IntelligencePrivacyPanel />
       </div>
+      ) : null}
 
       <IntelligenceFacetsPanel
         facets={snapshot.facets}

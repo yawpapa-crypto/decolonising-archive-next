@@ -1,12 +1,56 @@
 import { Extension } from "@tiptap/core";
 
 export const DOCUMENT_FONT_FAMILIES = [
-  { id: "source-serif", label: "Source Serif", value: '"Source Serif 4", Georgia, serif' },
-  { id: "inter", label: "Inter", value: '"Inter", "Inter Tight", system-ui, sans-serif' },
-  { id: "georgia", label: "Georgia", value: "Georgia, 'Times New Roman', serif" },
-  { id: "times", label: "Times New Roman", value: "'Times New Roman', Times, serif" },
-  { id: "arial", label: "Arial", value: "Arial, Helvetica, sans-serif" },
-  { id: "courier", label: "Courier", value: "'Courier New', Courier, monospace" },
+  {
+    id: "inter",
+    label: "Inter",
+    value: 'var(--font-workbench-inter), "Inter", system-ui, sans-serif',
+  },
+  {
+    id: "roboto",
+    label: "Roboto",
+    value: 'var(--font-workbench-roboto), "Roboto", system-ui, sans-serif',
+  },
+  {
+    id: "open-sans",
+    label: "Open Sans",
+    value: 'var(--font-workbench-open-sans), "Open Sans", system-ui, sans-serif',
+  },
+  {
+    id: "lato",
+    label: "Lato",
+    value: 'var(--font-workbench-lato), "Lato", system-ui, sans-serif',
+  },
+  {
+    id: "montserrat",
+    label: "Montserrat",
+    value: 'var(--font-workbench-montserrat), "Montserrat", system-ui, sans-serif',
+  },
+  {
+    id: "poppins",
+    label: "Poppins",
+    value: 'var(--font-workbench-poppins), "Poppins", system-ui, sans-serif',
+  },
+  {
+    id: "source-sans-3",
+    label: "Source Sans 3",
+    value: 'var(--font-workbench-source-sans-3), "Source Sans 3", system-ui, sans-serif',
+  },
+  {
+    id: "nunito-sans",
+    label: "Nunito Sans",
+    value: 'var(--font-workbench-nunito-sans), "Nunito Sans", system-ui, sans-serif',
+  },
+  {
+    id: "merriweather",
+    label: "Merriweather",
+    value: 'var(--font-workbench-merriweather), "Merriweather", Georgia, serif',
+  },
+  {
+    id: "ibm-plex-sans",
+    label: "IBM Plex Sans",
+    value: 'var(--font-workbench-ibm-plex-sans), "IBM Plex Sans", system-ui, sans-serif',
+  },
 ] as const;
 
 export type DocumentFontFamilyId = (typeof DOCUMENT_FONT_FAMILIES)[number]["id"];

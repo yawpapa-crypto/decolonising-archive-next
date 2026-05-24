@@ -9,6 +9,12 @@ import {
   type WorkbenchNoteStatus,
   normalizeNoteStatus,
 } from "@/lib/workbench-note-status";
+import { isActiveCollaboratorStatus, normalizeCollaboratorEmail } from "@/lib/workbench-collaboration";
+import { buildNoteSaveActivitySummary } from "@/lib/workbench-project-collaboration";
+import {
+  logWorkbenchProjectActivity,
+  snapshotWorkbenchNoteVersion,
+} from "@/lib/workbench-project-collaboration-actions";
 import { htmlToPlainText, normalizeNoteTitle, noteMetricsFromEditor } from "@/lib/workbench-note-utils";
 
 const WB = "/my/workbench";
@@ -46,22 +52,8 @@ async function assertCanEditNote(
     return { ok: false, error: "You do not have permission to edit this note." };
   }
 
-  const { data: project } = await supabase
-    .from("workbench_projects")
-    .select("owner_id")
-    .eq("id", row.project_id)
-    .maybeSingle();
-
-  if (project?.owner_id === userId) return { ok: true, note: row };
-
-  const { data: membership } = await supabase
-    .from("workbench_collaborators")
-    .select("role")
-    .eq("project_id", row.project_id)
-    .eq("user_id", userId)
-    .maybeSingle();
-
-  if (membership?.role === "editor") return { ok: true, note: row };
+  const canEdit = await assertCanEditProjectNotes(supabase, row.project_id, userId);
+  if (canEdit.ok) return { ok: true, note: row };
 
   return { ok: false, error: "You do not have permission to edit this note." };
 }
@@ -88,29 +80,93 @@ async function assertCanReadNote(
     return { ok: false, error: "You do not have permission to view this note." };
   }
 
+  const canView = await assertCanViewProjectNotes(supabase, row.project_id, userId);
+  if (canView.ok) return { ok: true, note: row };
+
+  return { ok: false, error: "You do not have permission to view this note." };
+}
+
+async function projectMembershipRole(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  projectId: string,
+  userId: string,
+  userEmail: string,
+): Promise<"owner" | "editor" | "viewer" | null> {
   const { data: project } = await supabase
     .from("workbench_projects")
-    .select("id")
-    .eq("id", row.project_id)
+    .select("owner_id")
+    .eq("id", projectId)
     .maybeSingle();
 
-  if (!project) return { ok: false, error: "You do not have permission to view this note." };
-  return { ok: true, note: row };
+  if (!project) return null;
+  if (project.owner_id === userId) return "owner";
+
+  const { data: byUser } = await supabase
+    .from("workbench_collaborators")
+    .select("role, status")
+    .eq("project_id", projectId)
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (byUser && isActiveCollaboratorStatus(byUser.status)) {
+    if (byUser.role === "editor") return "editor";
+    return "viewer";
+  }
+
+  if (userEmail) {
+    const { data: byEmail } = await supabase
+      .from("workbench_collaborators")
+      .select("role, status")
+      .eq("project_id", projectId)
+      .ilike("invited_email", userEmail)
+      .maybeSingle();
+
+    if (byEmail && isActiveCollaboratorStatus(byEmail.status)) {
+      if (byEmail.role === "editor") return "editor";
+      return "viewer";
+    }
+  }
+
+  return null;
+}
+
+async function assertCanViewProjectNotes(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  projectId: string,
+  userId: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const email = normalizeCollaboratorEmail(user?.email || "");
+  const role = await projectMembershipRole(supabase, projectId, userId, email);
+  if (!role) return { ok: false, error: "Project not found or access denied." };
+  return { ok: true };
+}
+
+async function assertCanEditProjectNotes(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  projectId: string,
+  userId: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const email = normalizeCollaboratorEmail(user?.email || "");
+  const role = await projectMembershipRole(supabase, projectId, userId, email);
+  if (role === "owner" || role === "editor") return { ok: true };
+  return { ok: false, error: "You do not have permission to edit this project." };
 }
 
 async function assertCanReadProject(
   supabase: Awaited<ReturnType<typeof createClient>>,
   projectId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  const { data, error } = await supabase
-    .from("workbench_projects")
-    .select("id")
-    .eq("id", projectId)
-    .maybeSingle();
-
-  if (error) return { ok: false, error: error.message };
-  if (!data) return { ok: false, error: "Project not found or access denied." };
-  return { ok: true };
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Sign in required." };
+  return assertCanViewProjectNotes(supabase, projectId, user.id);
 }
 
 function revalidateNotePaths(note: WorkbenchNoteRow, previousProjectId?: string | null) {
@@ -131,7 +187,7 @@ export async function createWorkbenchNote(input: {
 
   const projectId = input.projectId?.trim() || null;
   if (projectId) {
-    const access = await assertCanReadProject(supabase, projectId);
+    const access = await assertCanEditProjectNotes(supabase, projectId, user.id);
     if (!access.ok) return { ok: false, error: access.error };
   }
 
@@ -179,7 +235,12 @@ export async function updateWorkbenchNote(input: {
   characterCount?: number;
   projectId?: string | null;
   status?: WorkbenchNoteStatus;
-}): Promise<{ ok: boolean; error?: string; note?: WorkbenchNoteRow }> {
+  saveContext?: {
+    mode?: "document" | "board" | "canvas";
+    activityAction?: string;
+  };
+  expectedUpdatedAt?: string | null;
+}): Promise<{ ok: boolean; error?: string; note?: WorkbenchNoteRow; conflict?: boolean }> {
   const noteId = input.noteId?.trim();
   if (!noteId) return { ok: false, error: "Missing note." };
 
@@ -224,6 +285,23 @@ export async function updateWorkbenchNote(input: {
     return { ok: true, note: permission.note };
   }
 
+  if (
+    input.expectedUpdatedAt &&
+    permission.note.updated_at &&
+    permission.note.updated_at !== input.expectedUpdatedAt
+  ) {
+    return {
+      ok: false,
+      conflict: true,
+      error:
+        "New changes are available. Review or reload before saving so you do not overwrite a collaborator.",
+    };
+  }
+
+  if (permission.note.project_id) {
+    await snapshotWorkbenchNoteVersion(permission.note, user.id);
+  }
+
   const { data: note, error } = await supabase
     .from("workbench_notes")
     .update(patch)
@@ -241,8 +319,24 @@ export async function updateWorkbenchNote(input: {
     projectId: (note as WorkbenchNoteRow).project_id,
   });
 
-  revalidateNotePaths(note as WorkbenchNoteRow, permission.note.project_id);
-  return { ok: true, note: note as WorkbenchNoteRow };
+  const saved = note as WorkbenchNoteRow;
+  if (saved.project_id) {
+    void logWorkbenchProjectActivity({
+      projectId: saved.project_id,
+      noteId: saved.id,
+      action: input.saveContext?.activityAction ?? "note_saved",
+      summary: buildNoteSaveActivitySummary({
+        mode: input.saveContext?.mode,
+        noteTitle: saved.title,
+      }),
+      targetType: "note",
+      targetId: saved.id,
+      metadata: { mode: input.saveContext?.mode ?? null },
+    });
+  }
+
+  revalidateNotePaths(saved, permission.note.project_id);
+  return { ok: true, note: saved };
 }
 
 export async function toggleWorkbenchNotePinned(input: {

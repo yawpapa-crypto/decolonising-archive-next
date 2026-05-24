@@ -127,7 +127,17 @@ function parseBoardCards(note: WorkbenchNoteWithProject): ParsedBoardCard[] {
 function parseCanvasBlocks(note: WorkbenchNoteWithProject) {
   const json = note.content_json;
   if (!isRecord(json?.workbenchCanvas)) return [];
-  const blocks = Array.isArray(json.workbenchCanvas.blocks) ? json.workbenchCanvas.blocks : [];
+  const canvas = json.workbenchCanvas as Record<string, unknown>;
+  const objects = Array.isArray(canvas.objects) ? canvas.objects : [];
+  if (objects.length) {
+    return objects.filter(isRecord).map((block, index) => ({
+      id: textValue(block.id, `canvas-${note.id}-${index}`),
+      type: textValue(block.type, "text"),
+      content: textValue(block.body, textValue(block.content, "")),
+      linkedRecordId: typeof block.linkedRecordId === "string" ? block.linkedRecordId : null,
+    }));
+  }
+  const blocks = Array.isArray(canvas.blocks) ? canvas.blocks : [];
   return blocks.filter(isRecord).map((block, index) => ({
     id: textValue(block.id, `canvas-${note.id}-${index}`),
     type: textValue(block.type, "text"),

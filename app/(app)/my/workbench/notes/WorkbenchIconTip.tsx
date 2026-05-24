@@ -16,6 +16,10 @@ type Props = {
   tip: string;
   /** Optional extra detail (second line) */
   info?: string;
+  /** Ms before showing (default 320 — quicker than native title) */
+  delay?: number;
+  /** Visual variant */
+  variant?: "default" | "canvas";
   children: ReactNode;
   className?: string;
 };
@@ -30,6 +34,7 @@ type TipPosition = {
 
 const TIP_GAP = 8;
 const TIP_ESTIMATED_HEIGHT = 44;
+const DEFAULT_DELAY_MS = 320;
 
 function computePosition(anchor: HTMLElement): TipPosition {
   const rect = anchor.getBoundingClientRect();
@@ -46,18 +51,27 @@ function computePosition(anchor: HTMLElement): TipPosition {
   };
 }
 
-/** Wraps icon controls with a portaled hover tooltip (escapes overflow clipping). */
-export default function WorkbenchIconTip({ tip, info, children, className }: Props) {
+/** Wraps controls with a portaled hover/focus tooltip (no native title delay). */
+export default function WorkbenchIconTip({
+  tip,
+  info,
+  delay = DEFAULT_DELAY_MS,
+  variant = "default",
+  children,
+  className,
+}: Props) {
   const tooltipId = useId();
   const hostRef = useRef<HTMLSpanElement>(null);
+  const showTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
   const [position, setPosition] = useState<TipPosition | null>(null);
 
-  const nativeTitle = info ? `${tip} — ${info}` : tip;
-
   useEffect(() => {
     setMounted(true);
+    return () => {
+      if (showTimerRef.current) clearTimeout(showTimerRef.current);
+    };
   }, []);
 
   const syncPosition = useCallback(() => {
@@ -66,20 +80,36 @@ export default function WorkbenchIconTip({ tip, info, children, className }: Pro
     setPosition(computePosition(anchor));
   }, []);
 
-  const show = useCallback(() => {
+  const showNow = useCallback(() => {
+    if (showTimerRef.current) {
+      clearTimeout(showTimerRef.current);
+      showTimerRef.current = null;
+    }
     syncPosition();
     setVisible(true);
   }, [syncPosition]);
 
+  const scheduleShow = useCallback(() => {
+    if (showTimerRef.current) clearTimeout(showTimerRef.current);
+    showTimerRef.current = setTimeout(showNow, delay);
+  }, [delay, showNow]);
+
   const hide = useCallback(() => {
+    if (showTimerRef.current) {
+      clearTimeout(showTimerRef.current);
+      showTimerRef.current = null;
+    }
     setVisible(false);
   }, []);
 
-  const handleBlur = useCallback((event: FocusEvent<HTMLSpanElement>) => {
-    const next = event.relatedTarget;
-    if (next && hostRef.current?.contains(next as Node)) return;
-    hide();
-  }, [hide]);
+  const handleBlur = useCallback(
+    (event: FocusEvent<HTMLSpanElement>) => {
+      const next = event.relatedTarget;
+      if (next && hostRef.current?.contains(next as Node)) return;
+      hide();
+    },
+    [hide],
+  );
 
   useEffect(() => {
     if (!visible) return;
@@ -98,7 +128,14 @@ export default function WorkbenchIconTip({ tip, info, children, className }: Pro
       ? createPortal(
           <span
             id={tooltipId}
-            className={`workbench-icon-tip__popup workbench-icon-tip__popup--portal is-${position.placement}`}
+            className={[
+              "workbench-icon-tip__popup",
+              "workbench-icon-tip__popup--portal",
+              `is-${position.placement}`,
+              variant === "canvas" ? "is-canvas" : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
             role="tooltip"
             style={{
               top: position.top,
@@ -117,11 +154,10 @@ export default function WorkbenchIconTip({ tip, info, children, className }: Pro
       <span
         ref={hostRef}
         className={["workbench-icon-tip", className].filter(Boolean).join(" ")}
-        title={nativeTitle}
         aria-describedby={visible ? tooltipId : undefined}
-        onMouseEnter={show}
+        onMouseEnter={scheduleShow}
         onMouseLeave={hide}
-        onFocusCapture={show}
+        onFocusCapture={scheduleShow}
         onBlurCapture={handleBlur}
       >
         {children}

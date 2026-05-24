@@ -302,10 +302,16 @@ function syncSourcePaginationStates() {
 
 function formatSourcePaginationChip(state) {
   if (state.connected === false) return `${state.label}: not connected`;
-  if (state.error) return `${state.label}: unavailable`;
+  if (state.error) {
+    if (isSourceDiagnosticsEnabled()) return `${state.label}: ${state.error}`;
+    return "";
+  }
   if (!state.loadedCount && state.source !== "archive") {
-    if (state.source === "core") return "CORE: unavailable";
-    return `${state.label}: empty`;
+    if (isSourceDiagnosticsEnabled()) {
+      if (state.source === "core") return "CORE: empty";
+      return `${state.label}: empty`;
+    }
+    return "";
   }
   if (!state.hasMore && state.loadedCount > 0) return `${state.label}: all loaded`;
   if (state.total != null && state.total > state.loadedCount) {
@@ -328,7 +334,9 @@ function renderUnifiedSourceChips() {
       ]
         .filter(Boolean)
         .join(" ");
-      return `<span class="${chipClass}">${escapeHtml(formatSourcePaginationChip(state))}</span>`;
+      const chipText = formatSourcePaginationChip(state);
+      if (!chipText) return "";
+      return `<span class="${chipClass}">${escapeHtml(chipText)}</span>`;
     })
     .join("")}</div>`;
 }
@@ -555,7 +563,27 @@ function scoreSearchResult(record, query, options = {}) {
     if (!foldedPhrase) continue;
     if (fields.title.includes(foldedPhrase)) score += 42;
     else if (fields.fullText.includes(foldedPhrase)) score += 24;
+    if (fields.keywords.includes(foldedPhrase)) score += 32;
   }
+
+  if (tokens.length >= 2) {
+    const joined = tokens.join(" ");
+    if (fields.keywords.includes(joined)) score += 36;
+    if (fields.fullText.includes(joined)) score += 30;
+    if (fields.title.includes(joined)) score += 48;
+  }
+
+  Object.entries(SEMINAL_AUTHOR_BOOSTS).forEach(([concept, authors]) => {
+    const conceptNorm = normalizeComparable(concept);
+    if (!context.normalized.includes(conceptNorm) && !tokens.every((token) => conceptNorm.includes(token))) return;
+    authors.forEach((author) => {
+      if (fields.authors.includes(author)) score += 50;
+      if (fields.keywords.includes(author)) score += 24;
+    });
+  });
+
+  if (String(record.abstract || "").trim().length > 80) score += 8;
+  else if (String(record.id || "").startsWith("live-") && !String(record.summary || "").trim()) score -= 6;
 
   for (const token of tokens) {
     if (fields.summary.includes(token)) score += 9;
@@ -1327,6 +1355,9 @@ const FEATURED_COLLECTION_TITLES = [
 
 const FEATURED_QUERY_SUGGESTIONS = [
   "African philosophy",
+  "critical consciousness",
+  "Paulo Freire",
+  "pedagogy of the oppressed",
   "Kwasi Wiredu",
   "Paulin Hountondji",
   "Claude Ake",
@@ -1353,7 +1384,7 @@ const EXPANDED_THEME_GROUPS = {
   ecology:["more-than-human knowledge","river archives","seed sovereignty","forest memory","environmental justice","ecological repair","pastoral knowledge","agrarian histories","extractive modernity","mineral frontiers","oceanic worlds","climate adaptation","land stewardship","watershed memory"],
   media:["radio histories","film cultures","photography","broadcasting publics","community media","cassette circulations","print networks","newspapers","documentary practice","visual essays","digital humanities","interface criticism","media archaeology","sound circulation"],
   diaspora:["black Atlantic","Indian Ocean worlds","Afro-Caribbean thought","Afro-Latin archives","migration memory","return imaginaries","maroon histories","diaspora publishing","abolitionist lineages","transnational solidarities","oceanic routes","exile archives","creole worlds","diaspora pedagogy"],
-  education:["school archives","university reform","student movements","public scholarship","textbook critique","teacher training","knowledge commons","community classrooms","workshop cultures","apprenticeship","literacy politics","radical libraries","study circles","learning infrastructures"],
+  education:["school archives","university reform","student movements","public scholarship","textbook critique","teacher training","knowledge commons","community classrooms","workshop cultures","apprenticeship","literacy politics","radical libraries","study circles","learning infrastructures","critical consciousness","paulo freire","liberation pedagogy","pedagogy of the oppressed"],
   restitution:["collection violence","looting records","return negotiations","museum metadata","exhibition politics","display ethics","ethnographic collections","object biographies","holding institutions","restitution law","deaccession practices","repatriation ethics","collection custody","museum accountability"],
   economy_labour:["labour histories","cooperative economies","platform cooperativism","market women networks","labour migration","industrialisation","economic sovereignty","debt and development","trade routes","informal infrastructures","union cultures","resource extraction","value chains","commons governance"],
   identity:["self-representation","portraiture","racial formation","national culture","memory politics","public monuments","iconography","cultural citizenship","representational justice","visual self-fashioning","identity repair","nation and narration","symbolic power","diasporic self-fashioning"],
@@ -1901,7 +1932,16 @@ function inferSourceType(value) {
 }
 
 function rightsWarning(record) {
-  if (RIGHTS_RISK_STATUSES.has(record.rightsStatus)) return "Rights are unclear or restricted. Metadata and source links are shown instead of hosted full media.";
+  const isLiveExternal =
+    getResultMode(record) === "live" || String(record.id || "").startsWith("live-");
+  if (record.rightsStatus === "Check source" || record.accessType === "Metadata Only") {
+    if (isLiveExternal) {
+      return "External scholarly record. Use the links below to open the paper on Semantic Scholar or via DOI. The preview text is bibliographic metadata, not hosted full media in this archive.";
+    }
+  }
+  if (RIGHTS_RISK_STATUSES.has(record.rightsStatus)) {
+    return "Rights are unclear or restricted for hosted media in this archive. Metadata and source links are shown instead.";
+  }
   if (CULTURAL_MEDIA_BLOCKERS.has(record.culturalSensitivity)) return "Cultural protocol restricts media display. Use the source link or review channel for context.";
   if (record.accessType === "Thumbnail Only") return "Thumbnail-only access. Do not reuse media without checking the original source.";
   return "";
@@ -2431,6 +2471,9 @@ function inferImportedCategory(title) {
 function inferImportedConcepts(title) {
   const lower = foldText(title);
   const concepts = [];
+  if (/freire|pedagogy of the oppressed|critical consciousness|conscientization|banking education/.test(lower)) {
+    concepts.push("critical consciousness", "Paulo Freire", "liberation pedagogy");
+  }
   if (/philosophy|epistemology|ethics|ubuntu|identity/.test(lower)) concepts.push("African philosophy","epistemic inquiry");
   if (/politics|colonialism|human rights|anarchism|integration|xenophobia/.test(lower)) concepts.push("political thought","colonial critique");
   if (/music|aesthetics|art|cinema|literature/.test(lower)) concepts.push("cultural criticism","visual and sonic cultures");
@@ -2506,8 +2549,23 @@ function buildWorkingLibraryRecord(filename, index) {
     period:"",
     concepts,
     themes,
-    summary:`Imported from the African Philosophy Working Library to expand the local search index for ${focus}.`,
-    abstract:`Supplementary working-library record for "${title}" by ${creator}.`,
+    summary: (() => {
+      const lower = foldText(title);
+      if (/pedagogy of the oppressed|paulo freire/.test(lower)) {
+        return `Foundational work on liberation pedagogy and critical consciousness by ${creator}. Essential reading for participatory education, literacy, and anti-oppressive teaching.`;
+      }
+      if (/freire|critical consciousness|conscientization/.test(lower)) {
+        return `Scholarly text engaging critical consciousness and emancipatory education, associated with ${creator}.`;
+      }
+      return `Imported from the African Philosophy Working Library to expand the local search index for ${focus}.`;
+    })(),
+    abstract: (() => {
+      const lower = foldText(title);
+      if (/pedagogy of the oppressed|paulo freire/.test(lower)) {
+        return `Paulo Freire's landmark account of how oppressed learners develop critical consciousness through dialogical, problem-posing education rather than banking models of instruction.`;
+      }
+      return `Supplementary working-library record for "${title}" by ${creator}.`;
+    })(),
     description:[
       `This entry extends the static archive dataset beyond the original curated records by indexing a title from the local African Philosophy Working Library. It is designed so searches for underrepresented topics such as African philosophy, politics, religion, literature, music, and gender studies return broader results on the hosted site.`,
       "The current detail view is built from filename-level metadata. It preserves the title, creator, inferred knowledge areas, and discovery links so the record remains useful now, while still allowing richer abstracts, cover images, and catalogue references to be added later."
@@ -2652,6 +2710,10 @@ const QUERY_EXPANSION_MAP = {
   "nkrumah":["pan-africanism","consciencism","political thought","socialist imaginaries"],
   "cabral":["liberation philosophy","national culture","anti-colonial struggle","movement strategy"],
   "biko":["black consciousness","psychological liberation","anti-apartheid","student movements"],
+  "freire":["paulo freire","critical consciousness","pedagogy of the oppressed","conscientization","banking education"],
+  "paulo freire":["critical consciousness","pedagogy of the oppressed","conscientization","banking education","liberation pedagogy"],
+  "critical consciousness":["paulo freire","pedagogy of the oppressed","conscientization","banking education","liberation pedagogy"],
+  "pedagogy of the oppressed":["paulo freire","critical consciousness","conscientization","banking education"],
   "adinkra":["akan","visual sovereignty","symbol systems","graphic sovereignty"],
   "ifa":["yoruba","divination systems","oral traditions","indigenous logic"],
   "museum":["restitution","display ethics","holding institutions","collection violence"],
@@ -2659,6 +2721,26 @@ const QUERY_EXPANSION_MAP = {
   "sonic":["music","radio histories","listening","cassette circulations"],
   "architecture":["precolonial urbanism","vernacular architecture","spatial justice","settlement memory"]
 };
+
+const SEMINAL_AUTHOR_BOOSTS = {
+  "critical consciousness": ["freire", "paulo freire"],
+  "black consciousness": ["biko", "steve biko"],
+  "ubuntu": ["molefe", "muade", "ramose"],
+  "sankofa": ["ofosu-asare", "asare"]
+};
+
+function queryMatchesExpansionKey(normalized, tokens, key) {
+  const keyNorm = normalizeComparable(key);
+  if (!keyNorm) return false;
+  if (normalized.includes(keyNorm) || keyNorm.includes(normalized)) return true;
+  const keyTokens = keyNorm.split(/\s+/).filter(Boolean);
+  if (keyTokens.length >= 2 && keyTokens.every((token) => tokens.includes(token))) return true;
+  if (tokens.length >= 2) {
+    const overlap = tokens.filter((token) => keyTokens.includes(token)).length;
+    if (overlap >= Math.min(tokens.length, keyTokens.length)) return true;
+  }
+  return false;
+}
 
 const MEDIA_DISCOVERY_TERMS = ["archives","books","oral history","visual culture","architecture","manuscripts","political thought","music","pedagogy","museum collections"];
 const LANGUAGE_DISCOVERY_TERMS = ["archive","philosophy","oral tradition","metadata"];
@@ -2697,7 +2779,7 @@ function buildQueryContext(query) {
   const expandedPhrases = [];
 
   Object.entries(QUERY_EXPANSION_MAP).forEach(([key, values]) => {
-    if (normalized.includes(normalizeComparable(key))) {
+    if (queryMatchesExpansionKey(normalized, tokens, key)) {
       values.forEach(value => {
         expandedPhrases.push(value);
         normalizeComparable(value).split(/\s+/).filter(Boolean).forEach(token => expandedTerms.add(token));
@@ -2803,6 +2885,14 @@ function buildSuggestionIndex() {
       meta: source.region || "Source"
     });
   });
+  FEATURED_QUERY_SUGGESTIONS.forEach(label => {
+    suggestions.push({
+      label,
+      type: "concept",
+      value: label,
+      meta: "Concept"
+    });
+  });
   const seen = new Set();
   return suggestions.filter(item => {
     const key = `${item.type}::${normalizeComparable(item.label)}`;
@@ -2870,10 +2960,22 @@ function getSearchSuggestions(query, limit = 12) {
       if (meta.includes(normalized)) { score += 4; hasMatch = true; }
       tokens.forEach(token => {
         if (label.includes(token)) { score += 3; hasMatch = true; }
+        else if (token.length >= 4 && label.split(/\s+/).some((word) => word.startsWith(token))) {
+          score += 6;
+          hasMatch = true;
+        }
         if (meta.includes(token)) { score += 1; hasMatch = true; }
       });
+      if (tokens.length >= 2 && tokens.every((token) => label.includes(token) || label.split(/\s+/).some((word) => word.startsWith(token)))) {
+        score += 12;
+        hasMatch = true;
+      }
       if (!hasMatch) return { item, score: 0 };
+      if (label === normalized) score += 28;
+      else if (normalized.length >= 4 && label.startsWith(normalized)) score += 18;
+      if (item.type === "concept") score += 6;
       if (item.type === "title") score += 3;
+      if (item.type === "creator") score += 4;
       if (item.type === "theme") score += 2;
       if (item.type === "collection") score += 2;
       return { item, score };
@@ -3134,23 +3236,59 @@ function getRelatedSearchSuggestions(query, limit = 16) {
     .map(item => item.entry);
 }
 
-function getPrimaryNarrative(record) {
-  const ordered = [
-    {label:"Abstract", content: paragraphs(record.abstract)},
-    {label:"Summary", content: paragraphs(record.summary)},
-    {label:"Description", content: paragraphs(record.description)}
-  ].filter(section => section.content.length);
+function isBoilerplateDescription(content) {
+  const text = content.join(" ").trim();
+  if (!text) return true;
+  if (/^venue:\s*/i.test(text) && text.length < 220) return true;
+  if (/^year:\s*/i.test(text) && text.length < 120) return true;
+  return false;
+}
 
-  if (!ordered.length) {
+function getPrimaryNarrative(record) {
+  const abstract = paragraphs(record.abstract);
+  const summary = paragraphs(record.summary);
+  const description = paragraphs(record.description);
+  const absText = abstract.join(" ").trim();
+  const sumText = summary.join(" ").trim();
+
+  if (abstract.length) {
+    const secondary = [];
+    if (description.length && !isBoilerplateDescription(description)) {
+      const descText = description.join(" ").trim();
+      if (descText && !absText.includes(descText)) {
+        secondary.push({ label: "About this source", content: description });
+      }
+    }
+    return { primary: { label: "Abstract", content: abstract }, secondary };
+  }
+
+  if (summary.length) {
+    const secondary = description.length && !isBoilerplateDescription(description)
+      ? [{ label: "Description", content: description }]
+      : [];
+    return { primary: { label: "Summary", content: summary }, secondary };
+  }
+
+  if (description.length && !isBoilerplateDescription(description)) {
     return {
-      primary: {label:"Record note", content:["No extended narrative is available for this entry yet."]},
-      secondary: []
+      primary: { label: "Description", content: description },
+      secondary: [],
     };
   }
 
-  const [primary, ...rest] = ordered;
-  const secondary = rest.filter(section => section.content.join(" ") !== primary.content.join(" "));
-  return {primary, secondary};
+  const isLiveExternal =
+    getResultMode(record) === "live" || String(record.id || "").startsWith("live-");
+  return {
+    primary: {
+      label: "Record note",
+      content: [
+        isLiveExternal
+          ? "No abstract was returned from the external source. Open the original link below to read the full work."
+          : "No extended narrative is available for this entry yet.",
+      ],
+    },
+    secondary: [],
+  };
 }
 
 function getLeadImage(record) {
@@ -3336,6 +3474,20 @@ function buildRecordActions(record) {
       label: record.sourceActionLabel || "View source",
       note: record.source || record.institution || "",
       url: record.sourceUrl
+    });
+  }
+
+  if (record.pdf_url) {
+    actions.push({
+      label: "Open PDF",
+      note: "Open access full text",
+      url: record.pdf_url
+    });
+  } else if (record.full_text_url && record.full_text_url !== record.sourceUrl) {
+    actions.push({
+      label: "Open full text",
+      note: record.source || "External source",
+      url: record.full_text_url
     });
   }
 
@@ -4312,26 +4464,46 @@ const LIVE_SOURCE_ADAPTERS = [
     async search(query, options = {}) {
       const offset = Number(options.offset || 0);
       const limit = Number(options.limit || coreLimit);
-      const response = await fetchWithTimeout(`/api/core-search?q=${encodeURIComponent(query)}&limit=${limit}&offset=${offset}`, {}, 9000);
-      const data = await response.json();
-      if (!response.ok || !data.ok) {
-        throw new Error(data.detail || data.error || 'CORE search failed');
+      const emptyMeta = { count: null, nextOffset: null, nextCursor: null, displayedCount: 0 };
+      try {
+        const response = await fetchWithTimeout(
+          `/api/core-search?q=${encodeURIComponent(query)}&limit=${limit}&offset=${offset}`,
+          { headers: { Accept: "application/json" } },
+          9000,
+        );
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data.ok) {
+          return {
+            items: [],
+            error: data.detail || data.error || `CORE search failed (${response.status})`,
+            meta: emptyMeta,
+          };
+        }
+        if (data.partial) {
+          console.warn("[LIVE] CORE returned partial results:", data.warning || "cluster under load");
+        }
+        const incomingHits = Number(data.count ?? data.totalHits ?? 0);
+        if (incomingHits > 0) coreTotalHits = incomingHits;
+        const items = Array.isArray(data.results) ? data.results : [];
+        return {
+          items,
+          meta: {
+            count: incomingHits || null,
+            nextOffset: data.nextOffset ?? null,
+            nextCursor: null,
+            displayedCount: data.displayedCount ?? items.length,
+          },
+        };
+      } catch (error) {
+        const raw = String(error && error.message ? error.message : error);
+        return {
+          items: [],
+          error: /failed to fetch|networkerror/i.test(raw)
+            ? "CORE search could not reach the server — reload and try again."
+            : raw || "CORE search failed",
+          meta: emptyMeta,
+        };
       }
-      if (data.partial) {
-        console.warn('[LIVE] CORE returned partial results:', data.warning || 'cluster under load');
-      }
-      const incomingHits = Number(data.count ?? data.totalHits ?? 0);
-      if (incomingHits > 0) coreTotalHits = incomingHits;
-      const items = Array.isArray(data.results) ? data.results : [];
-      return {
-        items,
-        meta: {
-          count: incomingHits || null,
-          nextOffset: data.nextOffset ?? null,
-          nextCursor: null,
-          displayedCount: data.displayedCount ?? items.length,
-        },
-      };
     }
   },
   {
@@ -4750,12 +4922,20 @@ const LIVE_SOURCE_ADAPTERS = [
     async search(query, options = {}) {
       const offset = Number(options.offset || 0);
       const limit = Number(options.limit || DISCOVERY_PREVIEW_SIZE);
-      const json = await fetchJsonWithTimeout(
-        `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch=${encodeURIComponent(query)}&gsrlimit=${limit}&gsroffset=${offset}&prop=imageinfo|info&iiprop=url|extmetadata&inprop=url&format=json&origin=*`,
-        {},
-        7000,
+      const wikiResponse = await fetchWithTimeout(
+        `/api/search/wikimedia?q=${encodeURIComponent(query)}&limit=${limit}&offset=${offset}`,
+        { headers: { Accept: "application/json" } },
+        12000,
       );
-      const pages = json.query?.pages ? Object.values(json.query.pages) : [];
+      const json = await wikiResponse.json().catch(() => ({}));
+      if (!wikiResponse.ok || json.ok === false) {
+        return {
+          items: [],
+          error: json.error || `Wikimedia search failed (${wikiResponse.status})`,
+          meta: { count: null, nextOffset: null, displayedCount: 0 },
+        };
+      }
+      const pages = Array.isArray(json.pages) ? json.pages : [];
       const mapped = pages.map((page, index) => {
         const ext = page.imageinfo?.[0]?.extmetadata || {};
         return normalizeLiveRecord({
@@ -4843,25 +5023,41 @@ const LIVE_SOURCE_ADAPTERS = [
     async search(query, options = {}) {
       const cursor = options.cursor || "*";
       const limit = Number(options.limit || DISCOVERY_PAGE_SIZE);
-      const response = await fetchWithTimeout(
-        `/api/openalex-search?q=${encodeURIComponent(query)}&limit=${limit}&cursor=${encodeURIComponent(cursor)}`,
-        {},
-        12000
-      );
-      const data = await response.json();
-      if (!response.ok || !data.ok) {
-        throw new Error(data.detail || data.error || "OpenAlex search failed");
+      const emptyMeta = { count: null, nextCursor: null, nextOffset: null, displayedCount: 0 };
+      try {
+        const response = await fetchWithTimeout(
+          `/api/openalex-search?q=${encodeURIComponent(query)}&limit=${limit}&cursor=${encodeURIComponent(cursor)}`,
+          { headers: { Accept: "application/json" } },
+          12000,
+        );
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data.ok) {
+          return {
+            items: [],
+            error: data.detail || data.error || `OpenAlex search failed (${response.status})`,
+            meta: emptyMeta,
+          };
+        }
+        const items = Array.isArray(data.results) ? data.results.map((entry) => normalizeLiveRecord(entry)) : [];
+        return {
+          items,
+          meta: {
+            count: data.count ?? null,
+            nextCursor: data.nextCursor ?? null,
+            nextOffset: null,
+            displayedCount: data.displayedCount ?? items.length,
+          },
+        };
+      } catch (error) {
+        const raw = String(error && error.message ? error.message : error);
+        return {
+          items: [],
+          error: /failed to fetch|networkerror/i.test(raw)
+            ? "OpenAlex search could not reach the server — reload and try again."
+            : raw || "OpenAlex search failed",
+          meta: emptyMeta,
+        };
       }
-      const items = Array.isArray(data.results) ? data.results.map((entry) => normalizeLiveRecord(entry)) : [];
-      return {
-        items,
-        meta: {
-          count: data.count ?? null,
-          nextCursor: data.nextCursor ?? null,
-          nextOffset: null,
-          displayedCount: data.displayedCount ?? items.length,
-        },
-      };
     }
   }
 ];
@@ -5142,7 +5338,7 @@ async function fetchLiveResults(query){
           });
           statuses[index] = {
             label: adapter.label,
-            state: "fail",
+            state: isSourceDiagnosticsEnabled() ? "fail" : "skipped",
             count: 0,
             detail: adapterError,
           };
@@ -5233,7 +5429,7 @@ async function fetchLiveResults(query){
         if (!stillCurrent()) return;
         console.warn("[LIVE] adapter failed", { adapter: adapter.label, error: String(error) });
         const failMessage = String(error && error.message ? error.message : error);
-        statuses[index] = { label: adapter.label, state: "fail", count: 0, detail: failMessage };
+        statuses[index] = { label: adapter.label, state: isSourceDiagnosticsEnabled() ? "fail" : "skipped", count: 0, detail: failMessage };
         const sectionId = mapAdapterIdToDiscoverySection(adapter.id);
         if (sectionId !== "handoffs" && sectionId !== "previews") {
           applyDiscoverySection(sectionId, {
@@ -5553,12 +5749,39 @@ function renderRecordMediaIndicators(record) {
   return `<div class="record-card-media-indicators" aria-label="Available media">${bits.map((bit) => `<span>${escapeHtml(bit)}</span>`).join("")}</div>`;
 }
 
+
+function truncateCardSummary(text, max = 220) {
+  const cleaned = String(text || "").replace(/\s+/g, " ").trim();
+  if (!cleaned) return "";
+  if (cleaned.length <= max) return cleaned;
+  const slice = cleaned.slice(0, max);
+  const lastSpace = slice.lastIndexOf(" ");
+  const base = lastSpace > max * 0.6 ? slice.slice(0, lastSpace) : slice;
+  return `${base.trim()}…`;
+}
+
+function getRecordCardSummary(record) {
+  const abstract = String(record.abstract || "").trim();
+  if (abstract) return truncateCardSummary(abstract);
+  const summary = String(record.summary || "").trim();
+  if (summary && summary.length > 48 && !/^venue:/i.test(summary)) return truncateCardSummary(summary);
+  const description = Array.isArray(record.description)
+    ? record.description.join(" ")
+    : String(record.description || "").trim();
+  if (description && description.length > 48 && !/^venue:/i.test(description)) return truncateCardSummary(description);
+  const isLiveExternal =
+    getResultMode(record) === "live" || String(record.id || "").startsWith("live-");
+  if (isLiveExternal) {
+    const byline = record.creator ? ` By ${record.creator}.` : "";
+    return truncateCardSummary(
+      `${record.title || "Scholarly record"}.${byline} External metadata — open the original source for the full text.`,
+    );
+  }
+  return truncateCardSummary(summary || description || "Open the record for more detail.");
+}
+
 function renderCard(record) {
-  const summary =
-    record.abstract ||
-    record.summary ||
-    (Array.isArray(record.description) ? record.description[0] : record.description) ||
-    '';
+  const summary = getRecordCardSummary(record);
   const mode = getResultMode(record);
   const streamOrigin = libraryStreamOriginLabel(record);
   const streamOriginClass = libraryStreamOriginClass(record);
@@ -5570,6 +5793,11 @@ function renderCard(record) {
   const drawerOpen = getCardDrawerOpen(record.id);
   const hasThumb = recordHasDisplayableImage(record);
 
+  const isLiveExternal =
+    getResultMode(record) === "live" || String(record.id || "").startsWith("live-");
+  const summaryBadge = isLiveExternal
+    ? `<span class="record-card-summary-badge">${record.abstract ? "Scholarly abstract" : "External metadata"}</span>`
+    : "";
   const creatorLine = record.creator ? `<div class="record-card-creator">${escapeHtml(record.creator)}</div>` : "";
   const sourceBits = [];
   if (subSource) sourceBits.push(escapeHtml(subSource));
@@ -5610,7 +5838,7 @@ function renderCard(record) {
             <h3 class="record-card-title archive-card-title">${escapeHtml(record.title)}</h3>
             ${creatorLine}
             ${sourceLine}
-            ${summary ? `<p class="record-card-summary">${escapeHtml(summary)}</p>` : ""}
+            ${summary ? `<div class="record-card-summary-row">${summaryBadge}<p class="record-card-summary">${escapeHtml(summary)}</p></div>` : ""}
             <div class="record-card-divider" aria-hidden="true"></div>
             ${renderRecordMediaIndicators(record)}
             ${renderCardRightsBlock(record)}

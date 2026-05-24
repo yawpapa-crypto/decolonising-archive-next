@@ -2,22 +2,29 @@
 
 import type { ReactNode } from "react";
 import {
-  FilePlus,
-  Quote,
-  Image as ImageIcon,
-  Table,
   FileText,
+  Image as ImageIcon,
   LayoutGrid,
+  Link2,
   Kanban,
+  Settings2,
   SlidersHorizontal,
-  PanelRight,
+  Table2,
 } from "lucide-react";
 import WorkbenchDocumentZoomControls from "./WorkbenchDocumentZoomControls";
-import WorkbenchIconTip from "./WorkbenchIconTip";
 
 export type DocumentSidebarTab = "format" | "document";
 
 type NoteModeOption = { id: string; label: string };
+
+type DocumentQuickActions = {
+  onInsertLink: () => void;
+  onInsertTable: () => void;
+  onInsertImage: () => void;
+  onOpenSettings?: () => void;
+  insertDisabled?: boolean;
+  settingsDisabled?: boolean;
+};
 
 const MODE_ICONS: Record<string, typeof FileText> = {
   document: FileText,
@@ -25,14 +32,20 @@ const MODE_ICONS: Record<string, typeof FileText> = {
   board: Kanban,
 };
 
-const MODE_TIPS: Record<string, { tip: string; info: string }> = {
-  document: { tip: "Document", info: "Paged writing view" },
-  canvas: { tip: "Canvas", info: "Freeform blocks" },
-  board: { tip: "Board", info: "Cards & sources" },
+const MODE_TIPS: Record<string, string> = {
+  document: "Document",
+  canvas: "Canvas",
+  board: "Board",
 };
+const TASKBAR_MODE_ORDER = ["document", "board", "canvas"];
+
+const ICON_SIZE = 18;
+const ICON_STROKE = 2;
 
 type Props = {
   menuBar: ReactNode;
+  insertMenu: ReactNode;
+  typographyControls?: ReactNode;
   zoom: number;
   onZoomChange: (zoom: number) => void;
   noteModes: NoteModeOption[];
@@ -40,17 +53,15 @@ type Props = {
   onModeChange: (mode: string) => void;
   formatPanelOpen: boolean;
   onToggleFormatPanel: () => void;
-  inspectorOpen: boolean;
-  onToggleInspector: () => void;
-  onInsertCitation?: () => void;
-  onInsertImage?: () => void;
-  onInsertTable?: () => void;
-  onInsertPageBreak?: () => void;
-  canEdit: boolean;
+  quickActions: DocumentQuickActions;
+  collaborationControls?: ReactNode;
+  workspaceBadge?: ReactNode;
 };
 
 export default function WorkbenchDocumentTopBar({
   menuBar,
+  insertMenu,
+  typographyControls,
   zoom,
   onZoomChange,
   noteModes,
@@ -58,135 +69,158 @@ export default function WorkbenchDocumentTopBar({
   onModeChange,
   formatPanelOpen,
   onToggleFormatPanel,
-  inspectorOpen,
-  onToggleInspector,
-  onInsertCitation,
-  onInsertImage,
-  onInsertTable,
-  onInsertPageBreak,
-  canEdit,
+  quickActions,
+  collaborationControls,
+  workspaceBadge,
 }: Props) {
+  const taskbarModes = [...noteModes].sort(
+    (left, right) =>
+      TASKBAR_MODE_ORDER.indexOf(left.id) - TASKBAR_MODE_ORDER.indexOf(right.id),
+  );
+
   return (
-    <header
-      className="workbench-document-top-bar workbench-document-top-bar--notion"
-      aria-label="Document controls"
-    >
-      <div className="workbench-document-top-bar__left">
-        <div className="workbench-document-top-bar__group workbench-document-top-bar__menus">
+    <header className="workbench-document-taskbar" aria-label="Document taskbar">
+      <div className="workbench-document-taskbar__rail">
+        {collaborationControls ? (
+          <div className="workbench-document-taskbar-group workbench-document-taskbar-group--collaboration">
+            {collaborationControls}
+          </div>
+        ) : null}
+
+        <span className="workbench-document-taskbar-separator" aria-hidden />
+
+        <div className="workbench-document-taskbar-group workbench-document-taskbar-group--menus">
           {menuBar}
         </div>
 
-        <div className="workbench-document-top-bar__group workbench-document-top-bar__zoom">
-          <WorkbenchDocumentZoomControls zoom={zoom} onZoomChange={onZoomChange} />
-        </div>
+        <span
+          className="workbench-document-taskbar-separator workbench-document-taskbar-separator--insert"
+          aria-hidden
+        />
 
         <div
-          className="workbench-document-top-bar__group workbench-document-top-bar__insert"
+          className="workbench-document-taskbar-group workbench-document-taskbar-group--insert"
           role="group"
           aria-label="Insert"
         >
-          <WorkbenchIconTip tip="Add page" info="New page at cursor">
-            <button
-              type="button"
-              className="workbench-document-top-bar__icon-btn"
-              disabled={!canEdit || !onInsertPageBreak}
-              onClick={onInsertPageBreak}
-              aria-label="Add page — new page at cursor"
-            >
-              <FilePlus size={16} strokeWidth={1.75} aria-hidden />
-            </button>
-          </WorkbenchIconTip>
-          <WorkbenchIconTip tip="Cite" info="Insert reference">
-            <button
-              type="button"
-              className="workbench-document-top-bar__icon-btn"
-              disabled={!canEdit || !onInsertCitation}
-              onClick={onInsertCitation}
-              aria-label="Cite — insert reference"
-            >
-              <Quote size={16} strokeWidth={1.75} aria-hidden />
-            </button>
-          </WorkbenchIconTip>
-          <WorkbenchIconTip tip="Image" info="Upload or embed">
-            <button
-              type="button"
-              className="workbench-document-top-bar__icon-btn"
-              disabled={!canEdit || !onInsertImage}
-              onClick={onInsertImage}
-              aria-label="Image — upload or embed"
-            >
-              <ImageIcon size={16} strokeWidth={1.75} aria-hidden />
-            </button>
-          </WorkbenchIconTip>
-          <WorkbenchIconTip tip="Table" info="Insert grid">
-            <button
-              type="button"
-              className="workbench-document-top-bar__icon-btn"
-              disabled={!canEdit || !onInsertTable}
-              onClick={onInsertTable}
-              aria-label="Table — insert grid"
-            >
-              <Table size={16} strokeWidth={1.75} aria-hidden />
-            </button>
-          </WorkbenchIconTip>
+          {insertMenu}
+        </div>
+
+        <span
+          className="workbench-document-taskbar-separator workbench-document-taskbar-separator--zoom"
+          aria-hidden
+        />
+
+        <div className="workbench-document-taskbar-group workbench-document-taskbar-group--zoom">
+          <WorkbenchDocumentZoomControls zoom={zoom} onZoomChange={onZoomChange} />
         </div>
       </div>
 
-      <div className="workbench-document-top-bar__right">
+      <div className="workbench-document-taskbar__center" aria-label="Text style">
+        {typographyControls}
+      </div>
+
+      <div className="workbench-document-taskbar__tail">
+        {workspaceBadge ? (
+          <span className="workbench-document-taskbar-secondary">{workspaceBadge}</span>
+        ) : null}
+
         <div
-          className="workbench-document-mode-switcher workbench-document-mode-switcher--icons"
+          className="workbench-document-taskbar-segment workbench-document-taskbar-segment--modes"
           role="tablist"
           aria-label="Note mode"
         >
-          {noteModes.map((mode) => {
+          {taskbarModes.map((mode) => {
             const ModeIcon = MODE_ICONS[mode.id] ?? FileText;
-            const modeTip = MODE_TIPS[mode.id] ?? { tip: mode.label, info: "Switch view" };
+            const tip = MODE_TIPS[mode.id] ?? mode.label;
             return (
-              <WorkbenchIconTip key={mode.id} tip={modeTip.tip} info={modeTip.info}>
-                <button
-                  type="button"
-                  role="tab"
-                  className={`workbench-document-mode-button workbench-document-mode-button--icon${
-                    activeMode === mode.id ? " is-active" : ""
-                  }`}
-                  aria-selected={activeMode === mode.id}
-                  aria-label={`${modeTip.tip} — ${modeTip.info}`}
-                  onClick={() => onModeChange(mode.id)}
-                >
-                  <ModeIcon size={16} strokeWidth={1.75} aria-hidden />
-                </button>
-              </WorkbenchIconTip>
+              <button
+                key={mode.id}
+                type="button"
+                role="tab"
+                className={`workbench-document-taskbar-button workbench-document-mode-button workbench-document-mode-button--${mode.id}${
+                  activeMode === mode.id ? " is-active" : ""
+                }`}
+                aria-selected={activeMode === mode.id}
+                aria-label={tip}
+                data-tooltip={tip}
+                onClick={() => onModeChange(mode.id)}
+              >
+                <ModeIcon size={ICON_SIZE} strokeWidth={ICON_STROKE} aria-hidden />
+              </button>
             );
           })}
         </div>
 
-        <WorkbenchIconTip tip="Format" info="Text & layout">
+        <span className="workbench-document-taskbar-separator workbench-document-taskbar-separator--utilities" aria-hidden />
+
+        <div
+          className="workbench-document-taskbar-segment workbench-document-taskbar-segment--utilities"
+          role="group"
+          aria-label="Insert quick actions"
+        >
           <button
             type="button"
-            className={`workbench-document-top-bar__icon-btn workbench-document-top-bar__format-btn${
+            className="workbench-document-taskbar-button workbench-document-utility-button workbench-document-utility-button--link"
+            aria-label="Link"
+            data-tooltip="Link"
+            disabled={quickActions.insertDisabled}
+            onClick={quickActions.onInsertLink}
+          >
+            <Link2 size={ICON_SIZE} strokeWidth={ICON_STROKE} aria-hidden />
+          </button>
+          <button
+            type="button"
+            className="workbench-document-taskbar-button workbench-document-utility-button workbench-document-utility-button--table"
+            aria-label="Table"
+            data-tooltip="Table"
+            disabled={quickActions.insertDisabled}
+            onClick={quickActions.onInsertTable}
+          >
+            <Table2 size={ICON_SIZE} strokeWidth={ICON_STROKE} aria-hidden />
+          </button>
+          <button
+            type="button"
+            className="workbench-document-taskbar-button workbench-document-utility-button workbench-document-utility-button--image"
+            aria-label="Image"
+            data-tooltip="Image"
+            disabled={quickActions.insertDisabled}
+            onClick={quickActions.onInsertImage}
+          >
+            <ImageIcon size={ICON_SIZE} strokeWidth={ICON_STROKE} aria-hidden />
+          </button>
+        </div>
+
+        <span className="workbench-document-taskbar-separator workbench-document-taskbar-separator--settings" aria-hidden />
+
+        <div
+          className="workbench-document-taskbar-segment workbench-document-taskbar-segment--panels"
+          role="group"
+          aria-label="Document panels"
+        >
+          <button
+            type="button"
+            className="workbench-document-taskbar-button workbench-document-taskbar-button--settings"
+            aria-label={quickActions.settingsDisabled ? "Project settings unavailable" : "Settings"}
+            data-tooltip={quickActions.settingsDisabled ? "Project settings unavailable" : "Settings"}
+            disabled={quickActions.settingsDisabled || !quickActions.onOpenSettings}
+            onClick={quickActions.onOpenSettings}
+          >
+            <Settings2 size={ICON_SIZE} strokeWidth={ICON_STROKE} aria-hidden />
+          </button>
+          <button
+            type="button"
+            className={`workbench-document-taskbar-button workbench-document-taskbar-button--panel${
               formatPanelOpen ? " is-active" : ""
             }`}
             aria-pressed={formatPanelOpen}
-            aria-label="Format — text and layout"
+            aria-label="Format"
+            data-tooltip="Format"
             onClick={onToggleFormatPanel}
           >
-            <SlidersHorizontal size={16} strokeWidth={1.75} aria-hidden />
+            <SlidersHorizontal size={ICON_SIZE} strokeWidth={ICON_STROKE} aria-hidden />
           </button>
-        </WorkbenchIconTip>
-
-        <WorkbenchIconTip tip="Inspector" info="Sources & notes">
-          <button
-            type="button"
-            className={`workbench-document-top-bar__icon-btn workbench-document-top-bar__inspector-btn${
-              inspectorOpen ? " is-active" : ""
-            }`}
-            aria-pressed={inspectorOpen}
-            aria-label="Inspector — sources and notes"
-            onClick={onToggleInspector}
-          >
-            <PanelRight size={16} strokeWidth={1.75} aria-hidden />
-          </button>
-        </WorkbenchIconTip>
+        </div>
       </div>
     </header>
   );

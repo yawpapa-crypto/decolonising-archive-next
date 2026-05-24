@@ -37,16 +37,13 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts",
-    "/tmp/decolonising-archive-build/types/**/*.ts",
-    "/tmp/decolonising-archive-build/dev/types/**/*.ts",
-    "/tmp/wb-build/types/**/*.ts",
-    "/tmp/wb-build/dev/types/**/*.ts",
-    ".next-build/types/**/*.ts",
-    ".next-build/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
+    ".next/dev",
+    ".next-build",
+    "tmp",
     "app/_payload_disabled",
     "**/_payload_disabled/**",
     "**/*-PY.ts",

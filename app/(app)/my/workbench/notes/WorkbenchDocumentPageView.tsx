@@ -9,11 +9,11 @@ import {
   type ReactNode,
 } from "react";
 
-/** Default page width (US Letter at 96dpi); expands to fill workspace up to the drawer */
+/** Default page width (US Letter at 96dpi), capped for a comfortable writing measure. */
 export const DOCUMENT_PAGE_WIDTH_PX = 816;
 export const DOCUMENT_PAGE_MIN_WIDTH_PX = 816;
 export const DOCUMENT_PAGE_MIN_WIDTH_MOBILE_PX = 280;
-export const DOCUMENT_PAGE_MAX_WIDTH_PX = 1680;
+export const DOCUMENT_PAGE_MAX_WIDTH_PX = 840;
 export const DOCUMENT_PAGE_HEIGHT_PX = 1056;
 export const DOCUMENT_PAGE_GAP_PX = 28;
 const PAGE_LEFT_GUTTER_PX = 12;
@@ -26,6 +26,7 @@ type Props = {
   pageLabel?: string;
   zoom?: number;
   wordCount?: number;
+  documentFontFamily?: string;
   /** When true, page fills width and sits flush against the format drawer */
   flushToDrawer?: boolean;
 };
@@ -39,6 +40,7 @@ export default function WorkbenchDocumentPageView({
   pageLabel = "Page 1",
   zoom = 100,
   wordCount,
+  documentFontFamily,
   flushToDrawer = false,
 }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -113,7 +115,12 @@ export default function WorkbenchDocumentPageView({
         .filter(Boolean)
         .join(" ")}
       aria-label="Document pages"
-      style={{ "--document-page-width": `${pageWidth}px` } as CSSProperties}
+      style={
+        {
+          "--document-page-width": `${pageWidth}px`,
+          "--workbench-document-font-family": documentFontFamily,
+        } as CSSProperties
+      }
     >
       <div className="workbench-document-pages-outer">
         <div

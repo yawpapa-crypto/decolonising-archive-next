@@ -1,46 +1,79 @@
-import { htmlToPlainText } from "@/lib/workbench-note-utils";
+import { normalizeNoteTitle } from "@/lib/workbench-note-utils";
 
-export function noteToPlainTextExport(title: string, plainText: string) {
-  const heading = title.trim() || "Untitled note";
-  const body = plainText.trim();
-  return body ? `${heading}\n\n${body}` : heading;
-}
+export type WorkbenchNoteExportFormat = "txt" | "md" | "html" | "jpeg" | "doc" | "pdf";
 
-export function noteToMarkdown(title: string, plainText: string) {
-  const heading = title.trim() || "Untitled note";
-  const body = plainText.trim();
-  if (!body) return `# ${heading}\n`;
-  const paragraphs = body.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
-  return `# ${heading}\n\n${paragraphs.join("\n\n")}\n`;
-}
-
-export function safeNoteFileSlug(title: string) {
-  const slug = title
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 60);
-  return slug || "note";
-}
+export const DOCUMENT_PAGE_JPEG_SELECTOR = ".workbench-document-pages-stack";
 
 export async function copyNoteToClipboard(title: string, plainText: string) {
-  const text = noteToPlainTextExport(title, plainText);
-  await navigator.clipboard.writeText(text);
-  return text;
+  const noteTitle = normalizeNoteTitle(title) || "Untitled note";
+  const body = plainText.trim();
+  const content = body ? `${noteTitle}\n\n${body}` : noteTitle;
+  await navigator.clipboard.writeText(content);
 }
 
-export function downloadNoteMarkdown(title: string, plainText: string) {
-  const markdown = noteToMarkdown(title, plainText);
-  const blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.download = `${safeNoteFileSlug(title)}.md`;
-  anchor.click();
-  URL.revokeObjectURL(url);
-}
+export type WorkbenchNoteExportOption = {
+  id: WorkbenchNoteExportFormat;
+  label: string;
+  description: string;
+  extension: string;
+};
 
-export function htmlToMarkdownLight(html: string) {
-  return htmlToPlainText(html);
+export const WORKBENCH_NOTE_EXPORT_OPTIONS: WorkbenchNoteExportOption[] = [
+  {
+    id: "pdf",
+    label: "PDF",
+    description: "Opens print dialog to save or print as PDF",
+    extension: ".pdf",
+  },
+  {
+    id: "doc",
+    label: "Word document",
+    description: "Download as Microsoft Word (.doc)",
+    extension: ".doc",
+  },
+  {
+    id: "txt",
+    label: "Plain text",
+    description: "Simple text without formatting",
+    extension: ".txt",
+  },
+  {
+    id: "md",
+    label: "Markdown",
+    description: "Markdown with headings and lists",
+    extension: ".md",
+  },
+  {
+    id: "html",
+    label: "HTML",
+    description: "Web page you can open in a browser",
+    extension: ".html",
+  },
+  {
+    id: "jpeg",
+    label: "JPEG image",
+    description: "Screenshot of the document pages as an image",
+    extension: ".jpg",
+  },
+];
+
+export async function exportDocumentPagesAsJpeg(filename: string) {
+  const element = document.querySelector<HTMLElement>(DOCUMENT_PAGE_JPEG_SELECTOR);
+  if (!element) {
+    throw new Error("Could not find document pages to export. Open Document mode first.");
+  }
+
+  const { toJpeg } = await import("html-to-image");
+  const dataUrl = await toJpeg(element, {
+    cacheBust: true,
+    pixelRatio: 2,
+    backgroundColor: "#ffffff",
+  });
+
+  const link = document.createElement("a");
+  link.href = dataUrl;
+  link.download = filename.endsWith(".jpg") || filename.endsWith(".jpeg") ? filename : `${filename}.jpg`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
 }

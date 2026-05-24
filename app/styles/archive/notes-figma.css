@@ -2783,6 +2783,30 @@ body.workbench-format-drawer-open .ai-citation-floating-trigger {
   cursor: not-allowed;
 }
 
+.workbench-format-panel__typography-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.9fr);
+  gap: 10px;
+}
+
+.workbench-format-panel__reset--inline {
+  margin-top: 8px;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid rgba(15, 61, 46, 0.12);
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(15, 61, 46, 0.72);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.workbench-format-panel__reset--inline:hover {
+  background: rgba(15, 61, 46, 0.05);
+  color: #1a1f1c;
+}
+
 .workbench-format-panel__field {
   display: flex;
   flex-direction: column;
@@ -3179,6 +3203,601 @@ body.workbench-format-drawer-open .ai-citation-floating-trigger {
 .workbench-notes-page-premium.workbench-editorial-reading .workbench-reading-page--document .workbench-rich-editor-shell {
   max-width: none !important;
   width: 100% !important;
+}
+
+/* Document-only layout: one compact taskbar above the readable page. */
+.workbench-notes-page-premium .workbench-notes-view.is-document-mode .workbench-pages-main {
+  background: #ffffff;
+  container-name: document-taskbar-workspace;
+  container-type: inline-size;
+}
+
+.workbench-notes-page-premium .workbench-notes-view.is-document-mode .workbench-document-taskbar {
+  --document-taskbar-ink: #11161b;
+  --document-taskbar-muted: #68727b;
+  --document-taskbar-border: rgba(17, 22, 27, 0.08);
+  --document-taskbar-divider: rgba(17, 22, 27, 0.08);
+  --document-taskbar-tint: rgba(17, 22, 27, 0.038);
+  --document-taskbar-lemon: #dfff2f;
+  position: sticky;
+  top: 0;
+  z-index: 120;
+  display: flex;
+  flex-wrap: nowrap !important;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  width: calc(100% - 24px);
+  max-width: calc(100% - 24px);
+  min-height: 60px;
+  margin: 12px auto 10px;
+  padding: 9px 12px;
+  border: 1px solid var(--document-taskbar-border);
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255, 255, 254, 0.98), rgba(250, 249, 246, 0.96));
+  box-shadow:
+    0 1px 2px rgba(17, 22, 27, 0.04),
+    0 16px 40px rgba(17, 22, 27, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(18px) saturate(1.08);
+  -webkit-backdrop-filter: blur(18px) saturate(1.08);
+  white-space: nowrap;
+  overflow: visible;
+}
+
+.workbench-document-taskbar__rail,
+.workbench-document-taskbar__tail {
+  display: inline-flex;
+  flex-wrap: nowrap !important;
+  align-items: center;
+  min-width: 0;
+}
+
+.workbench-document-taskbar__rail {
+  flex: 1 1 auto;
+  gap: 4px;
+  overflow: visible;
+}
+
+.workbench-document-taskbar__tail {
+  flex: 0 0 auto;
+  gap: 6px;
+  margin-left: auto;
+  padding-left: 10px;
+  border-left: 1px solid var(--document-taskbar-divider);
+}
+
+.workbench-document-taskbar-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.workbench-document-taskbar-group--collaboration {
+  padding-right: 8px;
+  margin-right: 4px;
+  border-right: 1px solid var(--document-taskbar-divider);
+}
+
+.workbench-document-taskbar-group--menus {
+  padding-right: 8px;
+  margin-right: 4px;
+  border-right: 1px solid var(--document-taskbar-divider);
+}
+
+.workbench-document-taskbar-group--insert {
+  padding-right: 8px;
+  margin-right: 4px;
+  border-right: 1px solid var(--document-taskbar-divider);
+}
+
+.workbench-document-taskbar-group--workspace {
+  margin-left: 0;
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.workbench-document-taskbar-separator {
+  display: none;
+}
+
+.workbench-document-taskbar-segment__divider {
+  flex: 0 0 1px;
+  width: 1px;
+  height: 20px;
+  margin: 0 3px;
+  background: var(--document-taskbar-divider);
+}
+
+.workbench-document-taskbar-button {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--document-taskbar-ink);
+  padding: 0;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  box-shadow: none;
+  cursor: pointer;
+  transition:
+    background 140ms ease,
+    color 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    transform 100ms ease;
+}
+
+.workbench-document-taskbar-button svg {
+  display: block;
+}
+
+.workbench-document-taskbar-button:hover:not(:disabled) {
+  border-color: rgba(17, 22, 27, 0.05);
+  background: rgba(17, 22, 27, 0.055);
+}
+
+.workbench-document-taskbar-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.workbench-document-taskbar-button.is-active {
+  background: var(--document-taskbar-ink);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 7px 17px rgba(17, 22, 27, 0.17);
+}
+
+.workbench-document-taskbar-button.is-accent {
+  background: var(--document-taskbar-lemon);
+  color: var(--document-taskbar-ink);
+  border-color: transparent;
+}
+
+.workbench-document-taskbar-button.is-accent:hover:not(:disabled) {
+  background: #d9fb2b;
+}
+
+.workbench-document-taskbar-button:disabled {
+  opacity: 0.36;
+  cursor: not-allowed;
+}
+
+.workbench-notes-page-premium .workbench-document-taskbar :is(button, select):focus-visible {
+  outline: 2px solid rgba(16, 19, 24, 0.28) !important;
+  outline-offset: 3px !important;
+  box-shadow: none !important;
+}
+
+.workbench-notes-page-premium .workbench-document-taskbar .workbench-document-taskbar-button.is-active:focus-visible {
+  outline: 2px solid rgba(16, 19, 24, 0.28) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 8px 22px rgba(16, 19, 24, 0.16) !important;
+}
+
+.workbench-document-taskbar [data-tooltip] {
+  position: relative;
+}
+
+.workbench-document-taskbar [data-tooltip]:hover::after,
+.workbench-document-taskbar [data-tooltip]:focus-visible::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 500;
+  padding: 6px 9px;
+  border-radius: 9px;
+  background: var(--document-taskbar-ink);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 8px 18px rgba(17, 22, 27, 0.16);
+}
+
+.workbench-document-taskbar [data-tooltip]:hover::before,
+.workbench-document-taskbar [data-tooltip]:focus-visible::before {
+  content: "";
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-bottom-color: var(--document-taskbar-ink);
+  z-index: 501;
+  pointer-events: none;
+}
+
+.workbench-document-taskbar-presence {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 11px;
+  border: 1px solid rgba(17, 22, 27, 0.045);
+  border-radius: 13px;
+  background: rgba(17, 22, 27, 0.032);
+  color: var(--document-taskbar-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: default;
+}
+
+.workbench-document-taskbar-presence__label {
+  white-space: nowrap;
+}
+
+.workbench-document-taskbar .workbench-project-access-badge {
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+
+.workbench-document-taskbar .workbench-note-menu-bar--topbar.workbench-note-menu-bar--icons {
+  min-height: 0 !important;
+  padding: 0 !important;
+  gap: 5px !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+
+.workbench-document-taskbar .workbench-note-menu-bar--topbar.workbench-note-menu-bar--icons .workbench-note-menu-button {
+  width: 38px !important;
+  height: 38px !important;
+  padding: 0 !important;
+  border: 1px solid transparent !important;
+  border-radius: 12px !important;
+  background: transparent !important;
+  color: var(--document-taskbar-ink) !important;
+  box-shadow: none !important;
+  appearance: none !important;
+}
+
+.workbench-document-taskbar .workbench-note-menu-bar--topbar.workbench-note-menu-bar--icons .workbench-note-menu-button:hover,
+.workbench-document-taskbar .workbench-note-menu-bar--topbar.workbench-note-menu-bar--icons .workbench-note-menu-button[aria-expanded="true"] {
+  background: rgba(17, 22, 27, 0.055) !important;
+  color: var(--document-taskbar-ink) !important;
+}
+
+.workbench-document-taskbar .workbench-note-menu-bar--topbar.workbench-note-menu-bar--icons .workbench-note-menu-button[aria-expanded="true"] {
+  background: var(--document-taskbar-ink) !important;
+  color: #ffffff !important;
+}
+
+.workbench-document-taskbar-zoom {
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  border: 1px solid rgba(17, 22, 27, 0.045);
+  border-radius: 13px;
+  background: rgba(17, 22, 27, 0.032);
+  overflow: hidden;
+}
+
+.workbench-document-taskbar .workbench-document-zoom-controls {
+  display: contents;
+}
+
+.workbench-document-taskbar .workbench-document-zoom-button {
+  width: 34px;
+  height: 38px;
+  border-radius: 0;
+  border: 0;
+}
+
+.workbench-document-taskbar .workbench-document-zoom-button:hover:not(:disabled) {
+  border-color: transparent;
+  background: rgba(17, 22, 27, 0.065);
+}
+
+.workbench-document-taskbar-zoom-value,
+.workbench-document-taskbar .workbench-document-zoom-select--compact {
+  min-width: 58px;
+  height: 38px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  text-align: center;
+  font-weight: 650;
+  font-size: 14px;
+  color: var(--document-taskbar-ink);
+  cursor: pointer;
+  appearance: none;
+}
+
+.workbench-document-taskbar-segment {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border: 0;
+  border-radius: 14px;
+  background: rgba(17, 22, 27, 0.032);
+  box-shadow: inset 0 0 0 1px rgba(17, 22, 27, 0.04);
+  flex-shrink: 0;
+}
+
+.workbench-document-taskbar-segment--tools {
+  gap: 2px;
+}
+
+.workbench-document-taskbar-segment .workbench-document-taskbar-button {
+  width: 36px;
+  height: 36px;
+  flex-basis: 36px;
+  border-radius: 11px;
+}
+
+.workbench-document-taskbar .workbench-document-mode-switcher--icons {
+  display: contents;
+}
+
+.workbench-document-taskbar-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.workbench-document-taskbar-collaboration {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.workbench-document-taskbar-collaboration .workbench-collaboration-avatar {
+  width: 28px;
+  height: 28px;
+}
+
+.workbench-notes-page-premium .workbench-notes-view.is-document-mode .workbench-document-pane {
+  background: #f8f7f3 !important;
+}
+
+.workbench-notes-page-premium .workbench-notes-view.is-document-mode .workbench-document-pages-outer {
+  padding: 18px 16px 32px;
+}
+
+.workbench-notes-page-premium .workbench-notes-view.is-document-mode .workbench-document-pages-stack,
+.workbench-notes-page-premium .workbench-notes-view.is-document-mode .workbench-document-zoom-spacer {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.workbench-notes-page-premium .workbench-notes-view.is-document-mode .workbench-reading-page--document {
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(15, 17, 15, 0.04), 0 10px 30px rgba(15, 17, 15, 0.04) !important;
+}
+
+.workbench-notes-page-premium .workbench-notes-view.is-document-mode .workbench-document-page-content {
+  padding: 56px clamp(46px, 7vw, 72px) 56px;
+}
+
+.workbench-notes-page-premium.workbench-editorial-reading:has(.workbench-notes-view.is-document-mode) {
+  --notes-drawer-width: 320px;
+}
+
+.workbench-notes-page-premium .workbench-notes-view.is-document-mode .workbench-document-inspector-dock {
+  width: min(320px, calc(100vw - 344px));
+}
+
+@media (max-width: 1180px) {
+  .workbench-document-taskbar-secondary {
+    display: none;
+  }
+}
+
+@container document-taskbar-workspace (max-width: 940px) {
+  .workbench-document-taskbar-secondary {
+    display: none;
+  }
+
+  .workbench-document-taskbar-presence__label {
+    display: none;
+  }
+
+  .workbench-document-mode-button--canvas,
+  .workbench-document-mode-button--board {
+    display: none;
+  }
+}
+
+@container document-taskbar-workspace (max-width: 820px) {
+  .workbench-document-taskbar .workbench-note-menu-button--file,
+  .workbench-document-taskbar .workbench-note-menu-button--view {
+    display: none !important;
+  }
+}
+
+@container document-taskbar-workspace (max-width: 700px) {
+  .workbench-document-taskbar .workbench-note-menu-button--file,
+  .workbench-document-taskbar .workbench-note-menu-button--view,
+  .workbench-document-taskbar-optional-narrow {
+    display: none !important;
+  }
+
+  .workbench-document-mode-button--document,
+  .workbench-document-taskbar-segment__divider {
+    display: none;
+  }
+
+  .workbench-notes-page-premium .workbench-notes-view.is-document-mode .workbench-document-taskbar {
+    gap: 3px;
+    padding: 6px;
+  }
+
+  .workbench-document-taskbar-button,
+  .workbench-document-taskbar .workbench-note-menu-bar--topbar.workbench-note-menu-bar--icons .workbench-note-menu-button {
+    width: 38px !important;
+    height: 38px !important;
+    flex-basis: 38px;
+  }
+
+  .workbench-document-taskbar-separator {
+    margin: 0 1px;
+  }
+}
+
+@media (max-width: 900px) {
+  .workbench-notes-page-premium .workbench-notes-view.is-document-mode .workbench-document-taskbar {
+    width: calc(100% - 16px);
+    min-height: 56px;
+    margin: 8px auto 6px;
+    padding: 8px;
+    border-radius: 20px;
+  }
+
+  .workbench-document-taskbar-group--workspace {
+    margin-left: 0;
+  }
+
+  .workbench-document-taskbar-separator {
+    margin: 0 2px;
+  }
+
+  .workbench-notes-page-premium .workbench-notes-view.is-document-mode .workbench-document-pages-outer {
+    padding: 12px 8px 28px;
+  }
+}
+
+@media (max-width: 720px) {
+  .workbench-document-taskbar .workbench-note-menu-button--file,
+  .workbench-document-taskbar .workbench-note-menu-button--view,
+  .workbench-document-taskbar-optional-narrow {
+    display: none !important;
+  }
+
+  .workbench-notes-page-premium .workbench-notes-view.is-document-mode .workbench-document-taskbar {
+    gap: 3px;
+    padding: 6px;
+  }
+
+  .workbench-document-taskbar-button,
+  .workbench-document-taskbar .workbench-note-menu-bar--topbar.workbench-note-menu-bar--icons .workbench-note-menu-button {
+    width: 38px !important;
+    height: 38px !important;
+    flex-basis: 38px;
+  }
+
+  .workbench-document-taskbar-separator {
+    margin: 0 1px;
+  }
+}
+
+
+.workbench-document-taskbar-segment--unified {
+  gap: 2px;
+  padding: 3px;
+}
+
+.workbench-document-taskbar-button--share {
+  background: #11161b !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+}
+
+.workbench-document-taskbar-button--share:hover:not(:disabled) {
+  background: #202830 !important;
+}
+
+.workbench-shell .workbench-notes-page-premium .workbench-document-taskbar .workbench-note-menu-bar,
+.workbench-notes-page-premium .workbench-document-taskbar .workbench-note-menu-bar {
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.workbench-shell .workbench-notes-page-premium .workbench-document-taskbar .workbench-document-taskbar-button,
+.workbench-shell .workbench-notes-page-premium .workbench-document-taskbar .workbench-note-menu-button,
+.workbench-notes-page-premium .workbench-document-taskbar .workbench-document-taskbar-button,
+.workbench-notes-page-premium .workbench-document-taskbar .workbench-note-menu-button {
+  border: 1px solid transparent !important;
+  box-shadow: none !important;
+}
+
+.workbench-shell .workbench-notes-page-premium .workbench-document-taskbar .workbench-note-menu-button:hover,
+.workbench-shell .workbench-notes-page-premium .workbench-document-taskbar .workbench-note-menu-button[aria-expanded="true"],
+.workbench-notes-page-premium .workbench-document-taskbar .workbench-note-menu-button:hover,
+.workbench-notes-page-premium .workbench-document-taskbar .workbench-note-menu-button[aria-expanded="true"] {
+  background: rgba(17, 19, 24, 0.06) !important;
+  border-color: transparent !important;
+  color: #111318 !important;
+  transform: none !important;
+}
+
+.workbench-shell .workbench-notes-page-premium .workbench-document-taskbar .workbench-note-menu-button[aria-expanded="true"],
+.workbench-notes-page-premium .workbench-document-taskbar .workbench-note-menu-button[aria-expanded="true"] {
+  background: #101318 !important;
+  color: #ffffff !important;
+}
+
+.workbench-notes-page-premium .workbench-document-taskbar :is(button, select):focus-visible {
+  outline: 2px solid rgba(16, 19, 24, 0.28) !important;
+  outline-offset: 3px !important;
+  box-shadow: none !important;
+}
+
+.workbench-shell .workbench-notes-page-premium .workbench-document-taskbar
+  .workbench-document-taskbar-group--insert
+  .workbench-note-menu-button,
+.workbench-notes-page-premium .workbench-document-taskbar
+  .workbench-document-taskbar-group--insert
+  .workbench-note-menu-button {
+  border-color: rgba(166, 190, 20, 0.18) !important;
+  background: rgba(223, 255, 47, 0.3) !important;
+  box-shadow: inset 0 0 0 1px rgba(223, 255, 47, 0.18) !important;
+}
+
+.workbench-shell .workbench-notes-page-premium .workbench-document-taskbar
+  .workbench-document-taskbar-group--insert
+  .workbench-note-menu-button:hover,
+.workbench-shell .workbench-notes-page-premium .workbench-document-taskbar
+  .workbench-document-taskbar-group--insert
+  .workbench-note-menu-button[aria-expanded="true"],
+.workbench-notes-page-premium .workbench-document-taskbar
+  .workbench-document-taskbar-group--insert
+  .workbench-note-menu-button:hover,
+.workbench-notes-page-premium .workbench-document-taskbar
+  .workbench-document-taskbar-group--insert
+  .workbench-note-menu-button[aria-expanded="true"] {
+  border-color: rgba(166, 190, 20, 0.28) !important;
+  background: #dfff2f !important;
+  color: #11161b !important;
+}
+
+.workbench-shell .workbench-notes-page-premium .workbench-document-taskbar
+  .workbench-document-taskbar-button--panel.is-active,
+.workbench-notes-page-premium .workbench-document-taskbar
+  .workbench-document-taskbar-button--panel.is-active {
+  background: rgba(223, 255, 47, 0.8) !important;
+  color: #11161b !important;
+  box-shadow: inset 0 0 0 1px rgba(166, 190, 20, 0.18) !important;
+}
+
+.workbench-shell .workbench-notes-page-premium .workbench-document-taskbar
+  .workbench-document-mode-button.is-active,
+.workbench-notes-page-premium .workbench-document-taskbar
+  .workbench-document-mode-button.is-active {
+  background: #11161b !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 14px rgba(17, 22, 27, 0.16) !important;
 }
 
 /* AI Citation — portaled floating trigger (Document mode, body-mounted) */
