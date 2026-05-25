@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AncestralAcknowledgementButton } from "@/src/components/site/AncestralAcknowledgement";
 
 const LEGAL_LINKS = [
   { href: "/terms", label: "Terms" },
@@ -19,6 +20,7 @@ export default function Footer() {
         </div>
 
         <nav className="site-footer-premium__links" aria-label="Legal and rights links">
+          <AncestralAcknowledgementButton className="site-footer-premium__acknowledgement" />
           {LEGAL_LINKS.map((link) => (
             <Link key={link.href} href={link.href}>
               {link.label}

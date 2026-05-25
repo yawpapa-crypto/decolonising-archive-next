@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
 import RouteAnalytics from "@/src/components/analytics/RouteAnalytics";
+import { AncestralAcknowledgementButton } from "@/src/components/site/AncestralAcknowledgement";
 
 function metadataBaseUrl() {
   const raw = (process.env.NEXT_PUBLIC_SITE_URL || "").trim();
@@ -61,6 +62,7 @@ export default function RootLayout({
 
         <footer className="site-footer">
           <nav className="site-footer-nav" aria-label="Legal and policies">
+            <AncestralAcknowledgementButton />
             <a href="/terms">Terms of Use</a>
             <a href="/copyright">Copyright &amp; Permissions</a>
             <a href="/privacy">Privacy Policy</a>

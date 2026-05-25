@@ -40,6 +40,7 @@ import type {
 import {
   copyNoteToClipboard,
   exportDocumentPagesAsJpeg,
+  exportNoteAsDocx,
   type WorkbenchNoteExportFormat,
 } from "@/lib/workbench-note-export";
 import {
@@ -3473,6 +3474,17 @@ export default function WorkbenchNotesClient(props: {
       return;
     }
 
+    if (format === "docx") {
+      void exportNoteAsDocx(noteTitle, exportHtml, `${baseName}.docx`).catch((error) => {
+        setSaveError(
+          error instanceof Error
+            ? error.message
+            : "Could not export Word document. Try again or use the PDF option.",
+        );
+      });
+      return;
+    }
+
     if (format === "pdf") {
       const printWindow = window.open("", "_blank", "noopener,noreferrer");
       if (!printWindow) {
@@ -4229,12 +4241,13 @@ function editorChain(editor: Editor): ChainedCommands {
           {
             label: "Save as / Export as",
             items: [
-              { id: "file-export-doc", label: "Export Word document", onClick: () => exportCurrentNote("doc"), disabled: !selectedNote },
               { id: "file-export-pdf", label: "Export PDF", onClick: () => exportCurrentNote("pdf"), disabled: !selectedNote },
-              { id: "file-export-txt", label: "Export plain text", onClick: () => exportCurrentNote("txt"), disabled: !selectedNote },
+              { id: "file-export-docx", label: "Export Word (.docx)", onClick: () => exportCurrentNote("docx"), disabled: !selectedNote },
               { id: "file-export-md", label: "Export Markdown", onClick: () => exportCurrentNote("md"), disabled: !selectedNote },
               { id: "file-export-html", label: "Export HTML", onClick: () => exportCurrentNote("html"), disabled: !selectedNote },
+              { id: "file-export-txt", label: "Export plain text", onClick: () => exportCurrentNote("txt"), disabled: !selectedNote },
               { id: "file-export-jpeg", label: "Export JPEG", onClick: () => exportCurrentNote("jpeg"), disabled: !selectedNote },
+              { id: "file-export-doc", label: "Export Word (legacy .doc)", onClick: () => exportCurrentNote("doc"), disabled: !selectedNote },
               { id: "file-print", label: "Print", onClick: handlePrintNote, disabled: !selectedNote },
             ],
           },
