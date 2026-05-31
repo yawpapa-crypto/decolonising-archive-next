@@ -3199,7 +3199,7 @@
   }
 }
 
-/* Geography map (react-simple-maps) */
+/* Geography map */
 .ri-geo-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.8fr);
@@ -3220,6 +3220,29 @@
 .ri-geo-map__canvas {
   width: 100%;
   height: auto;
+  display: block;
+}
+
+.ri-geo-map__country {
+  outline: none;
+  transition:
+    fill 160ms ease,
+    stroke-width 160ms ease;
+}
+
+.ri-geo-map__country[data-has-records="true"] {
+  cursor: pointer;
+}
+
+.ri-geo-map__country[data-has-records="true"]:hover,
+.ri-geo-map__country[data-has-records="true"]:focus-visible {
+  fill: #0f3d2e;
+  stroke-width: 0.7;
+}
+
+.ri-geo-map__country[data-selected="true"] {
+  stroke: #dfff2f;
+  stroke-width: 0.9;
 }
 
 .ri-geo-map__legend {

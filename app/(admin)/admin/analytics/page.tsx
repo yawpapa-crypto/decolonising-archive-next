@@ -1,72 +1,50 @@
-import AdminChartsShowcase from "@/src/components/admin/AdminChartsShowcase";
-
-type TopSearch = {
-  term: string;
-  count: number;
-  last_searched_at: string;
-};
-
-async function getTopSearches(): Promise<TopSearch[]> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-
-  try {
-    const res = await fetch(`${baseUrl}/api/top-searches`, {
-      cache: "no-store",
-    });
-
-    if (!res.ok) return [];
-
-    const data = await res.json();
-    return Array.isArray(data.results) ? data.results : [];
-  } catch {
-    return [];
-  }
-}
+import Link from "next/link";
+import { requireAdmin } from "@/src/lib/auth";
+import { getAdminWorkspaceSnapshot } from "@/lib/admin-workspace-snapshot";
+import { fetchAdminDashboardPreferences } from "@/app/(admin)/admin/workspace-preferences/actions";
+import { DEFAULT_ADMIN_DASHBOARD_PREFERENCES } from "@/app/(admin)/admin/workspace-preferences/types";
+import { getAdminNotifications, getUnreadAdminNotificationCount } from "@/lib/admin-notifications";
+import AdminWorkspaceShell from "@/src/components/admin/AdminWorkspaceShell";
 
 export default async function AdminAnalyticsPage() {
-  const results = await getTopSearches();
+  const admin = await requireAdmin();
+  const preferencesResult = await fetchAdminDashboardPreferences();
+  const preferences = preferencesResult.ok
+    ? preferencesResult.data
+    : DEFAULT_ADMIN_DASHBOARD_PREFERENCES;
+
+  const [snapshot, urgentNotifs, unreadCount] = await Promise.all([
+    getAdminWorkspaceSnapshot(preferences.date_range),
+    getAdminNotifications(admin.id, "urgent", 5).catch(() => []),
+    getUnreadAdminNotificationCount(admin.id).catch(() => 0),
+  ]);
+
+  const urgentUnread = urgentNotifs.filter((n) => n.status === "unread");
 
   return (
-    <div className="admin-dashboard">
-      <header className="admin-page-intro-card">
-        <p className="admin-kicker">Analytics</p>
-        <h1>Usage &amp; discovery</h1>
-        <p className="admin-subtext">
-          Top searches from the public site and chart templates for richer reporting.
-        </p>
-      </header>
+    <>
+      {urgentUnread.length > 0 ? (
+        <div className="admin-urgent-strip" role="alert">
+          <strong>
+            {urgentUnread.length === 1
+              ? "1 urgent alert:"
+              : `${urgentUnread.length} urgent alerts:`}
+          </strong>
+          {urgentUnread.slice(0, 3).map((n) => (
+            <span key={n.id} className="admin-urgent-strip__item">{n.title}</span>
+          ))}
+          <Link href="/admin/notifications?filter=urgent" className="admin-urgent-strip__link">
+            View all
+          </Link>
+        </div>
+      ) : null}
 
-      <AdminChartsShowcase />
-
-      <section className="admin-analytics-table-section">
-        <div className="admin-panel-label">Top searches</div>
-        <h2 className="admin-section-title">Terms in the last window</h2>
-
-        {results.length === 0 ? (
-          <p className="admin-muted">No search data yet.</p>
-        ) : (
-          <div className="admin-table-wrap">
-            <table className="admin-data-table">
-              <thead>
-                <tr>
-                  <th scope="col">Term</th>
-                  <th scope="col">Count</th>
-                  <th scope="col">Last searched</th>
-                </tr>
-              </thead>
-              <tbody>
-                {results.map((item) => (
-                  <tr key={item.term}>
-                    <td>{item.term}</td>
-                    <td>{item.count}</td>
-                    <td>{new Date(item.last_searched_at).toLocaleString()}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
-    </div>
+      <AdminWorkspaceShell
+        adminUserId={admin.id}
+        snapshot={snapshot}
+        initialPreferences={preferences}
+        unreadNotifications={unreadCount}
+      />
+    </>
   );
 }

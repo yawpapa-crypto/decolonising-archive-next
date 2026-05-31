@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "../../../../src/lib/supabase/server";
+import { updateLastLogin } from "@/src/lib/auth-hooks";
 
 const ADMIN_EMAILS = [
   "papayawofosu@gmail.com",
@@ -41,6 +42,8 @@ export async function adminPasswordSignIn(formData: FormData) {
     await supabase.auth.signOut();
     redirect("/admin/signin?message=This account is not authorised for admin access.");
   }
+
+  await updateLastLogin(data.user.id);
 
   redirect("/admin");
 }

@@ -6,7 +6,7 @@ import { useTransition } from "react";
 import { updateReviewFullText, updateReviewScreening } from "@/lib/workbench-review-actions";
 import type { WorkbenchReviewSnapshot } from "@/lib/workbench-review-module";
 import ReviewProjectShell from "./ReviewProjectShell";
-import { resultMessage, statusLabel } from "./review-shared";
+import { statusLabel } from "./review-shared";
 
 export default function ReviewFullTextClient({ snapshot }: { snapshot: WorkbenchReviewSnapshot }) {
   const router = useRouter();

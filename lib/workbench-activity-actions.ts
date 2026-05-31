@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { logActivityServer } from "@/lib/admin-analytics";
 import { createClient } from "@/src/lib/supabase/server";
 
 export type WorkbenchActivityEventType =
@@ -76,6 +77,19 @@ export async function trackWorkbenchActivity(input: {
     });
 
     if (error) return { ok: false };
+
+    void logActivityServer({
+      eventType: input.eventType,
+      area: "workbench",
+      action: input.eventType,
+      targetType: input.entityType,
+      targetId: input.entityId,
+      metadata: {
+        projectId: input.projectId,
+        ...(input.metadata ?? {}),
+      },
+    });
+
     return { ok: true };
   } catch {
     return { ok: false };

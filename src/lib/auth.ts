@@ -20,6 +20,8 @@ export type Profile = {
   avatar_url: string | null;
   role: Role;
   created_at: string | null;
+  onboarding_completed: boolean;
+  beta_notice_seen: boolean;
 };
 
 const ROLE_RANK: Record<Role, number> = {
@@ -43,12 +45,17 @@ export async function getCurrentProfile(): Promise<Profile | null> {
   // replaced with a hard-coded "member" from auth metadata.
   const extended = await supabase
     .from("profiles")
-    .select("id, email, full_name, display_name, preferred_name, avatar_url, role, created_at")
+    .select("id, email, full_name, display_name, preferred_name, avatar_url, role, created_at, onboarding_completed, beta_notice_seen")
     .eq("id", user.id)
     .maybeSingle();
 
   if (!extended.error && extended.data) {
-    return extended.data as Profile;
+    const row = extended.data as Record<string, unknown>;
+    return {
+      ...(row as Profile),
+      onboarding_completed: Boolean(row.onboarding_completed ?? false),
+      beta_notice_seen: Boolean(row.beta_notice_seen ?? false),
+    };
   }
 
   const core = await supabase
@@ -68,6 +75,8 @@ export async function getCurrentProfile(): Promise<Profile | null> {
       avatar_url: null,
       role: row.role as Role,
       created_at: row.created_at,
+      onboarding_completed: false,
+      beta_notice_seen: false,
     };
   }
 
@@ -81,6 +90,8 @@ export async function getCurrentProfile(): Promise<Profile | null> {
     avatar_url: null,
     role: "member",
     created_at: user.created_at ?? null,
+    onboarding_completed: false,
+    beta_notice_seen: false,
   };
 }
 

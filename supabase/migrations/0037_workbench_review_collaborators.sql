@@ -208,13 +208,13 @@ create policy "workbench_review_assignments: select project members"
   using (
     exists (
       select 1 from public.workbench_review_projects p
-      where p.id = project_id and p.user_id = auth.uid()
+      where p.id = workbench_review_assignments.project_id and p.user_id = auth.uid()
     )
     or exists (
       select 1
       from public.workbench_review_projects rp
       join public.workbench_collaborators c on c.project_id = rp.project_id
-      where rp.id = project_id
+      where rp.id = workbench_review_assignments.project_id
         and c.user_id = auth.uid()
         and c.status = 'accepted'
     )
@@ -225,13 +225,13 @@ create policy "workbench_review_assignments: insert project members"
   with check (
     exists (
       select 1 from public.workbench_review_projects p
-      where p.id = project_id and p.user_id = auth.uid()
+      where p.id = workbench_review_assignments.project_id and p.user_id = auth.uid()
     )
     or exists (
       select 1
       from public.workbench_review_projects rp
       join public.workbench_collaborators c on c.project_id = rp.project_id
-      where rp.id = project_id
+      where rp.id = workbench_review_assignments.project_id
         and c.user_id = auth.uid()
         and c.status = 'accepted'
         and c.role in ('editor', 'reviewer')
@@ -243,13 +243,13 @@ create policy "workbench_review_assignments: delete project members"
   using (
     exists (
       select 1 from public.workbench_review_projects p
-      where p.id = project_id and p.user_id = auth.uid()
+      where p.id = workbench_review_assignments.project_id and p.user_id = auth.uid()
     )
     or exists (
       select 1
       from public.workbench_review_projects rp
       join public.workbench_collaborators c on c.project_id = rp.project_id
-      where rp.id = project_id
+      where rp.id = workbench_review_assignments.project_id
         and c.user_id = auth.uid()
         and c.status = 'accepted'
         and c.role = 'editor'

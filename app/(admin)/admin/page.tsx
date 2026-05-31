@@ -21,9 +21,9 @@ export default function AdminPage() {
         </div>
 
         <div className="admin-actions">
-          <a href="/" className="admin-button admin-button-secondary">
+          <Link href="/" className="admin-button admin-button-secondary">
             View site
-          </a>
+          </Link>
           <Link href="/admin/pages" className="admin-button">
             Edit pages
           </Link>

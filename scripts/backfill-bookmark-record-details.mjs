@@ -47,7 +47,7 @@ function doiFromCrossrefRecordId(recordId) {
 
   if (!base.startsWith("live-crossref-")) return null;
 
-  let slug = base.replace(/^live-crossref-/, "");
+  const slug = base.replace(/^live-crossref-/, "");
 
   // Handles common Crossref DOI slugs such as:
   // 10-5040-9781978722620-ch-001

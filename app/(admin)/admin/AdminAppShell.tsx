@@ -1,22 +1,25 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createClient } from "@/src/lib/supabase/client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Search, X } from "lucide-react";
+import { Bell, Menu, Search, X } from "lucide-react";
 import "@/app/styles/admin-moderation-premium.css";
 
 const NAV: { href: string; label: string }[] = [
   { href: "/admin", label: "Dashboard" },
+  { href: "/admin/analytics", label: "Analytics" },
   { href: "/admin/pages", label: "Pages" },
   { href: "/admin/records", label: "Records" },
   { href: "/admin/sources", label: "Sources" },
   { href: "/admin/collections", label: "Collections" },
+  { href: "/admin/community", label: "Community" },
   { href: "/admin/users", label: "Users" },
   { href: "/admin/invites", label: "Invites" },
+  { href: "/admin/notifications", label: "Notifications" },
   { href: "/admin/settings", label: "Settings" },
-  { href: "/admin/analytics", label: "Analytics" },
 ];
 
 function navActive(pathname: string, href: string) {
@@ -29,12 +32,63 @@ function navActive(pathname: string, href: string) {
 type AdminAppShellProps = {
   children: ReactNode;
   userName: string;
+  unreadNotifications?: number;
 };
 
-export default function AdminAppShell({ children, userName }: AdminAppShellProps) {
+export default function AdminAppShell({ children, userName, unreadNotifications = 0 }: AdminAppShellProps) {
   const pathname = usePathname() || "";
   const [search, setSearch] = useState("");
   const [mobileNav, setMobileNav] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(unreadNotifications);
+  const supabaseRef = useRef(createClient());
+
+  // Realtime subscription: update bell count when new admin_notifications arrive
+  useEffect(() => {
+    const supabase = supabaseRef.current;
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+
+    supabase.auth.getUser().then(({ data }) => {
+      const uid = data.user?.id;
+      if (!uid) return;
+
+      channel = supabase
+        .channel(`admin-notif-bell:${uid}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "admin_notifications",
+            filter: `user_id=eq.${uid}`,
+          },
+          () => {
+            setUnreadCount((prev) => prev + 1);
+          },
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "admin_notifications",
+            filter: `user_id=eq.${uid}`,
+          },
+          (payload) => {
+            // If a notification is marked read/archived, decrement if it was unread
+            const updated = payload.new as { status?: string };
+            const previous = payload.old as { status?: string };
+            if (previous.status === "unread" && updated.status !== "unread") {
+              setUnreadCount((prev) => Math.max(0, prev - 1));
+            }
+          },
+        )
+        .subscribe();
+    }).catch(() => undefined);
+
+    return () => {
+      if (channel) void supabaseRef.current.removeChannel(channel);
+    };
+  }, []);
 
   const filteredNav = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -131,6 +185,17 @@ export default function AdminAppShell({ children, userName }: AdminAppShellProps
               </button>
             ) : null}
           </label>
+
+          <a
+            href="/admin/notifications"
+            className="admin-top-bell"
+            aria-label={unreadCount > 0 ? `${unreadCount} unread notifications` : "Notifications"}
+          >
+            <Bell size={20} strokeWidth={1.75} aria-hidden />
+            {unreadCount > 0 ? (
+              <span className="admin-top-bell__count" aria-hidden>{unreadCount}</span>
+            ) : null}
+          </a>
 
           <button
             type="button"

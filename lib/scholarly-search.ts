@@ -1,6 +1,5 @@
 import {
   SEARCH_DEFAULT_PAGE_SIZE,
-  SEARCH_MAX_PAGE_SIZE,
   clampPageSize,
 } from "@/lib/search-pagination";
 

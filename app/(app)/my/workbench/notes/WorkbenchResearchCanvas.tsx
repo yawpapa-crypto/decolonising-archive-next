@@ -151,7 +151,6 @@ export type WorkbenchResearchCanvasProps = {
 
 export default function WorkbenchResearchCanvas({
   data,
-  canvasInstanceId,
   initialViewport,
   onViewportChange,
   initialSettings,

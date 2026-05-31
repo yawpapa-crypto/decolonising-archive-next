@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition, type FormEvent, type MouseEvent as ReactMouseEvent } from "react";
 import {
   CircleHelp,
   Ellipsis,
@@ -14,6 +14,7 @@ import {
   UserRound,
   X,
 } from "lucide-react";
+import { getErrorMessage } from "@/lib/get-error-message";
 import type { WorkbenchNoteRow } from "@/lib/workbench-data";
 import {
   listWorkbenchNoteVersions,
@@ -39,11 +40,14 @@ type Props = {
   onDismissRemoteChanges: () => void;
   projectId: string | null;
   noteId: string | null;
+  noteTitle?: string | null;
   canEdit: boolean;
   canRestoreVersions: boolean;
   onVersionRestored: (note: WorkbenchNoteRow) => void;
   comments: WorkbenchProjectCommentRow[];
-  onCommentsChange: () => void;
+  commentsLoading?: boolean;
+  commentsError?: string;
+  onCommentsChange: () => void | Promise<void>;
   onCommentsOpenChange?: (open: boolean) => void;
   currentUserId: string | null;
   peerNamesByUserId: Record<string, string | null>;
@@ -83,10 +87,13 @@ export function WorkbenchCollaborationBar({
   onDismissRemoteChanges,
   projectId,
   noteId,
+  noteTitle,
   canEdit,
   canRestoreVersions,
   onVersionRestored,
   comments,
+  commentsLoading = false,
+  commentsError = "",
   onCommentsChange,
   onCommentsOpenChange,
   currentUserId,
@@ -146,7 +153,7 @@ export function WorkbenchCollaborationBar({
     setVersionError("");
     void listWorkbenchNoteVersions(noteId).then((result) => {
       if (!result.ok) {
-        setVersionError(result.error || "Could not load versions.");
+        setVersionError(getErrorMessage(result.error) || "Could not load versions.");
         return;
       }
       setVersions(result.versions ?? []);
@@ -155,43 +162,105 @@ export function WorkbenchCollaborationBar({
 
   function restoreVersion(versionId: string) {
     if (!noteId || !canRestoreVersions) return;
-    startTransition(async () => {
-      const result = await restoreWorkbenchNoteVersion({ noteId, versionId });
-      if (!result.ok) {
-        setVersionError(result.error || "Could not restore version.");
-        return;
-      }
-      setVersionsOpen(false);
-      if (result.note) onVersionRestored(result.note);
+    startTransition(() => {
+      void (async () => {
+        try {
+          const result = await restoreWorkbenchNoteVersion({ noteId, versionId });
+          if (!result.ok) {
+            setVersionError(getErrorMessage(result.error) || "Could not restore version.");
+            return;
+          }
+          setVersionsOpen(false);
+          if (result.note) onVersionRestored(result.note);
+        } catch (error) {
+          setVersionError(getErrorMessage(error));
+        }
+      })();
     });
   }
 
-  function submitComment() {
-    if (!projectId || !commentBody.trim()) return;
+  function handleCreateComment(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!projectId) {
+      setCommentError("Open a project note before adding a comment.");
+      return;
+    }
+    const body = commentBody.trim();
+    if (!body) {
+      setCommentError("Write a comment before posting.");
+      return;
+    }
     setCommentError("");
-    startTransition(async () => {
-      const result = await addWorkbenchProjectComment({
-        projectId,
-        noteId,
-        body: commentBody,
-        anchorType: "project",
-      });
-      if (!result.ok) {
-        setCommentError(result.error || "Could not add comment.");
-        return;
-      }
-      setCommentBody("");
-      onCommentsChange();
+    startTransition(() => {
+      void (async () => {
+        try {
+          const result = await addWorkbenchProjectComment({
+            projectId,
+            noteId,
+            body,
+            anchorType: noteId ? "document" : "project",
+            anchorLabel: noteTitle ?? null,
+          });
+          if (!result.ok) {
+            setCommentError(getErrorMessage(result.error) || "Could not add comment.");
+            return;
+          }
+          setCommentBody("");
+          try {
+            const result = onCommentsChange();
+            if (result && typeof (result as Promise<void>).catch === "function") {
+              void (result as Promise<void>).catch((refreshError: unknown) => {
+                setCommentError(getErrorMessage(refreshError));
+              });
+            }
+          } catch (refreshError) {
+            setCommentError(getErrorMessage(refreshError));
+          }
+        } catch (error) {
+          setCommentError(getErrorMessage(error));
+        }
+      })();
     });
   }
 
   function setCommentsPanelOpen(open: boolean) {
+    if (typeof open !== "boolean") {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("[WorkbenchCollaborationBar] setCommentsPanelOpen received non-boolean:", open);
+      }
+      return;
+    }
+
     setCommentsOpen(open);
-    if (compact) onCommentsOpenChange?.(open);
+
+    try {
+      if (compact) onCommentsOpenChange?.(open);
+    } catch (error) {
+      setCommentError(getErrorMessage(error));
+      return;
+    }
+
+    if (open) {
+      try {
+        const result = onCommentsChange();
+        if (result && typeof (result as Promise<void>).catch === "function") {
+          void (result as Promise<void>).catch((error: unknown) => {
+            setCommentError(getErrorMessage(error));
+          });
+        }
+      } catch (error) {
+        setCommentError(getErrorMessage(error));
+      }
+    }
   }
 
-  function toggleCommentsPanel() {
-    setCommentsPanelOpen(!commentsOpen);
+  function handleCommentsButtonClick(event: ReactMouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    setVersionsOpen(false);
+    setCommentError("");
+    const nextOpen = !commentsOpen;
+    setCommentsPanelOpen(nextOpen);
   }
 
   useEffect(() => {
@@ -260,10 +329,7 @@ export function WorkbenchCollaborationBar({
             className={`workbench-document-taskbar-button workbench-document-taskbar-comment-toggle${
               commentsOpen ? " is-active" : ""
             }`}
-            onClick={() => {
-              setVersionsOpen(false);
-              toggleCommentsPanel();
-            }}
+            onClick={handleCommentsButtonClick}
             aria-expanded={commentsOpen}
             aria-label={comments.length ? `Comments (${comments.length})` : "Comments"}
             data-tooltip="Comments"
@@ -295,10 +361,13 @@ export function WorkbenchCollaborationBar({
                 <button
                   type="button"
                   role="menuitem"
-                  onClick={() => {
+                  onClick={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
                     setMoreOpen(false);
                     setVersionsOpen(false);
-                    toggleCommentsPanel();
+                    setCommentError("");
+                    setCommentsPanelOpen(!commentsOpen);
                   }}
                 >
                   <MessageSquare size={16} strokeWidth={1.75} aria-hidden />
@@ -472,9 +541,12 @@ export function WorkbenchCollaborationBar({
                 <X size={17} strokeWidth={1.75} aria-hidden />
               </button>
             </header>
+            {commentsError ? <p className="workbench-collaboration-error">{commentsError}</p> : null}
             {commentError ? <p className="workbench-collaboration-error">{commentError}</p> : null}
             <ul className="workbench-collaboration-comments">
-              {comments.length === 0 ? (
+              {commentsLoading ? (
+                <li className="workbench-collaboration-muted">Loading comments...</li>
+              ) : comments.length === 0 ? (
                 <li className="workbench-collaboration-muted">No comments yet.</li>
               ) : (
                 comments.map((comment) => (
@@ -488,23 +560,27 @@ export function WorkbenchCollaborationBar({
               )}
             </ul>
             {canEdit ? (
-              <div className="workbench-collaboration-comment-form">
+              <form className="workbench-collaboration-comment-form" onSubmit={handleCreateComment}>
                 <textarea
                   value={commentBody}
                   onChange={(event) => setCommentBody(event.target.value)}
                   placeholder="Leave a note for the team…"
                   rows={2}
+                  name="body"
                 />
                 <button
-                  type="button"
+                  type="submit"
                   className="workbench-button workbench-button-primary"
                   disabled={isPending || !commentBody.trim()}
-                  onClick={submitComment}
                 >
                   Add comment
                 </button>
-              </div>
-            ) : null}
+              </form>
+            ) : (
+              <p className="workbench-collaboration-muted">
+                Viewing only. You can read comments but cannot add one.
+              </p>
+            )}
           </aside>
         ) : null}
       </div>
@@ -587,7 +663,12 @@ export function WorkbenchCollaborationBar({
           <button
             type="button"
             className="workbench-collaboration-tool-btn"
-            onClick={() => setCommentsOpen((open) => !open)}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              setCommentError("");
+              setCommentsPanelOpen(!commentsOpen);
+            }}
             aria-expanded={commentsOpen}
           >
             Comments{comments.length ? ` (${comments.length})` : ""}
@@ -627,9 +708,12 @@ export function WorkbenchCollaborationBar({
       {commentsOpen ? (
         <div className="workbench-collaboration-panel">
           <h3>Project comments</h3>
+          {commentsError ? <p className="workbench-collaboration-error">{commentsError}</p> : null}
           {commentError ? <p className="workbench-collaboration-error">{commentError}</p> : null}
           <ul className="workbench-collaboration-comments">
-            {comments.length === 0 ? (
+            {commentsLoading ? (
+              <li className="workbench-collaboration-muted">Loading comments...</li>
+            ) : comments.length === 0 ? (
               <li className="workbench-collaboration-muted">No comments yet.</li>
             ) : (
               comments.map((comment) => (
@@ -643,23 +727,27 @@ export function WorkbenchCollaborationBar({
             )}
           </ul>
           {canEdit ? (
-            <div className="workbench-collaboration-comment-form">
+            <form className="workbench-collaboration-comment-form" onSubmit={handleCreateComment}>
               <textarea
                 value={commentBody}
                 onChange={(event) => setCommentBody(event.target.value)}
                 placeholder="Leave a note for the team…"
                 rows={2}
+                name="body"
               />
               <button
-                type="button"
+                type="submit"
                 className="workbench-button workbench-button-primary"
                 disabled={isPending || !commentBody.trim()}
-                onClick={submitComment}
               >
                 Add comment
               </button>
-            </div>
-          ) : null}
+            </form>
+          ) : (
+            <p className="workbench-collaboration-muted">
+              Viewing only. You can read comments but cannot add one.
+            </p>
+          )}
         </div>
       ) : null}
         </>

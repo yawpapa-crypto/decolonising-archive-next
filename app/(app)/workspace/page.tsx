@@ -1,5 +1,7 @@
 import Link from "next/link";
 import PageShell from "@/src/components/layout/PageShell";
+import BetaNotice from "@/src/components/beta/BetaNotice";
+import OnboardingChecklist from "@/src/components/onboarding/OnboardingChecklist";
 import { hasRole, requireMember } from "@/src/lib/auth";
 import { createClient } from "@/src/lib/supabase/server";
 import { readRecords, type ArchiveRecord } from "@/lib/records";
@@ -342,6 +344,10 @@ export default async function WorkspacePage({
 
   return (
     <PageShell>
+      <BetaNotice initialSeen={profile.beta_notice_seen} />
+      {!profile.onboarding_completed ? (
+        <OnboardingChecklist initialCompleted={false} />
+      ) : null}
       <MemberDashboardShell
         currentSection={currentSection}
         accountName={accountDisplayName}

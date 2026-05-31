@@ -3,7 +3,6 @@ import type { LibraryOfCongressRecord } from "@/lib/search/library-of-congress";
 /** Map LoC JSON search rows to the live-record shape expected by `public/assets/js/app.js`. */
 export function libraryOfCongressRecordToLibraryLive(
   record: LibraryOfCongressRecord,
-  index = 0,
 ): Record<string, unknown> {
   const creators = record.creators.length ? record.creators.join(", ") : "Library of Congress";
   const summary =

@@ -10,6 +10,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "db:migrations:check": "node scripts/check-migration-versions.mjs",
+    "db:migrations:lint": "node scripts/check-migrations.js",
     "smoke:test": "node --experimental-specifier-resolution=node scripts/smoke-test-review-api.mjs",
     "ui:smoke": "node --experimental-specifier-resolution=node scripts/ui-smoke-check.mjs"
   },
@@ -61,13 +63,12 @@
     "lucide-react": "^1.14.0",
     "maplibre-gl": "^5.24.0",
     "motion": "^12.38.0",
-    "next": "16.2.3",
+    "next": "^16.2.6",
     "payload": "^3.84.1",
     "pdfkit": "^0.18.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-map-gl": "^8.1.1",
-    "react-simple-maps": "^3.0.0",
     "recharts": "^3.8.1",
     "server-only": "^0.0.1",
     "tailwind-merge": "^3.6.0",
@@ -82,11 +83,12 @@
     "@types/react-dom": "^19",
     "@types/topojson-client": "^3.1.5",
     "eslint": "^9",
-    "eslint-config-next": "16.2.3",
+    "eslint-config-next": "16.2.6",
     "tailwindcss": "^4",
     "typescript": "^5"
   },
   "overrides": {
+    "postcss": "8.5.15",
     "@tiptap/core": "3.23.4",
     "@tiptap/pm": "3.23.4"
   },

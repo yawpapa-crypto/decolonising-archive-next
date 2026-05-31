@@ -33931,3 +33931,181 @@ body.workbench-mobile-drawer-open {
 }
 
 /* Research canvas layout: see workbench-research-canvas.css (portal immersive shell). */
+
+/* Board mode polish — stop Document chrome and fullscreen rail styles leaking into the normal board. */
+.workbench-notes-view.is-board-mode:not(.is-board-fullscreen) .workbench-notes-header {
+  position: relative !important;
+  top: auto !important;
+  z-index: 20 !important;
+  margin: 0 auto 18px !important;
+  padding: 16px 28px 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.workbench-notes-view.is-board-mode:not(.is-board-fullscreen) .workbench-notes-header-menu-row,
+.workbench-notes-view.is-board-mode:not(.is-board-fullscreen) .workbench-notes-heading-block,
+.workbench-notes-view.is-board-mode:not(.is-board-fullscreen) .workbench-notes-header-meta-row {
+  display: none !important;
+}
+
+.workbench-notes-view.is-board-mode:not(.is-board-fullscreen) .workbench-notes-page-header__top {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+.workbench-notes-view.is-board-mode:not(.is-board-fullscreen) .workbench-notes-header-actions {
+  width: auto !important;
+  margin-left: auto !important;
+}
+
+.workbench-notes-view.is-board-mode:not(.is-board-fullscreen) .workbench-note-mode-switcher--with-new {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 5px !important;
+  border: 1px solid rgba(16, 19, 24, 0.08) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  box-shadow: 0 14px 34px rgba(16, 19, 24, 0.08) !important;
+}
+
+.workbench-notes-view.is-board-mode:not(.is-board-fullscreen) .workbench-notes-new-button,
+.workbench-notes-view.is-board-mode:not(.is-board-fullscreen) .workbench-note-mode-button {
+  min-height: 38px !important;
+  border-radius: 999px !important;
+  border: 1px solid transparent !important;
+  padding: 0 16px !important;
+  background: transparent !important;
+  color: rgba(16, 19, 24, 0.68) !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
+  box-shadow: none !important;
+}
+
+.workbench-notes-view.is-board-mode:not(.is-board-fullscreen) .workbench-notes-new-button {
+  background: #dfff2f !important;
+  color: #101318 !important;
+}
+
+.workbench-notes-view.is-board-mode:not(.is-board-fullscreen) .workbench-note-mode-button.is-active {
+  background: #101318 !important;
+  color: #ffffff !important;
+}
+
+.workbench-notes-view.is-board-mode:not(.is-board-fullscreen) .workbench-note-editor-shell.is-board-editor-active {
+  overflow: hidden !important;
+  border: 1px solid rgba(16, 19, 24, 0.07) !important;
+  border-radius: 28px !important;
+  background: #f5f1e8 !important;
+  box-shadow: 0 24px 60px rgba(16, 19, 24, 0.07) !important;
+}
+
+.workbench-notes-view.is-board-mode:not(.is-board-fullscreen) .workbench-note-board-immersive {
+  position: relative !important;
+  min-height: min(72vh, 760px) !important;
+  height: min(72vh, 760px) !important;
+  border-radius: 28px !important;
+  overflow: hidden !important;
+}
+
+.workbench-notes-view.is-board-mode:not(.is-board-fullscreen) .workbench-note-board-side-rail,
+.workbench-shell .workbench-notes-view.is-board-mode:not(.is-board-fullscreen) .workbench-note-board-side-rail {
+  position: absolute !important;
+  top: 34px !important;
+  right: 28px !important;
+  bottom: 34px !important;
+  left: auto !important;
+  width: 58px !important;
+  max-height: none !important;
+  z-index: 30 !important;
+}
+
+.workbench-notes-view.is-board-mode:not(.is-board-fullscreen) .workbench-note-board-fullscreen-controls {
+  position: absolute !important;
+  top: 36px !important;
+  right: 104px !important;
+  z-index: 32 !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  box-shadow: 0 14px 34px rgba(16, 19, 24, 0.08) !important;
+}
+
+.workbench-notes-view.is-board-mode:not(.is-board-fullscreen) .workbench-note-board-floating-search {
+  top: 36px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: clamp(280px, 28vw, 420px) !important;
+  min-width: 280px !important;
+}
+
+.workbench-notes-view.is-board-mode:not(.is-board-fullscreen) .workbench-note-board-hero {
+  top: 36px !important;
+  left: 36px !important;
+  max-width: 380px !important;
+}
+
+/* Board fullscreen repair — keep the immersive board from leaking site chrome. */
+body.workbench-board-is-fullscreen {
+  overflow: hidden !important;
+  background: #fbfaf5 !important;
+}
+
+body.workbench-board-is-fullscreen .nav,
+body.workbench-board-is-fullscreen footer,
+body.workbench-board-is-fullscreen .site-disclaimer,
+body.workbench-board-is-fullscreen .site-footer,
+body.workbench-board-is-fullscreen .site-footer-premium,
+body.workbench-board-is-fullscreen .beta-notice,
+body.workbench-board-is-fullscreen .onboarding-checklist,
+body.workbench-board-is-fullscreen .workbench-floating-notes-menu,
+body.workbench-board-is-fullscreen .workbench-floating-inspector-menu {
+  display: none !important;
+}
+
+body.workbench-board-is-fullscreen .workbench-note-board-immersive.is-fullscreen {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  min-height: 100dvh !important;
+  border-radius: 0 !important;
+  z-index: 2147481000 !important;
+  overflow: hidden !important;
+}
+
+body.workbench-board-is-fullscreen .workbench-note-board-immersive:not(.is-fullscreen) .workbench-note-board-add-popover-wrap,
+body.workbench-board-is-fullscreen .workbench-note-board-immersive:not(.is-fullscreen) .workbench-note-board-side-rail {
+  display: none !important;
+}
+
+body.workbench-board-is-fullscreen .workbench-note-board-immersive.is-fullscreen .workbench-note-board-add-popover-wrap {
+  position: fixed !important;
+  left: 30px !important;
+  top: 190px !important;
+  right: auto !important;
+  bottom: auto !important;
+  z-index: 2147483200 !important;
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+body.workbench-board-is-fullscreen .workbench-note-board-immersive.is-fullscreen .workbench-note-board-side-rail {
+  position: fixed !important;
+  top: 128px !important;
+  right: 34px !important;
+  bottom: 28px !important;
+  left: auto !important;
+  width: 58px !important;
+  max-height: calc(100dvh - 156px) !important;
+  z-index: 2147483000 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}

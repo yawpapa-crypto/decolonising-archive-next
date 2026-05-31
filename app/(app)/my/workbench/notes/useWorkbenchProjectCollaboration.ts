@@ -12,7 +12,23 @@ import {
   type WorkbenchProjectCommentRow,
   type WorkbenchProjectPresenceRow,
 } from "@/lib/workbench-project-collaboration";
+import { getErrorMessage } from "@/lib/get-error-message";
 import type { NoteMode } from "./workbench-note-types";
+
+function logCollaborationError(label: string, error: unknown) {
+  if (process.env.NODE_ENV !== "production") {
+    console.warn(`[WorkbenchCollaboration] ${label}:`, getErrorMessage(error), error);
+  }
+}
+
+function isEventLikeError(error: unknown): boolean {
+  return Boolean(
+    error &&
+      typeof error === "object" &&
+      "type" in error &&
+      "target" in error,
+  );
+}
 
 export type CollaborationPeer = {
   userId: string;
@@ -53,6 +69,8 @@ export function useWorkbenchProjectCollaboration({
   const [remoteChangesPending, setRemoteChangesPending] = useState(false);
   const [canvasLocks, setCanvasLocks] = useState<WorkbenchCanvasObjectLockRow[]>([]);
   const [comments, setComments] = useState<WorkbenchProjectCommentRow[]>([]);
+  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [commentsError, setCommentsError] = useState("");
   const remoteNoteIdRef = useRef<string | null>(null);
   const onRemoteNoteRef = useRef(onRemoteNote);
 
@@ -62,32 +80,44 @@ export function useWorkbenchProjectCollaboration({
 
   const upsertPresence = useCallback(async () => {
     if (!enabled || !projectId || !currentUserId) return;
-    await supabase.from("workbench_project_presence").upsert(
-      {
-        project_id: projectId,
-        user_id: currentUserId,
-        note_id: noteId,
-        note_mode: noteMode,
-        display_name: displayName,
-        last_seen_at: new Date().toISOString(),
-      },
-      { onConflict: "project_id,user_id" },
-    );
+    try {
+      const { error } = await supabase.from("workbench_project_presence").upsert(
+        {
+          project_id: projectId,
+          user_id: currentUserId,
+          note_id: noteId,
+          note_mode: noteMode,
+          display_name: displayName,
+          last_seen_at: new Date().toISOString(),
+        },
+        { onConflict: "project_id,user_id" },
+      );
+      if (error) logCollaborationError("presence update failed", error);
+    } catch (error) {
+      logCollaborationError("presence update failed", error);
+    }
   }, [enabled, projectId, currentUserId, noteId, noteMode, displayName, supabase]);
 
   const applyRemoteNote = useCallback(async () => {
     const targetId = remoteNoteIdRef.current ?? noteId;
     if (!targetId) return;
-    const { data, error } = await supabase
-      .from("workbench_notes")
-      .select("*")
-      .eq("id", targetId)
-      .is("deleted_at", null)
-      .maybeSingle();
-    if (error || !data) return;
-    onRemoteNoteRef.current(data as WorkbenchNoteRow);
-    setRemoteChangesPending(false);
-    remoteNoteIdRef.current = null;
+    try {
+      const { data, error } = await supabase
+        .from("workbench_notes")
+        .select("*")
+        .eq("id", targetId)
+        .is("deleted_at", null)
+        .maybeSingle();
+      if (error || !data) {
+        if (error) logCollaborationError("remote note refresh failed", error);
+        return;
+      }
+      onRemoteNoteRef.current(data as WorkbenchNoteRow);
+      setRemoteChangesPending(false);
+      remoteNoteIdRef.current = null;
+    } catch (error) {
+      logCollaborationError("remote note refresh failed", error);
+    }
   }, [noteId, supabase]);
 
   const dismissRemoteChanges = useCallback(() => {
@@ -105,10 +135,86 @@ export function useWorkbenchProjectCollaboration({
         setRemoteChangesPending(true);
         return;
       }
-      void applyRemoteNote();
+      void applyRemoteNote().catch((error) => {
+        logCollaborationError("remote note apply failed", error);
+      });
     },
     [applyRemoteNote, currentUserId, isCanvasInteracting, isDirty, isSaving, noteId],
   );
+
+  const refreshComments = useCallback(async () => {
+    if (!enabled || !projectId) {
+      setComments([]);
+      setCommentsError("");
+      setCommentsLoading(false);
+      return;
+    }
+
+    setCommentsLoading(true);
+    setCommentsError("");
+
+    try {
+      let query = supabase
+        .from("workbench_project_comments")
+        .select("*")
+        .eq("project_id", projectId)
+        .order("created_at", { ascending: false })
+        .limit(30);
+
+      if (noteId) {
+        query = query.or(`note_id.eq.${noteId},note_id.is.null`);
+      }
+
+      const { data, error } = await query;
+      if (error) {
+        setComments([]);
+        setCommentsError(getErrorMessage(error));
+      } else {
+        setComments((data ?? []) as WorkbenchProjectCommentRow[]);
+      }
+    } catch (error) {
+      setComments([]);
+      setCommentsError(getErrorMessage(error));
+    } finally {
+      setCommentsLoading(false);
+    }
+  }, [enabled, noteId, projectId, supabase]);
+
+  const loadCanvasLocks = useCallback(async () => {
+    if (!enabled || !noteId) {
+      setCanvasLocks([]);
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from("workbench_canvas_object_locks")
+        .select("*")
+        .eq("note_id", noteId);
+      if (error) {
+        logCollaborationError("canvas lock refresh failed", error);
+        setCanvasLocks([]);
+        return;
+      }
+      setCanvasLocks((data ?? []) as WorkbenchCanvasObjectLockRow[]);
+    } catch (error) {
+      logCollaborationError("canvas lock refresh failed", error);
+      setCanvasLocks([]);
+    }
+  }, [enabled, noteId, supabase]);
+
+  useEffect(() => {
+    if (!enabled) return;
+
+    function handleUnhandledRejection(event: PromiseRejectionEvent) {
+      if (!isEventLikeError(event.reason)) return;
+      event.preventDefault();
+      logCollaborationError("suppressed browser event rejection", event.reason);
+    }
+
+    window.addEventListener("unhandledrejection", handleUnhandledRejection);
+    return () => window.removeEventListener("unhandledrejection", handleUnhandledRejection);
+  }, [enabled]);
 
   useEffect(() => {
     if (!enabled || !projectId || !currentUserId) {
@@ -116,53 +222,56 @@ export function useWorkbenchProjectCollaboration({
       setActivities([]);
       setCanvasLocks([]);
       setComments([]);
+      setCommentsError("");
+      setCommentsLoading(false);
       return;
     }
 
     let cancelled = false;
 
     const loadInitial = async () => {
-      const [presenceRes, activityRes, commentsRes] = await Promise.all([
-        supabase
-          .from("workbench_project_presence")
-          .select("*")
-          .eq("project_id", projectId)
-          .order("last_seen_at", { ascending: false }),
-        supabase
-          .from("workbench_project_activity")
-          .select("*")
-          .eq("project_id", projectId)
-          .order("created_at", { ascending: false })
-          .limit(12),
-        supabase
-          .from("workbench_project_comments")
-          .select("*")
-          .eq("project_id", projectId)
-          .order("created_at", { ascending: false })
-          .limit(30),
-      ]);
+      try {
+        const [presenceRes, activityRes] = await Promise.all([
+          supabase
+            .from("workbench_project_presence")
+            .select("*")
+            .eq("project_id", projectId)
+            .order("last_seen_at", { ascending: false }),
+          supabase
+            .from("workbench_project_activity")
+            .select("*")
+            .eq("project_id", projectId)
+            .order("created_at", { ascending: false })
+            .limit(12),
+        ]);
 
-      if (cancelled) return;
+        if (cancelled) return;
 
-      const nextPeers = (presenceRes.data ?? [])
-        .map((row) => row as WorkbenchProjectPresenceRow)
-        .filter((row) => row.user_id !== currentUserId && !isPresenceStale(row.last_seen_at))
-        .map(
-          (row): CollaborationPeer => ({
-            userId: row.user_id,
-            displayName: row.display_name,
-            noteId: row.note_id,
-            noteMode: row.note_mode,
-            lastSeenAt: row.last_seen_at,
-          }),
-        );
-      setPeers(nextPeers);
-      setActivities((activityRes.data ?? []) as WorkbenchProjectActivityRow[]);
-      setComments((commentsRes.data ?? []) as WorkbenchProjectCommentRow[]);
+        if (presenceRes.error) logCollaborationError("presence load failed", presenceRes.error);
+        if (activityRes.error) logCollaborationError("activity load failed", activityRes.error);
+
+        const nextPeers = (presenceRes.data ?? [])
+          .map((row) => row as WorkbenchProjectPresenceRow)
+          .filter((row) => row.user_id !== currentUserId && !isPresenceStale(row.last_seen_at))
+          .map(
+            (row): CollaborationPeer => ({
+              userId: row.user_id,
+              displayName: row.display_name,
+              noteId: row.note_id,
+              noteMode: row.note_mode,
+              lastSeenAt: row.last_seen_at,
+            }),
+          );
+        setPeers(nextPeers);
+        setActivities((activityRes.data ?? []) as WorkbenchProjectActivityRow[]);
+      } catch (error) {
+        if (!cancelled) logCollaborationError("collaboration load failed", error);
+      }
     };
 
-    void loadInitial();
-    void upsertPresence();
+    void loadInitial().catch((error) => logCollaborationError("collaboration load failed", error));
+    void refreshComments().catch((error) => logCollaborationError("comments refresh failed", error));
+    void upsertPresence().catch((error) => logCollaborationError("presence update failed", error));
 
     const channel = supabase
       .channel(`workbench-project:${projectId}`)
@@ -199,13 +308,11 @@ export function useWorkbenchProjectCollaboration({
           schema: "public",
           table: "workbench_canvas_object_locks",
         },
-        async () => {
-          if (!noteId) return;
-          const { data } = await supabase
-            .from("workbench_canvas_object_locks")
-            .select("*")
-            .eq("note_id", noteId);
-          if (!cancelled) setCanvasLocks((data ?? []) as WorkbenchCanvasObjectLockRow[]);
+        () => {
+          if (!noteId || cancelled) return;
+          void loadCanvasLocks().catch((error) => {
+            if (!cancelled) logCollaborationError("canvas lock refresh failed", error);
+          });
         },
       )
       .on(
@@ -217,16 +324,19 @@ export function useWorkbenchProjectCollaboration({
           filter: `project_id=eq.${projectId}`,
         },
         async () => {
-          const { data } = await supabase
-            .from("workbench_project_comments")
-            .select("*")
-            .eq("project_id", projectId)
-            .order("created_at", { ascending: false })
-            .limit(30);
-          if (!cancelled) setComments((data ?? []) as WorkbenchProjectCommentRow[]);
+          if (!cancelled) {
+            void refreshComments().catch((error) => logCollaborationError("comments refresh failed", error));
+          }
         },
       )
-      .subscribe();
+      .subscribe((status, err) => {
+        if (err) {
+          // Suppress unhandled WebSocket error events that would otherwise
+          // reach window.onerror and appear as "[object Event]" in the
+          // Next.js dev overlay.
+          logCollaborationError(`project channel ${status}`, err);
+        }
+      });
 
     const noteChannel = noteId
       ? supabase
@@ -241,18 +351,28 @@ export function useWorkbenchProjectCollaboration({
             },
             (payload) => handleNotePayload(payload),
           )
-          .subscribe()
+          .subscribe((status, err) => {
+            if (err) {
+              logCollaborationError(`note channel ${status}`, err);
+            }
+          })
       : null;
 
     const heartbeat = window.setInterval(() => {
-      void upsertPresence();
+      void upsertPresence().catch((error) => logCollaborationError("presence heartbeat failed", error));
     }, WORKBENCH_PRESENCE_HEARTBEAT_MS);
 
     return () => {
       cancelled = true;
       window.clearInterval(heartbeat);
-      void supabase.removeChannel(channel);
-      if (noteChannel) void supabase.removeChannel(noteChannel);
+      void supabase.removeChannel(channel).catch((error) => {
+        logCollaborationError("project channel cleanup failed", error);
+      });
+      if (noteChannel) {
+        void supabase.removeChannel(noteChannel).catch((error) => {
+          logCollaborationError("note channel cleanup failed", error);
+        });
+      }
     };
   }, [
     enabled,
@@ -260,6 +380,8 @@ export function useWorkbenchProjectCollaboration({
     noteId,
     currentUserId,
     handleNotePayload,
+    loadCanvasLocks,
+    refreshComments,
     supabase,
     upsertPresence,
   ]);
@@ -274,12 +396,8 @@ export function useWorkbenchProjectCollaboration({
       setCanvasLocks([]);
       return;
     }
-    void supabase
-      .from("workbench_canvas_object_locks")
-      .select("*")
-      .eq("note_id", noteId)
-      .then(({ data }) => setCanvasLocks((data ?? []) as WorkbenchCanvasObjectLockRow[]));
-  }, [enabled, noteId, supabase]);
+    void loadCanvasLocks().catch((error) => logCollaborationError("canvas lock refresh failed", error));
+  }, [enabled, loadCanvasLocks, noteId]);
 
   return {
     peers,
@@ -289,15 +407,8 @@ export function useWorkbenchProjectCollaboration({
     dismissRemoteChanges,
     canvasLocks,
     comments,
-    refreshComments: async () => {
-      if (!projectId) return;
-      const { data } = await supabase
-        .from("workbench_project_comments")
-        .select("*")
-        .eq("project_id", projectId)
-        .order("created_at", { ascending: false })
-        .limit(30);
-      setComments((data ?? []) as WorkbenchProjectCommentRow[]);
-    },
+    commentsLoading,
+    commentsError,
+    refreshComments,
   };
 }

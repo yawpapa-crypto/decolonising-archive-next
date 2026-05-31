@@ -6,6 +6,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/src/lib/supabase/server";
 import { safeNextPath } from "@/src/lib/security/validate";
+import { updateLastLogin, notifyAdminOnNewUser } from "@/src/lib/auth-hooks";
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
@@ -22,7 +23,7 @@ export async function GET(request: NextRequest) {
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.exchangeCodeForSession(code);
+  const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
   if (error) {
     return NextResponse.redirect(
@@ -31,6 +32,11 @@ export async function GET(request: NextRequest) {
         request.url
       )
     );
+  }
+
+  if (data.user?.id) {
+    await updateLastLogin(data.user.id);
+    void notifyAdminOnNewUser(data.user.id, data.user.email, data.user.created_at);
   }
 
   return NextResponse.redirect(new URL(next, request.url));

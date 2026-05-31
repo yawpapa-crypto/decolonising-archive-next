@@ -63,11 +63,20 @@ export default function RootLayout({
         <footer className="site-footer">
           <nav className="site-footer-nav" aria-label="Legal and policies">
             <AncestralAcknowledgementButton />
+            <a href="/cultural-care">Cultural Care</a>
+            <a href="/community-guidelines">Community Guidelines</a>
             <a href="/terms">Terms of Use</a>
             <a href="/copyright">Copyright &amp; Permissions</a>
             <a href="/privacy">Privacy Policy</a>
             <a href="/takedown">Takedown / Rights Contact</a>
+            <a href="/support">Support</a>
+            <a href="/changelog">Changelog</a>
+            <a href="/partners">Partners</a>
+            <a href="/feedback">Give feedback</a>
           </nav>
+          <div className="site-footer-beta">
+            <span className="beta-pill">Free public beta</span>
+          </div>
         </footer>
 
         <RouteAnalytics />

@@ -1,7 +1,6 @@
 import {
   expandQueryTerms,
   getAuthorBoostsForQuery,
-  queryMatchesExpansionKey,
 } from "@/lib/search/query-expansion";
 import { getRecordNarrativeRankingBoost } from "@/lib/search/record-quality";
 

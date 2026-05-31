@@ -134,8 +134,38 @@ create table if not exists public.workbench_review_conflicts (
   unique (review_project_id, record_id, stage)
 );
 
+alter table public.workbench_review_conflicts
+  add column if not exists review_project_id uuid references public.workbench_review_projects(id) on delete cascade,
+  add column if not exists record_id text,
+  add column if not exists stage text not null default 'title_abstract',
+  add column if not exists status text not null default 'open',
+  add column if not exists resolver_id uuid references auth.users(id) on delete set null,
+  add column if not exists resolution_decision text,
+  add column if not exists resolution_notes text,
+  add column if not exists created_at timestamptz not null default now(),
+  add column if not exists updated_at timestamptz not null default now();
+
+update public.workbench_review_conflicts
+set
+  stage = coalesce(stage, 'title_abstract'),
+  status = coalesce(status, 'open'),
+  resolver_id = coalesce(resolver_id, resolved_by),
+  resolution_decision = coalesce(resolution_decision, resolution),
+  record_id = coalesce(record_id, review_record_id::text, id::text)
+where stage is null
+   or status is null
+   or resolver_id is null
+   or resolution_decision is null
+   or record_id is null;
+
+alter table public.workbench_review_conflicts
+  alter column record_id set not null;
+
 create index if not exists workbench_review_conflicts_project_idx
   on public.workbench_review_conflicts (review_project_id, status);
+
+create unique index if not exists workbench_review_conflicts_project_record_stage_key
+  on public.workbench_review_conflicts (review_project_id, record_id, stage);
 
 create table if not exists public.workbench_review_full_texts (
   id uuid primary key default gen_random_uuid(),
@@ -153,8 +183,35 @@ create table if not exists public.workbench_review_full_texts (
   unique (review_project_id, record_id)
 );
 
+alter table public.workbench_review_full_texts
+  add column if not exists review_project_id uuid references public.workbench_review_projects(id) on delete cascade,
+  add column if not exists record_id text,
+  add column if not exists user_id uuid references auth.users(id) on delete cascade,
+  add column if not exists url text,
+  add column if not exists file_label text,
+  add column if not exists access_status text not null default 'not_sought',
+  add column if not exists notes text,
+  add column if not exists created_at timestamptz not null default now(),
+  add column if not exists updated_at timestamptz not null default now();
+
+update public.workbench_review_full_texts f
+set
+  record_id = coalesce(f.record_id, f.review_record_id::text, f.id::text),
+  access_status = coalesce(f.access_status, f.status, 'not_sought'),
+  user_id = coalesce(f.user_id, p.user_id)
+from public.workbench_review_projects p
+where p.id = f.review_project_id
+  and (f.record_id is null or f.access_status is null or f.user_id is null);
+
+alter table public.workbench_review_full_texts
+  alter column record_id set not null,
+  alter column user_id set not null;
+
 create index if not exists workbench_review_full_texts_project_idx
   on public.workbench_review_full_texts (review_project_id, access_status);
+
+create unique index if not exists workbench_review_full_texts_project_record_key
+  on public.workbench_review_full_texts (review_project_id, record_id);
 
 alter table public.workbench_review_records enable row level security;
 alter table public.workbench_review_decisions enable row level security;

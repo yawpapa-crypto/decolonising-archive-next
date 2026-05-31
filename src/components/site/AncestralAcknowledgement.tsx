@@ -54,7 +54,6 @@ function isPageReload(): boolean {
   } catch {
     /* fall through */
   }
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
   const legacy = (performance as unknown as { navigation?: { type?: number } }).navigation;
   return legacy?.type === 1;
 }

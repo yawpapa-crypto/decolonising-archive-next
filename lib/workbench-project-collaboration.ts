@@ -59,8 +59,11 @@ export type WorkbenchProjectCommentRow = {
   note_id: string | null;
   user_id: string;
   body: string;
+  resolved: boolean;
+  metadata: Record<string, unknown>;
   anchor_type: string | null;
   anchor_id: string | null;
+  anchor_label: string | null;
   created_at: string;
   updated_at: string;
 };

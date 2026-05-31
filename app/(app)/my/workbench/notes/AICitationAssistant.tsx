@@ -53,8 +53,6 @@ export default function AICitationAssistant({
   open,
   onClose,
   candidates,
-  noteId,
-  noteContentHtml,
   canEdit,
   formatDrawerOpen = false,
   onSelectCandidate,

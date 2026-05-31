@@ -51,9 +51,7 @@ export async function GET(request: NextRequest) {
       decolonialMode,
     });
 
-    const results = batch.results.map((record, index) =>
-      libraryOfCongressRecordToLibraryLive(record, index),
-    );
+    const results = batch.results.map((record) => libraryOfCongressRecordToLibraryLive(record));
 
     return NextResponse.json({
       ok: !batch.error,

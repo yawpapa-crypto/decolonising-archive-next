@@ -4,7 +4,7 @@ export default function PrivacyPage() {
       <div className="legal-wrap">
         <p className="legal-eyebrow">Legal</p>
         <h1>Privacy Policy</h1>
-        <p className="legal-updated">Last updated: 18 April 2026</p>
+        <p className="legal-updated">Last updated: 30 May 2026</p>
 
         <section>
           <h2>1. Overview</h2>
@@ -138,6 +138,14 @@ export default function PrivacyPage() {
             Some of these technologies are necessary for the site to function properly. Others may be
             used for performance and service improvement. Browser settings may allow you to block or
             manage some forms of tracking, although doing so may affect site functionality.
+          </p>
+          <p>
+            Platform analytics may record activity events such as searches, source openings, saved
+            records, Workbench feature usage, Community posts or comments, session timing, and
+            technical errors. These analytics are used for service improvement, safety, reporting,
+            and reliability monitoring. Private document body text, private notes, private canvas
+            content, private Community drafts, passwords, access tokens, and raw IP addresses are not
+            intentionally stored in the analytics tables.
           </p>
         </section>
 

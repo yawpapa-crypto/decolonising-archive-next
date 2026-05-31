@@ -9,9 +9,7 @@ import {
   useState,
   useTransition,
   type CSSProperties,
-  type KeyboardEvent as ReactKeyboardEvent,
   type MouseEvent as ReactMouseEvent,
-  type PointerEvent as ReactPointerEvent,
 } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -62,7 +60,6 @@ import {
 import {
   getWorkbenchNoteTemplate,
   type WorkbenchNoteTemplateId,
-  WORKBENCH_NOTE_TEMPLATES,
 } from "@/lib/workbench-note-templates";
 import {
   deriveNoteTitleFromPlainText,
@@ -72,7 +69,6 @@ import {
   readingMinutesFromWordCount,
   shouldAutoGenerateNoteTitle,
 } from "@/lib/workbench-note-utils";
-import WorkbenchEditorToolbar from "../WorkbenchEditorToolbar";
 import AICitationFloatingTrigger from "./AICitationFloatingTrigger";
 import type { WorkbenchEditorPayload } from "../WorkbenchRichTextEditor";
 import WorkbenchNotesLinkedRecords, {
@@ -108,13 +104,11 @@ import {
   type WorkbenchCanvasState,
 } from "./workbench-canvas-state";
 import { CANVAS_AUTOSAVE_DELAY_MS } from "./workbench-canvas-viewport-motion";
-import { EMPTY_CANVAS_DATA } from "./workbench-canvas-types";
 import { useWorkbenchNotesShortcuts } from "./useWorkbenchNotesShortcuts";
 import { ResearchInspector } from "./surfaces/ResearchInspector";
 import { DocumentMetadataBar } from "./surfaces/DocumentMetadataBar";
 import WorkbenchDocumentTopBar, { type DocumentSidebarTab } from "./WorkbenchDocumentTopBar";
 import WorkbenchDocumentTypographyControls from "./WorkbenchDocumentTypographyControls";
-import WorkbenchIconTip from "./WorkbenchIconTip";
 import WorkbenchDocumentDrawer from "./WorkbenchDocumentDrawer";
 import {
   clampDocumentZoom,
@@ -665,7 +659,7 @@ function stripReferenceList(html: string): string {
     .replace(/<h[1-6]\b[^>]*>\s*(?:References|Endnotes)\s*<\/h[1-6]>[\s\S]*$/i, "");
 }
 
-function refreshReferenceListHtml(html: string, _citations: WorkbenchNoteCitation[]): string {
+function refreshReferenceListHtml(html: string): string {
   return stripReferenceList(html || "<p></p>").trim() || "<p></p>";
 }
 
@@ -1731,6 +1725,7 @@ function WorkbenchCitationPicker({
               <button
                 key={id}
                 type="button"
+                role="tab"
                 className={activeFilter === id ? "is-active" : undefined}
                 aria-selected={activeFilter === id}
                 onClick={() => {
@@ -1764,6 +1759,7 @@ function WorkbenchCitationPicker({
                     <button
                       key={candidateOption.id}
                       type="button"
+                      role="option"
                       className={`workbench-citation-record-option${
                         selectedId === candidateOption.id ? " is-selected" : ""
                       }${isRecommended ? " is-recommended" : ""}`}
@@ -1798,6 +1794,7 @@ function WorkbenchCitationPicker({
               )}
               <button
                 type="button"
+                role="option"
                 className={`workbench-citation-record-option${selectedId === "custom" ? " is-selected" : ""}`}
                 aria-selected={selectedId === "custom"}
                 onClick={() => setSelectedId("custom")}
@@ -2280,19 +2277,6 @@ function escapeHtml(value: string) {
     .replace(/"/g, "&quot;");
 }
 
-const NOTES_SIDEBAR_STORAGE_KEY = "workbench-notes-sidebar-width";
-const NOTES_SIDEBAR_DEFAULT = 240;
-const NOTES_SIDEBAR_MIN = 200;
-const NOTES_SIDEBAR_MAX = 420;
-const NOTES_SIDEBAR_FOCUS_MIN = 180;
-const NOTES_SIDEBAR_FOCUS_MAX = 460;
-
-function clampSidebarWidth(width: number, focus: boolean) {
-  const min = focus ? NOTES_SIDEBAR_FOCUS_MIN : NOTES_SIDEBAR_MIN;
-  const max = focus ? NOTES_SIDEBAR_FOCUS_MAX : NOTES_SIDEBAR_MAX;
-  return Math.min(max, Math.max(min, Math.round(width)));
-}
-
 function sortNotes(notes: WorkbenchNoteWithProject[]) {
   return [...notes].sort((a, b) => {
     if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
@@ -2370,7 +2354,7 @@ export default function WorkbenchNotesClient(props: {
     citationId: string;
     rect: { top: number; left: number; bottom: number; right: number; width: number; height: number };
   } | null>(null);
-  const [citationAnchorRect, setCitationAnchorRect] = useState<DOMRect | null>(null);
+  const [, setCitationAnchorRect] = useState<DOMRect | null>(null);
   const [aiAssistantOpen, setAIAssistantOpen] = useState(false);
   const [aiRecommendedCandidateIds, setAiRecommendedCandidateIds] = useState<string[]>([]);
   const [isFocusMode, setIsFocusMode] = useState(false);
@@ -2505,8 +2489,6 @@ export default function WorkbenchNotesClient(props: {
       if (!drag) return;
 
       const panelWidth = 380;
-      const panelHeight = 520;
-
       const nextX = Math.max(
         16,
         Math.min(window.innerWidth - panelWidth - 16, drag.originX + moveEvent.clientX - drag.startX),
@@ -2567,8 +2549,6 @@ export default function WorkbenchNotesClient(props: {
     void updateWorkbenchUserPreference({ preferred_note_mode: noteMode });
   }, [noteMode]);
 
-  const [sidebarWidth, setSidebarWidth] = useState(NOTES_SIDEBAR_DEFAULT);
-  const [isResizingSidebar, setIsResizingSidebar] = useState(false);
   const [editorInstance, setEditorInstance] = useState<Editor | null>(null);
   const [documentZoom, setDocumentZoom] = useState(100);
   const [isPending, startTransition] = useTransition();
@@ -2954,112 +2934,6 @@ export default function WorkbenchNotesClient(props: {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [aiAssistantOpen, citationPickerOpen, commandOpen, switcherOpen]);
-
-  const sidebarMin = isFocusMode ? NOTES_SIDEBAR_FOCUS_MIN : NOTES_SIDEBAR_MIN;
-  const sidebarMax = isFocusMode ? NOTES_SIDEBAR_FOCUS_MAX : NOTES_SIDEBAR_MAX;
-
-  const notesLayoutStyle = useMemo(
-    () =>
-      ({
-        "--notes-sidebar-width": `${sidebarWidth}px`,
-      }) as CSSProperties,
-    [sidebarWidth],
-  );
-
-  useEffect(() => {
-    try {
-      const stored = window.localStorage.getItem(NOTES_SIDEBAR_STORAGE_KEY);
-      if (!stored) return;
-      const parsed = Number.parseInt(stored, 10);
-      if (!Number.isNaN(parsed)) {
-        setSidebarWidth(clampSidebarWidth(parsed, false));
-      }
-    } catch {
-      /* ignore storage errors */
-    }
-  }, []);
-
-  useEffect(() => {
-    try {
-      window.localStorage.setItem(NOTES_SIDEBAR_STORAGE_KEY, String(sidebarWidth));
-    } catch {
-      /* ignore storage errors */
-    }
-  }, [sidebarWidth]);
-
-  useEffect(() => {
-    setSidebarWidth((width) => clampSidebarWidth(width, isFocusMode));
-  }, [isFocusMode]);
-
-  const applySidebarWidthFromPointer = useCallback(
-    (clientX: number) => {
-      const layout = notesLayoutRef.current;
-      if (!layout) return;
-      const rect = layout.getBoundingClientRect();
-      setSidebarWidth(clampSidebarWidth(clientX - rect.left, isFocusMode));
-    },
-    [isFocusMode],
-  );
-
-  useEffect(() => {
-    if (!isResizingSidebar) return;
-
-    document.body.classList.add("workbench-is-resizing-notes-sidebar");
-
-    function onPointerMove(event: PointerEvent) {
-      applySidebarWidthFromPointer(event.clientX);
-    }
-
-    function onPointerUp() {
-      setIsResizingSidebar(false);
-    }
-
-    window.addEventListener("pointermove", onPointerMove);
-    window.addEventListener("pointerup", onPointerUp);
-    return () => {
-      document.body.classList.remove("workbench-is-resizing-notes-sidebar");
-      window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointerup", onPointerUp);
-    };
-  }, [isResizingSidebar, applySidebarWidthFromPointer]);
-
-  function startResize(event: ReactPointerEvent<HTMLDivElement>) {
-    event.preventDefault();
-    setIsResizingSidebar(true);
-    applySidebarWidthFromPointer(event.clientX);
-  }
-
-  function handleResizeKey(event: ReactKeyboardEvent<HTMLDivElement>) {
-    const step = event.shiftKey ? 40 : 16;
-    let next = sidebarWidth;
-
-    switch (event.key) {
-      case "ArrowLeft":
-        event.preventDefault();
-        next = sidebarWidth - step;
-        break;
-      case "ArrowRight":
-        event.preventDefault();
-        next = sidebarWidth + step;
-        break;
-      case "Home":
-        event.preventDefault();
-        next = sidebarMin;
-        break;
-      case "End":
-        event.preventDefault();
-        next = sidebarMax;
-        break;
-      default:
-        return;
-    }
-
-    setSidebarWidth(clampSidebarWidth(next, isFocusMode));
-  }
-
-  function handleResizeDoubleClick() {
-    setSidebarWidth(clampSidebarWidth(NOTES_SIDEBAR_DEFAULT, isFocusMode));
-  }
 
   useEffect(() => {
     if (!isFocusMode) return;
@@ -3531,31 +3405,6 @@ export default function WorkbenchNotesClient(props: {
     setSaveError("");
   }
 
-  function applyTemplate(templateId: WorkbenchNoteTemplateId) {
-    const template = getWorkbenchNoteTemplate(templateId);
-
-    if (!selectedId) {
-      handleNewNote(templateId);
-      setNewNoteMenuOpen(false);
-      return;
-    }
-
-    const empty = isNoteContentEmpty(plainText, contentHtml);
-    if (!empty && !window.confirm("Replace the current note content with this template?")) {
-      return;
-    }
-
-    if (templateId !== "blank") {
-      titleWasEditedRef.current = false;
-      setTitle(template.title);
-      setContentHtml(template.html);
-      setContentJson(null);
-      setEditorRevision((v) => v + 1);
-      scheduleSave();
-    }
-    setNewNoteMenuOpen(false);
-  }
-
   function handleNewNote(templateId: WorkbenchNoteTemplateId = "blank") {
     const template = getWorkbenchNoteTemplate(templateId);
     const nextProjectId = projectId || selectedNote?.project_id || defaultProjectId || null;
@@ -3750,7 +3599,7 @@ function editorChain(editor: Editor): ChainedCommands {
 
   function handleRefreshEndnotesSection() {
     if (!editorInstance || !canEditSelected) return;
-    const nextHtml = refreshReferenceListHtml(editorInstance.getHTML(), citations);
+    const nextHtml = refreshReferenceListHtml(editorInstance.getHTML());
     editorInstance.commands.setContent(nextHtml, { emitUpdate: false });
     commitEditorHtml(nextHtml, citations);
     setCitationRevision((value) => value + 1);
@@ -3842,7 +3691,7 @@ function editorChain(editor: Editor): ChainedCommands {
     const rewrittenHtml = rewriteAllCitationAnchors(currentHtml, citations);
     if (rewrittenHtml === currentHtml) return;
 
-    const nextHtml = refreshReferenceListHtml(rewrittenHtml, citations);
+    const nextHtml = refreshReferenceListHtml(rewrittenHtml);
     editorInstance.commands.setContent(nextHtml, { emitUpdate: false });
     commitEditorHtml(nextHtml, citations);
     setCitationRevision((value) => value + 1);
@@ -3867,7 +3716,7 @@ function editorChain(editor: Editor): ChainedCommands {
     const nextCitations = citations.map((c) => (c.id === citationId ? updated : c));
     /* Rewrite every in-text anchor for this citation, then refresh the reference list */
     let nextHtml = rewriteCitationAnchors(editorInstance.getHTML(), updated);
-    nextHtml = refreshReferenceListHtml(nextHtml, nextCitations);
+    nextHtml = refreshReferenceListHtml(nextHtml);
     editorInstance.commands.setContent(nextHtml, { emitUpdate: false });
     commitEditorHtml(nextHtml, nextCitations);
     setCitationRevision((value) => value + 1);
@@ -3878,7 +3727,7 @@ function editorChain(editor: Editor): ChainedCommands {
     if (!editorInstance || editorInstance.isDestroyed) return;
     const nextCitations = citations.filter((c) => c.id !== citationId);
     let nextHtml = removeCitationAnchors(editorInstance.getHTML(), citationId);
-    nextHtml = refreshReferenceListHtml(nextHtml, nextCitations);
+    nextHtml = refreshReferenceListHtml(nextHtml);
     editorInstance.commands.setContent(nextHtml, { emitUpdate: false });
     commitEditorHtml(nextHtml, nextCitations);
     setCitationRevision((value) => value + 1);
@@ -3966,7 +3815,7 @@ function editorChain(editor: Editor): ChainedCommands {
     editorChain(editorInstance).insertContent(insertedHtml).run();
     const cursorAfterCitation = editorInstance.state.selection.to;
     /* Always refresh the reference list so it stays in sync */
-    const nextHtml = refreshReferenceListHtml(editorInstance.getHTML(), nextCitations);
+    const nextHtml = refreshReferenceListHtml(editorInstance.getHTML());
     if (nextHtml !== editorInstance.getHTML()) {
       editorInstance.commands.setContent(nextHtml, { emitUpdate: false });
       editorInstance.commands.setTextSelection(Math.min(cursorAfterCitation, editorInstance.state.doc.content.size));
@@ -4702,8 +4551,11 @@ function editorChain(editor: Editor): ChainedCommands {
         canRestoreVersions={canEditSelected && collaborationEnabled}
         onVersionRestored={applyRemoteNote}
         comments={collaborationEnabled ? collaboration.comments : []}
-        onCommentsChange={() => void collaboration.refreshComments()}
+        commentsLoading={collaborationEnabled ? collaboration.commentsLoading : false}
+        commentsError={collaborationEnabled ? collaboration.commentsError : ""}
+        onCommentsChange={() => collaboration.refreshComments()}
         currentUserId={props.currentUserId}
+        noteTitle={title}
         peerNamesByUserId={Object.fromEntries(
           collaboration.peers.map((peer) => [peer.userId, peer.displayName]),
         )}
@@ -4729,11 +4581,14 @@ function editorChain(editor: Editor): ChainedCommands {
     collaboration.activities,
     collaboration.remoteChangesPending,
     collaboration.comments,
+    collaboration.commentsLoading,
+    collaboration.commentsError,
     collaboration.applyRemoteNote,
     collaboration.dismissRemoteChanges,
     collaboration.refreshComments,
     resolvedShareProjectId,
     selectedId,
+    title,
     canEditSelected,
     applyRemoteNote,
     props.currentUserId,
@@ -5078,7 +4933,8 @@ function editorChain(editor: Editor): ChainedCommands {
         </p>
       ) : null}
 
-      {selectedNote &&
+      {noteMode === "document" &&
+      selectedNote &&
       resolvedShareProjectId &&
       selectedProjectAccessRole !== "owner" &&
       selectedProjectAccessRole !== "none" &&
@@ -5093,7 +4949,7 @@ function editorChain(editor: Editor): ChainedCommands {
         />
       ) : null}
 
-      {selectedNote && !isEditorialReading ? (
+      {selectedNote && !isEditorialReading && noteMode === "document" ? (
         <WorkbenchCollaborationBar
           peers={collaborationEnabled ? collaboration.peers : []}
           activities={collaborationEnabled ? collaboration.activities : []}
@@ -5106,8 +4962,11 @@ function editorChain(editor: Editor): ChainedCommands {
           canRestoreVersions={canEditSelected && collaborationEnabled}
           onVersionRestored={applyRemoteNote}
           comments={collaborationEnabled ? collaboration.comments : []}
-          onCommentsChange={() => void collaboration.refreshComments()}
+          commentsLoading={collaborationEnabled ? collaboration.commentsLoading : false}
+          commentsError={collaborationEnabled ? collaboration.commentsError : ""}
+          onCommentsChange={() => collaboration.refreshComments()}
           currentUserId={props.currentUserId}
+          noteTitle={title}
           peerNamesByUserId={Object.fromEntries(
             collaboration.peers.map((peer) => [peer.userId, peer.displayName]),
           )}

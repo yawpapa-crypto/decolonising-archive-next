@@ -1,8 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ComposableMap, Geographies, Geography, Graticule, Sphere } from "react-simple-maps";
+import { geoEqualEarth, geoGraticule10, geoPath, type GeoPermissibleObjects } from "d3-geo";
 import { Globe2, MapPin, X } from "lucide-react";
+import { feature } from "topojson-client";
+import type { GeometryObject, Topology } from "topojson-specification";
 import {
   coverageFillColor,
   normaliseCountry,
@@ -12,6 +14,20 @@ import {
 import { cn } from "@/lib/cn";
 
 const GEO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
+const MAP_WIDTH = 800;
+const MAP_HEIGHT = 500;
+
+type CountryFeature = {
+  id?: string | number;
+  properties: {
+    name?: string;
+    iso_a3?: string;
+  };
+};
+
+type WorldAtlasTopology = Topology<{
+  countries: GeometryObject<{ name?: string; iso_a3?: string }>;
+}>;
 
 type Props = {
   selectedCountry: string | null;
@@ -159,6 +175,7 @@ export default function WorkbenchGeographyMap({
   onSelectRegion,
 }: Props) {
   const [data, setData] = useState<UserGeographicCoverage | null>(null);
+  const [mapFeatures, setMapFeatures] = useState<CountryFeature[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [mapFailed, setMapFailed] = useState(false);
@@ -196,11 +213,25 @@ export default function WorkbenchGeographyMap({
   }, []);
 
   useEffect(() => {
-    fetch(GEO_URL)
-      .then((response) => {
-        if (!response.ok) setMapFailed(true);
-      })
-      .catch(() => setMapFailed(true));
+    let cancelled = false;
+
+    async function loadMapFeatures() {
+      try {
+        const response = await fetch(GEO_URL, { cache: "force-cache" });
+        if (!response.ok) throw new Error("Could not load map geography.");
+        const topology = (await response.json()) as WorldAtlasTopology;
+        const collection = feature(topology, topology.objects.countries);
+        const features = "features" in collection ? collection.features : [];
+        if (!cancelled) setMapFeatures(features as CountryFeature[]);
+      } catch {
+        if (!cancelled) setMapFailed(true);
+      }
+    }
+
+    void loadMapFeatures();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const countryByName = useMemo(() => {
@@ -229,8 +260,20 @@ export default function WorkbenchGeographyMap({
     [data, selectedCountry],
   );
 
+  const projection = useMemo(
+    () => geoEqualEarth().fitSize([MAP_WIDTH, MAP_HEIGHT], { type: "Sphere" }),
+    [],
+  );
+
+  const mapPath = useMemo(() => geoPath(projection), [projection]);
+  const spherePath = useMemo(() => mapPath({ type: "Sphere" }) ?? undefined, [mapPath]);
+  const graticulePath = useMemo(
+    () => mapPath(geoGraticule10() as GeoPermissibleObjects) ?? undefined,
+    [mapPath],
+  );
+
   const resolveCountryEntry = useCallback(
-    (geo: { properties: { name?: string; iso_a3?: string } }) => {
+    (geo: CountryFeature) => {
       const iso3 = geo.properties.iso_a3;
       if (iso3 && iso3 !== "-99" && countByIso3.has(iso3)) {
         return countByIso3.get(iso3)!;
@@ -245,7 +288,7 @@ export default function WorkbenchGeographyMap({
   );
 
   const handleGeographyClick = useCallback(
-    (geo: { properties: { name?: string; iso_a3?: string } }) => {
+    (geo: CountryFeature) => {
       const entry = resolveCountryEntry(geo);
       if (!entry) {
         onSelectCountry(null);
@@ -293,7 +336,7 @@ export default function WorkbenchGeographyMap({
 
         {!hasGeo ? (
           <CountryListFallback countries={[]} selectedCountry={selectedCountry} onSelectCountry={onSelectCountry} />
-        ) : mapFailed ? (
+        ) : mapFailed || !mapFeatures.length ? (
           <CountryListFallback
             countries={countries}
             selectedCountry={selectedCountry}
@@ -301,72 +344,64 @@ export default function WorkbenchGeographyMap({
           />
         ) : (
           <div className="ri-geo-map__canvas-wrap">
-            <ComposableMap
-              projection="geoEqualEarth"
-              projectionConfig={{ scale: 145 }}
+            <svg
+              viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
               className="ri-geo-map__canvas"
+              role="img"
+              aria-label="World map showing geographic coverage of saved records"
             >
-              <Sphere id="sphere" fill="#f7faf8" stroke="#dce7e1" strokeWidth={0.4} />
-              <Graticule stroke="#e4ece7" strokeWidth={0.35} />
-              <Geographies geography={GEO_URL}>
-                {({ geographies }) =>
-                  geographies.map((geo) => {
-                    const entry = resolveCountryEntry(geo);
-                    const count = entry?.count ?? 0;
-                    const isSelected = Boolean(entry && selectedCountry === entry.country);
+              {spherePath ? <path d={spherePath} fill="#f7faf8" stroke="#dce7e1" strokeWidth={0.4} /> : null}
+              {graticulePath ? <path d={graticulePath} fill="none" stroke="#e4ece7" strokeWidth={0.35} /> : null}
+              {mapFeatures.map((geo) => {
+                const entry = resolveCountryEntry(geo);
+                const count = entry?.count ?? 0;
+                const isSelected = Boolean(entry && selectedCountry === entry.country);
+                const pathD = mapPath(geo as unknown as GeoPermissibleObjects);
 
-                    return (
-                      <Geography
-                        key={geo.rsmKey}
-                        geography={geo}
-                        onMouseEnter={(event) => {
-                          if (!entry) return;
-                          setTooltip({
-                            label: entry.country,
-                            count: entry.count,
-                            x: event.clientX,
-                            y: event.clientY,
-                          });
-                        }}
-                        onMouseMove={(event) => {
-                          if (!entry) return;
-                          setTooltip({
-                            label: entry.country,
-                            count: entry.count,
-                            x: event.clientX,
-                            y: event.clientY,
-                          });
-                        }}
-                        onMouseLeave={() => setTooltip(null)}
-                        onClick={() => handleGeographyClick(geo)}
-                        style={{
-                          default: {
-                            fill: coverageFillColor(count, maxCount, isSelected),
-                            stroke: "#ffffff",
-                            strokeWidth: 0.4,
-                            outline: "none",
-                            cursor: entry ? "pointer" : "default",
-                          },
-                          hover: {
-                            fill: entry ? "#0f3d2e" : coverageFillColor(count, maxCount, false),
-                            stroke: "#ffffff",
-                            strokeWidth: 0.5,
-                            outline: "none",
-                          },
-                          pressed: {
-                            fill: "#0b2f24",
-                            outline: "none",
-                          },
-                        }}
-                        aria-label={
-                          entry ? `${entry.country}: ${entry.count} records` : (geo.properties.name as string)
-                        }
-                      />
-                    );
-                  })
-                }
-              </Geographies>
-            </ComposableMap>
+                if (!pathD) return null;
+
+                return (
+                  <path
+                    key={`${geo.id ?? geo.properties.name}`}
+                    d={pathD}
+                    className="ri-geo-map__country"
+                    data-has-records={entry ? "true" : "false"}
+                    data-selected={isSelected ? "true" : "false"}
+                    fill={coverageFillColor(count, maxCount, isSelected)}
+                    stroke="#ffffff"
+                    strokeWidth={0.4}
+                    tabIndex={entry ? 0 : -1}
+                    role={entry ? "button" : "img"}
+                    aria-label={entry ? `${entry.country}: ${entry.count} records` : geo.properties.name}
+                    onMouseEnter={(event) => {
+                      if (!entry) return;
+                      setTooltip({
+                        label: entry.country,
+                        count: entry.count,
+                        x: event.clientX,
+                        y: event.clientY,
+                      });
+                    }}
+                    onMouseMove={(event) => {
+                      if (!entry) return;
+                      setTooltip({
+                        label: entry.country,
+                        count: entry.count,
+                        x: event.clientX,
+                        y: event.clientY,
+                      });
+                    }}
+                    onMouseLeave={() => setTooltip(null)}
+                    onClick={() => handleGeographyClick(geo)}
+                    onKeyDown={(event) => {
+                      if (!entry || (event.key !== "Enter" && event.key !== " ")) return;
+                      event.preventDefault();
+                      handleGeographyClick(geo);
+                    }}
+                  />
+                );
+              })}
+            </svg>
 
             {tooltip ? (
               <div

@@ -7,8 +7,8 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { headers } from "next/headers";
 import { createClient } from "@/src/lib/supabase/server";
+import { updateLastLogin } from "@/src/lib/auth-hooks";
 
 function siteUrl() {
   const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
@@ -66,10 +66,14 @@ export async function signInWithPassword(formData: FormData) {
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
     redirect(`${statusPath}?error=${encodeURIComponent(formatSignInError(error.message))}`);
+  }
+
+  if (data.user?.id) {
+    await updateLastLogin(data.user.id);
   }
 
   revalidatePath("/", "layout");

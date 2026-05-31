@@ -21,6 +21,24 @@ create table if not exists public.workbench_note_versions (
 create index if not exists workbench_note_versions_note_created_idx
   on public.workbench_note_versions (note_id, created_at desc);
 
+alter table public.workbench_note_versions
+  add column if not exists project_id uuid references public.workbench_projects(id) on delete cascade,
+  add column if not exists saved_by uuid references auth.users(id) on delete cascade,
+  add column if not exists title text not null default 'Untitled note',
+  add column if not exists content_html text,
+  add column if not exists content_json jsonb,
+  add column if not exists plain_text text,
+  add column if not exists word_count integer,
+  add column if not exists character_count integer,
+  add column if not exists created_at timestamptz not null default now();
+
+update public.workbench_note_versions
+set saved_by = coalesce(saved_by, user_id)
+where saved_by is null;
+
+alter table public.workbench_note_versions
+  alter column saved_by set not null;
+
 alter table public.workbench_note_versions enable row level security;
 
 drop policy if exists "workbench_note_versions: select" on public.workbench_note_versions;

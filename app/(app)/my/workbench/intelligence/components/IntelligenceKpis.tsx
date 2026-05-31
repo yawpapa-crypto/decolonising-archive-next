@@ -10,7 +10,6 @@ import {
   FolderKanban,
   Globe2,
   Layers,
-  ShieldAlert,
 } from "lucide-react";
 import type {
   IntelligenceDashboardKpis,

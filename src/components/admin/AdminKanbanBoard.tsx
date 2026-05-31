@@ -28,21 +28,25 @@ import {
 } from "@/app/(admin)/admin/workspace-tools/actions";
 
 const COLUMNS: { id: AdminKanbanStatus; title: string }[] = [
-  { id: "backlog", title: "Backlog" },
+  { id: "todo", title: "To do" },
   { id: "in_progress", title: "In progress" },
   { id: "review", title: "Review" },
   { id: "done", title: "Done" },
+  { id: "blocked", title: "Blocked" },
 ];
 
 function groupByStatus(tasks: AdminKanbanTask[]): Record<AdminKanbanStatus, AdminKanbanTask[]> {
   const next: Record<AdminKanbanStatus, AdminKanbanTask[]> = {
     backlog: [],
+    todo: [],
     in_progress: [],
     review: [],
     done: [],
+    blocked: [],
   };
   for (const t of tasks) {
-    if (next[t.status]) next[t.status].push(t);
+    const status = t.status === "backlog" ? "todo" : t.status;
+    if (next[status]) next[status].push(t);
   }
   for (const col of COLUMNS) {
     next[col.id].sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
@@ -53,9 +57,11 @@ function groupByStatus(tasks: AdminKanbanTask[]): Record<AdminKanbanStatus, Admi
 function orderPayload(cols: Record<AdminKanbanStatus, AdminKanbanTask[]>) {
   const order: Record<AdminKanbanStatus, string[]> = {
     backlog: cols.backlog.map((t) => t.id),
+    todo: cols.todo.map((t) => t.id),
     in_progress: cols.in_progress.map((t) => t.id),
     review: cols.review.map((t) => t.id),
     done: cols.done.map((t) => t.id),
+    blocked: cols.blocked.map((t) => t.id),
   };
   return order;
 }
@@ -72,9 +78,11 @@ function findColumnOfTask(
 
 const STATUS_LABEL: Record<AdminKanbanStatus, string> = {
   backlog: "Backlog",
+  todo: "To do",
   in_progress: "In progress",
   review: "Review",
   done: "Done",
+  blocked: "Blocked",
 };
 
 function KanbanCard({
@@ -382,18 +390,22 @@ export default function AdminKanbanBoard() {
       if (!task) return;
       const next: Record<AdminKanbanStatus, AdminKanbanTask[]> = {
         backlog: [...cols.backlog],
+        todo: [...cols.todo],
         in_progress: [...cols.in_progress],
         review: [...cols.review],
         done: [...cols.done],
+        blocked: [...cols.blocked],
       };
       next[from] = next[from].filter((t) => t.id !== taskId);
       const moved = { ...task, status: to };
       next[to] = [...next[to], moved];
       setTasks([
         ...next.backlog,
+        ...next.todo,
         ...next.in_progress,
         ...next.review,
         ...next.done,
+        ...next.blocked,
       ]);
       await persistOrder(next);
     },
@@ -452,7 +464,7 @@ export default function AdminKanbanBoard() {
       title: t,
       description: newDescription.trim() || null,
       project_id: newProjectId || null,
-      status: "backlog",
+      status: "todo",
     });
     setBusy(false);
     if (!res.ok) {
@@ -493,9 +505,11 @@ export default function AdminKanbanBoard() {
 
       const next: Record<AdminKanbanStatus, AdminKanbanTask[]> = {
         backlog: [...prevCols.backlog],
+        todo: [...prevCols.todo],
         in_progress: [...prevCols.in_progress],
         review: [...prevCols.review],
         done: [...prevCols.done],
+        blocked: [...prevCols.blocked],
       };
 
       next[from] = next[from].filter((t) => t.id !== activeTaskId);
@@ -511,9 +525,11 @@ export default function AdminKanbanBoard() {
 
       setTasks([
         ...next.backlog,
+        ...next.todo,
         ...next.in_progress,
         ...next.review,
         ...next.done,
+        ...next.blocked,
       ]);
       await persistOrder(next);
     },
@@ -572,7 +588,7 @@ export default function AdminKanbanBoard() {
           ))}
         </select>
         <button type="button" className="admin-button" disabled={busy} onClick={() => void addTask()}>
-          Add to backlog
+          Add to To do
         </button>
       </div>
 
@@ -589,7 +605,7 @@ export default function AdminKanbanBoard() {
         onDragStart={onDragStart}
         onDragEnd={(e) => void onDragEnd(e)}
       >
-        <div className="admin-kanban-board admin-kanban-board-four">
+        <div className="admin-kanban-board admin-kanban-board-five">
           {COLUMNS.map((col) => (
             <KanbanColumn
               key={col.id}

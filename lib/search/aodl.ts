@@ -93,21 +93,6 @@ export function mapAodlCollectionToClientPayload(
   };
 }
 
-function gatherSearchFields(collection: ExternalArchiveCollection): string {
-  return [
-    collection.title,
-    collection.description,
-    collection.platform,
-    ...collection.countries,
-    ...collection.languages,
-    ...collection.themes,
-    ...collection.mediaTypes,
-    ...collection.keywords,
-  ]
-    .join(" ")
-    .toLowerCase();
-}
-
 export function searchAodlCollections(
   query: string,
   options: SearchAodlOptions = {},

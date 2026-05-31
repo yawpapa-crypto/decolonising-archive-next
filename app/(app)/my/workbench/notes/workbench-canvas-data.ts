@@ -186,7 +186,6 @@ export function shapeTypeForTool(tool: CanvasToolId): CanvasShapeType | undefine
 export function defaultTitleBody(
   type: CanvasObjectType,
   record?: WorkbenchLinkableRecord,
-  origin?: CanvasSourceOrigin,
 ): { title: string; body: string } {
   switch (type) {
     case "sticky":
@@ -240,7 +239,7 @@ export function createCanvasObject(input: {
     input.type === "shape"
       ? defaultSizeForShape(shapeType)
       : defaultSizeForType(input.type);
-  const { title, body } = defaultTitleBody(input.type, input.record, input.sourceOrigin);
+  const { title, body } = defaultTitleBody(input.type, input.record);
   const ts = NOW();
   const cornerRadius =
     shapeType === "circle" || shapeType === "ellipse"

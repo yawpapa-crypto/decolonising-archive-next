@@ -119,6 +119,12 @@ export default async function MyListsPage() {
                       ) : null}
                     </div>
                     <div className="reading-list-card-actions">
+                      <Link
+                        href={`/community?readingListId=${encodeURIComponent(list.id)}#share`}
+                        className="admin-button admin-button-secondary"
+                      >
+                        Publish to Community
+                      </Link>
                       <CopyReadingListLinkButton
                         listId={list.id}
                         listTitle={list.title}

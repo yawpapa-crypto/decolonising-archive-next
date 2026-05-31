@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
 import { EditorContent, useEditor, type Editor } from "@tiptap/react";
-import { Extension, Mark } from "@tiptap/core";
+import { Extension, Mark, type ChainedCommands } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -26,8 +26,8 @@ import { FontFamily } from "./workbench-editor-font-family";
 import { WorkbenchPageBreak } from "./workbench-page-break";
 
 
-function editorChain(editor: Editor): any {
-  return editor.chain().focus() as any;
+function editorChain(editor: Editor): ChainedCommands {
+  return editor.chain().focus();
 }
 
 type FontSizeOptions = {

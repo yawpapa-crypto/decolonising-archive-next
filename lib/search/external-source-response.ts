@@ -33,7 +33,6 @@ export type ExternalSourceSearchResponse = {
 
 export function emptyExternalSearchResponse(
   source: string,
-  query: string,
 ): ExternalSourceSearchResponse {
   return {
     source,

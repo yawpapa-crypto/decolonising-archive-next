@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import PageShell from "@/src/components/layout/PageShell";
-import { requireMember } from "@/src/lib/auth";
 import { createClient } from "@/src/lib/supabase/server";
 import { readRecords } from "@/lib/records";
 import { workspaceRecordTitle } from "@/src/lib/member-workspace";
@@ -9,9 +8,7 @@ import CopyRecordLinkButton from "@/app/(app)/my/lists/CopyRecordLinkButton";
 import { getRecordHref, isExternalHref } from "@/src/lib/record-links";
 
 type PageProps = {
-  params: Promise<{
-    id: string;
-  }>;
+  params: Promise<{ id: string }>;
 };
 
 type ReadingListItemRow = {
@@ -26,7 +23,6 @@ type ReadingListItemRow = {
 };
 
 export default async function CommunityReadingListPage({ params }: PageProps) {
-  await requireMember("/community");
   const { id } = await params;
   const supabase = await createClient();
 
@@ -39,15 +35,25 @@ export default async function CommunityReadingListPage({ params }: PageProps) {
 
   if (error || !list) notFound();
 
-  const approvedShare = await supabase
-    .from("submitted_content")
+  const { data: attachment } = await supabase
+    .from("community_post_attachments")
     .select("id")
-    .eq("content_type", "shared_reading_list")
-    .eq("related_reading_list_id", id)
-    .in("review_status", ["accepted", "approved", "resolved"])
+    .eq("attachment_type", "reading_list")
+    .eq("reading_list_id", id)
+    .limit(1)
     .maybeSingle();
 
-  if (approvedShare.error || !approvedShare.data) notFound();
+  if (!attachment) {
+    const { data: legacyShare } = await supabase
+      .from("submitted_content")
+      .select("id")
+      .eq("content_type", "shared_reading_list")
+      .eq("related_reading_list_id", id)
+      .in("review_status", ["accepted", "approved", "resolved"])
+      .limit(1)
+      .maybeSingle();
+    if (!legacyShare) notFound();
+  }
 
   const itemsResult = await supabase
     .from("reading_list_items")
@@ -70,8 +76,8 @@ export default async function CommunityReadingListPage({ params }: PageProps) {
           </div>
           <div className="community-header-actions">
             <span className="community-status-pill is-public">Public</span>
-            <Link href="/community" className="community-button community-button-secondary">
-              Back to community
+            <Link href="/community/reading-lists" className="community-button community-button-secondary">
+              Shared lists
             </Link>
           </div>
         </section>
@@ -84,21 +90,16 @@ export default async function CommunityReadingListPage({ params }: PageProps) {
           <div className="community-submission-list">
             {items.length ? (
               items.map((item) => {
-                const title =
-                  item.record_title || workspaceRecordTitle(recordsById, item.record_id);
+                const title = item.record_title || workspaceRecordTitle(recordsById, item.record_id);
                 const href = getRecordHref(item);
                 const sourceUrl = item.record_source_url?.trim() || "";
-                const showSourceLink =
-                  Boolean(sourceUrl) &&
-                  (!isExternalHref(href || "") || sourceUrl !== href);
+                const showSourceLink = Boolean(sourceUrl) && (!isExternalHref(href || "") || sourceUrl !== href);
                 return (
                   <article className="community-submission-item" key={item.id}>
                     <div>
                       <div className="community-submission-topline">
                         <strong>{title}</strong>
-                        {item.record_type ? (
-                          <span className="community-status-pill">{item.record_type}</span>
-                        ) : null}
+                        {item.record_type ? <span className="community-status-pill">{item.record_type}</span> : null}
                       </div>
                       <div className="community-submission-meta">
                         {item.record_source ? <span>{item.record_source}</span> : null}
@@ -110,17 +111,12 @@ export default async function CommunityReadingListPage({ params }: PageProps) {
                             <a
                               href={href}
                               className="community-button community-button-secondary"
-                              {...(isExternalHref(href)
-                                ? { target: "_blank", rel: "noreferrer" }
-                                : {})}
+                              {...(isExternalHref(href) ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                             >
                               Open record
                             </a>
                           ) : (
-                            <span
-                              className="community-button community-button-secondary community-button-disabled"
-                              aria-disabled
-                            >
+                            <span className="community-button community-button-secondary community-button-disabled" aria-disabled>
                               Record link unavailable
                             </span>
                           )}
@@ -136,7 +132,7 @@ export default async function CommunityReadingListPage({ params }: PageProps) {
                             href={sourceUrl}
                             className="community-button community-button-secondary"
                             target="_blank"
-                            rel="noreferrer"
+                            rel="noopener noreferrer"
                           >
                             Open source
                           </a>

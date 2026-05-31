@@ -17,8 +17,8 @@ export function itemsToMapPoints(items: IntelligenceItem[]): MapRecordPoint[] {
 
     let lat: number | null = null;
     let lon: number | null = null;
-    let label: string | null = item.country ?? item.region ?? item.continent ?? null;
-    let placeId: string | null = item.placeIds?.[0] ?? null;
+    const label: string | null = item.country ?? item.region ?? item.continent ?? null;
+    const placeId: string | null = item.placeIds?.[0] ?? null;
 
     if (item.country) {
       const meta = COUNTRY_COORDINATES[item.country.toLowerCase()];

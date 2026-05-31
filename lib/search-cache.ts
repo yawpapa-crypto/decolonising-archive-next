@@ -15,7 +15,7 @@ export function searchCacheKey(source: string, query: string, extras: Record<str
   return `${source}:${query.trim().toLowerCase()}${parts.length ? `:${parts.join("&")}` : ""}`;
 }
 
-export function getCachedSearch<T>(key: string, ttlMs = SEARCH_CACHE_TTL_MS): T | null {
+export function getCachedSearch<T>(key: string): T | null {
   const entry = store.get(key);
   if (!entry) return null;
   if (Date.now() > entry.expiresAt) {

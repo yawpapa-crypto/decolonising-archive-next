@@ -1941,6 +1941,26 @@ function pushRecentSearch(query) {
   saveRecentSearches(recentSearches);
 }
 
+function trackLibraryActivity(eventType, payload = {}) {
+  try {
+    window.DecolonisingArchiveAnalytics?.track?.({
+      eventType,
+      area: 'library',
+      action: payload.action || 'search',
+      query: payload.query,
+      sourceScope: payload.sourceScope,
+      resultCount: payload.resultCount,
+      externalResultCount: payload.externalResultCount,
+      localResultCount: payload.localResultCount,
+      durationMs: payload.durationMs,
+      status: payload.status,
+      metadata: payload.metadata || {}
+    });
+  } catch (error) {
+    console.warn('Library analytics skipped.', error);
+  }
+}
+
 function clearRecentSearches() {
   recentSearches = [];
   saveRecentSearches([]);
@@ -3054,6 +3074,15 @@ function renderCardWorkspaceActions(record) {
         >
           ${iconWorkbenchLayers()}
         </button>
+        <a
+          class="record-card-icon-btn"
+          href="/community?recordId=${encodeURIComponent(record.id)}&recordTitle=${encodeURIComponent(record.title || record.id)}#share"
+          data-stop-card-open="true"
+          aria-label="Share to Community"
+          title="Share to Community"
+        >
+          ↗
+        </a>
       </div>
       ${listComposerOpen ? `
         <div class="record-card-list-create">
@@ -3882,6 +3911,7 @@ function normalizeAdapterResult(value) {
 async function fetchLiveResults(query){
   const normalizedQuery = query.trim();
   if (!normalizedQuery) return [];
+  const analyticsStartedAt = Date.now();
   console.log('[LIVE] fetchLiveResults start', { query: normalizedQuery });
   if (LIVE_RESULT_CACHE.has(normalizedQuery)) {
     console.log('[LIVE] cache hit', normalizedQuery);
@@ -3990,6 +4020,19 @@ async function fetchLiveResults(query){
   const combined = dedupeBlendedResults([...gathered, ...fallbackPool], normalizedQuery).slice(0, 24);
   console.log('[LIVE] combined results', { gathered: gathered.length, fallbackPool: fallbackPool.length, combined: combined.length });
   LIVE_RESULT_CACHE.set(normalizedQuery, combined);
+  trackLibraryActivity('search_completed', {
+    query: normalizedQuery,
+    sourceScope: 'all_sources',
+    resultCount: combined.length,
+    externalResultCount: gathered.length,
+    localResultCount: localResults.length,
+    durationMs: Date.now() - analyticsStartedAt,
+    status: openAccessWarning ? 'partial' : 'success',
+    metadata: {
+      failedSources: statuses.filter(item => item.state === 'fail').map(item => item.label),
+      sourceCount: statuses.length
+    }
+  });
   publishProgress(true);
   return combined;
 }
@@ -4781,7 +4824,7 @@ function renderLibrary() {
   return `<div class="page active"><div class="library-layout"><aside class="sidebar">${hasFilter ? `<button class="clear-btn" id="clearBtn" type="button">Clear all filters</button>` : ""}${renderQuickFilters()}${METADATA_FILTER_GROUPS.map(group => renderMetadataFilterGroup(group, RECORDS)).join("")}</aside><div class="main-results library-blended-discovery"><div class="search-bar"><input type="text" id="mainSearch" aria-label="Search archive records and metadata" value="${escapeHtml(libraryQuery)}" placeholder="Search metadata, provenance, rights, source, and cultural protocol fields…" autocomplete="off"/><button id="localSearchBtn" type="button">Search</button><button class="secondary ${sourceMode ? "live-on" : "live-off"}" id="sourceSearchBtn" type="button">${sourceMode ? "External sources on" : "External sources off"}</button></div>${renderSearchSuggestions()}${renderRecentSearches("library")}${renderSearchSaveAction(effectiveQuery)}<div class="mobile-filter-bar"><button id="mobileFilterToggle" class="mobile-filter-btn ${mobileFiltersOpen ? "active" : ""}" type="button" aria-expanded="${mobileFiltersOpen ? "true" : "false"}" aria-controls="mobileFilterDrawer">Filters${activeFilterCount ? ` (${activeFilterCount})` : ""}</button>${activeFilterCount ? `<button id="mobileClearFilters" class="mobile-clear-btn" type="button">Clear</button>` : ""}</div>${renderMobileFilterDrawer(totalGroupedResults, activeFilterCount)}${renderLibraryLoader()}${renderLiveStatus()}<div class="results-stack library-results-stack" aria-label="${totalGroupedResults} search result${totalGroupedResults !== 1 ? "s" : ""}${effectiveQuery ? ` for “${qEsc}”` : ""}">${resultsBody}</div></div></div></div>`;
 }
 
-function applyLibraryQuery(value, clearSources = true) { const nextQuery = value.trim(); const queryChanged = nextQuery !== libraryQuery; console.log('[APPLY QUERY]', { value: nextQuery, clearSources, queryChanged, beforeLiveResults: liveResults.length }); libraryQuery = nextQuery; localResults = searchLocalRecords(getEffectiveSearchQuery() || libraryQuery); if (clearSources && queryChanged) { liveResults = []; openAccessNotices = null; externalDiscovery = []; coreOffset = coreLimit; coreTotalHits = 0; liveStatus = {state:'idle', message: getEffectiveSearchQuery() ? 'Archive results loaded. External source discovery is available.' : '', sources:[]}; } refreshBlendedDiscovery(true); }
+function applyLibraryQuery(value, clearSources = true) { const nextQuery = value.trim(); const queryChanged = nextQuery !== libraryQuery; console.log('[APPLY QUERY]', { value: nextQuery, clearSources, queryChanged, beforeLiveResults: liveResults.length }); libraryQuery = nextQuery; localResults = searchLocalRecords(getEffectiveSearchQuery() || libraryQuery); if (nextQuery && queryChanged) { trackLibraryActivity('search_submitted', { query: nextQuery, sourceScope: sourceMode ? 'all_sources' : 'archive', localResultCount: localResults.length, resultCount: localResults.length, metadata: { sourceMode } }); } if (clearSources && queryChanged) { liveResults = []; openAccessNotices = null; externalDiscovery = []; coreOffset = coreLimit; coreTotalHits = 0; liveStatus = {state:'idle', message: getEffectiveSearchQuery() ? 'Archive results loaded. External source discovery is available.' : '', sources:[]}; } refreshBlendedDiscovery(true); }
 
 function closeMobileFilters() {
   mobileFiltersOpen = false;

@@ -8,7 +8,9 @@ import {
   Schibsted_Grotesk,
 } from "next/font/google";
 import AuthHashHandler from "@/src/components/auth/AuthHashHandler";
+import PlatformActivityTracker from "@/src/components/analytics/PlatformActivityTracker";
 import AncestralAcknowledgementDialog from "@/src/components/site/AncestralAcknowledgement";
+import ArchiveGuidePanel from "@/src/components/archive-guide/ArchiveGuidePanel";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,7 +49,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${acknowledgementSans.variable} ${acknowledgementSerif.variable} min-h-full flex flex-col`}
       >
         <AuthHashHandler />
+        <PlatformActivityTracker />
         {children}
+        <ArchiveGuidePanel />
         <AncestralAcknowledgementDialog />
         <SpeedInsights />
       </body>

@@ -170,7 +170,6 @@ report.gemini.tests.push(
 // Parse test on last successful grounded response if any
 const grounded = report.gemini.tests.find((t) => t.label === "grounded_no_json_mime");
 if (grounded?.textLength) {
-  const full = report.gemini.tests.find((t) => t.label === "grounded_no_json_mime");
   // re-fetch not needed - count title fields in preview only for audit
   report.gemini.parseNote =
     "Full parse tested separately in app code; check textLength and hasSuggestionsKey above.";

@@ -15,14 +15,6 @@ type Props = {
   onApplyFilter?: (hint?: IntelligenceBehaviorInsight["filterHint"]) => void;
 };
 
-function formatDate(iso: string | null) {
-  if (!iso) return "No recent activity";
-  return new Date(iso).toLocaleString(undefined, {
-    dateStyle: "medium",
-    timeStyle: "short",
-  });
-}
-
 export default function IntelligenceResearchCorpus({
   review,
   insights,

@@ -125,7 +125,6 @@ export default function ProjectWorkbenchClient(props: {
     archiveById: archiveList,
     flashUpdated,
     flashError,
-    linkedReviewProjectId: _linkedReviewProjectId,
   } = props;
 
   const router = useRouter();

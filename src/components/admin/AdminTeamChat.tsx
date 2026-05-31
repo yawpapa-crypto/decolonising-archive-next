@@ -2,14 +2,18 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  fetchAdminChatChannels,
   fetchAdminChatMessages,
   sendAdminChatMessage,
+  type AdminChatChannel,
   type AdminChatMessage,
 } from "@/app/(admin)/admin/workspace-tools/actions";
 
-const POLL_MS = 12_000;
+const POLL_MS = 10_000;
 
 export default function AdminTeamChat({ adminUserId }: { adminUserId: string }) {
+  const [channels, setChannels] = useState<AdminChatChannel[]>([]);
+  const [channelSlug, setChannelSlug] = useState("general");
   const [messages, setMessages] = useState<AdminChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
@@ -17,9 +21,9 @@ export default function AdminTeamChat({ adminUserId }: { adminUserId: string }) 
   const [draft, setDraft] = useState("");
   const endRef = useRef<HTMLDivElement | null>(null);
 
-  const load = useCallback(async () => {
+  const loadMessages = useCallback(async (slug: string) => {
     setNotice(null);
-    const res = await fetchAdminChatMessages();
+    const res = await fetchAdminChatMessages(slug);
     if (!res.ok) {
       setNotice({ type: "err", text: res.error });
       setMessages([]);
@@ -32,56 +36,83 @@ export default function AdminTeamChat({ adminUserId }: { adminUserId: string }) 
     let cancelled = false;
     (async () => {
       setLoading(true);
-      await load();
+      const channelsRes = await fetchAdminChatChannels();
+      if (!cancelled && channelsRes.ok) {
+        setChannels(channelsRes.data);
+        if (channelsRes.data.length > 0 && !channelsRes.data.some((c) => c.slug === channelSlug)) {
+          setChannelSlug(channelsRes.data[0].slug);
+        }
+      }
+      await loadMessages(channelSlug);
       if (!cancelled) setLoading(false);
     })();
     return () => {
       cancelled = true;
     };
-  }, [load]);
+  }, [channelSlug, loadMessages]);
 
   useEffect(() => {
     const id = window.setInterval(() => {
-      void load();
+      void loadMessages(channelSlug);
     }, POLL_MS);
     return () => window.clearInterval(id);
-  }, [load]);
+  }, [channelSlug, loadMessages]);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages.length]);
+  }, [messages.length, channelSlug]);
 
   const send = useCallback(async () => {
     const text = draft.trim();
     if (!text) return;
     setSending(true);
     setNotice(null);
-    const res = await sendAdminChatMessage(text);
+    const res = await sendAdminChatMessage(text, channelSlug);
     setSending(false);
     if (!res.ok) {
       setNotice({ type: "err", text: res.error });
       return;
     }
     setDraft("");
-    await load();
+    await loadMessages(channelSlug);
     setNotice({ type: "ok", text: "Sent." });
-  }, [draft, load]);
+  }, [draft, channelSlug, loadMessages]);
 
   if (loading) {
-    return <p className="admin-muted">Loading messages…</p>;
+    return <p className="admin-muted">Loading chat…</p>;
   }
 
+  const activeChannel = channels.find((c) => c.slug === channelSlug);
+
   return (
-    <div className="admin-apps-placeholder admin-chat-mock">
-      <p className="admin-apps-placeholder-title">Team chat</p>
+    <div className="admin-chat-panel-inner">
+      <div className="admin-panel-label">Team chat</div>
       <p className="admin-muted">
-        Team messages are saved to the dashboard. Realtime and Slack bridge can be added later.
+        {activeChannel?.description || "Admin team messaging. Messages poll every 10 seconds."}
       </p>
-      {/* TODO: Slack bridge — wire outbound webhook or shared channel when product is ready. */}
+
+      {channels.length > 0 ? (
+        <div className="admin-chat-channels" role="tablist" aria-label="Chat channels">
+          {channels.map((channel) => (
+            <button
+              key={channel.id}
+              type="button"
+              role="tab"
+              aria-selected={channelSlug === channel.slug}
+              className={`admin-apps-tab ${channelSlug === channel.slug ? "is-active" : ""}`}
+              onClick={() => setChannelSlug(channel.slug)}
+            >
+              {channel.name}
+            </button>
+          ))}
+        </div>
+      ) : null}
 
       {notice ? (
         <p
-          className={notice.type === "err" ? "admin-flash admin-flash-error" : "admin-flash admin-flash-ok"}
+          className={
+            notice.type === "err" ? "admin-flash admin-flash-error" : "admin-flash admin-flash-ok"
+          }
           role="status"
         >
           {notice.text}
@@ -121,7 +152,7 @@ export default function AdminTeamChat({ adminUserId }: { adminUserId: string }) 
         <input
           type="text"
           className="admin-chat-input"
-          placeholder="Write a message…"
+          placeholder={`Message #${activeChannel?.name ?? channelSlug}…`}
           value={draft}
           disabled={sending}
           onChange={(e) => setDraft(e.target.value)}

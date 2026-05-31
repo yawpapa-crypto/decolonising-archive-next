@@ -5,11 +5,13 @@
 
 import type { ReactNode } from "react";
 import { requireAdmin } from "@/src/lib/auth";
+import { getUnreadAdminNotificationCount } from "@/lib/admin-notifications";
 import AdminAppShell from "./AdminAppShell";
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   const profile = await requireAdmin();
   const name = profile.full_name?.trim() || profile.email || "Admin";
+  const unreadCount = await getUnreadAdminNotificationCount(profile.id).catch(() => 0);
 
-  return <AdminAppShell userName={name}>{children}</AdminAppShell>;
+  return <AdminAppShell userName={name} unreadNotifications={unreadCount}>{children}</AdminAppShell>;
 }

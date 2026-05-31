@@ -48,7 +48,6 @@ import IntelligenceSectionSwitcher, {
   type IntelligenceSectionId,
 } from "./components/IntelligenceSectionSwitcher";
 import IntelligenceTimeline from "./components/IntelligenceTimeline";
-import { cn } from "@/lib/cn";
 import "@/app/styles/workbench-intelligence-dashboard.css";
 
 type IntelligenceTabId = IntelligenceSectionId;
@@ -89,15 +88,6 @@ function downloadTextFile(filename: string, mime: string, content: string) {
   anchor.download = filename;
   anchor.click();
   URL.revokeObjectURL(url);
-}
-
-function placeLabel(snapshot: IntelligenceSnapshot, placeId: string) {
-  return (
-    snapshot.worldMap.find((p) => p.placeId === placeId)?.label ??
-    snapshot.locations.find((l) => l.placeId === placeId)?.label ??
-    snapshot.cityPlaces.find((c) => c.placeId === placeId)?.label ??
-    placeId
-  );
 }
 
 function scrollToRecordsPanel() {
@@ -194,52 +184,6 @@ export default function WorkbenchIntelligenceClient({
     resetPlaceState();
     if (nextFilter) setFilter(nextFilter);
     setFacets({ ...EMPTY_FACETS, ...next });
-    handleSectionChange("records");
-  }
-
-  function applyPlaceFilter(placeId: string | null) {
-    setActiveComparisonId(null);
-    setActivePlaceId(placeId);
-
-    if (!placeId) {
-      setFacets({ ...EMPTY_FACETS });
-      return;
-    }
-
-    const point =
-      snapshot.worldMap.find((p) => p.placeId === placeId) ??
-      snapshot.locations.find((l) => l.placeId === placeId);
-    const city = snapshot.cityPlaces.find((c) => c.placeId === placeId);
-
-    const next: IntelligenceFacetFilters = { ...EMPTY_FACETS, placeId };
-
-    if (city) {
-      next.city = city.label;
-      next.country = city.country;
-    } else if (point) {
-      switch (point.kind) {
-        case "continent":
-          next.continent = point.label;
-          break;
-        case "country":
-          next.country = point.label;
-          break;
-        case "region":
-          next.region = point.label;
-          break;
-        case "diaspora":
-          next.diaspora = true;
-          break;
-        default:
-          break;
-      }
-    } else if (placeId.startsWith("region:")) {
-      next.region = placeLabel(snapshot, placeId);
-    } else if (placeId.startsWith("country:")) {
-      next.country = placeLabel(snapshot, placeId);
-    }
-
-    setFacets(next);
     handleSectionChange("records");
   }
 

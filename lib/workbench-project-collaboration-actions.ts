@@ -15,6 +15,10 @@ import {
 const WB = "/my/workbench";
 const NOTES_PATH = `${WB}/notes`;
 
+type ActionResult<T> =
+  | { ok: true; data: T }
+  | { ok: false; error: string; code?: string };
+
 async function getAuthedSupabase() {
   await requireMember(WB);
   const supabase = await createClient();
@@ -279,30 +283,110 @@ export async function listWorkbenchProjectComments(projectId: string): Promise<{
   error?: string;
   comments?: WorkbenchProjectCommentRow[];
 }> {
+  const result = await getWorkbenchProjectComments(projectId);
+  if (!result.ok) return { ok: false, error: result.error };
+  return { ok: true, comments: result.data };
+}
+
+async function canEditWorkbenchProject(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  projectId: string,
+): Promise<boolean> {
+  const { data, error } = await supabase.rpc("can_edit_workbench_project", {
+    target_project_id: projectId,
+  });
+  if (error) {
+    const fallback = await supabase.rpc("workbench_can_edit_project", {
+      project_uuid: projectId,
+    });
+    return Boolean(fallback.data) && !fallback.error;
+  }
+  return Boolean(data);
+}
+
+async function canViewWorkbenchProject(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  projectId: string,
+): Promise<boolean> {
+  const { data, error } = await supabase.rpc("can_view_workbench_project", {
+    target_project_id: projectId,
+  });
+  if (error) {
+    const fallback = await supabase.rpc("workbench_can_read_project", {
+      project_uuid: projectId,
+    });
+    return Boolean(fallback.data) && !fallback.error;
+  }
+  return Boolean(data);
+}
+
+async function assertCommentNoteBelongsToProject(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  noteId: string | null | undefined,
+  projectId: string,
+): Promise<ActionResult<null>> {
+  const id = noteId?.trim();
+  if (!id) return { ok: true, data: null };
+
+  const { data, error } = await supabase
+    .from("workbench_notes")
+    .select("id, project_id")
+    .eq("id", id)
+    .is("deleted_at", null)
+    .maybeSingle();
+
+  if (error) return { ok: false, error: error.message, code: "NOTE_LOOKUP_FAILED" };
+  if (!data) return { ok: false, error: "Note not found.", code: "NOTE_NOT_FOUND" };
+  const row = data as { project_id: string | null };
+  if (row.project_id !== projectId) {
+    return {
+      ok: false,
+      error: "Open a note in this project before adding a comment.",
+      code: "NOTE_PROJECT_MISMATCH",
+    };
+  }
+  return { ok: true, data: null };
+}
+
+export async function getWorkbenchProjectComments(
+  projectId: string,
+  noteId?: string | null,
+): Promise<ActionResult<WorkbenchProjectCommentRow[]>> {
   const id = projectId?.trim();
   if (!id) return { ok: false, error: "Missing project." };
 
   const { supabase, user, error } = await getAuthedSupabase();
   if (error || !user) return { ok: false, error: error ?? "Sign in required." };
 
-  const { data, error: listError } = await supabase
+  const canView = await canViewWorkbenchProject(supabase, id);
+  if (!canView) return { ok: false, error: "You do not have access to this project.", code: "FORBIDDEN" };
+
+  let query = supabase
     .from("workbench_project_comments")
     .select("*")
     .eq("project_id", id)
     .order("created_at", { ascending: false })
     .limit(50);
 
+  const scopedNoteId = noteId?.trim();
+  if (scopedNoteId) {
+    query = query.or(`note_id.eq.${scopedNoteId},note_id.is.null`);
+  }
+
+  const { data, error: listError } = await query;
   if (listError) return { ok: false, error: listError.message };
-  return { ok: true, comments: (data ?? []) as WorkbenchProjectCommentRow[] };
+  return { ok: true, data: (data ?? []) as WorkbenchProjectCommentRow[] };
 }
 
-export async function addWorkbenchProjectComment(input: {
+export async function createWorkbenchProjectComment(input: {
   projectId: string;
   noteId?: string | null;
   body: string;
   anchorType?: string | null;
   anchorId?: string | null;
-}): Promise<{ ok: boolean; error?: string; comment?: WorkbenchProjectCommentRow }> {
+  anchorLabel?: string | null;
+  metadata?: Record<string, unknown>;
+}): Promise<ActionResult<WorkbenchProjectCommentRow>> {
   const projectId = input.projectId?.trim();
   const body = input.body?.trim();
   if (!projectId || !body) return { ok: false, error: "Comment cannot be empty." };
@@ -310,15 +394,25 @@ export async function addWorkbenchProjectComment(input: {
   const { supabase, user, error } = await getAuthedSupabase();
   if (error || !user) return { ok: false, error: error ?? "Sign in required." };
 
+  const canEdit = await canEditWorkbenchProject(supabase, projectId);
+  if (!canEdit) {
+    return { ok: false, error: "You can read comments but cannot add one.", code: "FORBIDDEN" };
+  }
+
+  const noteCheck = await assertCommentNoteBelongsToProject(supabase, input.noteId, projectId);
+  if (!noteCheck.ok) return noteCheck;
+
   const { data, error: insertError } = await supabase
     .from("workbench_project_comments")
     .insert({
       project_id: projectId,
-      note_id: input.noteId ?? null,
+      note_id: input.noteId?.trim() || null,
       user_id: user.id,
       body,
-      anchor_type: input.anchorType ?? null,
-      anchor_id: input.anchorId ?? null,
+      anchor_type: input.anchorType?.trim() || (input.noteId ? "document" : "project"),
+      anchor_id: input.anchorId?.trim() || null,
+      anchor_label: input.anchorLabel?.trim() || null,
+      metadata: input.metadata ?? {},
     })
     .select("*")
     .single();
@@ -334,7 +428,73 @@ export async function addWorkbenchProjectComment(input: {
     targetId: (data as WorkbenchProjectCommentRow).id,
   });
 
-  return { ok: true, comment: data as WorkbenchProjectCommentRow };
+  return { ok: true, data: data as WorkbenchProjectCommentRow };
+}
+
+export async function addWorkbenchProjectComment(input: Parameters<typeof createWorkbenchProjectComment>[0]): Promise<{
+  ok: boolean;
+  error?: string;
+  comment?: WorkbenchProjectCommentRow;
+}> {
+  const result = await createWorkbenchProjectComment(input);
+  if (!result.ok) return { ok: false, error: result.error };
+  return { ok: true, comment: result.data };
+}
+
+export async function updateWorkbenchProjectComment(
+  commentId: string,
+  updates: { body?: string; resolved?: boolean; metadata?: Record<string, unknown> },
+): Promise<ActionResult<WorkbenchProjectCommentRow>> {
+  const id = commentId?.trim();
+  if (!id) return { ok: false, error: "Missing comment." };
+
+  const { supabase, user, error } = await getAuthedSupabase();
+  if (error || !user) return { ok: false, error: error ?? "Sign in required." };
+
+  const patch: Record<string, unknown> = {};
+  if (updates.body !== undefined) {
+    const body = updates.body.trim();
+    if (!body) return { ok: false, error: "Comment cannot be empty." };
+    patch.body = body;
+  }
+  if (updates.resolved !== undefined) patch.resolved = updates.resolved;
+  if (updates.metadata !== undefined) patch.metadata = updates.metadata;
+  if (!Object.keys(patch).length) return { ok: false, error: "No comment changes supplied." };
+
+  const { data, error: updateError } = await supabase
+    .from("workbench_project_comments")
+    .update(patch)
+    .eq("id", id)
+    .select("*")
+    .single();
+
+  if (updateError) return { ok: false, error: updateError.message };
+  return { ok: true, data: data as WorkbenchProjectCommentRow };
+}
+
+export async function resolveWorkbenchProjectComment(
+  commentId: string,
+  resolved: boolean,
+): Promise<ActionResult<WorkbenchProjectCommentRow>> {
+  return updateWorkbenchProjectComment(commentId, { resolved });
+}
+
+export async function deleteWorkbenchProjectComment(
+  commentId: string,
+): Promise<ActionResult<{ id: string }>> {
+  const id = commentId?.trim();
+  if (!id) return { ok: false, error: "Missing comment." };
+
+  const { supabase, user, error } = await getAuthedSupabase();
+  if (error || !user) return { ok: false, error: error ?? "Sign in required." };
+
+  const { error: deleteError } = await supabase
+    .from("workbench_project_comments")
+    .delete()
+    .eq("id", id);
+
+  if (deleteError) return { ok: false, error: deleteError.message };
+  return { ok: true, data: { id } };
 }
 
 export async function fetchWorkbenchNoteRow(noteId: string): Promise<{

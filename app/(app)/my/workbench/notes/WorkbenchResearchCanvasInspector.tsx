@@ -3,7 +3,6 @@
 import type { CSSProperties } from "react";
 import {
   ChevronLeft,
-  LayoutTemplate,
   PanelRightClose,
   Sparkles,
   Wand2,
