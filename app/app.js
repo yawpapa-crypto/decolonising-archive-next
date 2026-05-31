@@ -3,6 +3,7 @@ let coreOffset = 10;
 let coreLimit = 10;
 let coreLoadingMore = false;
 let mobileFiltersOpen = false;
+const KOFI_SUPPORT_URL = "https://ko-fi.com/areddesign";
 const COLLECTIONS = [
   {id:"c001",title:"West African Oral Traditions",icon:"◎",count:847,region:"West Africa",desc:"Oral histories, praise poetry, and spoken knowledge systems — Ifa corpus, griots, and community testimony."},
   {id:"c002",title:"Decolonial Theory Canon",icon:"◈",count:1203,region:"Global",desc:"Foundational texts by Fanon, Cabral, Nkrumah, Wiredu, Gyekye, Mbembe, Santos, Escobar, and beyond."},
@@ -3389,6 +3390,21 @@ function renderAbout() {
 
         <h2>${escapeHtml(about.contactTitle || "Contact")}</h2>
         <div class="about-richtext">${about.contactBody || ""}</div>
+
+        <section class="about-support-card" aria-label="Support Decolonising Archive">
+          <p class="about-support-card__eyebrow">Public beta support</p>
+          <h2>Help sustain the archive</h2>
+          <p>Voluntary support helps keep Decolonising Archive open while source discovery, Workbench tools, Archive Guide beta, accessibility and community features continue to improve.</p>
+          <a
+            class="about-support-card__link"
+            href="${KOFI_SUPPORT_URL}"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Support Decolonising Archive on Ko-fi"
+            data-support-link
+            data-support-area="about"
+          >Support this work</a>
+        </section>
       </div>
     </div>
   `;
@@ -4949,7 +4965,7 @@ async function loadMoreCoreResults() {
   }
 }
 
-function bindEvents() { document.querySelectorAll('[data-page]').forEach(element => { element.addEventListener('click', event => { const page = element.dataset.page; if (!page) return; event.preventDefault(); if (element.dataset.collection) { clearMetadataFilters(); metadataFilters.curatedCollections = [element.dataset.collection]; libraryQuery = ''; localResults = searchLocalRecords(getEffectiveSearchQuery()); liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'', sources:[]}; refreshBlendedDiscovery(true); } navigate(page); }); }); const hamburger = document.getElementById('hamburger'); const navMobile = document.getElementById('navMobile'); if (hamburger && navMobile) hamburger.addEventListener('click', () => navMobile.classList.toggle('open')); document.querySelectorAll('.suggestion[data-q], .related-search[data-related]').forEach(element => { element.addEventListener('click', () => { applyLibraryQuery(element.dataset.q || element.dataset.related || ''); navigate('library'); }); }); const heroInput = document.getElementById('heroSearch'); const heroButton = document.getElementById('heroSearchBtn'); if (heroInput && heroButton) { const submitHero = () => { const value = heroInput.value.trim(); if (value) pushRecentSearch(value); applyLibraryQuery(value); searchSuggestions = []; activeSuggestionIndex = -1; currentPage = 'library'; selectedRecordId = null; navigate('library'); requestAnimationFrame(() => { render(); const mainSearchAfter = document.getElementById('mainSearch'); if (mainSearchAfter) mainSearchAfter.value = libraryQuery; }); };
+function bindEvents() { document.querySelectorAll('[data-page]').forEach(element => { element.addEventListener('click', event => { const page = element.dataset.page; if (!page) return; event.preventDefault(); if (element.dataset.collection) { clearMetadataFilters(); metadataFilters.curatedCollections = [element.dataset.collection]; libraryQuery = ''; localResults = searchLocalRecords(getEffectiveSearchQuery()); liveResults = []; externalDiscovery = []; liveStatus = {state:'idle', message:'', sources:[]}; refreshBlendedDiscovery(true); } navigate(page); }); }); document.querySelectorAll('[data-support-link]').forEach(element => { element.addEventListener('click', () => { try { const body = JSON.stringify({eventType:"support_link_clicked", area:element.dataset.supportArea || "about", action:"open_kofi", targetType:"external_support_link", targetId:"ko-fi", metadata:{targetUrl:KOFI_SUPPORT_URL}}); if ("sendBeacon" in navigator) { navigator.sendBeacon("/api/analytics/activity", new Blob([body], {type:"application/json"})); } else { fetch("/api/analytics/activity", {method:"POST", headers:{"Content-Type":"application/json"}, body, keepalive:true}).catch(() => {}); } } catch {} }); }); const hamburger = document.getElementById('hamburger'); const navMobile = document.getElementById('navMobile'); if (hamburger && navMobile) hamburger.addEventListener('click', () => navMobile.classList.toggle('open')); document.querySelectorAll('.suggestion[data-q], .related-search[data-related]').forEach(element => { element.addEventListener('click', () => { applyLibraryQuery(element.dataset.q || element.dataset.related || ''); navigate('library'); }); }); const heroInput = document.getElementById('heroSearch'); const heroButton = document.getElementById('heroSearchBtn'); if (heroInput && heroButton) { const submitHero = () => { const value = heroInput.value.trim(); if (value) pushRecentSearch(value); applyLibraryQuery(value); searchSuggestions = []; activeSuggestionIndex = -1; currentPage = 'library'; selectedRecordId = null; navigate('library'); requestAnimationFrame(() => { render(); const mainSearchAfter = document.getElementById('mainSearch'); if (mainSearchAfter) mainSearchAfter.value = libraryQuery; }); };
 const pickHeroSuggestion = (value) => {
   heroInput.value = value;
   libraryQuery = value;

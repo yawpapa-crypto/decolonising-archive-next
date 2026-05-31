@@ -9,6 +9,7 @@ import {
 } from "@/src/lib/community-reading-commons";
 import CommunityCreatePostForm from "./CommunityCreatePostForm";
 import CommunityPostCard from "./CommunityPostCard";
+import SupportLink from "@/src/components/site/SupportLink";
 
 type SearchParams = Promise<{
   updated?: string;
@@ -140,6 +141,18 @@ export default async function CommunityPage({ searchParams }: { searchParams: Se
               <Link href="/about" className="community-sidebar-link">
                 Read guidelines
               </Link>
+            </div>
+
+            <div className="community-card community-sidebar-panel community-support-panel">
+              <p className="community-eyebrow">Public beta</p>
+              <h2>Support the Commons</h2>
+              <p>
+                Voluntary support helps keep community reading tools open while source discovery and
+                moderation improve.
+              </p>
+              <SupportLink area="community" className="community-sidebar-link">
+                Support this work
+              </SupportLink>
             </div>
 
             {profile ? (

@@ -1,3 +1,5 @@
+import PageShell from "@/src/components/layout/PageShell";
+
 export const metadata = {
   title: "Partners & Collaborators | Decolonising Archive",
   description:
@@ -6,10 +8,11 @@ export const metadata = {
 
 export default function PartnersPage() {
   return (
-    <main className="legal-page">
-      <div className="legal-wrap">
-        <p className="legal-eyebrow">Platform</p>
-        <h1>Partners &amp; Collaborators</h1>
+    <PageShell>
+      <main className="legal-page">
+        <div className="legal-wrap">
+          <p className="legal-eyebrow">Platform</p>
+          <h1>Partners &amp; Collaborators</h1>
 
         <section>
           <h2>Our Approach to Partnership</h2>
@@ -76,7 +79,8 @@ export default function PartnersPage() {
             . The platform is hosted on Vercel and uses Supabase for data infrastructure.
           </p>
         </section>
-      </div>
-    </main>
+        </div>
+      </main>
+    </PageShell>
   );
 }

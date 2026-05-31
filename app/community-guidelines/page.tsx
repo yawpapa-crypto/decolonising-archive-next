@@ -1,3 +1,5 @@
+import PageShell from "@/src/components/layout/PageShell";
+
 export const metadata = {
   title: "Community Guidelines | Decolonising Archive",
   description: "How members of Decolonising Archive are expected to participate.",
@@ -5,11 +7,12 @@ export const metadata = {
 
 export default function CommunityGuidelinesPage() {
   return (
-    <main className="legal-page">
-      <div className="legal-wrap">
-        <p className="legal-eyebrow">Community</p>
-        <h1>Community Guidelines</h1>
-        <p className="legal-updated">Last updated: 30 May 2026</p>
+    <PageShell>
+      <main className="legal-page">
+        <div className="legal-wrap">
+          <p className="legal-eyebrow">Community</p>
+          <h1>Community Guidelines</h1>
+          <p className="legal-updated">Last updated: 30 May 2026</p>
 
         <section>
           <h2>1. Purpose</h2>
@@ -84,7 +87,8 @@ export default function CommunityGuidelinesPage() {
             <a href="/feedback">feedback page</a>.
           </p>
         </section>
-      </div>
-    </main>
+        </div>
+      </main>
+    </PageShell>
   );
 }

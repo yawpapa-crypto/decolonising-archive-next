@@ -1,12 +1,51 @@
 import Link from "next/link";
+import PageShell from "@/src/components/layout/PageShell";
+import SupportLink from "@/src/components/site/SupportLink";
 
 export default function SupportPage() {
   return (
-    <main className="legal-page">
-      <div className="legal-wrap">
-        <p className="legal-eyebrow">Support</p>
-        <h1>Support</h1>
-        <p className="legal-updated">Help with access, records, rights, and Workbench issues.</p>
+    <PageShell>
+      <main className="legal-page">
+        <div className="legal-wrap">
+          <p className="legal-eyebrow">Support</p>
+          <h1>Support Decolonising Archive</h1>
+          <p className="legal-updated">
+            Help sustain the public beta, or get support with access, records, rights, and
+            Workbench issues.
+          </p>
+
+        <section className="support-kofi-card" aria-labelledby="support-kofi-title">
+          <div>
+            <p className="support-kofi-card__eyebrow">Public beta support</p>
+            <h2 id="support-kofi-title">Support Decolonising Archive</h2>
+            <p>
+              Decolonising Archive is currently in public beta. Your support helps keep the
+              platform open while we improve source discovery, maintain the Workbench, develop
+              Archive Guide beta, and build tools for researchers, students, educators and
+              community users.
+            </p>
+          </div>
+          <SupportLink area="support" className="support-kofi-card__button">
+            Support on Ko-fi
+          </SupportLink>
+          <p className="support-kofi-card__note">
+            Support is voluntary. Core beta access remains open while the platform is being tested
+            and improved.
+          </p>
+        </section>
+
+        <section>
+          <h2>What support helps cover</h2>
+          <ul>
+            <li>Hosting and infrastructure.</li>
+            <li>Source search and integration work.</li>
+            <li>Archive Guide beta and AI usage.</li>
+            <li>Workbench development.</li>
+            <li>Accessibility and usability improvements.</li>
+            <li>Community features and moderation.</li>
+            <li>Ongoing research and maintenance.</li>
+          </ul>
+        </section>
 
         <section>
           <h2>How to get help</h2>
@@ -52,7 +91,8 @@ export default function SupportPage() {
             sensitive personal information.
           </p>
         </section>
-      </div>
-    </main>
+        </div>
+      </main>
+    </PageShell>
   );
 }

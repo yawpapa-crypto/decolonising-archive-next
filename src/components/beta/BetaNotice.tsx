@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { markBetaNoticeSeen } from "@/lib/onboarding-actions";
+import SupportLink from "@/src/components/site/SupportLink";
 
 const LS_KEY = "da_beta_notice_seen";
 
@@ -51,6 +52,12 @@ export default function BetaNotice({ initialSeen = false }: Props) {
           <a href="/changelog" className="beta-notice__link">
             See what&apos;s new
           </a>
+          <span className="beta-notice__separator" aria-hidden="true">
+            ·
+          </span>
+          <SupportLink area="beta" className="beta-notice__link">
+            Support beta development
+          </SupportLink>
         </p>
         <button
           type="button"
