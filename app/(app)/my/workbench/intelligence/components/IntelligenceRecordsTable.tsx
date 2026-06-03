@@ -10,6 +10,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  type CellContext,
   type VisibilityState,
 } from "@tanstack/react-table";
 import { ChevronDown, ChevronUp, ChevronsUpDown, ExternalLink, FileText } from "lucide-react";
@@ -28,46 +29,7 @@ type Props = {
 const columnHelper = createColumnHelper<IntelligenceItem>();
 
 type SortingState = Array<{ id: string; desc: boolean }>;
-type TableCellInfo<TValue = unknown> = {
-  getValue: () => TValue;
-  row: { original: IntelligenceItem };
-};
-type TableRow = {
-  id: string;
-  original: IntelligenceItem;
-  getVisibleCells: () => TableCell[];
-};
-type TableCell = {
-  id: string;
-  column: {
-    columnDef: {
-      header?: unknown;
-      cell?: Parameters<typeof flexRender>[0];
-    };
-  };
-  getContext: () => object;
-};
-type TableColumn = {
-  id: string;
-  columnDef: { header?: unknown };
-  getIsVisible: () => boolean;
-  getToggleVisibilityHandler: () => () => void;
-};
-type TableHeader = {
-  id: string;
-  isPlaceholder: boolean;
-  column: {
-    getCanSort: () => boolean;
-    getToggleSortingHandler: () => ((event: unknown) => void) | undefined;
-    getIsSorted: () => false | "asc" | "desc";
-    columnDef: { header?: Parameters<typeof flexRender>[0] };
-  };
-  getContext: () => object;
-};
-type TableHeaderGroup = {
-  id: string;
-  headers: TableHeader[];
-};
+type IntelligenceCellContext<TValue = unknown> = CellContext<IntelligenceItem, TValue>;
 
 const DEFAULT_VISIBILITY: VisibilityState = {
   institution: false,
@@ -121,7 +83,7 @@ export default function IntelligenceRecordsTable({
     () => [
       columnHelper.accessor("title", {
         header: "Title",
-        cell: (info: TableCellInfo<string>) => (
+        cell: (info: IntelligenceCellContext<string>) => (
           <div className="ri-table-title">
             <strong>{info.getValue()}</strong>
           </div>
@@ -131,35 +93,35 @@ export default function IntelligenceRecordsTable({
       columnHelper.accessor((row: IntelligenceItem) => row.sourceLabel ?? row.source, {
         id: "source",
         header: "Source",
-        cell: (info: TableCellInfo<string>) => info.getValue(),
+        cell: (info: IntelligenceCellContext<string>) => info.getValue(),
       }),
       columnHelper.accessor((row: IntelligenceItem) => row.country ?? row.region ?? "—", {
         id: "region",
         header: "Region",
-        cell: (info: TableCellInfo<string>) => {
+        cell: (info: IntelligenceCellContext<string>) => {
           const row = info.row.original;
           return row.country ?? row.region ?? "—";
         },
       }),
       columnHelper.accessor("institution", {
         header: "Institution",
-        cell: (info: TableCellInfo<string | null | undefined>) => info.getValue() ?? "—",
+        cell: (info: IntelligenceCellContext<string | null | undefined>) => info.getValue() ?? "—",
       }),
       columnHelper.accessor("theme", {
         header: "Theme",
-        cell: (info: TableCellInfo<string | null | undefined>) => info.getValue() ?? "—",
+        cell: (info: IntelligenceCellContext<string | null | undefined>) => info.getValue() ?? "—",
       }),
       columnHelper.accessor("status", {
         header: "Status",
-        cell: (info: TableCellInfo<string>) => <StatusBadge status={info.getValue()} />,
+        cell: (info: IntelligenceCellContext<string>) => <StatusBadge status={info.getValue()} />,
       }),
       columnHelper.accessor("confidence", {
         header: "Confidence",
-        cell: (info: TableCellInfo<string | number | null | undefined>) => info.getValue() ?? "—",
+        cell: (info: IntelligenceCellContext<string | number | null | undefined>) => info.getValue() ?? "—",
       }),
       columnHelper.accessor("openAccess", {
         header: "Access",
-        cell: (info: TableCellInfo<boolean | null | undefined>) => {
+        cell: (info: IntelligenceCellContext<boolean | null | undefined>) => {
           const val = info.getValue();
           if (val == null) return <span className="ri-muted">—</span>;
           return (
@@ -171,7 +133,7 @@ export default function IntelligenceRecordsTable({
       }),
       columnHelper.accessor("lastSynced", {
         header: "Synced",
-        cell: (info: TableCellInfo<string | null | undefined>) => {
+        cell: (info: IntelligenceCellContext<string | null | undefined>) => {
           const val = info.getValue();
           return val ? new Date(val).toLocaleDateString() : "—";
         },
@@ -179,7 +141,7 @@ export default function IntelligenceRecordsTable({
       columnHelper.display({
         id: "actions",
         header: "",
-        cell: ({ row }: { row: TableRow }) => (
+        cell: ({ row }: IntelligenceCellContext) => (
           <div className="ri-row-actions">
             {row.original.openHref ? (
               <Link href={row.original.openHref} className="ri-table-action">
@@ -273,7 +235,7 @@ export default function IntelligenceRecordsTable({
 
       {showColumns ? (
         <div className="ri-column-picker">
-          {table.getAllLeafColumns().map((column: TableColumn) => {
+          {table.getAllLeafColumns().map((column) => {
             if (column.id === "title" || column.id === "actions") return null;
             return (
               <label key={column.id}>
@@ -292,9 +254,9 @@ export default function IntelligenceRecordsTable({
       <div className="ri-table-wrap">
         <table className="ri-table ri-dash-table">
           <thead>
-            {table.getHeaderGroups().map((headerGroup: TableHeaderGroup) => (
+            {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header: TableHeader) => (
+                {headerGroup.headers.map((header) => (
                   <th key={header.id} scope="col">
                     {header.isPlaceholder ? null : (
                       <button
@@ -315,9 +277,9 @@ export default function IntelligenceRecordsTable({
           </thead>
           <tbody>
             {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row: TableRow) => (
+              table.getRowModel().rows.map((row) => (
                 <tr key={row.id}>
-                  {row.getVisibleCells().map((cell: TableCell) => (
+                  {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} data-label={cell.column.columnDef.header as string}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
