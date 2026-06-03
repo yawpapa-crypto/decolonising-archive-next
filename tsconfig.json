@@ -27,6 +27,9 @@
       "@/*": [
         "./*"
       ],
+      "@deck.gl/layers": [
+        "./node_modules/@deck.gl/layers/dist/index.d.ts"
+      ],
       "@payload-config": [
         "./payload.config.ts"
       ]

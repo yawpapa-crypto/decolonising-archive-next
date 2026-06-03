@@ -6922,6 +6922,58 @@ function applyLibraryQuery(value, clearSources = true) {
   refreshBlendedDiscovery(true);
 }
 
+function applyArchiveGuideSuggestedSearch(detail = {}) {
+  const query = String(detail.suggestedQuery || detail.query || "").trim();
+  if (!query) return;
+  const originalQuery = String(detail.originalQuery || libraryQuery || "").trim();
+  const suggestionType = String(detail.suggestionType || "broader");
+  const mode = String(detail.mode || "");
+  try {
+    trackLibraryActivity("archive_guide_suggested_search_clicked", {
+      query,
+      sourceScope: sourceMode ? "all_sources" : "archive",
+      metadata: {
+        original_query: originalQuery,
+        suggested_query: query,
+        suggestion_type: suggestionType,
+        area: "library",
+        mode,
+      },
+    });
+  } catch (error) {
+    console.warn("Archive Guide search analytics skipped.", error);
+  }
+  pushRecentSearch(query);
+  currentPage = "library";
+  selectedRecordId = null;
+  clearMetadataFilters();
+  searchSuggestions = [];
+  activeSuggestionIndex = -1;
+  applyLibraryQuery(query, true);
+  const nextUrl = `/library?q=${encodeURIComponent(query)}`;
+  if (window.location.pathname + window.location.search !== nextUrl) {
+    window.history.pushState({ archiveRoute: true, page: "library" }, "", nextUrl);
+  }
+  render();
+  requestAnimationFrame(() => {
+    const input = document.getElementById("mainSearch");
+    if (input) {
+      input.value = query;
+      input.focus({ preventScroll: true });
+    }
+    document.querySelector(".library-results-stack")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
+window.DecolonisingArchive = {
+  ...(window.DecolonisingArchive || {}),
+  applyLibrarySearch: applyArchiveGuideSuggestedSearch,
+};
+
+window.addEventListener("archive-guide:suggested-search-clicked", (event) => {
+  applyArchiveGuideSuggestedSearch(event.detail || {});
+});
+
 function closeMobileFilters() {
   mobileFiltersOpen = false;
   render();

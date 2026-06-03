@@ -4,6 +4,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import type { CitationCandidate } from "./WorkbenchNotesClient";
 import type { ScholarlySearchResult } from "@/lib/scholarly-search";
+import {
+  formatCitationForInsertion,
+  normalizeCitationResult,
+  type NormalisedCitationResult,
+} from "@/lib/workbench-citation-normalization";
 import { useFloatingPanelPosition } from "./useFloatingPanelPosition";
 
 const PANEL_WIDTH = 332;
@@ -18,7 +23,9 @@ type Props = {
   canEdit: boolean;
   formatDrawerOpen?: boolean;
   onSelectCandidate: (candidate: CitationCandidate) => void;
-  onInsertScholarlyResult: (result: ScholarlySearchResult) => void;
+  onInsertScholarlyResult: (
+    result: NormalisedCitationResult,
+  ) => Promise<{ ok: boolean; error?: string; citationText?: string }> | { ok: boolean; error?: string; citationText?: string };
   onRecommendedCandidateIdsChange: (ids: string[]) => void;
 };
 
@@ -80,6 +87,9 @@ export default function AICitationAssistant({
   const [searchWarnings, setSearchWarnings] = useState<string[]>([]);
   const [recommendedCandidateIds, setRecommendedCandidateIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [insertingId, setInsertingId] = useState<string | null>(null);
+  const [insertMessage, setInsertMessage] = useState("");
+  const [insertError, setInsertError] = useState("");
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState<PanelTab>("sources");
 
@@ -121,7 +131,16 @@ export default function AICitationAssistant({
   }, []);
 
   async function handleScholarlySearch() {
+    const searchQuery =
+      aiPrompt.trim() ||
+      query.trim() ||
+      "decolonisation indigenous knowledge systems African epistemology";
+    if (process.env.NODE_ENV !== "production") {
+      console.log("[AI Cite] search submitted", searchQuery);
+    }
     setError("");
+    setInsertError("");
+    setInsertMessage("");
     setAiResponse(null);
     setScholarlyResults([]);
     setSourceSections({});
@@ -133,10 +152,6 @@ export default function AICitationAssistant({
     setActiveTab("discover");
 
     try {
-      const searchQuery =
-        aiPrompt.trim() ||
-        query.trim() ||
-        "decolonisation indigenous knowledge systems African epistemology";
       const res = await fetch("/api/workbench/notes/scholarly-search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -167,8 +182,12 @@ export default function AICitationAssistant({
       if (!res.ok || !json.ok) {
         setError(json.error || "Scholarly search unavailable.");
       } else {
+        const results = (json.results ?? []).filter((result) => normalizeCitationResult(result));
+        if (process.env.NODE_ENV !== "production") {
+          console.log("[AI Cite] results received", results.length);
+        }
         setAiResponse(formatAiExplanation(json.explanation ?? "Search complete."));
-        setScholarlyResults(json.results ?? []);
+        setScholarlyResults(results);
         setSourceSections(json.sourceSections ?? {});
         setSearchQueries(json.searchQueries ?? []);
         setSearchWarnings(json.warnings ?? []);
@@ -177,6 +196,56 @@ export default function AICitationAssistant({
       setError("Unable to reach scholarly search.");
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function handleInsertResult(result: ScholarlySearchResult) {
+    const normalized = normalizeCitationResult(result);
+    const formattedText = normalized ? formatCitationForInsertion(normalized) : "";
+    if (process.env.NODE_ENV !== "production") {
+      console.log("[AI Cite] selected result", result);
+      console.log("[AI Cite] formatted insertion", formattedText);
+    }
+    if (!normalized || !formattedText) {
+      setInsertError("Could not insert this citation. You can copy it instead.");
+      return;
+    }
+    setInsertingId(normalized.id);
+    setInsertError("");
+    setInsertMessage("");
+    try {
+      const saveResult = await onInsertScholarlyResult(normalized);
+      if (process.env.NODE_ENV !== "production") {
+        console.log("[AI Cite] save result", saveResult);
+      }
+      if (!saveResult.ok) {
+        setInsertError(saveResult.error || "Could not insert this citation. You can copy it instead.");
+        return;
+      }
+      setInsertMessage("Citation inserted.");
+    } catch (error) {
+      if (process.env.NODE_ENV !== "production") {
+        console.error("[AI Cite] insert failed", error);
+      }
+      setInsertError("Could not insert this citation. You can copy it instead.");
+    } finally {
+      setInsertingId(null);
+    }
+  }
+
+  async function copyCitation(result: ScholarlySearchResult) {
+    const normalized = normalizeCitationResult(result);
+    const citation = normalized ? formatCitationForInsertion(normalized) : "";
+    if (!citation) {
+      setInsertError("Could not copy this citation.");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(citation);
+      setInsertError("");
+      setInsertMessage("Citation copied.");
+    } catch {
+      setInsertError("Could not copy this citation.");
     }
   }
 
@@ -316,6 +385,12 @@ export default function AICitationAssistant({
             {error ? (
               <p className="ai-cite-panel__notice ai-cite-panel__notice--error">{error}</p>
             ) : null}
+            {insertError ? (
+              <p className="ai-cite-panel__notice ai-cite-panel__notice--error">{insertError}</p>
+            ) : null}
+            {insertMessage ? (
+              <p className="ai-cite-panel__notice">{insertMessage}</p>
+            ) : null}
             {searchWarnings.length > 0 ? (
               <p className="ai-cite-panel__notice">{searchWarnings.join(" ")}</p>
             ) : null}
@@ -368,36 +443,53 @@ export default function AICitationAssistant({
                           ) : null}
                           <ul className="ai-cite-panel__picks">
                             {section.results.map((result) => {
-                              const meta = [result.creator, result.year, result.journal || result.publisher]
+                              const normalized = normalizeCitationResult(result);
+                              if (!normalized) return null;
+                              const citationText = formatCitationForInsertion(normalized);
+                              const meta = [
+                                normalized.authors.join(", ") || "Unknown author",
+                                normalized.year || "n.d.",
+                                normalized.venue,
+                              ]
                                 .filter(Boolean)
                                 .join(" · ");
                               const sourceLabel =
-                                result.source === "Gemini"
+                                normalized.source === "Gemini"
                                   ? result.verified
                                     ? "Gemini · verified"
                                     : "Gemini · check citation"
-                                  : result.source;
+                                  : normalized.source || "Scholarly source";
                               return (
-                                <li key={result.id}>
+                                <li key={normalized.id}>
                                   <button
                                     type="button"
-                                    className={`ai-cite-panel__pick${result.source === "Gemini" ? " is-gemini" : ""}${result.verified === false ? " is-unverified" : ""}`}
+                                    className={`ai-cite-panel__pick${normalized.source === "Gemini" ? " is-gemini" : ""}${result.verified === false ? " is-unverified" : ""}`}
                                     disabled={!canEdit}
-                                    onClick={() => onInsertScholarlyResult(result)}
+                                    onClick={() => void handleInsertResult(result)}
                                   >
                                     <span className="ai-cite-panel__pick-head">
-                                      <span className="ai-cite-panel__pick-title">{result.title}</span>
+                                      <span className="ai-cite-panel__pick-title">{normalized.title}</span>
                                       <span className="ai-cite-panel__pick-source">{sourceLabel}</span>
                                     </span>
-                                    {result.rationale ? (
-                                      <span className="ai-cite-panel__pick-rationale">{result.rationale}</span>
+                                    {typeof result.rationale === "string" && result.rationale.trim() ? (
+                                      <span className="ai-cite-panel__pick-rationale">{result.rationale.trim()}</span>
                                     ) : null}
-                                    <span className="ai-cite-panel__pick-citation">{result.citationLine}</span>
+                                    <span className="ai-cite-panel__pick-citation">{citationText}</span>
                                     {meta ? <span className="ai-cite-panel__pick-meta">{meta}</span> : null}
-                                    {result.doi ? (
-                                      <span className="ai-cite-panel__pick-meta">DOI: {result.doi}</span>
+                                    {normalized.doi ? (
+                                      <span className="ai-cite-panel__pick-meta">DOI: {normalized.doi}</span>
                                     ) : null}
-                                    <span className="ai-cite-panel__pick-action">Insert citation</span>
+                                    <span className="ai-cite-panel__pick-action">
+                                      {insertingId === normalized.id ? "Inserting..." : "Insert citation"}
+                                    </span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="ai-cite-panel__copy"
+                                    onClick={() => void copyCitation(result)}
+                                    aria-label={`Copy citation for ${normalized.title}`}
+                                  >
+                                    Copy citation
                                   </button>
                                 </li>
                               );

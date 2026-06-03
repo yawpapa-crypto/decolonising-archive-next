@@ -1,5 +1,6 @@
+import SiteFooter from "@/src/components/layout/SiteFooter";
+
 import { submitSourceRequest } from "@/lib/source-request-actions";
-import PageShell from "@/src/components/layout/PageShell";
 
 export const metadata = {
   title: "Suggest a Source | Decolonising Archive",
@@ -13,16 +14,16 @@ export default async function SourceRequestPage(props: { searchParams: SearchPar
   const errorMsg = params.error ? decodeURIComponent(params.error) : null;
 
   return (
-    <PageShell>
+    <>
       <main className="legal-page">
-        <div className="legal-wrap">
-          <p className="legal-eyebrow">Archive</p>
-          <h1>Suggest a Source</h1>
-          <p>
-            Know of an archive, institution, collection, or resource that should be represented in
-            Decolonising Archive? Use this form to suggest it. We review all suggestions and aim to
-            respond within 4–6 weeks.
-          </p>
+      <div className="legal-wrap">
+        <p className="legal-eyebrow">Archive</p>
+        <h1>Suggest a Source</h1>
+        <p>
+          Know of an archive, institution, collection, or resource that should be represented in
+          Decolonising Archive? Use this form to suggest it. We review all suggestions and aim to
+          respond within 4–6 weeks.
+        </p>
 
         {params.submitted ? (
           <div
@@ -92,8 +93,9 @@ export default async function SourceRequestPage(props: { searchParams: SearchPar
           </form>
           </>
         )}
-        </div>
-      </main>
-    </PageShell>
+      </div>
+    </main>
+      <SiteFooter />
+    </>
   );
 }

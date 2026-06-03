@@ -69,6 +69,11 @@ import {
   readingMinutesFromWordCount,
   shouldAutoGenerateNoteTitle,
 } from "@/lib/workbench-note-utils";
+import {
+  formatCitationForInsertion,
+  normalizeCitationResult,
+  type NormalisedCitationResult,
+} from "@/lib/workbench-citation-normalization";
 import AICitationFloatingTrigger from "./AICitationFloatingTrigger";
 import type { WorkbenchEditorPayload } from "../WorkbenchRichTextEditor";
 import WorkbenchNotesLinkedRecords, {
@@ -722,6 +727,41 @@ function rewriteCitationAnchors(html: string, citation: WorkbenchNoteCitation): 
 
 function rewriteAllCitationAnchors(html: string, citations: WorkbenchNoteCitation[]): string {
   return citations.reduce((nextHtml, citation) => rewriteCitationAnchors(nextHtml, citation), html);
+}
+
+function citationRewriteSignature(citations: WorkbenchNoteCitation[]) {
+  return citations
+    .map((citation) =>
+      [
+        citation.id,
+        citationReferenceId(citation),
+        citation.recordId ?? "",
+        citation.title,
+        citation.creator ?? "",
+        citation.date ?? "",
+        citation.sourceUrl ?? "",
+        citation.inTextCitation,
+        citation.displayText ?? "",
+        citation.prefix ?? "",
+        citation.suffix ?? "",
+        citation.pages ?? "",
+        citation.insertMode,
+        citation.citationText,
+      ].join("\u001f"),
+    )
+    .join("\u001e");
+}
+
+function areJsonValuesEqual(
+  a: Record<string, unknown> | null,
+  b: Record<string, unknown> | null,
+) {
+  if (a === b) return true;
+  try {
+    return JSON.stringify(a) === JSON.stringify(b);
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -2759,6 +2799,12 @@ export default function WorkbenchNotesClient(props: {
   }, [props.linkableRecords, projectId]);
 
   const citations = useMemo(() => getCitations(contentJson), [contentJson]);
+  const citationSignature = useMemo(() => citationRewriteSignature(citations), [citations]);
+  const citationsRef = useRef(citations);
+  useEffect(() => {
+    citationsRef.current = citations;
+  }, [citations]);
+
   const citationCandidates = useMemo(() => {
     const byRecordId = new Map<string, CitationCandidate>();
 
@@ -2888,35 +2934,56 @@ export default function WorkbenchNotesClient(props: {
     setAIAssistantOpen(false);
   }
 
-  function handleInsertScholarlyResult(result: {
-    id: string;
-    title: string;
-    creator: string;
-    year: string;
-    journal?: string;
-    publisher?: string;
-    source: string;
-    url: string;
-    citationLine: string;
-  }) {
+  function handleInsertScholarlyResult(
+    result: NormalisedCitationResult,
+  ): { ok: boolean; error?: string; citationText?: string } {
+    const normalized = normalizeCitationResult(result);
+    const citationText = normalized ? formatCitationForInsertion(normalized) : "";
+    const beforeLength = contentHtml.length;
+    if (process.env.NODE_ENV !== "production") {
+      console.log("[AI Cite] before insert note length", beforeLength);
+    }
+    if (!normalized || !citationText.trim()) {
+      return { ok: false, error: "Could not insert this citation. You can copy it instead." };
+    }
+    if (!editorInstance || editorInstance.isDestroyed || !canEditSelected) {
+      return { ok: false, error: "Could not insert this citation. You can copy it instead.", citationText };
+    }
     const candidate: CitationCandidate = {
-      id: result.id,
-      title: result.title,
-      creator: result.creator,
-      date: result.year || null,
-      institution: result.journal || result.publisher || result.source,
-      sourceUrl: result.url,
-      citationText: result.citationLine,
+      id: normalized.id,
+      title: normalized.title,
+      creator: normalized.authors.join(", ") || null,
+      date: normalized.year || null,
+      institution: normalized.venue || normalized.source || null,
+      sourceUrl: normalized.url ?? null,
+      citationText,
       sourceType: "custom",
-      sourceLabel: result.source,
+      sourceLabel: normalized.source || "Scholarly search",
     };
-    handleInsertCitation({
-      candidate,
-      style: "apa7",
-      insertMode: "parenthetical",
-      customText: "",
-    });
-    setAIAssistantOpen(false);
+    try {
+      const inserted = handleInsertCitation({
+        candidate,
+        style: "apa7",
+        insertMode: "full_block",
+        customText: "",
+      });
+      const afterLength = snapshotRef.current.contentHtml.length;
+      if (process.env.NODE_ENV !== "production") {
+        console.log("[AI Cite] after insert note length", afterLength);
+      }
+      if (!inserted) {
+        return { ok: false, error: "Could not insert this citation. You can copy it instead.", citationText };
+      }
+      setAIAssistantOpen(false);
+      return { ok: true, citationText };
+    } catch (error) {
+      if (process.env.NODE_ENV !== "production") {
+        console.error("[AI Cite] insert failed", error);
+      }
+      setSaveState("error");
+      setSaveError("Could not insert this citation. You can copy it instead.");
+      return { ok: false, error: "Could not insert this citation. You can copy it instead.", citationText };
+    }
   }
 
   useEffect(() => {
@@ -3074,22 +3141,30 @@ export default function WorkbenchNotesClient(props: {
         setTitle(saveTitle);
       }
 
-      const result = await updateWorkbenchNote({
-        noteId,
-        title: saveTitle,
-        contentHtml: snapshot.contentHtml,
-        contentJson: snapshot.contentJson,
-        plainText: snapshot.plainText,
-        wordCount: snapshot.wordCount,
-        characterCount: snapshot.characterCount,
-        projectId: snapshot.projectId,
-        status: snapshot.status,
-        saveContext: {
-          mode: noteMode,
-          activityAction: "note_saved",
-        },
-        expectedUpdatedAt: lastLoadedUpdatedAtRef.current,
-      });
+      let result: Awaited<ReturnType<typeof updateWorkbenchNote>>;
+      try {
+        result = await updateWorkbenchNote({
+          noteId,
+          title: saveTitle,
+          contentHtml: snapshot.contentHtml,
+          contentJson: snapshot.contentJson,
+          plainText: snapshot.plainText,
+          wordCount: snapshot.wordCount,
+          characterCount: snapshot.characterCount,
+          projectId: snapshot.projectId,
+          status: snapshot.status,
+          saveContext: {
+            mode: noteMode,
+            activityAction: "note_saved",
+          },
+          expectedUpdatedAt: lastLoadedUpdatedAtRef.current,
+        });
+      } catch (error) {
+        savingRef.current = false;
+        setSaveState("error");
+        setSaveError(error instanceof Error ? error.message : "Could not save note.");
+        return;
+      }
 
       savingRef.current = false;
 
@@ -3207,18 +3282,18 @@ export default function WorkbenchNotesClient(props: {
     scheduleSave();
   }
 
-  function updateContentJson(nextJson: Record<string, unknown>) {
+  const updateContentJson = useCallback((nextJson: Record<string, unknown>) => {
     setContentJson(nextJson);
     snapshotRef.current = {
       ...snapshotRef.current,
       contentJson: nextJson,
     };
     scheduleSave();
-  }
+  }, [scheduleSave]);
 
-  function updateDocumentSettings(
+  const updateDocumentSettings = useCallback((
     patch: Partial<{ fontFamilyId: WorkbenchDocumentFontId }>,
-  ) {
+  ) => {
     const base = isRecord(contentJson) ? contentJson : { type: "doc" };
     const currentSettings = getDocumentSettings(base);
     updateContentJson({
@@ -3233,16 +3308,16 @@ export default function WorkbenchNotesClient(props: {
       workbenchBoard: getBoardData(base),
       workbenchCitations: getCitations(base),
     });
-  }
+  }, [contentJson, updateContentJson]);
 
-  function handleDocumentFontChange(fontFamilyId: WorkbenchDocumentFontId) {
+  const handleDocumentFontChange = useCallback((fontFamilyId: WorkbenchDocumentFontId) => {
     if (!isWorkbenchDocumentFontId(fontFamilyId)) return;
     updateDocumentSettings({ fontFamilyId });
     const font = getWorkbenchDocumentFontOption(fontFamilyId);
     if (editorInstance && !editorInstance.isDestroyed) {
       editorChain(editorInstance).setFontFamily(font.fontFamily).run();
     }
-  }
+  }, [editorInstance, updateDocumentSettings]);
 
   function handleResetDocumentTypography() {
     updateDocumentSettings({ fontFamilyId: DEFAULT_WORKBENCH_DOCUMENT_FONT_ID });
@@ -3574,6 +3649,8 @@ function editorChain(editor: Editor): ChainedCommands {
 
   function commitEditorHtml(nextHtml: string, nextCitations = citations) {
     const nextPlainText = htmlToText(nextHtml);
+    const nextWordCount = countWordsFromText(nextPlainText);
+    const nextCharacterCount = nextPlainText.length;
     const nextJson = {
       ...mergeWorkbenchModeData(
         (editorInstance?.getJSON() as Record<string, unknown> | null) ?? contentJson,
@@ -3581,18 +3658,37 @@ function editorChain(editor: Editor): ChainedCommands {
       ),
       workbenchCitations: nextCitations,
     };
-    setContentHtml(nextHtml);
-    setContentJson(nextJson);
-    setPlainText(nextPlainText);
-    setWordCount(countWordsFromText(nextPlainText));
-    setCharacterCount(nextPlainText.length);
+    const currentSnapshot = snapshotRef.current;
+    const htmlChanged = currentSnapshot.contentHtml !== nextHtml;
+    const jsonChanged = !areJsonValuesEqual(currentSnapshot.contentJson, nextJson);
+    const textChanged = currentSnapshot.plainText !== nextPlainText;
+    const wordCountChanged = currentSnapshot.wordCount !== nextWordCount;
+    const characterCountChanged = currentSnapshot.characterCount !== nextCharacterCount;
+
+    if (
+      !htmlChanged &&
+      !jsonChanged &&
+      !textChanged &&
+      !wordCountChanged &&
+      !characterCountChanged
+    ) {
+      return;
+    }
+
+    setContentHtml((current) => (current === nextHtml ? current : nextHtml));
+    setContentJson((current) => (areJsonValuesEqual(current, nextJson) ? current : nextJson));
+    setPlainText((current) => (current === nextPlainText ? current : nextPlainText));
+    setWordCount((current) => (current === nextWordCount ? current : nextWordCount));
+    setCharacterCount((current) =>
+      current === nextCharacterCount ? current : nextCharacterCount,
+    );
     snapshotRef.current = {
-      ...snapshotRef.current,
+      ...currentSnapshot,
       contentHtml: nextHtml,
       contentJson: nextJson,
       plainText: nextPlainText,
-      wordCount: countWordsFromText(nextPlainText),
-      characterCount: nextPlainText.length,
+      wordCount: nextWordCount,
+      characterCount: nextCharacterCount,
     };
     scheduleSave();
   }
@@ -3658,20 +3754,20 @@ function editorChain(editor: Editor): ChainedCommands {
         anchor.getAttribute("data-reference-id") ||
         anchor.getAttribute("href")?.replace(/^#ref-workbench-citation-/, "").trim() ||
         "";
+      const currentCitations = citationsRef.current;
       if (!citationId && refIdFromAnchor) {
         citationId =
-          citations.find((citation) => citationReferenceId(citation) === refIdFromAnchor)?.id ?? "";
+          currentCitations.find((citation) => citationReferenceId(citation) === refIdFromAnchor)?.id ?? "";
       }
       if (!citationId) return;
       const mouse = event as globalThis.MouseEvent;
       const isJumpModifier = mouse.metaKey || mouse.ctrlKey;
       event.preventDefault();
       if (isJumpModifier) {
+        const citation = currentCitations.find((c) => c.id === citationId);
         const refId =
           refIdFromAnchor ||
-          (citations.find((c) => c.id === citationId)
-            ? citationReferenceId(citations.find((c) => c.id === citationId)!)
-            : "");
+          (citation ? citationReferenceId(citation) : "");
         if (refId) jumpToReference(refId);
         return;
       }
@@ -3682,20 +3778,21 @@ function editorChain(editor: Editor): ChainedCommands {
     return () => {
       root.removeEventListener("click", handleClick);
     };
-  }, [editorInstance, citations]);
+  }, [editorInstance]);
 
   useEffect(() => {
-    if (!editorInstance || editorInstance.isDestroyed || !canEditSelected || !citations.length) return;
+    if (!editorInstance || editorInstance.isDestroyed || !canEditSelected || !citationSignature) return;
 
+    const currentCitations = citationsRef.current;
     const currentHtml = editorInstance.getHTML();
-    const rewrittenHtml = rewriteAllCitationAnchors(currentHtml, citations);
+    const rewrittenHtml = rewriteAllCitationAnchors(currentHtml, currentCitations);
     if (rewrittenHtml === currentHtml) return;
 
     const nextHtml = refreshReferenceListHtml(rewrittenHtml);
     editorInstance.commands.setContent(nextHtml, { emitUpdate: false });
-    commitEditorHtml(nextHtml, citations);
+    commitEditorHtml(nextHtml, currentCitations);
     setCitationRevision((value) => value + 1);
-  }, [canEditSelected, citations, editorInstance, selectedId]);
+  }, [canEditSelected, citationSignature, editorInstance, selectedId]);
 
   /* Save edits made in the popover */
   function saveCitationEdits(
@@ -3746,8 +3843,9 @@ function editorChain(editor: Editor): ChainedCommands {
     style: WorkbenchCitationStyle;
     insertMode: WorkbenchCitationInsertMode;
     customText: string;
-  }) {
-    if (!editorInstance || !canEditSelected) return;
+  }): boolean {
+    if (!editorInstance || editorInstance.isDestroyed || !canEditSelected) return false;
+    try {
     const marker = citations.length + 1;
     const inTextCitation = formatInTextCitation(
       input.candidate,
@@ -3759,7 +3857,7 @@ function editorChain(editor: Editor): ChainedCommands {
     const endnoteText = formatEndnoteCitation(input.candidate, input.style, input.customText);
     const bibliographyText = formatBibliographyCitation(input.candidate, input.style, input.customText);
     const citationText = input.insertMode === "full_block" ? bibliographyText : inTextCitation;
-    if (!citationText.trim() || !endnoteText.trim()) return;
+    if (!citationText.trim() || !endnoteText.trim()) return false;
     const selectedSourceType: WorkbenchNoteCitation["sourceType"] =
       input.candidate?.readingListId
         ? "reading_list"
@@ -3843,6 +3941,15 @@ function editorChain(editor: Editor): ChainedCommands {
     void updateWorkbenchUserPreference({ preferred_citation_style: input.style });
     setCitationPickerOpen(false);
     setCitationPreselectId(null);
+    return true;
+    } catch (error) {
+      if (process.env.NODE_ENV !== "production") {
+        console.error("[AI Cite] citation insert failed", error);
+      }
+      setSaveState("error");
+      setSaveError("Could not insert this citation. You can copy it instead.");
+      return false;
+    }
   }
 
   function addCanvasBlockFromMenu(type: CanvasBlockType) {
@@ -5133,6 +5240,7 @@ function editorChain(editor: Editor): ChainedCommands {
                           wordCount={wordCount}
                           documentFontFamily={selectedDocumentFont.fontFamily}
                           flushToDrawer={documentDrawerOpen}
+                          contentKey={`${selectedId}:${editorRevision}:${title.length}:${contentHtml.length}:${citationRevision}`}
                           title={
                             <input
                               className="workbench-reading-title"

@@ -1664,6 +1664,14 @@ body:has(.workbench-notes-page-premium),
   margin: 0 auto;
 }
 
+.workbench-notes-page-premium.workbench-editorial-reading .workbench-document-page-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  contain: layout paint;
+}
+
 /* Document beside drawer — small cap, flat white, no page shadow */
 .workbench-notes-page-premium.workbench-editorial-reading .workbench-document-pages-scroll.is-flush-to-drawer {
   padding-right: 0 !important;
@@ -1723,7 +1731,7 @@ body:has(.workbench-notes-page-premium),
   padding: 72px clamp(48px, 6vw, 80px) 56px;
 }
 
-.workbench-notes-page-premium.workbench-editorial-reading .workbench-reading-page--document .workbench-reading-page__folio {
+.workbench-notes-page-premium.workbench-editorial-reading .workbench-document-page-layer .workbench-reading-page__folio {
   right: 48px;
   bottom: 24px;
   z-index: 2;
@@ -4274,6 +4282,25 @@ body.workbench-format-drawer-open .ai-citation-floating-trigger {
   font-size: 11px;
   font-weight: 600;
   color: #0f6b4f;
+}
+
+.ai-cite-panel__copy {
+  margin: 6px 0 0;
+  min-height: 34px;
+  width: 100%;
+  border: 1px solid rgba(15, 61, 46, 0.16);
+  border-radius: 8px;
+  background: rgba(15, 61, 46, 0.04);
+  color: #0f3d2e;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ai-cite-panel__copy:hover,
+.ai-cite-panel__copy:focus-visible {
+  border-color: rgba(15, 61, 46, 0.32);
+  background: rgba(15, 61, 46, 0.08);
 }
 
 .ai-cite-panel__hint {

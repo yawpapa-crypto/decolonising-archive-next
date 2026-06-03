@@ -14,15 +14,14 @@ import {
 
 /**
  * Visibility rule:
- *   - Show on every page reload (soft OR hard refresh).
- *   - Otherwise, show on the 1st visit and on every 3rd visit thereafter
- *     (i.e. when at least 3 visits have passed since it was last shown).
+ *   - Show automatically once for a visitor, then persist that acknowledgement.
+ *   - The footer acknowledgement button can still open it manually.
  *   - Skip admin and auth-callback routes regardless.
  */
 const VISITS_KEY = "decolonisingArchive:acknowledgementVisits";
 const LAST_SHOWN_KEY = "decolonisingArchive:acknowledgementLastShownVisit";
 const LEGACY_SEEN_KEY = "decolonisingArchive:acknowledgementSeen";
-const SHOW_EVERY_N_VISITS = 3;
+const SEEN_ONCE_KEY = "decolonisingArchive:acknowledgementSeenOnce";
 const OPEN_EVENT = "decolonisingArchive:openAcknowledgement";
 
 function readInt(key: string): number {
@@ -43,19 +42,23 @@ function writeInt(key: string, value: number) {
   }
 }
 
-function isPageReload(): boolean {
-  if (typeof performance === "undefined") return false;
+function hasSeenAcknowledgement(): boolean {
   try {
-    const entries = performance.getEntriesByType("navigation");
-    if (entries.length) {
-      const nav = entries[0] as PerformanceNavigationTiming;
-      return nav.type === "reload";
-    }
+    if (window.localStorage.getItem(SEEN_ONCE_KEY) === "true") return true;
+    if (window.localStorage.getItem(LEGACY_SEEN_KEY) === "true") return true;
+    return readInt(VISITS_KEY) > 0 || readInt(LAST_SHOWN_KEY) > 0;
   } catch {
-    /* fall through */
+    return false;
   }
-  const legacy = (performance as unknown as { navigation?: { type?: number } }).navigation;
-  return legacy?.type === 1;
+}
+
+function markAcknowledgementSeen() {
+  try {
+    window.localStorage.setItem(SEEN_ONCE_KEY, "true");
+    window.localStorage.setItem(LEGACY_SEEN_KEY, "true");
+  } catch {
+    /* storage can be unavailable in strict privacy modes */
+  }
 }
 
 function getFocusable(container: HTMLElement | null) {
@@ -97,12 +100,7 @@ export default function AncestralAcknowledgementDialog() {
   const returnFocusRef = useRef<HTMLElement | null>(null);
 
   const close = useCallback(() => {
-    try {
-      const visits = readInt(VISITS_KEY);
-      writeInt(LAST_SHOWN_KEY, visits);
-    } catch {
-      /* ignore */
-    }
+    markAcknowledgementSeen();
     setOpen(false);
     window.setTimeout(() => returnFocusRef.current?.focus(), 0);
   }, []);
@@ -129,26 +127,16 @@ export default function AncestralAcknowledgementDialog() {
       return;
     }
 
-    try {
-      window.localStorage.removeItem(LEGACY_SEEN_KEY);
-    } catch {
-      /* ignore */
+    if (hasSeenAcknowledgement()) {
+      markAcknowledgementSeen();
+      return;
     }
 
-    const previousVisits = readInt(VISITS_KEY);
-    const lastShown = readInt(LAST_SHOWN_KEY);
-    const visits = previousVisits + 1;
-    writeInt(VISITS_KEY, visits);
-
-    const reload = isPageReload();
-    const neverShown = lastShown === 0;
-    const cadenceDue = visits - lastShown >= SHOW_EVERY_N_VISITS;
-
-    if (reload || neverShown || cadenceDue) {
-      returnFocusRef.current = document.activeElement as HTMLElement | null;
-      setOpen(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    markAcknowledgementSeen();
+    writeInt(VISITS_KEY, 1);
+    writeInt(LAST_SHOWN_KEY, 1);
+    returnFocusRef.current = document.activeElement as HTMLElement | null;
+    setOpen(true);
   }, []);
 
   useEffect(() => {

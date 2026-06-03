@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Bookmark, Link2, ListPlus } from "lucide-react";
 import type { CommunityAttachmentOptions } from "@/src/lib/community-reading-commons";
+import CommunityIcon from "./CommunityIcon";
 import { createCommunityPost } from "./actions";
 
 type CommunityCreatePostFormProps = {
@@ -42,9 +42,9 @@ export default function CommunityCreatePostForm({
         </span>
         <span className="community-composer-prompt">Share a source, question, reading path or reflection...</span>
         <span className="community-composer-tools" aria-hidden="true">
-          <span><Bookmark size={16} /> Saved record</span>
-          <span><ListPlus size={16} /> Reading list</span>
-          <span><Link2 size={16} /> Link</span>
+          <span><CommunityIcon name="bookmark" /> Saved record</span>
+          <span><CommunityIcon name="listPlus" /> Reading list</span>
+          <span><CommunityIcon name="link" /> Link</span>
         </span>
         <strong>New post</strong>
       </summary>

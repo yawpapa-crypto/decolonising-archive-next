@@ -1,3 +1,7 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const isProd = process.env.NODE_ENV === "production";
 
 const csp = [
@@ -31,7 +35,17 @@ const securityHeaders = [
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   turbopack: {
-    root: "/Users/E127943/Library/CloudStorage/OneDrive-RMITUniversity/Desktop/Website projects/decolonising-archive-next",
+    root: "/Users/E127943/Library/CloudStorage/OneDrive-SouthernCrossUniversity/decolonising-archive-next-main",
+  },
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.resolve = config.resolve ?? {};
+      config.resolve.alias = {
+        ...(config.resolve.alias ?? {}),
+        fontkit: path.join(__dirname, "node_modules/fontkit/dist/main.cjs"),
+      };
+    }
+    return config;
   },
   async headers() {
     return [

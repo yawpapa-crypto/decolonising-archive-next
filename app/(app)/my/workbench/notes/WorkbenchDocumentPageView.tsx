@@ -2,6 +2,7 @@
 
 import {
   useCallback,
+  useEffect,
   useLayoutEffect,
   useRef,
   useState,
@@ -29,6 +30,8 @@ type Props = {
   documentFontFamily?: string;
   /** When true, page fills width and sits flush against the format drawer */
   flushToDrawer?: boolean;
+  /** Stable key for document content changes; avoids measuring on unrelated parent renders. */
+  contentKey?: string;
 };
 
 /**
@@ -42,9 +45,11 @@ export default function WorkbenchDocumentPageView({
   wordCount,
   documentFontFamily,
   flushToDrawer = false,
+  contentKey = "",
 }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const contentMeasureRef = useRef<HTMLDivElement>(null);
+  const measureFrameRef = useRef(0);
   const [pageCount, setPageCount] = useState(1);
   const [pageWidth, setPageWidth] = useState(DOCUMENT_PAGE_WIDTH_PX);
 
@@ -52,27 +57,48 @@ export default function WorkbenchDocumentPageView({
   const visualWidth = Math.ceil(pageWidth * scale);
 
   const measurePages = useCallback(() => {
-    const el = contentRef.current;
+    const el = contentMeasureRef.current;
     if (!el) return;
-    const contentHeight = el.scrollHeight;
+
+    const contentHeight = Math.max(0, el.scrollHeight);
     const manualBreaks = el.querySelectorAll('hr[data-type="page-break"]').length;
-    const autoPages = Math.ceil(contentHeight / DOCUMENT_PAGE_HEIGHT_PX);
-    setPageCount(Math.max(1, autoPages, manualBreaks + 1));
+    const autoPages = Math.max(1, Math.ceil(contentHeight / DOCUMENT_PAGE_HEIGHT_PX));
+    const nextPageCount = Math.max(1, autoPages, manualBreaks + 1);
+    if (!Number.isFinite(nextPageCount)) return;
+
+    setPageCount((currentPageCount) =>
+      currentPageCount === nextPageCount ? currentPageCount : nextPageCount,
+    );
   }, []);
 
-  useLayoutEffect(() => {
-    measurePages();
-    const el = contentRef.current;
+  const scheduleMeasure = useCallback(() => {
+    window.cancelAnimationFrame(measureFrameRef.current);
+    measureFrameRef.current = window.requestAnimationFrame(() => {
+      measureFrameRef.current = 0;
+      measurePages();
+    });
+  }, [measurePages]);
+
+  useEffect(() => {
+    scheduleMeasure();
+    return () => {
+      window.cancelAnimationFrame(measureFrameRef.current);
+      measureFrameRef.current = 0;
+    };
+  }, [scheduleMeasure, contentKey, zoom, pageWidth]);
+
+  useEffect(() => {
+    const el = contentMeasureRef.current;
     if (!el) return;
 
-    const observer = new ResizeObserver(() => measurePages());
+    const observer = new ResizeObserver(scheduleMeasure);
     observer.observe(el);
+    scheduleMeasure();
 
-    const prose = el.querySelector(".ProseMirror");
-    if (prose) observer.observe(prose);
-
-    return () => observer.disconnect();
-  }, [measurePages, editor, title, zoom, pageWidth]);
+    return () => {
+      observer.disconnect();
+    };
+  }, [scheduleMeasure, contentKey]);
 
   useLayoutEffect(() => {
     const scroll = scrollRef.current;
@@ -88,7 +114,9 @@ export default function WorkbenchDocumentPageView({
           ? DOCUMENT_PAGE_MIN_WIDTH_MOBILE_PX
           : DOCUMENT_PAGE_MIN_WIDTH_PX;
       const next = Math.min(DOCUMENT_PAGE_MAX_WIDTH_PX, Math.max(minWidth, available));
-      setPageWidth(next);
+      setPageWidth((currentPageWidth) =>
+        currentPageWidth === next ? currentPageWidth : next,
+      );
     };
 
     syncPageWidth();
@@ -136,28 +164,30 @@ export default function WorkbenchDocumentPageView({
               minHeight: stackHeight,
             }}
           >
-            <div className="workbench-document-page-frames" aria-hidden="true">
-              {Array.from({ length: pageCount }, (_, index) => (
-                <div
-                  key={index}
-                  className="workbench-document-page-frame"
-                  style={{
-                    top:
-                      index * (DOCUMENT_PAGE_HEIGHT_PX + DOCUMENT_PAGE_GAP_PX),
-                  }}
-                />
-              ))}
-            </div>
-
-            <div className="workbench-reading-page workbench-reading-page--document">
-              <div ref={contentRef} className="workbench-document-page-content">
-                {title}
-                {editor}
+            <div className="workbench-document-page-layer" aria-hidden="true">
+              <div className="workbench-document-page-frames">
+                {Array.from({ length: pageCount }, (_, index) => (
+                  <div
+                    key={index}
+                    className="workbench-document-page-frame"
+                    style={{
+                      top:
+                        index * (DOCUMENT_PAGE_HEIGHT_PX + DOCUMENT_PAGE_GAP_PX),
+                    }}
+                  />
+                ))}
               </div>
-              <span className="workbench-reading-page__folio" aria-hidden="true">
+              <span className="workbench-reading-page__folio">
                 {pageCount > 1 ? `${pageCount} pages` : pageLabel}
                 {zoom !== 100 ? ` · ${zoom}%` : ""}
               </span>
+            </div>
+
+            <div className="workbench-reading-page workbench-reading-page--document">
+              <div ref={contentMeasureRef} className="workbench-document-page-content">
+                {title}
+                {editor}
+              </div>
             </div>
           </div>
         </div>

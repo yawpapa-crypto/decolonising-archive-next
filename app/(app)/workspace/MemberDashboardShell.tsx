@@ -1,16 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import {
-  Bell,
-  Bookmark,
-  CircleHelp,
-  LayoutDashboard,
-  ListChecks,
-  Search,
-  Send,
-  Settings,
-  User,
-} from "lucide-react";
+import WorkspaceIcon from "./WorkspaceIcon";
 import WorkspaceMobileNav from "./WorkspaceMobileNav";
 
 export type MemberDashboardSection =
@@ -33,15 +23,15 @@ type MemberDashboardShellProps = {
 };
 
 const NAV_ITEMS = [
-  { id: "overview", label: "Overview", icon: LayoutDashboard },
-  { id: "bookmarks", label: "Bookmarks", icon: Bookmark },
-  { id: "saved-searches", label: "Saved Searches", icon: Search },
-  { id: "reading-lists", label: "Reading Lists", icon: ListChecks },
-  { id: "submissions", label: "Submissions", icon: Send },
-  { id: "profile", label: "Profile", icon: User },
-  { id: "notifications", label: "Notifications", icon: Bell },
-  { id: "help", label: "Help Centre", icon: CircleHelp },
-  { id: "settings", label: "Settings", icon: Settings },
+  { id: "overview", label: "Overview", icon: "overview" },
+  { id: "bookmarks", label: "Bookmarks", icon: "bookmark" },
+  { id: "saved-searches", label: "Saved Searches", icon: "search" },
+  { id: "reading-lists", label: "Reading Lists", icon: "readingLists" },
+  { id: "submissions", label: "Submissions", icon: "submissions" },
+  { id: "profile", label: "Profile", icon: "user" },
+  { id: "notifications", label: "Notifications", icon: "bell" },
+  { id: "help", label: "Help Centre", icon: "help" },
+  { id: "settings", label: "Settings", icon: "settings" },
 ] as const;
 
 export const MEMBER_DASHBOARD_NAV_ITEMS = NAV_ITEMS;
@@ -81,7 +71,7 @@ export default function MemberDashboardShell({
                 currentSection === item.id ? "is-active" : ""
               }`}
             >
-              <item.icon size={18} />
+              <WorkspaceIcon name={item.icon} />
               <span>{item.label}</span>
             </Link>
           ))}

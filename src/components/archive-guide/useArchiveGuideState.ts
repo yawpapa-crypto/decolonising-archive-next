@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ArchiveGuideMode, ArchiveGuideState, ArchiveGuideStructuredContext } from "@/src/lib/archive-guide-types";
+import { trackActivity } from "@/src/lib/analytics/client";
 import { useArchiveGuide } from "./useArchiveGuide";
 import { useArchiveGuideContext } from "./useArchiveGuideContext";
 
@@ -24,6 +25,13 @@ type ArchiveGuideSnapshot = {
   resultCount: number;
   hasNoResults: boolean;
   isLoading: boolean;
+};
+
+type ArchiveGuideSuggestedSearchClick = {
+  originalQuery?: string;
+  suggestedQuery?: string;
+  suggestionType?: string;
+  mode?: ArchiveGuideMode;
 };
 
 const HIDDEN_KEY = "decolonisingArchive:archiveGuideHidden";
@@ -58,6 +66,27 @@ function emptySnapshot(): ArchiveGuideSnapshot {
     hasNoResults: false,
     isLoading: false,
   };
+}
+
+function areSnapshotsEqual(a: ArchiveGuideSnapshot, b: ArchiveGuideSnapshot) {
+  return (
+    a.surface === b.surface &&
+    a.isLibrary === b.isLibrary &&
+    a.isWorkbenchBoard === b.isWorkbenchBoard &&
+    a.query === b.query &&
+    a.resultCount === b.resultCount &&
+    a.hasNoResults === b.hasNoResults &&
+    a.isLoading === b.isLoading
+  );
+}
+
+function archiveGuideObservationRoot() {
+  if (typeof document === "undefined") return null;
+  return (
+    document.querySelector(".library-layout") ??
+    document.querySelector(".workbench-note-board-immersive") ??
+    document.getElementById("app")
+  );
 }
 
 function readArchiveGuideSnapshot(): ArchiveGuideSnapshot {
@@ -120,6 +149,7 @@ export function useArchiveGuideState() {
 
   const settleTimerRef = useRef<number | null>(null);
   const idleTimerRef = useRef<number | null>(null);
+  const observerFrameRef = useRef<number | null>(null);
   const hasSearchedRef = useRef(false);
   const hasAutoCollapsedBoardGuideRef = useRef(false);
 
@@ -134,12 +164,12 @@ export function useArchiveGuideState() {
     (nextState: ArchiveGuideState, nextMessage: string, returnToIdle = true) => {
       if (isMuted) return;
       if (idleTimerRef.current) window.clearTimeout(idleTimerRef.current);
-      setState(nextState);
-      setMessage(nextMessage);
+      setState((current) => (current === nextState ? current : nextState));
+      setMessage((current) => (current === nextMessage ? current : nextMessage));
       if (returnToIdle) {
         idleTimerRef.current = window.setTimeout(() => {
-          setState("idle");
-          setMessage(idleMessage);
+          setState((current) => (current === "idle" ? current : "idle"));
+          setMessage((current) => (current === idleMessage ? current : idleMessage));
         }, RETURN_IDLE_DELAY);
       }
     },
@@ -148,7 +178,7 @@ export function useArchiveGuideState() {
 
   const refreshSnapshot = useCallback(() => {
     const next = readArchiveGuideSnapshot();
-    setSnapshot(next);
+    setSnapshot((current) => (areSnapshotsEqual(current, next) ? current : next));
     return next;
   }, []);
 
@@ -194,8 +224,8 @@ export function useArchiveGuideState() {
   const runPrompt = useCallback(
     (prompt: ArchiveGuidePrompt) => {
       const current = refreshSnapshot();
-      setPanelView("open");
-      setActiveMode(promptModes[prompt]);
+      setPanelView((view) => (view === "open" ? view : "open"));
+      setActiveMode((mode) => (mode === promptModes[prompt] ? mode : promptModes[prompt]));
       aiReset();
 
       const fallback = () => {
@@ -304,25 +334,27 @@ export function useArchiveGuideState() {
           fallback();
           return;
         }
-        setState(result.characterState);
-        setMessage(
+        const nextMessage =
           result.characterState === "careful"
             ? "Let's slow down and work through this with care."
-            : "Here's a guided path based on the visible context.",
+            : "Here's a guided path based on the visible context.";
+        setState((current) =>
+          current === result.characterState ? current : result.characterState,
         );
+        setMessage((current) => (current === nextMessage ? current : nextMessage));
       });
     },
     [aiAsk, aiReset, buildContext, isMuted, refreshSnapshot, speak],
   );
 
   const hideGuide = useCallback(() => {
-    setIsHidden(true);
+    setIsHidden((current) => (current ? current : true));
     window.localStorage.setItem(HIDDEN_KEY, "true");
   }, []);
 
   const showGuide = useCallback(() => {
-    setIsHidden(false);
-    setPanelView("open");
+    setIsHidden((current) => (current ? false : current));
+    setPanelView((view) => (view === "open" ? view : "open"));
     window.localStorage.removeItem(HIDDEN_KEY);
   }, []);
 
@@ -332,19 +364,27 @@ export function useArchiveGuideState() {
       window.localStorage.setItem(MUTED_KEY, next ? "true" : "false");
       if (next) {
         clearTimers();
-        setState("sleeping");
-        setMessage("Archive Guide beta is resting. You can wake it again any time.");
+        setState((currentState) => (currentState === "sleeping" ? currentState : "sleeping"));
+        setMessage((currentMessage) =>
+          currentMessage === "Archive Guide beta is resting. You can wake it again any time."
+            ? currentMessage
+            : "Archive Guide beta is resting. You can wake it again any time.",
+        );
       } else {
-        setState("idle");
-        setMessage(idleMessage);
+        setState((currentState) => (currentState === "idle" ? currentState : "idle"));
+        setMessage((currentMessage) =>
+          currentMessage === idleMessage ? currentMessage : idleMessage,
+        );
       }
       return next;
     });
   }, [clearTimers]);
 
   useEffect(() => {
-    setIsHidden(window.localStorage.getItem(HIDDEN_KEY) === "true");
-    setIsMuted(window.localStorage.getItem(MUTED_KEY) === "true");
+    const nextHidden = window.localStorage.getItem(HIDDEN_KEY) === "true";
+    const nextMuted = window.localStorage.getItem(MUTED_KEY) === "true";
+    setIsHidden((current) => (current === nextHidden ? current : nextHidden));
+    setIsMuted((current) => (current === nextMuted ? current : nextMuted));
     refreshSnapshot();
 
     // app.js loads asynchronously (afterInteractive). If it finishes rendering
@@ -353,10 +393,8 @@ export function useArchiveGuideState() {
     const retryDelays = [200, 600, 1400, 3000];
     const timers = retryDelays.map((delay) =>
       window.setTimeout(() => {
-        const next = readArchiveGuideSnapshot();
-        if (next.surface !== "none") {
-          setSnapshot(next);
-        }
+        const next = refreshSnapshot();
+        if (next.surface !== "none") return;
       }, delay),
     );
     return () => timers.forEach((t) => window.clearTimeout(t));
@@ -365,9 +403,9 @@ export function useArchiveGuideState() {
   useEffect(() => {
     if (snapshot.isWorkbenchBoard && !hasAutoCollapsedBoardGuideRef.current) {
       hasAutoCollapsedBoardGuideRef.current = true;
-      setPanelView("bubble");
-      setState("idle");
-      setMessage(boardIdleMessage);
+      setPanelView((view) => (view === "bubble" ? view : "bubble"));
+      setState((current) => (current === "idle" ? current : "idle"));
+      setMessage((current) => (current === boardIdleMessage ? current : boardIdleMessage));
     }
   }, [snapshot.isWorkbenchBoard]);
 
@@ -408,6 +446,74 @@ export function useArchiveGuideState() {
       }
     };
 
+    const handleSuggestedSearch = (event: Event) => {
+      const detail = (event as CustomEvent<ArchiveGuideSuggestedSearchClick>).detail;
+      const suggestedQuery =
+        typeof detail?.suggestedQuery === "string" ? detail.suggestedQuery.trim() : "";
+
+      if (suggestedQuery) {
+        const url = new URL(window.location.href);
+        url.pathname = "/library";
+        url.searchParams.set("q", suggestedQuery);
+        window.history.pushState({}, "", url.toString());
+
+        const input = document.getElementById("mainSearch") as HTMLInputElement | null;
+        if (input) {
+          input.value = suggestedQuery;
+          input.dispatchEvent(new Event("input", { bubbles: true }));
+          input.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+
+        const searchButton = document.getElementById("localSearchBtn") as HTMLButtonElement | null;
+        searchButton?.click();
+
+        window.dispatchEvent(
+          new CustomEvent("archive-guide:suggested-search-applied", {
+            detail: {
+              originalQuery: detail?.originalQuery,
+              suggestedQuery,
+              suggestionType: detail?.suggestionType,
+              area: "library",
+              mode: detail?.mode,
+            },
+          }),
+        );
+        trackActivity({
+          eventType: "archive_guide_suggested_search_clicked",
+          area: "library",
+          action: "search_this",
+          query: suggestedQuery,
+          metadata: {
+            original_query: detail?.originalQuery,
+            suggested_query: suggestedQuery,
+            suggestion_type: detail?.suggestionType,
+            area: "library",
+            mode: detail?.mode,
+          },
+        });
+
+        window.requestAnimationFrame(() => {
+          document.querySelector(".library-results-stack")?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        });
+      }
+
+      beginSearchReflection();
+      window.setTimeout(() => {
+        refreshSnapshot();
+        if (!isMuted) {
+          setState((current) => (current === "pointing" ? current : "pointing"));
+          setMessage((current) =>
+            current === "Good. This suggested search may show a new source position around the original query."
+              ? current
+              : "Good. This suggested search may show a new source position around the original query.",
+          );
+        }
+      }, 120);
+    };
+
     const handleKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
       if (
@@ -417,7 +523,7 @@ export function useArchiveGuideState() {
         beginSearchReflection();
       }
       if (event.key === "Escape") {
-        setPanelView("bubble");
+        setPanelView((view) => (view === "bubble" ? view : "bubble"));
       }
     };
 
@@ -428,31 +534,49 @@ export function useArchiveGuideState() {
         (target?.id === "mainSearch" || target?.closest(".workbench-note-board-floating-search"))
       ) {
         const current = refreshSnapshot();
-        setState("listening");
-        setMessage(
-          current.isWorkbenchBoard
-            ? "I'm listening. A board search is a way of noticing what your materials are starting to say."
-            : "I'm listening. Every search term is a clue to what you are thinking through.",
+        const nextMessage = current.isWorkbenchBoard
+          ? "I'm listening. A board search is a way of noticing what your materials are starting to say."
+          : "I'm listening. Every search term is a clue to what you are thinking through.";
+        setState((currentState) => (currentState === "listening" ? currentState : "listening"));
+        setMessage((currentMessage) =>
+          currentMessage === nextMessage ? currentMessage : nextMessage,
         );
       }
     };
 
     const observer = new MutationObserver(() => {
-      window.requestAnimationFrame(refreshSnapshot);
+      if (observerFrameRef.current) {
+        window.cancelAnimationFrame(observerFrameRef.current);
+      }
+      observerFrameRef.current = window.requestAnimationFrame(() => {
+        observerFrameRef.current = null;
+        refreshSnapshot();
+      });
     });
 
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
+    const root = archiveGuideObservationRoot();
+    if (root) {
+      observer.observe(root, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ["class", "data-id", "aria-busy"],
+      });
+    }
 
     document.addEventListener("click", handleClick);
+    window.addEventListener("archive-guide:suggested-search-clicked", handleSuggestedSearch);
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("focusin", handleFocusIn);
 
     return () => {
       observer.disconnect();
+      if (observerFrameRef.current) {
+        window.cancelAnimationFrame(observerFrameRef.current);
+        observerFrameRef.current = null;
+      }
       document.removeEventListener("click", handleClick);
+      window.removeEventListener("archive-guide:suggested-search-clicked", handleSuggestedSearch);
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("focusin", handleFocusIn);
       clearTimers();
@@ -467,8 +591,8 @@ export function useArchiveGuideState() {
     activeMode,
     isHidden,
     isMuted,
-    openPanel: () => setPanelView("open"),
-    closePanel: () => setPanelView("bubble"),
+    openPanel: () => setPanelView((view) => (view === "open" ? view : "open")),
+    closePanel: () => setPanelView((view) => (view === "bubble" ? view : "bubble")),
     hideGuide,
     showGuide,
     toggleMuted,

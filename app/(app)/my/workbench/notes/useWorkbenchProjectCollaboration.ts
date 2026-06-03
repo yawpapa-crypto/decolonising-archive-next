@@ -38,6 +38,78 @@ export type CollaborationPeer = {
   lastSeenAt: string;
 };
 
+function arePeersEqual(a: CollaborationPeer[], b: CollaborationPeer[]) {
+  if (a.length !== b.length) return false;
+  return a.every((peer, index) => {
+    const next = b[index];
+    return (
+      peer.userId === next?.userId &&
+      peer.displayName === next.displayName &&
+      peer.noteId === next.noteId &&
+      peer.noteMode === next.noteMode &&
+      peer.lastSeenAt === next.lastSeenAt
+    );
+  });
+}
+
+function areActivitiesEqual(
+  a: WorkbenchProjectActivityRow[],
+  b: WorkbenchProjectActivityRow[],
+) {
+  if (a.length !== b.length) return false;
+  return a.every((activity, index) => {
+    const next = b[index];
+    return (
+      activity.id === next?.id &&
+      activity.user_id === next.user_id &&
+      activity.note_id === next.note_id &&
+      activity.action === next.action &&
+      activity.target_type === next.target_type &&
+      activity.target_id === next.target_id &&
+      activity.summary === next.summary &&
+      activity.created_at === next.created_at
+    );
+  });
+}
+
+function areCommentsEqual(
+  a: WorkbenchProjectCommentRow[],
+  b: WorkbenchProjectCommentRow[],
+) {
+  if (a.length !== b.length) return false;
+  return a.every((comment, index) => {
+    const next = b[index];
+    return (
+      comment.id === next?.id &&
+      comment.body === next.body &&
+      comment.resolved === next.resolved &&
+      comment.anchor_type === next.anchor_type &&
+      comment.anchor_id === next.anchor_id &&
+      comment.anchor_label === next.anchor_label &&
+      comment.updated_at === next.updated_at &&
+      comment.created_at === next.created_at
+    );
+  });
+}
+
+function areCanvasLocksEqual(
+  a: WorkbenchCanvasObjectLockRow[],
+  b: WorkbenchCanvasObjectLockRow[],
+) {
+  if (a.length !== b.length) return false;
+  return a.every((lock, index) => {
+    const next = b[index];
+    return (
+      lock.note_id === next?.note_id &&
+      lock.object_id === next.object_id &&
+      lock.user_id === next.user_id &&
+      lock.display_name === next.display_name &&
+      lock.locked_at === next.locked_at &&
+      lock.expires_at === next.expires_at
+    );
+  });
+}
+
 type Options = {
   enabled: boolean;
   projectId: string | null;
@@ -144,14 +216,14 @@ export function useWorkbenchProjectCollaboration({
 
   const refreshComments = useCallback(async () => {
     if (!enabled || !projectId) {
-      setComments([]);
-      setCommentsError("");
-      setCommentsLoading(false);
+      setComments((current) => (current.length ? [] : current));
+      setCommentsError((current) => (current ? "" : current));
+      setCommentsLoading((current) => (current ? false : current));
       return;
     }
 
-    setCommentsLoading(true);
-    setCommentsError("");
+    setCommentsLoading((current) => (current ? current : true));
+    setCommentsError((current) => (current ? "" : current));
 
     try {
       let query = supabase
@@ -167,22 +239,27 @@ export function useWorkbenchProjectCollaboration({
 
       const { data, error } = await query;
       if (error) {
-        setComments([]);
-        setCommentsError(getErrorMessage(error));
+        setComments((current) => (current.length ? [] : current));
+        const nextError = getErrorMessage(error);
+        setCommentsError((current) => (current === nextError ? current : nextError));
       } else {
-        setComments((data ?? []) as WorkbenchProjectCommentRow[]);
+        const nextComments = (data ?? []) as WorkbenchProjectCommentRow[];
+        setComments((current) =>
+          areCommentsEqual(current, nextComments) ? current : nextComments,
+        );
       }
     } catch (error) {
-      setComments([]);
-      setCommentsError(getErrorMessage(error));
+      setComments((current) => (current.length ? [] : current));
+      const nextError = getErrorMessage(error);
+      setCommentsError((current) => (current === nextError ? current : nextError));
     } finally {
-      setCommentsLoading(false);
+      setCommentsLoading((current) => (current ? false : current));
     }
   }, [enabled, noteId, projectId, supabase]);
 
   const loadCanvasLocks = useCallback(async () => {
     if (!enabled || !noteId) {
-      setCanvasLocks([]);
+      setCanvasLocks((current) => (current.length ? [] : current));
       return;
     }
 
@@ -193,13 +270,16 @@ export function useWorkbenchProjectCollaboration({
         .eq("note_id", noteId);
       if (error) {
         logCollaborationError("canvas lock refresh failed", error);
-        setCanvasLocks([]);
+        setCanvasLocks((current) => (current.length ? [] : current));
         return;
       }
-      setCanvasLocks((data ?? []) as WorkbenchCanvasObjectLockRow[]);
+      const nextLocks = (data ?? []) as WorkbenchCanvasObjectLockRow[];
+      setCanvasLocks((current) =>
+        areCanvasLocksEqual(current, nextLocks) ? current : nextLocks,
+      );
     } catch (error) {
       logCollaborationError("canvas lock refresh failed", error);
-      setCanvasLocks([]);
+      setCanvasLocks((current) => (current.length ? [] : current));
     }
   }, [enabled, noteId, supabase]);
 
@@ -209,21 +289,23 @@ export function useWorkbenchProjectCollaboration({
     function handleUnhandledRejection(event: PromiseRejectionEvent) {
       if (!isEventLikeError(event.reason)) return;
       event.preventDefault();
+      event.stopImmediatePropagation();
       logCollaborationError("suppressed browser event rejection", event.reason);
     }
 
-    window.addEventListener("unhandledrejection", handleUnhandledRejection);
-    return () => window.removeEventListener("unhandledrejection", handleUnhandledRejection);
+    window.addEventListener("unhandledrejection", handleUnhandledRejection, { capture: true });
+    return () =>
+      window.removeEventListener("unhandledrejection", handleUnhandledRejection, { capture: true });
   }, [enabled]);
 
   useEffect(() => {
     if (!enabled || !projectId || !currentUserId) {
-      setPeers([]);
-      setActivities([]);
-      setCanvasLocks([]);
-      setComments([]);
-      setCommentsError("");
-      setCommentsLoading(false);
+      setPeers((current) => (current.length ? [] : current));
+      setActivities((current) => (current.length ? [] : current));
+      setCanvasLocks((current) => (current.length ? [] : current));
+      setComments((current) => (current.length ? [] : current));
+      setCommentsError((current) => (current ? "" : current));
+      setCommentsLoading((current) => (current ? false : current));
       return;
     }
 
@@ -262,8 +344,15 @@ export function useWorkbenchProjectCollaboration({
               lastSeenAt: row.last_seen_at,
             }),
           );
-        setPeers(nextPeers);
-        setActivities((activityRes.data ?? []) as WorkbenchProjectActivityRow[]);
+        setPeers((currentPeers) =>
+          arePeersEqual(currentPeers, nextPeers) ? currentPeers : nextPeers,
+        );
+        const nextActivities = (activityRes.data ?? []) as WorkbenchProjectActivityRow[];
+        setActivities((currentActivities) =>
+          areActivitiesEqual(currentActivities, nextActivities)
+            ? currentActivities
+            : nextActivities,
+        );
       } catch (error) {
         if (!cancelled) logCollaborationError("collaboration load failed", error);
       }
@@ -298,7 +387,15 @@ export function useWorkbenchProjectCollaboration({
         (payload) => {
           const row = payload.new as WorkbenchProjectActivityRow;
           if (row.user_id === currentUserId) return;
-          setActivities((prev) => [row, ...prev].slice(0, 12));
+          setActivities((currentActivities) => {
+            const nextActivities = [
+              row,
+              ...currentActivities.filter((activity) => activity.id !== row.id),
+            ].slice(0, 12);
+            return areActivitiesEqual(currentActivities, nextActivities)
+              ? currentActivities
+              : nextActivities;
+          });
         },
       )
       .on(
@@ -393,7 +490,7 @@ export function useWorkbenchProjectCollaboration({
 
   useEffect(() => {
     if (!enabled || !noteId) {
-      setCanvasLocks([]);
+      setCanvasLocks((current) => (current.length ? [] : current));
       return;
     }
     void loadCanvasLocks().catch((error) => logCollaborationError("canvas lock refresh failed", error));

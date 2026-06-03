@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Bookmark, Heart, MessageCircle, Share2 } from "lucide-react";
 import type { CommunityPost } from "@/src/lib/community-reading-commons";
+import CommunityIcon from "./CommunityIcon";
 import { createCommunityComment, toggleCommunityReaction, toggleCommunitySave, reportCommunityContent } from "./actions";
 
 function formatDate(value: string) {
@@ -136,14 +136,14 @@ export default function CommunityPostCard({
             disabled={!signedIn}
           aria-label={signedIn ? "Mark this post useful" : "Sign in to react"}
           >
-            <Heart size={16} /> Useful <span>{post.reaction_count}</span>
+            <CommunityIcon name="heart" /> Useful <span>{post.reaction_count}</span>
           </button>
         </form>
         <a className="community-action-button" href={`#comment-${post.id}`}>
-          <MessageCircle size={16} /> Comment <span>{post.comment_count}</span>
+          <CommunityIcon name="messageCircle" /> Comment <span>{post.comment_count}</span>
         </a>
         <Link href={`/community/posts/${post.id}`} className="community-action-button">
-          <Share2 size={16} /> Share
+          <CommunityIcon name="share" /> Share
         </Link>
         <form action={toggleCommunitySave}>
           <input type="hidden" name="post_id" value={post.id} />
@@ -154,7 +154,7 @@ export default function CommunityPostCard({
             disabled={!signedIn}
             aria-label={signedIn ? "Save this post" : "Sign in to save"}
           >
-            <Bookmark size={16} /> Save <span>{post.save_count}</span>
+            <CommunityIcon name="bookmark" /> Save <span>{post.save_count}</span>
           </button>
         </form>
         <Link href={`/community/posts/${post.id}`} className="community-action-button community-action-button--thread">

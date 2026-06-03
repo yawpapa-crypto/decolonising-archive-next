@@ -35,37 +35,22 @@ export async function getCurrentUser() {
   return getAuthenticatedUser(supabase);
 }
 
-const DB_QUERY_TIMEOUT_MS =
-  process.env.NODE_ENV === "production" ? 4000 : 2500;
-
-/** Race a Supabase query against a timeout; returns null on timeout. */
-function withDbTimeout<T>(
-  query: PromiseLike<T>,
-  ms = DB_QUERY_TIMEOUT_MS,
-): Promise<T | null> {
-  return Promise.race([
-    Promise.resolve(query),
-    new Promise<null>((resolve) => setTimeout(() => resolve(null), ms)),
-  ]);
-}
-
 export async function getCurrentProfile(): Promise<Profile | null> {
   const supabase = await createClient();
   const user = await getAuthenticatedUser(supabase);
   if (!user) return null;
 
-  // Prefer full row. Both queries are raced against a hard timeout so a slow
-  // database never blocks page rendering.
-  const extendedResult = await withDbTimeout(
-    supabase
-      .from("profiles")
-      .select("id, email, full_name, display_name, preferred_name, avatar_url, role, created_at, onboarding_completed, beta_notice_seen")
-      .eq("id", user.id)
-      .maybeSingle(),
-  );
+  // Prefer full row (member profile migration). If 0007 columns are missing,
+  // the query fails — fall back to core columns so role (admin/curator) is never
+  // replaced with a hard-coded "member" from auth metadata.
+  const extended = await supabase
+    .from("profiles")
+    .select("id, email, full_name, display_name, preferred_name, avatar_url, role, created_at, onboarding_completed, beta_notice_seen")
+    .eq("id", user.id)
+    .maybeSingle();
 
-  if (extendedResult && !extendedResult.error && extendedResult.data) {
-    const row = extendedResult.data as Record<string, unknown>;
+  if (!extended.error && extended.data) {
+    const row = extended.data as Record<string, unknown>;
     return {
       ...(row as Profile),
       onboarding_completed: Boolean(row.onboarding_completed ?? false),
@@ -73,16 +58,14 @@ export async function getCurrentProfile(): Promise<Profile | null> {
     };
   }
 
-  const coreResult = await withDbTimeout(
-    supabase
-      .from("profiles")
-      .select("id, email, full_name, role, created_at")
-      .eq("id", user.id)
-      .maybeSingle(),
-  );
+  const core = await supabase
+    .from("profiles")
+    .select("id, email, full_name, role, created_at")
+    .eq("id", user.id)
+    .maybeSingle();
 
-  if (coreResult && !coreResult.error && coreResult.data) {
-    const row = coreResult.data;
+  if (!core.error && core.data) {
+    const row = core.data;
     return {
       id: row.id,
       email: row.email,
@@ -97,7 +80,7 @@ export async function getCurrentProfile(): Promise<Profile | null> {
     };
   }
 
-  // No profiles row yet or DB timed out — fall back to auth metadata only.
+  // No profiles row yet (e.g. trigger lag) — last-resort shape; role defaults to member.
   return {
     id: user.id,
     email: user.email ?? null,

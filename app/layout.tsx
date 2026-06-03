@@ -11,6 +11,7 @@ import AuthHashHandler from "@/src/components/auth/AuthHashHandler";
 import PlatformActivityTracker from "@/src/components/analytics/PlatformActivityTracker";
 import AncestralAcknowledgementDialog from "@/src/components/site/AncestralAcknowledgement";
 import ArchiveGuidePanel from "@/src/components/archive-guide/ArchiveGuidePanel";
+import BrowserEventRejectionGuard from "@/src/components/site/BrowserEventRejectionGuard";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -48,6 +49,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} ${acknowledgementSans.variable} ${acknowledgementSerif.variable} min-h-full flex flex-col`}
       >
+        <BrowserEventRejectionGuard />
         <AuthHashHandler />
         <PlatformActivityTracker />
         {children}

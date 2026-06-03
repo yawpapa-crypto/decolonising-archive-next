@@ -1,13 +1,13 @@
-import PageShell from "@/src/components/layout/PageShell";
+import SiteFooter from "@/src/components/layout/SiteFooter";
 
 export default function PrivacyPage() {
   return (
-    <PageShell>
+    <>
       <main className="legal-page">
-        <div className="legal-wrap">
-          <p className="legal-eyebrow">Legal</p>
-          <h1>Privacy Policy</h1>
-          <p className="legal-updated">Last updated: 30 May 2026</p>
+      <div className="legal-wrap">
+        <p className="legal-eyebrow">Legal</p>
+        <h1>Privacy Policy</h1>
+        <p className="legal-updated">Last updated: 30 May 2026</p>
 
         <section>
           <h2>1. Overview</h2>
@@ -282,8 +282,9 @@ export default function PrivacyPage() {
             complaints, contact: info@yofosuasare.com
           </p>
         </section>
-        </div>
-      </main>
-    </PageShell>
+      </div>
+    </main>
+      <SiteFooter />
+    </>
   );
 }

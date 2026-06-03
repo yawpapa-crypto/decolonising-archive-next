@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import Navbar from "@/src/components/layout/Navbar";
-import Footer from "@/src/components/layout/Footer";
+import SiteFooter from "@/src/components/layout/SiteFooter";
 
 type PageShellProps = {
   children: ReactNode;
@@ -11,7 +11,7 @@ export default function PageShell({ children }: PageShellProps) {
     <>
       <Navbar />
       {children}
-      <Footer />
+      <SiteFooter />
     </>
   );
 }

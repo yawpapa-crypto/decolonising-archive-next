@@ -1,4 +1,4 @@
-import PageShell from "@/src/components/layout/PageShell";
+import SiteFooter from "@/src/components/layout/SiteFooter";
 
 export const metadata = {
   title: "Changelog | Decolonising Archive",
@@ -63,15 +63,15 @@ const ENTRIES = [
 
 export default function ChangelogPage() {
   return (
-    <PageShell>
+    <>
       <main className="legal-page">
-        <div className="legal-wrap">
-          <p className="legal-eyebrow">Platform</p>
-          <h1>Changelog</h1>
-          <p>
-            A record of significant updates to Decolonising Archive. We aim to update this page with
-            every meaningful change to the platform.
-          </p>
+      <div className="legal-wrap">
+        <p className="legal-eyebrow">Platform</p>
+        <h1>Changelog</h1>
+        <p>
+          A record of significant updates to Decolonising Archive. We aim to update this page with
+          every meaningful change to the platform.
+        </p>
 
         <div style={{ marginTop: "2.5rem", display: "flex", flexDirection: "column", gap: "2.5rem" }}>
           {ENTRIES.map((entry) => (
@@ -86,8 +86,9 @@ export default function ChangelogPage() {
             </section>
           ))}
         </div>
-        </div>
-      </main>
-    </PageShell>
+      </div>
+    </main>
+      <SiteFooter />
+    </>
   );
 }

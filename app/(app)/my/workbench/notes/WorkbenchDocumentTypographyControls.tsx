@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useReducer } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { Editor } from "@tiptap/react";
 import { ChevronDown } from "lucide-react";
 import {
@@ -16,8 +16,30 @@ type Props = {
   disabled?: boolean;
 };
 
+type TypographyControlState = {
+  fontSize: string;
+};
+
+const DEFAULT_TYPOGRAPHY_CONTROL_STATE: TypographyControlState = {
+  fontSize: "",
+};
+
 function editorChain(editor: Editor): ReturnType<Editor["chain"]> {
   return editor.chain().focus();
+}
+
+function getTypographyControlState(editor: Editor): TypographyControlState {
+  const textAttributes = editor.getAttributes("textStyle");
+  return {
+    fontSize: (textAttributes.fontSize as string | undefined)?.replace("px", "") ?? "",
+  };
+}
+
+function areTypographyControlsEqual(
+  a: TypographyControlState,
+  b: TypographyControlState,
+) {
+  return a.fontSize === b.fontSize;
 }
 
 export default function WorkbenchDocumentTypographyControls({
@@ -26,21 +48,40 @@ export default function WorkbenchDocumentTypographyControls({
   onDocumentFontFamilyChange,
   disabled = false,
 }: Props) {
-  const [, refreshSelection] = useReducer((count: number) => count + 1, 0);
+  const [controls, setControls] = useState(DEFAULT_TYPOGRAPHY_CONTROL_STATE);
 
-  useEffect(() => {
-    const updateControls = () => refreshSelection();
-    editor.on("selectionUpdate", updateControls);
-    editor.on("transaction", updateControls);
-    return () => {
-      editor.off("selectionUpdate", updateControls);
-      editor.off("transaction", updateControls);
-    };
+  const refreshSelection = useCallback(() => {
+    if (!editor || editor.isDestroyed) return;
+
+    const nextControls = getTypographyControlState(editor);
+    setControls((currentControls) =>
+      areTypographyControlsEqual(currentControls, nextControls)
+        ? currentControls
+        : nextControls,
+    );
   }, [editor]);
 
-  const textAttributes = editor.getAttributes("textStyle");
-  const currentFontSize =
-    (textAttributes.fontSize as string | undefined)?.replace("px", "") ?? "";
+  useEffect(() => {
+    if (!editor || editor.isDestroyed) return;
+
+    let frame = 0;
+
+    const scheduleUpdate = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        refreshSelection();
+      });
+    };
+
+    editor.on("selectionUpdate", scheduleUpdate);
+    scheduleUpdate();
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      editor.off("selectionUpdate", scheduleUpdate);
+    };
+  }, [editor, refreshSelection]);
 
   return (
     <div className="workbench-document-typography" role="group" aria-label="Text formatting">
@@ -67,7 +108,7 @@ export default function WorkbenchDocumentTypographyControls({
       <label className="workbench-document-typography__field workbench-document-typography__field--size">
         <select
           className="workbench-document-typography__select"
-          value={currentFontSize}
+          value={controls.fontSize}
           aria-label="Font size"
           disabled={disabled}
           onChange={(event) => {

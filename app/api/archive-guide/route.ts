@@ -5,6 +5,8 @@ import type {
   ArchiveGuideContextItem,
   ArchiveGuideMode,
   ArchiveGuideNextAction,
+  ArchiveGuideSuggestedSearch,
+  ArchiveGuideSuggestedSearchType,
   ArchiveGuideState,
   ArchiveGuideStructuredContext,
   ArchiveGuideSuccess,
@@ -31,6 +33,17 @@ const ALLOWED_STATES = new Set<ArchiveGuideState>([
   "pointing", "celebrating", "careful", "sleeping",
 ]);
 
+const ALLOWED_SEARCH_TYPES = new Set<ArchiveGuideSuggestedSearchType>([
+  "broader",
+  "narrower",
+  "adjacent",
+  "source_position",
+  "gap",
+  "method",
+  "person",
+  "place",
+]);
+
 // ─── Query interpretation ─────────────────────────────────────────────────────
 
 type QueryType =
@@ -52,9 +65,13 @@ type QueryInterpretation = {
   notes: string;
 };
 
+type LegacyArchiveGuideSuccess = Omit<ArchiveGuideSuccess, "suggestedSearches"> & {
+  suggestedSearches: string[];
+};
+
 const PERSON_SIGNALS = /^[A-Z][a-z]+ [A-Z][a-z]+|^[A-Z][a-z]+ [A-Z][a-z]+-[A-Z][a-z]+/;
 const CONCEPT_SIGNALS = /\b(theory|framework|method|approach|epistemol|ontolog|decolon|postcolonial|critical|pedagog|praxis|philosophy|philosophi|ethics)\b/i;
-const OBJECT_SIGNALS = /\b(mask|textile|cloth|kente|fabric|vessel|ceramic|pottery|sculpture|painting|carving|artifact|artefact|object|material|jewel|bead|drum|instrument|garment|weav)\b/i;
+const OBJECT_SIGNALS = /\b(masks?|textiles?|cloth|kente|fabric|vessels?|ceramics?|pottery|sculptures?|paintings?|carvings?|artifacts?|artefacts?|objects?|materials?|jewels?|beads?|drums?|instruments?|garments?|album covers?|weav)\b/i;
 const PLACE_SIGNALS = /\b(Ghana|Nigeria|Kenya|Zimbabwe|Senegal|Mali|Congo|Uganda|Tanzania|Ethiopia|South Africa|Cameroon|Accra|Lagos|Nairobi|Harare|Dakar|African|West Africa|East Africa|Southern Africa|North Africa|Sahel|Sahara|community|indigenous|local|village|region)\b/i;
 const INSTITUTION_SIGNALS = /\b(university|museum|gallery|institute|college|school|foundation|archive|library|council|ministry|NGO|organisation|organization)\b/i;
 const METHOD_SIGNALS = /\b(method|methodology|approach|practice|process|technique|tool|strategy|protocol|model|system|framework|design|ethnograph|qualitative|quantitative|participat|co-design|co-creat)\b/i;
@@ -130,8 +147,10 @@ Return JSON only with this exact shape:
   "response": "short warm acknowledgement — 1–2 sentences that show you read the context",
   "learningMove": "3–6 word name for this learning move",
   "guidingQuestions": ["question 1", "question 2", "question 3"],
-  "suggestedSearches": ["plausible search phrase 1", "plausible search phrase 2"],
-  "searchReasons": ["why this search helps — one sentence", "why this one helps"],
+  "suggestedSearches": [
+    {"query":"plausible search phrase 1","reason":"why this search helps — one sentence","type":"broader"},
+    {"query":"plausible search phrase 2","reason":"why this one helps","type":"source_position"}
+  ],
   "nextActions": [{"label": "specific action label", "action": "action_id", "payload": {}}],
   "characterState": "curious"
 }`;
@@ -267,6 +286,99 @@ function cleanList(value: unknown, maxItems: number, maxLength = 160) {
   return items.length ? items : undefined;
 }
 
+function cleanSearchType(value: unknown, fallback: ArchiveGuideSuggestedSearchType): ArchiveGuideSuggestedSearchType {
+  return ALLOWED_SEARCH_TYPES.has(value as ArchiveGuideSuggestedSearchType)
+    ? (value as ArchiveGuideSuggestedSearchType)
+    : fallback;
+}
+
+function buildSuggestedSearches(
+  queries: string[],
+  reasons: string[],
+  types: ArchiveGuideSuggestedSearchType[],
+  currentQuery = "",
+  maxItems = 4,
+): ArchiveGuideSuggestedSearch[] {
+  const seen = new Set<string>();
+  const current = currentQuery.trim().toLowerCase();
+  const items: ArchiveGuideSuggestedSearch[] = [];
+  for (const [index, rawQuery] of queries.entries()) {
+    const query = cleanText(rawQuery, 160);
+    const reason = cleanText(reasons[index], 220);
+    if (!query || query.length < 2 || query.length > 160 || !reason) continue;
+    const key = query.toLowerCase();
+    if (seen.has(key) || key === current) continue;
+    seen.add(key);
+    items.push({
+      query,
+      reason,
+      type: types[index] ?? types[types.length - 1] ?? "broader",
+    });
+    if (items.length >= maxItems) break;
+  }
+  return items;
+}
+
+function cleanSuggestedSearches(
+  value: unknown,
+  reasonsValue: unknown,
+  mode: ArchiveGuideMode,
+  currentQuery = "",
+): ArchiveGuideSuggestedSearch[] {
+  const fallbackTypes: ArchiveGuideSuggestedSearchType[] =
+    mode === "expand_search"
+      ? ["broader", "narrower", "adjacent", "source_position"]
+      : mode === "what_am_i_missing"
+        ? ["gap", "place", "source_position", "adjacent"]
+        : mode === "build_reading_path"
+          ? ["broader", "source_position", "gap", "adjacent"]
+          : ["broader", "narrower", "adjacent", "source_position"];
+  const legacyReasons = cleanList(reasonsValue, 6, 220) ?? [];
+  const maxItems = mode === "expand_search" || mode === "build_reading_path" ? 4 : 6;
+
+  if (Array.isArray(value) && value.some((item) => item && typeof item === "object")) {
+    const seen = new Set<string>();
+    const items: ArchiveGuideSuggestedSearch[] = [];
+    for (const [index, raw] of value.entries()) {
+      if (!raw || typeof raw !== "object") continue;
+      const row = raw as Record<string, unknown>;
+      const query = cleanText(row.query, 160);
+      const reason = cleanText(row.reason, 220) || legacyReasons[index];
+      if (!query || query.length < 2 || query.length > 160 || !reason) continue;
+      const key = query.toLowerCase();
+      if (seen.has(key) || key === currentQuery.trim().toLowerCase()) continue;
+      seen.add(key);
+      items.push({
+        query,
+        reason,
+        type: cleanSearchType(row.type, fallbackTypes[index] ?? "broader"),
+      });
+      if (items.length >= maxItems) break;
+    }
+    return items;
+  }
+
+  const queries = cleanList(value, maxItems, 160) ?? [];
+  return buildSuggestedSearches(queries, legacyReasons, fallbackTypes, currentQuery, maxItems);
+}
+
+function normalizeGuideSuccess(
+  response: ArchiveGuideSuccess | LegacyArchiveGuideSuccess,
+  currentQuery = "",
+): ArchiveGuideSuccess {
+  const suggestedSearches = cleanSuggestedSearches(
+    response.suggestedSearches,
+    response.searchReasons,
+    response.mode,
+    currentQuery,
+  );
+  return {
+    ...response,
+    suggestedSearches,
+    searchReasons: response.searchReasons,
+  };
+}
+
 function cleanItem(value: unknown): ArchiveGuideContextItem | null {
   if (!value || typeof value !== "object") return null;
   const row = value as Record<string, unknown>;
@@ -366,7 +478,7 @@ function parseModelPayload(text: string, mode: ArchiveGuideMode): ArchiveGuideSu
         response,
         learningMove: cleanText(parsed.learningMove, 120) ?? "Guided inquiry",
         guidingQuestions: cleanList(parsed.guidingQuestions, 5, 200) ?? [],
-        suggestedSearches: cleanList(parsed.suggestedSearches, 4, 140) ?? [],
+        suggestedSearches: cleanSuggestedSearches(parsed.suggestedSearches, parsed.searchReasons, mode),
         searchReasons: cleanList(parsed.searchReasons, 4, 180),
         nextActions,
         characterState,
@@ -389,10 +501,64 @@ function makeFallback(
   mode: ArchiveGuideMode,
   query: string | undefined,
   interp: QueryInterpretation,
-): ArchiveGuideSuccess {
+): LegacyArchiveGuideSuccess {
   const q = query ?? "";
   const hasQuery = Boolean(q);
   const isLib = area === "library";
+  const personSearches = (() => {
+    if (/yaw\s+ofosu-asare/i.test(q)) {
+      return {
+        expand: [
+          "Yaw Ofosu-Asare decolonising design",
+          "Yaw Ofosu-Asare cognitive imperialism AI",
+          "Yaw Ofosu-Asare African Design Futures",
+          "storied ethnography design education Ghana",
+        ],
+        missing: [
+          "Yaw Ofosu-Asare interview lecture",
+          "Yaw Ofosu-Asare authored article design education",
+        ],
+        path: [
+          "Yaw Ofosu-Asare profile design researcher",
+          "Yaw Ofosu-Asare African Design Futures",
+          "Yaw Ofosu-Asare decolonising design review",
+        ],
+      };
+    }
+    if (/kwasi\s+wiredu/i.test(q)) {
+      return {
+        expand: [
+          "Kwasi Wiredu conceptual decolonisation",
+          "Kwasi Wiredu cultural universals particulars",
+          "Kwasi Wiredu African philosophy Akan",
+          "Kwasi Wiredu interview lecture philosophy",
+        ],
+        missing: [
+          "Kwasi Wiredu conceptual decolonisation",
+          "Kwasi Wiredu Akan philosophy language",
+        ],
+        path: [
+          "Kwasi Wiredu biography philosophy",
+          "Kwasi Wiredu cultural universals particulars",
+          "Kwasi Wiredu conceptual decolonisation critique",
+        ],
+      };
+    }
+    return {
+      expand: [
+        `${q} authored work`,
+        `${q} interview lecture talk`,
+        `${q} cited reception scholarship`,
+        `${q} key concepts methods`,
+      ],
+      missing: [`${q} talk lecture keynote`, `${q} interview own words`],
+      path: [
+        `${q} profile biography research area`,
+        `${q} authored article chapter talk`,
+        `${q} cited reviewed extended`,
+      ],
+    };
+  })();
 
   // ── expand_search ──────────────────────────────────────────────────────────
   if (mode === "expand_search") {
@@ -406,15 +572,12 @@ function makeFallback(
           "Do you want their scholarly writing, their institutional profile, an interview or talk, or a critical engagement with their work?",
           "What field or practice is most central to what you are trying to understand — their ideas, their methods, or their cultural context?",
         ],
-        suggestedSearches: isLib ? [
-          `${q} authored work`,
-          `${q} interview lecture talk`,
-          `${q} cited reception scholarship`,
-        ] : [],
+        suggestedSearches: isLib ? personSearches.expand : [],
         searchReasons: [
-          "Finds sources where this person is the author, not just the subject.",
-          "Surfaces interviews, lectures and recorded talks — often the most direct access to a thinker's voice.",
-          "Shows how other scholars and practitioners cite or respond to the work.",
+          "Looks for authored work and public references around the person's main field rather than a generic profile.",
+          "Narrows toward a specific concept, method, or ethical debate connected to the work.",
+          "Finds a named project, book, or recurring research theme that can anchor the next search.",
+          "Searches the method and context around the work, not just the person.",
         ],
         nextActions: [{ label: "Try one authored and one external source", action: "focus_search" }],
         characterState: "curious",
@@ -445,27 +608,106 @@ function makeFallback(
       };
     }
     if (interp.queryType === "object_material" && hasQuery) {
+      const isMusicVisualCulture = /\b(highlife|album covers?|record sleeves?|cover art|music poster|music graphics|sound archive)\b/i.test(q);
+      const objectSearches = isMusicVisualCulture
+        ? [
+            `${q} graphic design Ghana`,
+            `Ghana highlife visual culture album art`,
+            `${q} record labels archives`,
+            `${q} photography typography`,
+          ]
+        : [
+            `${q} region community tradition`,
+            `${q} maker community voice`,
+            `${q} colonial collection provenance`,
+            `${q} contemporary use cultural care`,
+          ];
+      const objectReasons = isMusicVisualCulture
+        ? [
+            "Connects the query to graphic design and visual culture rather than only music metadata.",
+            "Broadens toward the cultural scene around highlife records and their visual language.",
+            "Looks for archival pathways through labels, sleeves and record collections where album art is often described.",
+            "Narrows toward the visual methods — image, lettering and layout — that make the covers researchable.",
+          ]
+        : [
+            "Situates the object within the place and tradition it comes from.",
+            "Prioritises sources authored from within the knowledge tradition rather than about it.",
+            "Surfaces the collecting history, which often shapes how the object is named and described in archives.",
+            "Looks for present-day meaning, care protocols and community interpretation.",
+          ];
       return {
         ok: true, mode, isFallback: true,
-        response: `Material and object searches open in several directions: the object's material properties and regional origin, the community or tradition that made and uses it, its collecting and institutional history, and its contemporary significance.`,
-        learningMove: "Search expansion — object",
-        guidingQuestions: [
-          "Are you approaching this object through its material properties, its cultural function, or its collecting history?",
-          "Whose knowledge tradition is this object connected to, and are there sources authored from within that tradition?",
-          "Has this object moved through colonial or institutional collections, and does that collecting history shape how it is described?",
-        ],
-        suggestedSearches: isLib ? [
-          `${q} region community tradition`,
-          `${q} maker community voice`,
-          `${q} colonial collection provenance`,
-        ] : [],
-        searchReasons: [
-          "Situates the object within the place and tradition it comes from.",
-          "Prioritises sources authored from within the knowledge tradition rather than about it.",
-          "Surfaces the collecting history, which often shapes how the object is named and described in archives.",
-        ],
+        response: isMusicVisualCulture
+          ? `Music visual culture searches often need to move between sound archives, graphic design, record labels, photography and typography. Those paths can reveal makers and contexts that a plain title search misses.`
+          : `Material and object searches open in several directions: the object's material properties and regional origin, the community or tradition that made and uses it, its collecting and institutional history, and its contemporary significance.`,
+        learningMove: isMusicVisualCulture ? "Search expansion — visual culture" : "Search expansion — object",
+        guidingQuestions: isMusicVisualCulture
+          ? [
+              "Are you trying to find the covers themselves, the artists and labels who made them, or writing about the visual style?",
+              "Which source path is most likely to name the artwork — record labels, sound archives, exhibition catalogues, or design histories?",
+              "What visual features matter for your question: photography, typography, illustration, layout, or circulation?",
+            ]
+          : [
+              "Are you approaching this object through its material properties, its cultural function, or its collecting history?",
+              "Whose knowledge tradition is this object connected to, and are there sources authored from within that tradition?",
+              "Has this object moved through colonial or institutional collections, and does that collecting history shape how it is described?",
+            ],
+        suggestedSearches: isLib ? objectSearches : [],
+        searchReasons: objectReasons,
         nextActions: [{ label: "Try one community-authored and one institutional source", action: "focus_search" }],
         characterState: "careful",
+      };
+    }
+    if (interp.queryType === "method" && hasQuery) {
+      return {
+        ok: true, mode, isFallback: true,
+        response: `This search points toward a method or practice. Stronger searches can connect the method to a field, a place, a source voice, and a critique.`,
+        learningMove: "Search expansion — method",
+        guidingQuestions: [
+          "Which field or classroom, studio, archive, or community setting matters most for this method?",
+          "Are you looking for an authored framework, a practical case, or a critique of the method?",
+          "What source position would help most — practitioner voice, community account, or scholarly analysis?",
+        ],
+        suggestedSearches: isLib ? [
+          `${q} Africa pedagogy practice`,
+          `${q} case study curriculum`,
+          `${q} Indigenous epistemologies`,
+          `${q} critique design education`,
+        ] : [],
+        searchReasons: [
+          "Connects the method to teaching and practice contexts rather than abstract description.",
+          "Looks for concrete examples where the method has been applied.",
+          "Surfaces knowledge traditions that may shape how the method should be understood.",
+          "Finds critique and debate so the method is not treated as a neutral technique.",
+        ],
+        nextActions: [{ label: "Try one practice case and one critique", action: "focus_search" }],
+        characterState: "curious",
+      };
+    }
+    if (interp.queryType === "place_community" && hasQuery) {
+      return {
+        ok: true, mode, isFallback: true,
+        response: `A place or community search can move through local archives, cultural practice, historical context, and contemporary community sources.`,
+        learningMove: "Search expansion — place",
+        guidingQuestions: [
+          "Are you looking for local archival records, cultural practice, historical context, or contemporary community voices?",
+          "Which language, region, or institution might describe this place differently?",
+          "What source type would let the place speak beyond institutional metadata?",
+        ],
+        suggestedSearches: isLib ? [
+          `${q} local archive cultural practice`,
+          `${q} historical context visual culture`,
+          `${q} community oral history`,
+          `${q} contemporary artists designers`,
+        ] : [],
+        searchReasons: [
+          "Finds local archival and cultural-practice sources rather than only broad regional references.",
+          "Adds historical and visual-culture context for interpreting the search results.",
+          "Prioritises community memory and oral-history source positions.",
+          "Surfaces contemporary creative sources connected to the place.",
+        ],
+        nextActions: [{ label: "Try one local and one contemporary source", action: "focus_search" }],
+        characterState: "curious",
       };
     }
     // Generic expand fallback
@@ -480,8 +722,18 @@ function makeFallback(
         "Are you looking for a particular kind of source — authored text, archive record, interview, visual record?",
         "What related concept or figure sits just outside what you have already searched?",
       ],
-      suggestedSearches: isLib && hasQuery ? [`${q} African context`, `${q} community knowledge systems`] : [],
-      searchReasons: ["Broadens the search toward the cultural and political context.", "Prioritises community-held and practitioner knowledge over institutional description."],
+      suggestedSearches: isLib && hasQuery ? [
+        `${q} African context`,
+        `${q} community knowledge systems`,
+        `${q} archival collection history`,
+        `${q} contemporary practice`,
+      ] : [],
+      searchReasons: [
+        "Broadens the search toward the cultural and political context.",
+        "Prioritises community-held and practitioner knowledge over institutional description.",
+        "Looks for how archives or institutions have collected, named, or framed the subject.",
+        "Moves toward current practice and living debates connected to the query.",
+      ],
       nextActions: [{ label: "Try one broader and one narrower search", action: "focus_search" }],
       characterState: "curious",
     };
@@ -586,7 +838,7 @@ function makeFallback(
           "Are there sources from outside the institutional or Western academic context that position the work differently?",
           "What key ideas or projects appear in the work that you have not yet followed up as independent search terms?",
         ],
-        suggestedSearches: isLib ? [`${q} talk lecture keynote`, `${q} interview own words`] : [],
+        suggestedSearches: isLib ? personSearches.missing : [],
         searchReasons: [
           "Prioritises recorded talks and lectures — closer to the person's own voice than institutional profiles.",
           "Surfaces interviews and first-person sources rather than third-person descriptions.",
@@ -650,11 +902,7 @@ function makeFallback(
           "What would give you the most direct access to their own thinking — a key text, a talk, an interview?",
           "How have others in the field cited, challenged or extended this work?",
         ],
-        suggestedSearches: isLib ? [
-          `${q} profile biography research area`,
-          `${q} authored article chapter talk`,
-          `${q} cited reviewed extended`,
-        ] : [],
+        suggestedSearches: isLib ? personSearches.path : [],
         searchReasons: [
           "Layer 1: Establishes who the person is, what field they work in, and what their central questions are.",
           "Layer 2: Gets closest to their own voice — authored texts and recorded talks are more direct than institutional descriptions.",
@@ -860,7 +1108,7 @@ function buildUserPayload(input: {
         "Use the queryInterpretation to tailor the response to the inferred type of thing being searched (person, concept, object, place).",
         "guidingQuestions must be specific to this query — if they could apply to any query, they are too generic.",
         "suggestedSearches must be plausible search phrases, not descriptions or labels.",
-        "Each item in searchReasons must explain what the corresponding search path helps the learner discover or distinguish.",
+        "Each suggestedSearch must include query, reason, and type; the reason must explain what that search path helps the learner discover or distinguish.",
         "Use asset-based language. Treat the search as evidence of the learner's direction.",
         "Do not invent sources. Do not claim certainty. Keep responses concise for a small companion panel.",
       ],
@@ -936,7 +1184,7 @@ export async function POST(request: NextRequest) {
       console.warn("[ArchiveGuide] GEMINI_API_KEY not set — using intelligent fallback for mode:", mode, "queryType:", interpretation.queryType);
     }
     return NextResponse.json<ArchiveGuideApiResponse>(
-      makeFallback(area, mode, context.query, interpretation),
+      normalizeGuideSuccess(makeFallback(area, mode, context.query, interpretation), context.query),
       { status: 200 },
     );
   }
@@ -947,7 +1195,10 @@ export async function POST(request: NextRequest) {
     const result = await callGemini(apiKey, payload);
     if (!result.ok) {
       console.error("[ArchiveGuide] Gemini failed:", result.error);
-      return NextResponse.json<ArchiveGuideApiResponse>(makeFallback(area, mode, context.query, interpretation), { status: 200 });
+      return NextResponse.json<ArchiveGuideApiResponse>(
+        normalizeGuideSuccess(makeFallback(area, mode, context.query, interpretation), context.query),
+        { status: 200 },
+      );
     }
 
     if (process.env.NODE_ENV !== "production") {
@@ -956,11 +1207,16 @@ export async function POST(request: NextRequest) {
 
     const parsed = parseModelPayload(result.text, mode);
     return NextResponse.json<ArchiveGuideApiResponse>(
-      parsed ?? makeFallback(area, mode, context.query, interpretation),
+      parsed
+        ? normalizeGuideSuccess(parsed, context.query)
+        : normalizeGuideSuccess(makeFallback(area, mode, context.query, interpretation), context.query),
       { status: 200 },
     );
   } catch (error) {
     console.error("[ArchiveGuide] request failed:", error);
-    return NextResponse.json<ArchiveGuideApiResponse>(makeFallback(area, mode, context.query, interpretation), { status: 200 });
+    return NextResponse.json<ArchiveGuideApiResponse>(
+      normalizeGuideSuccess(makeFallback(area, mode, context.query, interpretation), context.query),
+      { status: 200 },
+    );
   }
 }

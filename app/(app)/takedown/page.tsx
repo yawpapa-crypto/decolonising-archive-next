@@ -1,13 +1,13 @@
-import PageShell from "@/src/components/layout/PageShell";
+import SiteFooter from "@/src/components/layout/SiteFooter";
 
 export default function TakedownPage() {
   return (
-    <PageShell>
+    <>
       <main className="legal-page">
-        <div className="legal-wrap">
-          <p className="legal-eyebrow">Legal</p>
-          <h1>Takedown / Rights Contact</h1>
-          <p className="legal-updated">Last updated: 18 April 2026</p>
+      <div className="legal-wrap">
+        <p className="legal-eyebrow">Legal</p>
+        <h1>Takedown / Rights Contact</h1>
+        <p className="legal-updated">Last updated: 18 April 2026</p>
 
         <section>
           <h2>1. Overview</h2>
@@ -111,8 +111,9 @@ export default function TakedownPage() {
             to: [info@yofosuasare.com]
           </p>
         </section>
-        </div>
-      </main>
-    </PageShell>
+      </div>
+    </main>
+      <SiteFooter />
+    </>
   );
 }

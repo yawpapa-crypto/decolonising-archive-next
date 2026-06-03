@@ -65,6 +65,22 @@ export type ArchiveGuideNextAction = {
   payload?: Record<string, unknown>;
 };
 
+export type ArchiveGuideSuggestedSearchType =
+  | "broader"
+  | "narrower"
+  | "adjacent"
+  | "source_position"
+  | "gap"
+  | "method"
+  | "person"
+  | "place";
+
+export type ArchiveGuideSuggestedSearch = {
+  query: string;
+  reason: string;
+  type: ArchiveGuideSuggestedSearchType;
+};
+
 export type ArchiveGuideSuccess = {
   ok: true;
   /** The mode that produced this response — used by the renderer for mode-specific section labels. */
@@ -74,8 +90,8 @@ export type ArchiveGuideSuccess = {
   response: string;
   learningMove: string;
   guidingQuestions: string[];
-  suggestedSearches: string[];
-  /** Optional parallel array to suggestedSearches — one short reason per search explaining what it surfaces. */
+  suggestedSearches: ArchiveGuideSuggestedSearch[];
+  /** Legacy fallback for older responses; new responses should put reasons on each suggestedSearch. */
   searchReasons?: string[];
   nextActions: ArchiveGuideNextAction[];
   characterState: ArchiveGuideState;

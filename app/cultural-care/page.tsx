@@ -1,4 +1,4 @@
-import PageShell from "@/src/components/layout/PageShell";
+import SiteFooter from "@/src/components/layout/SiteFooter";
 
 export const metadata = {
   title: "Cultural Care | Decolonising Archive",
@@ -8,12 +8,12 @@ export const metadata = {
 
 export default function CulturalCarePage() {
   return (
-    <PageShell>
+    <>
       <main className="legal-page">
-        <div className="legal-wrap">
-          <p className="legal-eyebrow">Ethics &amp; Practice</p>
-          <h1>Cultural Care</h1>
-          <p className="legal-updated">Last reviewed: 30 May 2026</p>
+      <div className="legal-wrap">
+        <p className="legal-eyebrow">Ethics &amp; Practice</p>
+        <h1>Cultural Care</h1>
+        <p className="legal-updated">Last reviewed: 30 May 2026</p>
 
         <section>
           <h2>1. Our Commitment</h2>
@@ -92,8 +92,9 @@ export default function CulturalCarePage() {
             <a href="mailto:hello@ared.design">hello@ared.design</a>.
           </p>
         </section>
-        </div>
-      </main>
-    </PageShell>
+      </div>
+    </main>
+      <SiteFooter />
+    </>
   );
 }

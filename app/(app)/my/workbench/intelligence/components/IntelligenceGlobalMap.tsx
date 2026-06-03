@@ -110,9 +110,9 @@ export default function IntelligenceGlobalMap({
         radiusMinPixels: 6,
         radiusMaxPixels: 28,
         lineWidthMinPixels: 1,
-        getPosition: (d) => [d.longitude, d.latitude],
-        getRadius: (d) => Math.max(8, Math.sqrt(d.count) * 5),
-        getFillColor: (d) => {
+        getPosition: (d: IntelligenceWorldMapPoint) => [d.longitude, d.latitude],
+        getRadius: (d: IntelligenceWorldMapPoint) => Math.max(8, Math.sqrt(d.count) * 5),
+        getFillColor: (d: IntelligenceWorldMapPoint) => {
           const active = d.placeId === activePlaceId;
           if (active) return [15, 61, 46, 230];
           if (d.kind === "diaspora") return [120, 80, 40, 190];

@@ -27,6 +27,25 @@ export default function ArchiveGuideResponse({ response }: ArchiveGuideResponseP
   const qLabel = questionsLabel(response.mode);
   const sLabel = searchesLabel(response.mode);
 
+  function runSuggestedSearch(suggestion: ArchiveGuideSuccess["suggestedSearches"][number]) {
+    if (typeof window === "undefined") return;
+    const searchInput = document.getElementById("mainSearch") as HTMLInputElement | null;
+    const originalQuery =
+      new URLSearchParams(window.location.search).get("q") ||
+      searchInput?.value.trim() ||
+      undefined;
+    window.dispatchEvent(
+      new CustomEvent("archive-guide:suggested-search-clicked", {
+        detail: {
+          originalQuery,
+          suggestedQuery: suggestion.query,
+          suggestionType: suggestion.type,
+          mode: response.mode,
+        },
+      }),
+    );
+  }
+
   return (
     <section className="archive-guide-response" aria-label="Archive Guide response">
       <p className="archive-guide-response__move">{response.learningMove}</p>
@@ -47,15 +66,20 @@ export default function ArchiveGuideResponse({ response }: ArchiveGuideResponseP
         <div className="archive-guide-response__section">
           <h3>{sLabel}</h3>
           <div className="archive-guide-response__searches">
-            {response.suggestedSearches.map((search, i) => {
-              const reason = response.searchReasons?.[i];
+            {response.suggestedSearches.map((suggestion) => {
               return (
-                <div key={search} className="archive-guide-response__search-item">
-                  <span className="archive-guide-response__search-query">{search}</span>
-                  {reason && (
-                    <span className="archive-guide-response__search-reason">{reason}</span>
-                  )}
-                </div>
+                <button
+                  key={`${suggestion.type}-${suggestion.query}`}
+                  type="button"
+                  className="archive-guide-response__search-item"
+                  onClick={() => runSuggestedSearch(suggestion)}
+                  aria-label={`Search this suggested query: ${suggestion.query}`}
+                >
+                  <span className="archive-guide-response__search-type">{suggestion.type.replace("_", " ")}</span>
+                  <span className="archive-guide-response__search-query">{suggestion.query}</span>
+                  <span className="archive-guide-response__search-reason">{suggestion.reason}</span>
+                  <span className="archive-guide-response__search-action">Search this</span>
+                </button>
               );
             })}
           </div>
