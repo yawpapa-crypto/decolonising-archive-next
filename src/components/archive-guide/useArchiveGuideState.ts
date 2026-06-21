@@ -85,7 +85,8 @@ function archiveGuideObservationRoot() {
   return (
     document.querySelector(".library-layout") ??
     document.querySelector(".workbench-note-board-immersive") ??
-    document.getElementById("app")
+    document.getElementById("app") ??
+    document.body
   );
 }
 
@@ -95,6 +96,7 @@ function readArchiveGuideSnapshot(): ArchiveGuideSnapshot {
   }
 
   const app = document.getElementById("app");
+  const path = window.location.pathname;
   const input = document.getElementById("mainSearch") as HTMLInputElement | null;
   const resultRoot = app?.querySelector(".library-results-stack");
   const resultCards = resultRoot?.querySelectorAll(
@@ -102,13 +104,13 @@ function readArchiveGuideSnapshot(): ArchiveGuideSnapshot {
   );
   const loader = app?.querySelector(".library-results-loader, [data-library-loader], .search-loader");
 
-  const isLibrary = Boolean(app?.querySelector(".library-layout") && input);
+  const isLibrary = path.startsWith("/library") || Boolean(app?.querySelector(".library-layout") && input);
   if (isLibrary) {
     return {
       surface: "library",
       isLibrary: true,
       isWorkbenchBoard: false,
-      query: input?.value.trim() ?? "",
+      query: input?.value.trim() ?? new URLSearchParams(window.location.search).get("q")?.trim() ?? "",
       resultCount: resultCards?.length ?? 0,
       hasNoResults: Boolean(app?.querySelector(".search-empty")),
       isLoading: Boolean(loader && !loader.classList.contains("hidden")),
@@ -140,7 +142,7 @@ export function useArchiveGuideState() {
   const { buildContext } = useArchiveGuideContext();
   const [state, setState] = useState<ArchiveGuideState>("idle");
   const [message, setMessage] = useState(idleMessage);
-  const [panelView, setPanelView] = useState<"bubble" | "open">("open");
+  const [panelView, setPanelView] = useState<"bubble" | "open">("bubble");
   const [activeMode, setActiveMode] = useState<ArchiveGuideMode | null>(null);
   const [isHidden, setIsHidden] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -565,6 +567,8 @@ export function useArchiveGuideState() {
     }
 
     document.addEventListener("click", handleClick);
+    window.addEventListener("archive-guide:surface-updated", refreshSnapshot);
+    window.addEventListener("popstate", refreshSnapshot);
     window.addEventListener("archive-guide:suggested-search-clicked", handleSuggestedSearch);
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("focusin", handleFocusIn);
@@ -576,6 +580,8 @@ export function useArchiveGuideState() {
         observerFrameRef.current = null;
       }
       document.removeEventListener("click", handleClick);
+      window.removeEventListener("archive-guide:surface-updated", refreshSnapshot);
+      window.removeEventListener("popstate", refreshSnapshot);
       window.removeEventListener("archive-guide:suggested-search-clicked", handleSuggestedSearch);
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("focusin", handleFocusIn);

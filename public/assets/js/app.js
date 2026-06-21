@@ -78,8 +78,8 @@ function syncLiveResultsFromDiscoverySections() {
     if (!section?.results?.length) continue;
     combined.push(...section.results);
   }
-  liveResults = dedupeBlendedResults(combined, getEffectiveSearchQuery() || libraryQuery);
-  externalDiscovery = liveResults.filter((item) => getResultMode(item) === "external_handoff");
+  liveResults = safeArray(dedupeBlendedResults(combined, getEffectiveSearchQuery() || libraryQuery));
+  externalDiscovery = safeArray(liveResults).filter((item) => getResultMode(item) === "external_handoff");
 }
 
 function applyDiscoverySection(sectionId, patch, { append = false } = {}) {
@@ -298,6 +298,16 @@ function syncSourcePaginationStates() {
 
   sourcePaginationStates = states;
   return states;
+}
+
+function isSourceDiagnosticsEnabled() {
+  try {
+    const params = new URLSearchParams(window.location.search || "");
+    if (params.get("sourceDiagnostics") === "1") return true;
+    return window.localStorage?.getItem("archiveSourceDiagnostics") === "true";
+  } catch {
+    return false;
+  }
 }
 
 function formatSourcePaginationChip(state) {
@@ -1560,6 +1570,42 @@ let debounceTimer = null;
 let searchSuggestions = [];
 let activeSuggestionIndex = -1;
 let recentSearches = [];
+let beyondLabelState = {
+  open:false,
+  recordId:"",
+  activeStep:"archive",
+  selectedNodeId:"source",
+  selectedLens:"place",
+  copyMessage:"",
+  worksheet:{
+    fromRecord:"",
+    cannotAssume:"",
+    needsSource:"",
+    care:""
+  }
+};
+let beyondDataMapState = {
+  open:false,
+  selectedRecordIds:[],
+  removedRecordIds:[],
+  removedNodeIds:[],
+  activeMode:"interactive",
+  activeClusterId:"",
+  activeNodeId:"query",
+  hoveredNodeId:"",
+  activeLayout:"flow",
+  activeGroupBy:"source_position",
+  mapVersion:0,
+  searchWithinMap:"",
+  pendingConfirm:"",
+  message:""
+};
+let beyondDataFlowEventsBound = false;
+
+function safeArray(value) {
+  return Array.isArray(value) ? value : [];
+}
+
 const ADVANCED_SEARCH_SOURCES = [
   ["archive", "Internal archive"],
   ["openalex", "OpenAlex"],
@@ -4431,7 +4477,9 @@ function render() {
   if (currentPage === "about") app.innerHTML = renderAbout();
   if (currentPage === "record") app.innerHTML = renderRecord();
   bindEvents();
+  renderBeyondDataMapModal();
   syncLibraryFilterBodyLock();
+  window.dispatchEvent(new CustomEvent("archive-guide:surface-updated"));
 }
 
 let liveResults = [];
@@ -5260,7 +5308,7 @@ async function fetchLiveResults(query){
         syncLiveResultsFromDiscoverySections();
       } else {
         liveResults = Array.isArray(cached) ? cached : [];
-        externalDiscovery = liveResults.filter((item) => getResultMode(item) === "external_handoff");
+        externalDiscovery = safeArray(liveResults).filter((item) => getResultMode(item) === "external_handoff");
       }
       const totalDisplayed = DISCOVERY_SECTION_ORDER.reduce(
         (sum, id) => sum + (discoverySections[id]?.displayedCount || 0),
@@ -5480,7 +5528,7 @@ function maybeFetchLiveResults(query){
       sources: getSelectedLiveSourceAdapters().map(adapter => ({ label: adapter.label, state: 'fail' }))
     };
     liveResults = makeExternalFallbacks(normalizedQuery);
-    externalDiscovery = liveResults.filter(item => getResultMode(item) === 'external_handoff');
+    externalDiscovery = safeArray(liveResults).filter(item => getResultMode(item) === 'external_handoff');
     render();
     return liveResults;
   });
@@ -5780,6 +5828,3662 @@ function getRecordCardSummary(record) {
   return truncateCardSummary(summary || description || "Open the record for more detail.");
 }
 
+const BEYOND_LABEL_LAYERS = [
+  { id:"archive", label:"The archive says" },
+  { id:"label", label:"Question the label" },
+  { id:"absence", label:"Trace what the data cannot hold" },
+  { id:"position", label:"Read from another position" },
+  { id:"search", label:"Search against the label" },
+  { id:"care", label:"Re-describe with care" }
+];
+
+const BEYOND_LABEL_LENSES = [
+  { id:"maker", label:"Maker / author" },
+  { id:"place", label:"Place" },
+  { id:"language", label:"Language" },
+  { id:"collection", label:"Collection history" },
+  { id:"living", label:"Living practice" },
+  { id:"care", label:"Care" },
+  { id:"critique", label:"Critique / reception" }
+];
+
+function beyondLabelText(record) {
+  return [
+    record.title,
+    record.summary,
+    record.abstract,
+    Array.isArray(record.description) ? record.description.join(" ") : record.description,
+    record.provider,
+    record.sourceName,
+    record.source,
+    record.institution,
+    record.collection,
+    record.type,
+    record.cat,
+    record.creator,
+    record.country,
+    record.region,
+    record.community,
+    record.material,
+    record.medium,
+    record.provenance,
+    record.doi,
+    record.DOI
+  ].filter(Boolean).join(" ").toLowerCase();
+}
+
+function inferBeyondLabelSourceType(record) {
+  const text = beyondLabelText(record);
+  if (record.doi || record.DOI || record.journal || record.authors || record.abstract || /\b(doi|journal|article|abstract|citation|crossref|openalex|semantic scholar)\b/i.test(text)) return "academic_source";
+  if (/\b(community|oral history|local organisation|local organization|collective|project)\b/i.test(text)) return "community_source";
+  if (/\b(museum|metropolitan museum|smithsonian|library|archive|catalogue|catalog|collection|institution)\b/i.test(text)) return "institutional_record";
+  return "unclear_source_position";
+}
+
+function beyondLabelSourceTypeLabel(sourceType) {
+  const labels = {
+    institutional_record:"institutional record",
+    academic_source:"academic source",
+    community_source:"community source",
+    unclear_source_position:"unclear source position"
+  };
+  return labels[sourceType] || "unclear source position";
+}
+
+function compactBeyondLabelQuery(value) {
+  return String(value || "").replace(/\s+/g, " ").trim().slice(0, 160);
+}
+
+function beyondLabelTitle(record) {
+  return compactBeyondLabelQuery(record.title || record.name || "Untitled record");
+}
+
+function beyondLabelProvider(record) {
+  return compactBeyondLabelQuery(record.sourceName || record.institution || record.source || record.collection || record.provider || "");
+}
+
+function beyondLabelHasPersonShape(value) {
+  const text = compactBeyondLabelQuery(value);
+  if (!text || text.split(/\s+/).length < 2 || text.split(/\s+/).length > 4) return false;
+  return /^[A-Z][A-Za-z'’-]+(?:\s+[A-Z][A-Za-z'’-]+){1,3}$/.test(text);
+}
+
+function beyondLabelImportantWords(value) {
+  const stop = new Set(["the","and","for","with","from","into","about","this","that","studies","study","record","source","image","jpg","jpeg","png","pdf"]);
+  return compactBeyondLabelQuery(value)
+    .replace(/\.[a-z0-9]{2,5}$/i, "")
+    .split(/[^A-Za-z0-9'’-]+/)
+    .map(word => word.trim())
+    .filter(word => word.length > 2 && !stop.has(word.toLowerCase()))
+    .slice(0, 7);
+}
+
+function classifyBeyondLabelRecord(record, currentQuery = "") {
+  const title = beyondLabelTitle(record);
+  const provider = beyondLabelProvider(record);
+  const text = `${currentQuery} ${title} ${provider} ${beyondLabelText(record)}`;
+  const lower = text.toLowerCase();
+  const queryLooksPerson = beyondLabelHasPersonShape(currentQuery);
+  const titleLooksPerson = beyondLabelHasPersonShape(title);
+  if (
+    /\b(highlife|album cover|album covers|poster|film|performance|music|print culture|graphic design|visual culture|cover art)\b/i.test(lower)
+  ) return "media_record";
+  if (
+    /\.(jpg|jpeg|png|gif|webp)\b/i.test(title) ||
+    /\b(wikimedia|commons|image|photograph|photo|museum humanum)\b/i.test(lower)
+  ) return "image_record";
+  if (
+    record.doi ||
+    record.DOI ||
+    record.journal ||
+    record.authors ||
+    record.abstract ||
+    /\b(journal|article|abstract|theory|analysis|racism|colonialism|education|philosophy|biblical studies|design education|critique|methodology|scholarship|conceptual decolonisation)\b/i.test(lower)
+  ) return "academic_argument";
+  if (
+    queryLooksPerson ||
+    titleLooksPerson ||
+    /\b(profile|biography|author page|interview|talks|lectures|publication list)\b/i.test(lower)
+  ) return "person_result";
+  if (
+    /\b(mask|textile|artefact|artifact|object|accession|catalogue|catalog|museum|collection|smithsonian|metropolitan museum)\b/i.test(lower)
+  ) return "institutional_object_record";
+  if (
+    /\b(openlibrary|worldcat|isbn|publisher|routledge|palgrave|book|monograph|library catalogue|library catalog)\b/i.test(lower)
+  ) return "book_or_publication";
+  if (
+    /\b(community archive|oral history|grassroots|collective|local organisation|local organization|community project|commons)\b/i.test(lower)
+  ) return "community_source";
+  return "unclear";
+}
+
+function beyondLabelReadingTypeLabel(type) {
+  const labels = {
+    academic_argument:"academic argument",
+    institutional_object_record:"institutional object record",
+    image_record:"image record",
+    person_result:"person-centred result",
+    book_or_publication:"book or publication",
+    community_source:"community source",
+    media_record:"media/design source",
+    unclear:"unclear source position"
+  };
+  return labels[type] || labels.unclear;
+}
+
+function beyondLabelBaseTerm(record, currentQuery = "") {
+  return compactBeyondLabelQuery(currentQuery || libraryQuery || record.title || record.creator || record.type || "archive record");
+}
+
+function makeCounterSearch(query, resists, recovers, type = "gap") {
+  return { query:compactBeyondLabelQuery(query), resists, recovers, type };
+}
+
+function uniqueCounterSearches(searches, currentQuery = "") {
+  const seen = new Set();
+  const current = compactBeyondLabelQuery(currentQuery).toLowerCase();
+  return searches
+    .map(search => ({...search, query:compactBeyondLabelQuery(search.query)}))
+    .filter(search => {
+      const key = search.query.toLowerCase();
+      if (!search.query || search.query.length < 2 || search.query.length > 160 || seen.has(key)) return false;
+      if (key === current && !/specific|source|care|history|maker|language|critique/i.test(search.resists + search.recovers)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, 6);
+}
+
+function buildBeyondLabelCounterSearches(record, currentQuery = "") {
+  const base = beyondLabelBaseTerm(record, currentQuery);
+  const title = beyondLabelTitle(record);
+  const provider = beyondLabelProvider(record);
+  const recordType = classifyBeyondLabelRecord(record, currentQuery);
+  const words = beyondLabelImportantWords(title);
+  const primaryTerms = compactBeyondLabelQuery(words.slice(0, 5).join(" ")) || base;
+  const text = `${base} ${beyondLabelText(record)}`.toLowerCase();
+  if (/biblical studies|embedded racism|colonialism/i.test(text)) {
+    return uniqueCounterSearches([
+      makeCounterSearch("African Biblical Studies colonialism racism critique", "Reading the title as only a paper record.", "The wider debate and field politics around racism, colonial knowledge and Biblical Studies.", "field"),
+      makeCounterSearch("African biblical interpretation community theology", "Disciplinary abstraction standing in for interpretive communities.", "Theological contexts, African interpretation and communities of argument.", "community"),
+      makeCounterSearch("Biblical Studies colonialism African scholars", "Field history without asking who is cited or centred.", "Authorship, citation and scholarly voice around the critique.", "citation"),
+      makeCounterSearch(`${primaryTerms} reception critique`, "The source isolated from response and debate.", "How the argument has been taken up, challenged or extended.", "reception")
+    ], currentQuery);
+  }
+  if (/ghana.*highlife.*album|album cover|highlife/i.test(text)) {
+    return uniqueCounterSearches([
+      makeCounterSearch("Ghana highlife album cover designers", "The reduction of album covers to music metadata only.", "Visual authorship, print labour, design culture and urban aesthetics.", "maker"),
+      makeCounterSearch("Ghana highlife print culture", "A record that treats sound and image as separate evidence.", "Print shops, circulation, visual culture and music economies.", "method"),
+      makeCounterSearch("Ghana album cover visual culture", "A narrow title-level description.", "Style, design networks and the social life of sleeve images.", "adjacent"),
+      makeCounterSearch("highlife music urban aesthetics Ghana", "A label detached from place and city life.", "Connections between music, image, nightlife and urban publics.", "place")
+    ], currentQuery);
+  }
+  if (/african masks|mask\b|masks\b/i.test(text)) {
+    const providerPrefix = provider && /museum|humanum|wikimedia|commons/i.test(provider + title) ? `${provider.replace(/Wikimedia Commons/i, "Wikimedia").trim()} African mask` : "African mask";
+    return uniqueCounterSearches([
+      makeCounterSearch(`${providerPrefix} collection history`, "The image or object label detached from provenance and museum framing.", "Collection pathways, institutional categories and contested ownership.", "collection"),
+      makeCounterSearch("African mask local name maker community", "A broad English object label standing in for specific names and relations.", "Local naming, maker/community authority and more precise object relations.", "maker"),
+      makeCounterSearch("African mask contemporary makers practice", "The idea that mask traditions only belong to the past.", "Living makers, changing practice and contemporary authority.", "living"),
+      makeCounterSearch("African mask museum provenance", "The image as reusable metadata without its collection route.", "Provenance leads, reuse pathways and institutional description.", "provenance")
+    ], currentQuery);
+  }
+  if (/yaw ofosu-asare/i.test(text)) {
+    return uniqueCounterSearches([
+      makeCounterSearch("Yaw Ofosu-Asare decolonising design", "A person reduced to a single result or institutional role.", "Authored concepts and public references around decolonial design practice.", "person"),
+      makeCounterSearch("Yaw Ofosu-Asare interviews talks", "Publication metadata as the only voice.", "Spoken context, teaching concerns and situated explanation.", "source_position"),
+      makeCounterSearch("Yaw Ofosu-Asare citations reception", "A record without its field of response.", "How the work is taken up, debated or cited.", "critique"),
+      makeCounterSearch("Yaw Ofosu-Asare African Design Futures", "A search that stays at name-level matching.", "Connected projects, design futures and related research pathways.", "adjacent")
+    ], currentQuery);
+  }
+  if (/kwasi wiredu/i.test(text)) {
+    return uniqueCounterSearches([
+      makeCounterSearch("Kwasi Wiredu conceptual decolonisation", "A philosopher reduced to a name heading.", "Core concepts and arguments around decolonising thought.", "person"),
+      makeCounterSearch("Kwasi Wiredu language translation philosophy", "English metadata as if language were neutral.", "How language and translation shape African philosophy.", "language"),
+      makeCounterSearch("Kwasi Wiredu African philosophy critique", "An isolated authored record.", "Reception, debate and critique around the work.", "critique"),
+      makeCounterSearch("Kwasi Wiredu oral interviews", "Written publication as the only source form.", "Interviews, lectures and spoken explanation where available.", "source_position")
+    ], currentQuery);
+  }
+  if (/decolonising design education|decolonizing design education/i.test(text)) {
+    return uniqueCounterSearches([
+      makeCounterSearch("decolonising design education classroom practice", "A field label without teaching conditions.", "Pedagogy, classroom methods and situated practice.", "method"),
+      makeCounterSearch("decolonising design education community knowledge", "Academic framing as the only evidence base.", "Community authority, partnership and non-institutional knowledge.", "source_position"),
+      makeCounterSearch("African design pedagogy practice based evidence", "Theory separated from making and learning.", "Practice-led evidence and design education examples.", "adjacent"),
+      makeCounterSearch("decolonising design education non Western sources", "Defaulting to dominant citation networks.", "Wider sources, languages and locations of knowledge.", "gap")
+    ], currentQuery);
+  }
+  if (recordType === "academic_argument") {
+    return uniqueCounterSearches([
+      makeCounterSearch(`${primaryTerms} critique`, "Treating the title as a neutral publication label.", "The argument, field debate and concepts signalled by the title.", "field"),
+      makeCounterSearch(`${primaryTerms} scholars citations`, "A paper separated from who it cites and centres.", "Authorship, citation politics and scholarly reception.", "citation"),
+      makeCounterSearch(`${primaryTerms} community practice`, "Academic language as the only context.", "Practice accounts, situated debates or communities connected to the argument.", "community"),
+      makeCounterSearch(`${primaryTerms} interview lecture`, "Publication metadata standing in for voice.", "Talks, interviews or teaching contexts where available.", "voice")
+    ], currentQuery);
+  }
+  if (recordType === "person_result") {
+    const person = currentQuery && beyondLabelHasPersonShape(currentQuery) ? compactBeyondLabelQuery(currentQuery) : title;
+    return uniqueCounterSearches([
+      makeCounterSearch(`${person} authored work concepts`, "A person reduced to a name match or profile.", "Authored ideas, projects and intellectual contribution.", "person"),
+      makeCounterSearch(`${person} interviews talks`, "Third-party description standing in for direct voice.", "Spoken context, public explanation and teaching concerns.", "voice"),
+      makeCounterSearch(`${person} citations reception`, "A profile separated from how the work circulates.", "Reception, citation and debate around the work.", "reception"),
+      makeCounterSearch(`${person} institutional biography critique`, "Institutional role as the whole story.", "The difference between biography, affiliation and contribution.", "institution")
+    ], currentQuery);
+  }
+  if (recordType === "image_record" || recordType === "institutional_object_record") {
+    return uniqueCounterSearches([
+      makeCounterSearch(`${primaryTerms} provenance collection history`, "The object or image label without its pathway into a collection.", "Acquisition, custody, reuse and institutional framing.", "collection"),
+      makeCounterSearch(`${primaryTerms} maker community authority`, "The provider label as the only visible authority.", "Maker, community description or named authority where sources support it.", "maker"),
+      makeCounterSearch(`${primaryTerms} local name place`, "A broad English label detached from specific naming and place.", "Local terms, place specificity and object relations.", "language"),
+      makeCounterSearch(`${primaryTerms} contemporary practice care`, "The record treated as static visual data.", "Living practice, restriction, care or present-day context.", "care")
+    ], currentQuery);
+  }
+  if (recordType === "media_record") {
+    return uniqueCounterSearches([
+      makeCounterSearch(`${base} designers visual authorship`, "The item reduced to title, performer or genre.", "Designers, image-makers, studios and visual authorship.", "maker"),
+      makeCounterSearch(`${base} print culture circulation`, "A visual source separated from production and movement.", "Print labour, circulation, publishing economies and audiences.", "production"),
+      makeCounterSearch(`${base} visual culture Ghana`, "Music metadata standing in for image culture.", "Urban aesthetics, graphic style and cultural context.", "place"),
+      makeCounterSearch(`${base} archive source framing`, "The archive label as if it were the whole object.", "How the source was collected, described or reused.", "source")
+    ], currentQuery);
+  }
+  if (recordType === "book_or_publication") {
+    return uniqueCounterSearches([
+      makeCounterSearch(`${primaryTerms} reviews reception`, "A publication label without its field of response.", "Reviews, citations and intellectual reception.", "reception"),
+      makeCounterSearch(`${primaryTerms} author interview`, "Publisher metadata as the only voice.", "Author explanation, interviews or talks.", "voice"),
+      makeCounterSearch(`${primaryTerms} syllabus teaching`, "A book detached from how it is used.", "Teaching contexts, reading pathways and related debates.", "method")
+    ], currentQuery);
+  }
+  if (recordType === "community_source") {
+    return uniqueCounterSearches([
+      makeCounterSearch(`${base} community self description`, "External description replacing community authority.", "How the source names itself, its purpose and its boundaries.", "authority"),
+      makeCounterSearch(`${base} place relation oral history`, "Place reduced to a searchable field.", "Situated histories, oral accounts and local context.", "place"),
+      makeCounterSearch(`${base} access protocol care`, "Visibility treated as the default goal.", "Permissions, access conditions, refusal and cultural care.", "care")
+    ], currentQuery);
+  }
+  const place = record.community || record.country || record.region || "";
+  const maker = record.creator || record.author || "";
+  const type = record.type || record.cat || "record";
+  return uniqueCounterSearches([
+    makeCounterSearch(`${base} collection history`, "The label without its pathway into an archive.", "Acquisition context, institutional framing and provenance leads.", "collection"),
+    makeCounterSearch(maker ? `${maker} interviews talks` : `${base} maker community voice`, "The catalogue voice as the only voice.", "Authored explanation, interviews or community description where available.", "maker"),
+    makeCounterSearch(place ? `${place} ${type} local language` : `${base} local language`, "English searchable terms standing in for local names.", "Local terms, translation questions and more precise descriptions.", "language"),
+    makeCounterSearch(`${base} contemporary practice`, "A record framed only as past culture or static heritage.", "Living practice, adaptation and present-day relations.", "living"),
+    makeCounterSearch(`${base} critique reception`, "A source presented without response or debate.", "How people have interpreted, challenged or extended the record.", "critique")
+  ], currentQuery);
+}
+
+function createBeyondLabelAnalysis(record, currentQuery = "") {
+  const sourceType = inferBeyondLabelSourceType(record);
+  const provider = beyondLabelProvider(record);
+  const title = beyondLabelTitle(record);
+  const recordReadingType = classifyBeyondLabelRecord(record, currentQuery);
+  const readingTypeLabel = beyondLabelReadingTypeLabel(recordReadingType);
+  const text = beyondLabelText(record);
+  const titleWords = beyondLabelImportantWords(title);
+  const keywordPhrase = titleWords.slice(0, 4).join(" ") || title;
+  const hasThinMetadata = !record.summary && !record.abstract && !record.description && !record.creator && !record.author;
+  const sourcePhrase = provider ? `${provider}` : "the visible source label";
+  let archiveNote = provider
+    ? `This record is encountered through ${provider}. Based on the visible metadata, it reads most like a ${readingTypeLabel}.`
+    : `The source position is unclear from the visible metadata. Start by checking who created, hosted or described “${title}”.`;
+  if (/biblical studies|embedded racism|colonialism/i.test(`${title} ${text}`)) {
+    archiveNote = `The title frames “${title}” as an argument about racism, colonialism and Biblical Studies. The question is not only what it argues, but which sources, traditions and communities it uses to make that critique.`;
+  } else if (recordReadingType === "image_record") {
+    archiveNote = `The file-like title “${title}” and source position make this visible first as a digital image record. That is different from encountering the object, maker, place or use-context behind the image.`;
+  } else if (recordReadingType === "person_result") {
+    archiveNote = `This result is organised around a named person. Read the source carefully: it may be direct voice, institutional biography, citation trail, interview, or third-party description.`;
+  } else if (recordReadingType === "media_record") {
+    archiveNote = `This result points toward visual, music, design or performance culture. The label may foreground title or genre while production labour, circulation and visual authorship need another search path.`;
+  }
+  if (hasThinMetadata) {
+    archiveNote += " The available metadata is thin, so this reading stays provisional.";
+  }
+
+  let labelOperations = [];
+  let outsideData = [];
+  let redescriptionPrompts = {
+    canSay:`This appears to be a ${readingTypeLabel} labelled “${title}”.`,
+    cannotAssume:"I cannot assume the label is the whole context without checking the source.",
+    needsAnotherSource:"Look for sources that explain authorship, context, reception or use.",
+    careQuestion:"What should be handled carefully, credited more precisely, or left unresolved?"
+  };
+
+  if (/kwasi wiredu|conceptual decolonisation|conceptual decolonization/i.test(`${title} ${currentQuery}`) || (/\bphilosophy\b/i.test(title) && !/biblical studies/i.test(title))) {
+    labelOperations = [
+      {
+        id:"concept-frame",
+        title:"It makes philosophy searchable by name and concept",
+        explanation:`The label points toward ${keywordPhrase}, but philosophical work also depends on argument, translation and reception.`
+      },
+      {
+        id:"language-frame",
+        title:"It may hide translation work",
+        explanation:"Concepts can shift across languages and philosophical traditions; the label cannot show that movement by itself."
+      },
+      {
+        id:"reception-frame",
+        title:"It separates argument from uptake",
+        explanation:"A philosophy record needs reception, critique and teaching context as well as bibliographic metadata."
+      }
+    ];
+    outsideData = [
+      {
+        id:"person",
+        dimension:"Authored philosophical voice",
+        whyItMatters:"The record should be read for the argument being made, not only for a name heading.",
+        caution:"Do not reduce a philosopher to a topic label.",
+        intensity:"high"
+      },
+      {
+        id:"language",
+        dimension:"Language and translation",
+        whyItMatters:"Conceptual decolonisation and African philosophy often turn on what language can and cannot carry.",
+        caution:"Do not claim hidden meanings without language-specific sources.",
+        intensity:"high"
+      },
+      {
+        id:"reception",
+        dimension:"Reception and critique",
+        whyItMatters:"Philosophical work lives through response, disagreement and teaching as well as publication.",
+        caution:"Reception is not the same as the author’s own argument.",
+        intensity:"medium"
+      }
+    ];
+    redescriptionPrompts = {
+      canSay:`This appears to be a philosophy record connected to ${keywordPhrase}.`,
+      cannotAssume:"I cannot assume a name or concept label captures the full argument or its language politics.",
+      needsAnotherSource:"Look for authored texts, interviews, lectures, translations, critiques and reception.",
+      careQuestion:"Which concepts require language-specific care before being paraphrased?"
+    };
+  } else if (recordReadingType === "academic_argument") {
+    labelOperations = [
+      {
+        id:"field-frame",
+        title:"It frames an argument within a field",
+        explanation:`The title makes “${keywordPhrase}” searchable as scholarly argument rather than as object metadata.`,
+        evidence:title
+      },
+      {
+        id:"critique-keywords",
+        title:"It makes critique searchable",
+        explanation:/racism|colonialism/i.test(title) ? "Words such as racism and colonialism signal a critical method, but the label cannot show which sources, traditions or communities carry that critique." : "Academic keywords make a field visible, but they can hide how the argument is grounded.",
+        evidence:title
+      },
+      {
+        id:"citation-frame",
+        title:"It foregrounds academic form",
+        explanation:`Through ${sourcePhrase}, citation, title and field language become easier to see than teaching context, practice context or non-academic voice.`
+      }
+    ];
+    outsideData = [
+      {
+        id:"field",
+        dimension:/biblical studies/i.test(title) ? "Field politics in Biblical Studies" : "Disciplinary frame",
+        whyItMatters:/biblical studies/i.test(title) ? "The title names Biblical Studies as the field being questioned, so the reading should ask how the discipline itself is being framed." : "The record appears as an academic argument, so the field language shapes what kinds of knowledge count as evidence.",
+        caution:"Do not assume the title alone tells us whose scholarship, traditions or communities are centred.",
+        intensity:"high"
+      },
+      {
+        id:"citation",
+        dimension:"Citation and scholarly voice",
+        whyItMatters:"Academic records make publication metadata visible, but the politics of who is cited, answered or omitted require reading the paper and its references.",
+        caution:"Do not infer citation politics from metadata alone.",
+        intensity:"high"
+      },
+      {
+        id:"community",
+        dimension:/biblical studies/i.test(title) ? "African interpretation and community theology" : "Community or practice voice",
+        whyItMatters:/biblical studies/i.test(title) ? "If the record invokes African Biblical Studies, it matters whether African interpretive traditions are sources of theory, examples, or merely subjects." : "Academic framing may not show whether practice communities or lived contexts shaped the argument.",
+        caution:"Do not assume community voice is present without reading the source.",
+        intensity:"medium"
+      },
+      {
+        id:"reception",
+        dimension:"Reception and critique",
+        whyItMatters:"A critical argument becomes part of a field through response, uptake and disagreement, none of which is fully visible in a single record label.",
+        caution:"Search for response and debate rather than treating one result as the whole conversation.",
+        intensity:"medium"
+      }
+    ];
+    redescriptionPrompts = {
+      canSay:`This appears to be an academic argument about ${keywordPhrase}.`,
+      cannotAssume:"I cannot assume the paper includes community, practice or interpretive voice without reading it.",
+      needsAnotherSource:"Look for citations, interviews, teaching/practice accounts, local debates, or sources by scholars named in the argument.",
+      careQuestion:"Which traditions, communities or knowledge practices are being spoken with, and which are being spoken about?"
+    };
+  } else if (recordReadingType === "image_record" || recordReadingType === "institutional_object_record") {
+    labelOperations = [
+      {
+        id:"image-object-frame",
+        title:"It turns image or object life into data",
+        explanation:`The label “${title}” makes the item searchable as a file, object or catalogue entry before its maker, use, place or material relations are known.`,
+        evidence:title
+      },
+      {
+        id:"provider-frame",
+        title:"It centres provider description",
+        explanation:`Through ${sourcePhrase}, the holding or hosting source becomes highly visible while maker/community authority may need another route.`
+      },
+      {
+        id:"provenance-gap",
+        title:"It may separate image from pathway",
+        explanation:"Image and catalogue metadata can show what is visible now without explaining collection history, reuse, acquisition or permission."
+      }
+    ];
+    outsideData = [
+      {
+        id:"maker",
+        dimension:"Maker/community authority",
+        whyItMatters:`The label “${title}” does not by itself establish who made, authorised, used or named the object or image.`,
+        caution:"Do not assign maker, community or ownership without another source.",
+        intensity:"high"
+      },
+      {
+        id:"language",
+        dimension:"Local terms beyond the English label",
+        whyItMatters:"Broad English object labels can hide local names, categories, uses and relations.",
+        caution:"Do not invent local terms; search for sources that can name them responsibly.",
+        intensity:"medium"
+      },
+      {
+        id:"collection",
+        dimension:"Collection and reuse pathway",
+        whyItMatters:`A source such as ${sourcePhrase} may make the image accessible without explaining how the object or image entered that pathway.`,
+        caution:"Absence of provenance is a research question, not proof of a single story.",
+        intensity:"high"
+      },
+      {
+        id:"living",
+        dimension:"Use-context and living practice",
+        whyItMatters:"An image record can make a form look static even when related practices may be active, restricted, changing or context-dependent.",
+        caution:"Do not assume continuity, publicness or permission from visibility alone.",
+        intensity:"medium"
+      }
+    ];
+    redescriptionPrompts = {
+      canSay:`This appears to be a digital/image or object record labelled “${title}”.`,
+      cannotAssume:"I cannot assume local name, maker, use-context, permission or ownership history from this label alone.",
+      needsAnotherSource:"Look for provenance, collection notes, local naming, maker/community sources, and context around use or restriction.",
+      careQuestion:"What might need permission, context, or non-display rather than more exposure?"
+    };
+  } else if (recordReadingType === "person_result") {
+    const personName = currentQuery && beyondLabelHasPersonShape(currentQuery) ? compactBeyondLabelQuery(currentQuery) : title;
+    labelOperations = [
+      {
+        id:"name-frame",
+        title:"It makes a person searchable",
+        explanation:`The record gathers attention around “${personName}”, but name matching does not tell us whether this is direct voice, biography, publication, citation or reception.`,
+        evidence:personName
+      },
+      {
+        id:"role-frame",
+        title:"It can reduce work to role",
+        explanation:"Profiles and catalogue records often foreground affiliation, role or keywords while the fuller body of work needs other sources."
+      },
+      {
+        id:"voice-frame",
+        title:"It separates voice from description",
+        explanation:"A person-centred result should be read for source position: who is speaking, who is describing, and what kind of evidence is visible."
+      }
+    ];
+    outsideData = [
+      {
+        id:"person",
+        dimension:"Authored work and concepts",
+        whyItMatters:`For “${personName}”, the important question is not only identity but what concepts, projects or arguments are attached to the work.`,
+        caution:"Do not reduce a living or historical scholar to a keyword cluster.",
+        intensity:"high"
+      },
+      {
+        id:"voice",
+        dimension:"Direct voice, interviews or talks",
+        whyItMatters:"Profiles and citations may describe a person without letting them explain their own work.",
+        caution:"Do not treat third-party description as direct voice.",
+        intensity:"medium"
+      },
+      {
+        id:"reception",
+        dimension:"Reception and citation",
+        whyItMatters:"A body of work becomes visible through citation, critique, teaching and debate as well as through biography.",
+        caution:"Reception is not the same as the person’s own position.",
+        intensity:"medium"
+      }
+    ];
+    redescriptionPrompts = {
+      canSay:`This result relates to ${personName}, but the source type determines whether it is direct voice, profile, citation or reception.`,
+      cannotAssume:"I cannot treat a profile, citation or catalogue entry as the whole person’s work.",
+      needsAnotherSource:"Look for authored publications, interviews, talks, citations and responses.",
+      careQuestion:"How can I describe the work without reducing the person to affiliation, identity or keywords?"
+    };
+  } else if (recordReadingType === "media_record") {
+    labelOperations = [
+      {
+        id:"genre-frame",
+        title:"It makes the item searchable by title or genre",
+        explanation:`The label connects “${title}” to a media, music, design or visual culture pathway, but that can hide who made the visual form.`
+      },
+      {
+        id:"labour-frame",
+        title:"It may hide production labour",
+        explanation:"Designers, printers, photographers, studios and circulation networks often sit outside simple title or genre metadata."
+      },
+      {
+        id:"circulation-frame",
+        title:"It separates object from circulation",
+        explanation:"The label may not show how the item moved through cities, shops, audiences, labels, archives or economies."
+      }
+    ];
+    outsideData = [
+      {
+        id:"maker",
+        dimension:"Visual authorship",
+        whyItMatters:"Album covers, posters and visual records often foreground performers or titles while designers and image-makers disappear.",
+        caution:"Do not assign authorship without evidence.",
+        intensity:"high"
+      },
+      {
+        id:"production",
+        dimension:"Print and production labour",
+        whyItMatters:"Printing, photography, layout and studio labour can be central to the source but absent from metadata.",
+        caution:"Search for studios, printers and designers rather than guessing.",
+        intensity:"high"
+      },
+      {
+        id:"place",
+        dimension:"Circulation and urban context",
+        whyItMatters:"Music and visual culture often move through specific cities, markets, labels and audiences.",
+        caution:"Do not treat place as a flat national label.",
+        intensity:"medium"
+      }
+    ];
+    redescriptionPrompts = {
+      canSay:`This appears to be a visual/media source connected to “${title}”.`,
+      cannotAssume:"I cannot assume the visible performer, title or genre identifies the designer, printer or circulation pathway.",
+      needsAnotherSource:"Look for designers, studios, print culture, label history, audiences and circulation.",
+      careQuestion:"Who made the visual form visible, and who remains unnamed by the metadata?"
+    };
+  } else if (recordReadingType === "community_source") {
+    labelOperations = [
+      {
+        id:"self-description",
+        title:"It may carry self-description",
+        explanation:`Through ${sourcePhrase}, this record may be closer to community description than institutional catalogue voice, but the source still needs checking.`
+      },
+      {
+        id:"access-frame",
+        title:"It shapes access",
+        explanation:"Community sources often carry their own access conditions, priorities and boundaries."
+      },
+      {
+        id:"relation-frame",
+        title:"It may name relation, not just topic",
+        explanation:"Place, authority and knowledge permission may matter more than broad subject labels."
+      }
+    ];
+    outsideData = [
+      {
+        id:"authority",
+        dimension:"Community authority",
+        whyItMatters:"A community source should be read for how it names itself, its purpose and its boundaries.",
+        caution:"Do not override self-description with external categories.",
+        intensity:"high"
+      },
+      {
+        id:"place",
+        dimension:"Place relation",
+        whyItMatters:"Place may be relational, historical or custodial rather than a simple location field.",
+        caution:"Do not flatten place into one fixed geography.",
+        intensity:"medium"
+      },
+      {
+        id:"care",
+        dimension:"Permission, care and refusal",
+        whyItMatters:"Some community knowledge is not meant to be fully extracted, displayed or reused.",
+        caution:"Follow access guidance and leave uncertainty visible.",
+        intensity:"high"
+      }
+    ];
+  } else {
+    labelOperations = [
+      {
+        id:"source-frame",
+        title:"It makes a source searchable",
+        explanation:`The label “${title}” gives an entry point, but the visible metadata does not fully explain source position or context.`
+      },
+      {
+        id:"provider-frame",
+        title:"It centres available metadata",
+        explanation:provider ? `${provider} shapes the first encounter with this record.` : "The provider or source position is not clear from the visible metadata.",
+      },
+      {
+        id:"uncertainty-frame",
+        title:"It leaves uncertainty visible",
+        explanation:"When metadata is thin, the responsible reading is provisional rather than definitive."
+      }
+    ];
+    outsideData = [
+      {
+        id:"source",
+        dimension:"Source position",
+        whyItMatters:"The record needs a clearer account of who created, hosted or described it.",
+        caution:"Do not treat an unclear source label as neutral.",
+        intensity:"high"
+      },
+      {
+        id:"context",
+        dimension:"Context beyond the title",
+        whyItMatters:"The title may be the strongest available evidence, but it is not enough to explain use, reception or relation.",
+        caution:"Search outward before making claims.",
+        intensity:"medium"
+      },
+      {
+        id:"reception",
+        dimension:"Response and use",
+        whyItMatters:"How the record is used, cited or discussed may clarify its position.",
+        caution:"Do not infer reception from presence in search results.",
+        intensity:"medium"
+      }
+    ];
+  }
+  const counterSearches = buildBeyondLabelCounterSearches(record, currentQuery);
+  outsideData = outsideData
+    .map(item => ({
+      ...item,
+      searchQuery:(counterSearches.find(search => search.type === item.id)?.query) || `${beyondLabelBaseTerm(record, currentQuery)} ${item.dimension}`,
+      whyThisRecordRaisesIt:item.whyItMatters,
+      doNotAssume:item.caution
+    }))
+    .slice(0, 5);
+  const lensPromptsByType = {
+    maker:recordReadingType === "academic_argument" ? "Whose scholarship, interpretation or practice grounds this argument?" : "Who is named, unnamed or described by someone else?",
+    place:recordReadingType === "media_record" ? "What city, market, label, studio or audience shaped the source?" : "What place relations are named, flattened or absent?",
+    language:recordReadingType === "academic_argument" ? "Which field terms make the argument legible, and what vocabularies might sit outside them?" : "Which terms make the record searchable, and which terms might not be in English?",
+    collection:recordReadingType === "image_record" || recordReadingType === "institutional_object_record" ? "What pathway made this image or object available as metadata?" : "What source pathway brought this record into view?",
+    living:recordReadingType === "media_record" ? "How does this source connect to production, circulation or present cultural memory?" : "How might the record connect to present practice rather than only past description?",
+    care:"What should not be exposed, simplified or treated as freely reusable?",
+    critique:recordReadingType === "academic_argument" ? "Who has challenged, cited, extended or reframed this argument?" : "Who has challenged, cited, extended or reframed this record?"
+  };
+  return {
+    recordReadingType,
+    confidence:hasThinMetadata ? "low" : provider || record.abstract || record.summary ? "medium" : "low",
+    archiveVoice:{
+      headline:title,
+      label:title,
+      provider,
+      sourceType,
+      sourcePosition:readingTypeLabel,
+      note:archiveNote
+    },
+    labelOperations,
+    outsideData,
+    counterReadings:BEYOND_LABEL_LENSES.map(lens => ({
+      id:lens.id,
+      lens:lens.label,
+      prompt:lensPromptsByType[lens.id]
+    })),
+    counterSearches,
+    redescriptionPrompts,
+    careNote:hasThinMetadata
+      ? `The available metadata for “${title}” is thin, so this reading stays provisional and points to what needs checking.`
+      : `This mode reads “${title}” through source position, visible evidence and counter-search rather than treating the label as neutral.`
+  };
+}
+
+function createBeyondLabelReading(record, currentQuery = "") {
+  return createBeyondLabelAnalysis(record, currentQuery);
+}
+
+function normalizeMappableRecord(record) {
+  const tags = uniqueValues([
+    ...(Array.isArray(record.tags) ? record.tags : []),
+    ...(Array.isArray(record.subjects) ? record.subjects : []),
+    ...(Array.isArray(record.concepts) ? record.concepts : []),
+    ...(Array.isArray(record.themes) ? record.themes : []),
+    record.cat,
+    record.type,
+    record.collection,
+    record.material,
+    record.medium
+  ].filter(Boolean));
+  return {
+    id:String(record.id || slugify(record.title || "record")),
+    title:beyondLabelTitle(record),
+    creator:compactBeyondLabelQuery(record.creator || record.author || ""),
+    provider:beyondLabelProvider(record),
+    source:compactBeyondLabelQuery(record.sourceName || record.source || record.institution || ""),
+    description:compactBeyondLabelQuery(record.abstract || record.summary || (Array.isArray(record.description) ? record.description.join(" ") : record.description) || ""),
+    year:compactBeyondLabelQuery(record.year || record.period || record.date || ""),
+    url:safeUrl(record.sourceUrl || record.url || ""),
+    tags,
+    subjects:tags,
+    place:compactBeyondLabelQuery(record.place || record.country || record.region || record.community || ""),
+    sourceType:record.sourceType || inferBeyondLabelSourceType(record)
+  };
+}
+
+function beyondDataRecordTerms(record, currentQuery = "") {
+  const mappable = normalizeMappableRecord(record);
+  const queryPhrases = extractBeyondDataKeywordPhrases(currentQuery, { source:"query", currentQuery })
+    .map(item => item.term);
+  const explicitTerms = [
+    ...mappable.tags,
+    mappable.provider,
+    mappable.source,
+    mappable.creator,
+    mappable.place
+  ].filter(Boolean);
+  const phraseTerms = [
+    ...queryPhrases,
+    ...extractBeyondDataKeywordPhrases(mappable.title, { source:"title", currentQuery }).map(item => item.term),
+    ...extractBeyondDataKeywordPhrases(mappable.description, { source:"description", currentQuery }).map(item => item.term),
+    ...explicitTerms.flatMap(term => extractBeyondDataKeywordPhrases(term, { source:"tag", currentQuery }).map(item => item.term))
+  ];
+  const words = [
+    ...beyondLabelImportantWords(currentQuery),
+    ...beyondLabelImportantWords(mappable.title),
+    ...beyondLabelImportantWords(mappable.description),
+    ...mappable.tags.flatMap(tag => beyondLabelImportantWords(tag))
+  ];
+  const stop = getBeyondDataKeywordStopwords(currentQuery);
+  const seen = new Set();
+  return [
+    ...phraseTerms,
+    ...words
+    .map(word => word.toLowerCase())
+    .filter(word => word.length > 2 && !stop.has(word))
+  ]
+    .map(term => normalizeBeyondDataKeywordTerm(term, currentQuery))
+    .filter(term => term && !stop.has(term) && !seen.has(term) && seen.add(term))
+    .slice(0, 10);
+}
+
+function getBeyondDataKeywordStopwords(currentQuery = "") {
+  const query = String(currentQuery || "").toLowerCase();
+  const stop = new Set([
+    "the","and","or","of","in","on","for","to","with","from","by","an","a","this","that",
+    "record","records","source","sources","archive","archives","data","paper","papers","article","articles",
+    "image","images","jpg","jpeg","png","file","metadata","overview","introduction","response","critique",
+    "research","study","studies","result","results","library","external","search","object","objects"
+  ]);
+  if (!/\bafrican\b/i.test(query) && !/\bafrica\b/i.test(query)) {
+    stop.add("african");
+    stop.add("africa");
+  }
+  return stop;
+}
+
+function normalizeBeyondDataKeywordTerm(term, currentQuery = "") {
+  const stop = getBeyondDataKeywordStopwords(currentQuery);
+  const query = String(currentQuery || "").toLowerCase();
+  const cleaned = compactBeyondLabelQuery(String(term || "")
+    .replace(/\.(jpg|jpeg|png|webp|gif|pdf)\b/gi, " ")
+    .replace(/[()[\]{}:;!?]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase());
+  if (!cleaned || cleaned.length < 3 || stop.has(cleaned)) return "";
+  if ((cleaned === "african" || cleaned === "africa") && query.trim() !== cleaned) return "";
+  const words = cleaned.split(/\s+/).filter(word => word && !stop.has(word));
+  if (!words.length) return "";
+  if (words.length === 1 && words[0].length < 4) return "";
+  return words.slice(0, 4).join(" ");
+}
+
+function extractBeyondDataKeywordPhrases(text, options = {}) {
+  const currentQuery = options.currentQuery || "";
+  const source = options.source || "description";
+  const stop = getBeyondDataKeywordStopwords(currentQuery);
+  const clean = compactBeyondLabelQuery(String(text || "")
+    .replace(/https?:\/\/\S+/gi, " ")
+    .replace(/\.(jpg|jpeg|png|webp|gif|pdf)\b/gi, " ")
+    .replace(/[()[\]{}:;!?]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim());
+  if (!clean) return [];
+  const phrases = [];
+  const exact = normalizeBeyondDataKeywordTerm(clean, currentQuery);
+  if ((source === "query" || source === "tag" || source === "subject" || source === "provider") && exact && exact.split(/\s+/).length <= 5) {
+    phrases.push({ term:exact, source });
+  }
+  const words = clean.toLowerCase().split(/[^a-z0-9'-]+/).filter(word => word && !stop.has(word) && word.length > 2);
+  for (let size = 4; size >= 2; size -= 1) {
+    for (let index = 0; index <= words.length - size; index += 1) {
+      const phrase = words.slice(index, index + size).join(" ");
+      const normalized = normalizeBeyondDataKeywordTerm(phrase, currentQuery);
+      if (normalized && normalized.split(/\s+/).length > 1) phrases.push({ term:normalized, source });
+    }
+  }
+  words.slice(0, 8).forEach(word => {
+    const normalized = normalizeBeyondDataKeywordTerm(word, currentQuery);
+    if (normalized) phrases.push({ term:normalized, source });
+  });
+  const seen = new Set();
+  return phrases.filter(item => item.term && !seen.has(item.term) && seen.add(item.term)).slice(0, 14);
+}
+
+function buildBeyondDataKeywordNodes(records, matrixRows, currentQuery = "") {
+  const termMap = new Map();
+  const addTerm = (term, source, recordId, explanation = "") => {
+    const normalized = normalizeBeyondDataKeywordTerm(term, currentQuery);
+    if (!normalized) return;
+    if (!termMap.has(normalized)) {
+      termMap.set(normalized, { term:normalized, source, recordIds:new Set(), explicit:false, queryMatch:false, explanation });
+    }
+    const entry = termMap.get(normalized);
+    if (recordId) entry.recordIds.add(String(recordId));
+    entry.explicit = entry.explicit || ["tag","subject","provider","query"].includes(source);
+    entry.queryMatch = entry.queryMatch || source === "query" || String(currentQuery || "").toLowerCase().includes(normalized);
+    if (!entry.explanation && explanation) entry.explanation = explanation;
+  };
+
+  extractBeyondDataKeywordPhrases(currentQuery, { source:"query", currentQuery }).forEach(item => {
+    records.forEach(record => addTerm(item.term, "query", record.id, "From the current search."));
+  });
+
+  records.forEach(record => {
+    const mappable = normalizeMappableRecord(record);
+    extractBeyondDataKeywordPhrases(mappable.title, { source:"title", currentQuery }).forEach(item => addTerm(item.term, item.source, mappable.id));
+    extractBeyondDataKeywordPhrases(mappable.description, { source:"description", currentQuery }).forEach(item => addTerm(item.term, item.source, mappable.id));
+    (mappable.tags || []).forEach(tag => extractBeyondDataKeywordPhrases(tag, { source:"tag", currentQuery }).forEach(item => addTerm(item.term, "tag", mappable.id, "Explicit tag or subject.")));
+    [mappable.provider, mappable.source, mappable.creator, mappable.place, mappable.year].filter(Boolean).forEach(value => {
+      extractBeyondDataKeywordPhrases(value, { source:"provider", currentQuery }).forEach(item => addTerm(item.term, item.source, mappable.id));
+    });
+    const row = matrixRows.find(item => String(item.recordId) === String(mappable.id));
+    (row?.possibleAbsences || []).forEach(absence => addTerm(absence, "dimension", mappable.id, "Reading dimension raised by selected records."));
+  });
+
+  return Array.from(termMap.values())
+    .map(entry => ({
+      term:entry.term,
+      source:entry.source,
+      recordIds:Array.from(entry.recordIds),
+      count:entry.recordIds.size,
+      explicit:entry.explicit,
+      queryMatch:entry.queryMatch,
+      explanation:entry.explanation || `Appears in ${entry.recordIds.size} selected record${entry.recordIds.size !== 1 ? "s" : ""}.`
+    }))
+    .filter(entry => entry.count >= 2 || entry.explicit || entry.queryMatch)
+    .sort((a, b) => Number(b.queryMatch) - Number(a.queryMatch) || Number(b.explicit) - Number(a.explicit) || b.count - a.count || b.term.length - a.term.length)
+    .slice(0, 16);
+}
+
+function beyondDataSourcePosition(record, currentQuery = "") {
+  const type = classifyBeyondLabelRecord(record, currentQuery);
+  const labels = {
+    academic_argument:"Academic argument",
+    institutional_object_record:"Institutional object record",
+    image_record:"Image / object record",
+    person_result:"Person-centred result",
+    book_or_publication:"Book / publication",
+    community_source:"Community source",
+    media_record:"Media / design source",
+    unclear:"Unclear source position"
+  };
+  return labels[type] || labels.unclear;
+}
+
+function beyondDataPlaceSpecificity(record) {
+  const place = compactBeyondLabelQuery(record.place || record.country || record.region || record.community || "");
+  if (!place) return "missing";
+  if (/global|comparative|africa|diaspora|unknown|various/i.test(place)) return "broad";
+  if (place.length > 2) return "specific";
+  return "unclear";
+}
+
+function beyondDataMakerCommunityVoice(record) {
+  const text = beyondLabelText(record);
+  if (record.creator || record.author || record.community) return "visible";
+  if (/\b(author|creator|maker|community|oral history|interview)\b/i.test(text)) return "partial";
+  if (/\b(museum|catalogue|catalog|collection|wikimedia|commons|image|mask|object|artifact|artefact)\b/i.test(text)) return "missing";
+  return "unclear";
+}
+
+function beyondDataInstitutionalFraming(record) {
+  const text = `${beyondLabelProvider(record)} ${beyondLabelText(record)}`;
+  if (/\b(museum|library|archive|catalogue|catalog|collection|smithsonian|metropolitan museum|wikimedia|commons|library of congress|worldcat|open library)\b/i.test(text)) return "strong";
+  if (/\b(journal|publisher|university|press|institute|institution|repository)\b/i.test(text)) return "medium";
+  if (/\b(community|oral history|collective|grassroots)\b/i.test(text)) return "low";
+  return "unclear";
+}
+
+function beyondDataCentredVoice(record, analysis) {
+  const type = analysis.recordReadingType;
+  const provider = analysis.archiveVoice.provider;
+  if (type === "academic_argument") return "Scholarly argument and citation voice";
+  if (type === "person_result") return record.creator ? "Named person and authored work" : "Name, profile or reception";
+  if (type === "media_record") return "Title, genre and visible media metadata";
+  if (type === "community_source") return "Community or project self-description";
+  if (type === "image_record" || type === "institutional_object_record") return provider ? `${provider} catalogue or hosting voice` : "Catalogue or image label";
+  return provider ? `${provider} source voice` : "Visible source label";
+}
+
+function createBeyondDataMatrixRow(record, currentQuery = "") {
+  const mappable = normalizeMappableRecord(record);
+  const analysis = createBeyondLabelReading(record, currentQuery);
+  const counter = analysis.counterSearches[0]?.query || `${mappable.title} context source position`;
+  return {
+    recordId:mappable.id,
+    title:mappable.title,
+    sourcePosition:beyondDataSourcePosition(record, currentQuery),
+    provider:mappable.provider || mappable.source,
+    visibleLabel:mappable.title,
+    keyTerms:beyondDataRecordTerms(record, currentQuery).slice(0, 5),
+    centredVoice:beyondDataCentredVoice(record, analysis),
+    possibleAbsences:analysis.outsideData.map(item => item.dimension).slice(0, 4),
+    placeSpecificity:beyondDataPlaceSpecificity(record),
+    makerCommunityVoice:beyondDataMakerCommunityVoice(record),
+    institutionalFraming:beyondDataInstitutionalFraming(record),
+    suggestedCounterSearch:counter
+  };
+}
+
+function buildBeyondDataCluster(id, label, type, explanation, recordIds, counterSearches = []) {
+  return {
+    id,
+    label,
+    type,
+    explanation,
+    recordIds:[...new Set(recordIds)].filter(Boolean),
+    counterSearches:uniqueValues(counterSearches.map(item => item.query || item).filter(Boolean))
+      .slice(0, 3)
+      .map(query => ({
+        query:compactBeyondLabelQuery(query),
+        reason:counterSearches.find(item => (item.query || item) === query)?.reason || `Search beyond this cluster through “${compactBeyondLabelQuery(query)}”.`
+      }))
+  };
+}
+
+function buildBeyondDataDefaultClusters(records, matrixRows, sharedTerms, currentQuery = "") {
+  const clusters = [];
+  const rows = Array.isArray(matrixRows) ? matrixRows : [];
+  const addGroupedClusters = (items, type, labelPrefix, explanationFor) => {
+    const groups = new Map();
+    items.forEach(item => {
+      const key = compactBeyondLabelQuery(item.key || "");
+      const recordId = String(item.recordId || "");
+      if (!key || !recordId) return;
+      if (!groups.has(key)) groups.set(key, new Set());
+      groups.get(key).add(recordId);
+    });
+    groups.forEach((ids, key) => {
+      const recordIds = Array.from(ids);
+      if (!recordIds.length) return;
+      const relatedRows = rows.filter(row => recordIds.includes(String(row.recordId)));
+      const counterSearches = relatedRows
+        .map(row => row.suggestedCounterSearch)
+        .filter(Boolean)
+        .slice(0, 3);
+      clusters.push(buildBeyondDataCluster(
+        `${type}-${slugify(key)}`,
+        labelPrefix ? `${labelPrefix}: ${key}` : key,
+        type,
+        explanationFor(key, recordIds),
+        recordIds,
+        counterSearches
+      ));
+    });
+  };
+
+  addGroupedClusters(
+    rows.map(row => ({ key:row.sourcePosition || "Unclear source position", recordId:row.recordId })),
+    "source_position",
+    "",
+    (label, recordIds) => `${recordIds.length} selected record${recordIds.length !== 1 ? "s" : ""} share this source position. Read them together to compare how source type shapes what becomes visible.`
+  );
+
+  addGroupedClusters(
+    rows.filter(row => row.provider).map(row => ({ key:row.provider, recordId:row.recordId })),
+    "institution",
+    "Provider",
+    (label, recordIds) => `${recordIds.length} selected record${recordIds.length !== 1 ? "s" : ""} arrive through ${label}. This can reveal repeated institutional or platform framing.`
+  );
+
+  const absenceItems = [];
+  rows.forEach(row => {
+    (row.possibleAbsences || []).forEach(absence => {
+      absenceItems.push({ key:absence, recordId:row.recordId });
+    });
+  });
+  addGroupedClusters(
+    absenceItems,
+    "absence",
+    "",
+    (label, recordIds) => `${label} appears as a possible reading dimension across ${recordIds.length} selected record${recordIds.length !== 1 ? "s" : ""}. Treat it as an inquiry path, not a final claim.`
+  );
+
+  (Array.isArray(sharedTerms) ? sharedTerms : []).slice(0, 6).forEach(term => {
+    const recordIds = Array.isArray(term.recordIds) ? term.recordIds.map(String) : [];
+    if (!recordIds.length) return;
+    clusters.push(buildBeyondDataCluster(
+      `keyword-${slugify(term.term)}`,
+      term.term,
+      "keyword",
+      term.explanation || `“${term.term}” helps connect selected records through repeated language or explicit tags.`,
+      recordIds,
+      [`${currentQuery || term.term} ${term.term}`]
+    ));
+  });
+
+  const seen = new Set();
+  return clusters
+    .filter(cluster => cluster && cluster.id && !seen.has(cluster.id) && seen.add(cluster.id))
+    .slice(0, 18);
+}
+
+function buildBeyondDataReadingPaths(records, clusters, matrixRows, currentQuery = "") {
+  const rows = Array.isArray(matrixRows) ? matrixRows : [];
+  const allRecordIds = (Array.isArray(records) ? records : []).map(record => String(record.id)).filter(Boolean);
+  const sourceCluster = (clusters || []).find(cluster => cluster.type === "source_position");
+  const absenceCluster = (clusters || []).find(cluster => cluster.type === "absence");
+  const keywordCluster = (clusters || []).find(cluster => cluster.type === "keyword");
+  const counterSearches = rows
+    .map(row => row.suggestedCounterSearch)
+    .filter(Boolean)
+    .slice(0, 4)
+    .map(query => ({ query, reason:"Use this search to move beyond the selected record labels." }));
+  return [
+    sourceCluster ? {
+      title:"From source position to relation",
+      why:"Start with source type, then compare what each record makes easy or difficult to see.",
+      recordIds:sourceCluster.recordIds || allRecordIds,
+      counterSearches
+    } : null,
+    absenceCluster ? {
+      title:"From absence to counter-search",
+      why:"Follow repeated absences as search paths rather than treating missing fields as empty space.",
+      recordIds:absenceCluster.recordIds || allRecordIds,
+      counterSearches:absenceCluster.counterSearches || counterSearches
+    } : null,
+    keywordCluster ? {
+      title:"From repeated language to context",
+      why:"Use shared terms as anchors, then search outward for authorship, place, practice and reception.",
+      recordIds:keywordCluster.recordIds || allRecordIds,
+      counterSearches:keywordCluster.counterSearches || counterSearches
+    } : null,
+    {
+      title:"Build a careful redescription",
+      why:"Compare what can be said from visible metadata with what needs another source or cultural care.",
+      recordIds:allRecordIds,
+      counterSearches
+    }
+  ].filter(Boolean).slice(0, 4);
+}
+
+function normalizeBeyondDataMapAnalysis(input, currentQuery = "") {
+  const inputObject = input && typeof input === "object" && !Array.isArray(input) ? input : {};
+  const records = (Array.isArray(input) ? input : Array.isArray(inputObject.records) ? inputObject.records : [])
+    .filter(Boolean);
+  const matrixRows = (Array.isArray(inputObject.matrixRows) && inputObject.matrixRows.length)
+    ? inputObject.matrixRows
+    : records.map(record => createBeyondDataMatrixRow(record, currentQuery));
+  const sharedTerms = (Array.isArray(inputObject.sharedTerms) && inputObject.sharedTerms.length)
+    ? inputObject.sharedTerms
+    : buildBeyondDataKeywordNodes(records, matrixRows, currentQuery);
+  const clusters = Array.isArray(inputObject.clusters)
+    ? inputObject.clusters
+    : buildBeyondDataDefaultClusters(records, matrixRows, sharedTerms, currentQuery);
+  const suggestedReadingPaths = Array.isArray(inputObject.suggestedReadingPaths)
+    ? inputObject.suggestedReadingPaths
+    : buildBeyondDataReadingPaths(records, clusters, matrixRows, currentQuery);
+  const visualMap = inputObject.visualMap && typeof inputObject.visualMap === "object"
+    ? {
+      ...inputObject.visualMap,
+      nodes:Array.isArray(inputObject.visualMap.nodes) ? inputObject.visualMap.nodes : [],
+      edges:Array.isArray(inputObject.visualMap.edges) ? inputObject.visualMap.edges : [],
+      legend:Array.isArray(inputObject.visualMap.legend) ? inputObject.visualMap.legend : []
+    }
+    : null;
+  return {
+    ...inputObject,
+    records,
+    matrixRows,
+    sharedTerms,
+    clusters,
+    suggestedReadingPaths,
+    visualMap
+  };
+}
+
+function createBeyondDataMap(analysis, currentQuery = "") {
+  analysis = normalizeBeyondDataMapAnalysis(analysis, currentQuery);
+  const title = "Relational Reading Map";
+  const subtitle = "A map of selected records by source position, visible labels, absences and counter-search paths.";
+  const generatedAt = new Date().toISOString();
+  const removedRecordIds = new Set((beyondDataMapState.removedRecordIds || []).map(String));
+  const removedNodeIds = new Set((beyondDataMapState.removedNodeIds || []).map(String));
+
+  // 1. FILTER RECORDS
+  const activeRecords = analysis.records.filter(r => !removedRecordIds.has(String(r.id)));
+
+  // 2. CENTRE QUERY NODE (Ring 0)
+  const queryNode = {
+    id: "query",
+    type: "query",
+    label: currentQuery || "Selected map theme",
+    shortLabel: currentQuery || "Theme",
+    description: currentQuery ? `Current search query framing the map.` : "The selected records form the centre of this map.",
+    ring: 0,
+    radius: 0,
+    size: 20, // radius
+    weight: activeRecords.length,
+    recordIds: activeRecords.map(r => String(r.id))
+  };
+
+  // 3. SOURCE POSITION NODES (Ring 1, max 8)
+  const sourcePositionsMap = new Map();
+  activeRecords.forEach(record => {
+    const row = analysis.matrixRows.find(item => String(item.recordId) === String(record.id));
+    const rawSP = row ? row.sourcePosition : (record.sourceType || "unclear");
+    let classified = "institutional record"; // fallback
+    const l = String(rawSP || "").toLowerCase();
+    if (l.includes("academic") || l.includes("publication") || l.includes("book")) classified = "academic source";
+    else if (l.includes("institutional") || l.includes("catalog")) classified = "institutional record";
+    else if (l.includes("image") || l.includes("object")) classified = "image/object record";
+    else if (l.includes("community") || l.includes("person") || l.includes("maker")) classified = "community source";
+    else if (l.includes("media") || l.includes("design") || l.includes("video") || l.includes("audio")) classified = "media/design source";
+
+    if (!sourcePositionsMap.has(classified)) {
+      sourcePositionsMap.set(classified, {
+        id: `source-${slugify(classified)}`,
+        type: "source_position",
+        label: classified.charAt(0).toUpperCase() + classified.slice(1),
+        shortLabel: classified,
+        description: `Source position category: ${classified}.`,
+        ring: 1,
+        radius: 78,
+        size: 9, // radius (diameter 18px)
+        weight: 0,
+        recordIds: []
+      });
+    }
+    const spNode = sourcePositionsMap.get(classified);
+    spNode.weight += 1;
+    spNode.recordIds.push(String(record.id));
+  });
+
+  const sourcePositionNodes = Array.from(sourcePositionsMap.values())
+    .filter(n => !removedNodeIds.has(n.id))
+    .slice(0, 8);
+
+  // 4. RECORD NODES (Ring 2, max 40)
+  const recordNodes = [];
+  const maxRecordsCap = 40;
+  const recordsToMap = activeRecords.slice(0, maxRecordsCap - 1);
+  const remainingRecords = activeRecords.slice(maxRecordsCap - 1);
+
+  recordsToMap.forEach(record => {
+    recordNodes.push({
+      id: String(record.id),
+      type: "record",
+      label: record.title || "Record",
+      shortLabel: truncateCardSummary(record.title || "Record", 24),
+      description: record.description || `Selected record: ${record.title}.`,
+      ring: 2,
+      radius: 152,
+      size: 7, // radius (diameter 14px)
+      weight: 1,
+      recordIds: [String(record.id)]
+    });
+  });
+
+  if (remainingRecords.length > 0) {
+    recordNodes.push({
+      id: "record-cluster-more",
+      type: "cluster",
+      label: `+${remainingRecords.length} more records`,
+      shortLabel: `+${remainingRecords.length} records`,
+      description: `Grouped records to keep map readable: ${remainingRecords.map(r => r.title).slice(0, 10).join(", ")}`,
+      ring: 2,
+      radius: 152,
+      size: 11, // radius (diameter 22px)
+      weight: remainingRecords.length,
+      recordIds: remainingRecords.map(r => String(r.id))
+    });
+  }
+
+  const finalRecordNodes = recordNodes.filter(n => !removedNodeIds.has(n.id));
+  const recordIdsMapped = new Set(finalRecordNodes.flatMap(n => n.recordIds));
+
+  // 5. KEYWORDS/TAGS NODES (Ring 3, max 45)
+  const keywordMap = new Map();
+  activeRecords.forEach(record => {
+    if (!recordIdsMapped.has(String(record.id))) return;
+    const row = analysis.matrixRows.find(item => String(item.recordId) === String(record.id));
+    const terms = [
+      ...(record.tags || []),
+      row ? row.provider : record.provider,
+      row ? row.sourcePosition : record.sourceType
+    ].filter(Boolean);
+
+    const titlePhrases = extractBeyondDataKeywordPhrases(record.title, { source: "title", currentQuery }).map(item => item.term);
+    const descPhrases = extractBeyondDataKeywordPhrases(record.description, { source: "description", currentQuery }).map(item => item.term);
+
+    const allRecordTerms = [
+      ...terms,
+      ...titlePhrases,
+      ...descPhrases
+    ];
+
+    const stop = getBeyondDataKeywordStopwords(currentQuery);
+    const seenInRecord = new Set();
+
+    allRecordTerms.forEach(rawTerm => {
+      const term = normalizeBeyondDataKeywordTerm(rawTerm, currentQuery);
+      if (!term || stop.has(term) || seenInRecord.has(term)) return;
+      seenInRecord.add(term);
+
+      if (!keywordMap.has(term)) {
+        keywordMap.set(term, {
+          id: `keyword-${slugify(term)}`,
+          type: (record.tags || []).includes(rawTerm) ? "tag" : "keyword",
+          label: term,
+          shortLabel: term,
+          description: `“${term}” appears in metadata. Relate this keyword to source concepts.`,
+          ring: 3,
+          radius: 228,
+          size: 9, // radius
+          weight: 0,
+          recordIds: [],
+          source: (record.tags || []).includes(rawTerm) ? "tag" : "title"
+        });
+      }
+      const entry = keywordMap.get(term);
+      entry.weight += 1;
+      entry.recordIds.push(String(record.id));
+    });
+  });
+
+  const queryWords = new Set(beyondLabelImportantWords(currentQuery).map(w => w.toLowerCase()));
+  const keywordNodes = Array.from(keywordMap.values())
+    .filter(n => !removedNodeIds.has(n.id) && n.weight >= 1)
+    .sort((a, b) => {
+      const aMatch = queryWords.has(a.label.toLowerCase()) || a.label.toLowerCase().includes(currentQuery.toLowerCase());
+      const bMatch = queryWords.has(b.label.toLowerCase()) || b.label.toLowerCase().includes(currentQuery.toLowerCase());
+      if (aMatch && !bMatch) return -1;
+      if (!aMatch && bMatch) return 1;
+      return b.weight - a.weight;
+    })
+    .slice(0, 45);
+
+  const maxKwWeight = Math.max(...keywordNodes.map(n => n.weight), 1);
+  keywordNodes.forEach(n => {
+    n.size = 8 + Math.round((n.weight / maxKwWeight) * 6);
+  });
+
+  // 6. ABSENCE NODES (Ring 4, max 20)
+  const absencesMap = new Map();
+  activeRecords.forEach(record => {
+    if (!recordIdsMapped.has(String(record.id))) return;
+    const row = analysis.matrixRows.find(item => String(item.recordId) === String(record.id));
+    if (!row || !row.possibleAbsences) return;
+
+    row.possibleAbsences.forEach(absence => {
+      if (!absencesMap.has(absence)) {
+        absencesMap.set(absence, {
+          id: `absence-${slugify(absence)}`,
+          type: "absence",
+          label: absence,
+          shortLabel: absence,
+          description: `This absence dimension shows what catalog labels or records do not easily display.`,
+          ring: 4,
+          radius: 304,
+          size: 9, // radius
+          weight: 0,
+          recordIds: []
+        });
+      }
+      const entry = absencesMap.get(absence);
+      entry.weight += 1;
+      entry.recordIds.push(String(record.id));
+    });
+  });
+
+  const absenceNodes = Array.from(absencesMap.values())
+    .filter(n => !removedNodeIds.has(n.id))
+    .sort((a, b) => b.weight - a.weight)
+    .slice(0, 20);
+
+  const maxAbsWeight = Math.max(...absenceNodes.map(n => n.weight), 1);
+  absenceNodes.forEach(n => {
+    n.size = 8 + Math.round((n.weight / maxAbsWeight) * 5);
+  });
+
+  // 7. COUNTER-SEARCH NODES (Ring 5, max 16)
+  const counterSearchesMap = new Map();
+  activeRecords.forEach(record => {
+    if (!recordIdsMapped.has(String(record.id))) return;
+    const row = analysis.matrixRows.find(item => String(item.recordId) === String(record.id));
+    if (!row) return;
+
+    const suggested = row.suggestedCounterSearch;
+    if (suggested) {
+      if (!counterSearchesMap.has(suggested)) {
+        counterSearchesMap.set(suggested, {
+          id: `counter-${slugify(suggested)}`,
+          type: "counter_search",
+          label: suggested,
+          shortLabel: truncateCardSummary(suggested, 24),
+          description: `Counter-search query resisting standard metadata boundaries: “${suggested}”.`,
+          ring: 5,
+          radius: 388,
+          size: 8, // radius
+          weight: 0,
+          recordIds: [],
+          query: suggested
+        });
+      }
+      const entry = counterSearchesMap.get(suggested);
+      entry.weight += 1;
+      entry.recordIds.push(String(record.id));
+    }
+  });
+
+  analysis.clusters.forEach(cluster => {
+    (cluster.counterSearches || []).forEach(cs => {
+      const q = cs.query;
+      if (!q) return;
+      const clusterActiveRecords = (cluster.recordIds || []).filter(id => recordIdsMapped.has(String(id)));
+      if (clusterActiveRecords.length === 0) return;
+
+      if (!counterSearchesMap.has(q)) {
+        counterSearchesMap.set(q, {
+          id: `counter-${slugify(q)}`,
+          type: "counter_search",
+          label: q,
+          shortLabel: truncateCardSummary(q, 24),
+          description: cs.reason || `Counter-search query: “${q}”.`,
+          ring: 5,
+          radius: 388,
+          size: 8,
+          weight: 0,
+          recordIds: [],
+          query: q
+        });
+      }
+      const entry = counterSearchesMap.get(q);
+      clusterActiveRecords.forEach(id => {
+        if (!entry.recordIds.includes(String(id))) {
+          entry.recordIds.push(String(id));
+          entry.weight += 1;
+        }
+      });
+    });
+  });
+
+  const counterSearchNodes = Array.from(counterSearchesMap.values())
+    .filter(n => !removedNodeIds.has(n.id))
+    .sort((a, b) => b.weight - a.weight)
+    .slice(0, 16);
+
+  const maxCsWeight = Math.max(...counterSearchNodes.map(n => n.weight), 1);
+  counterSearchNodes.forEach(n => {
+    n.size = 7 + Math.round((n.weight / maxCsWeight) * 4);
+  });
+
+  // Deduplicate by ID (same slugified label from two different raw terms is the most common source)
+  const _seenNodeIds = new Set();
+  const nodes = [
+    queryNode,
+    ...sourcePositionNodes,
+    ...finalRecordNodes,
+    ...keywordNodes,
+    ...absenceNodes,
+    ...counterSearchNodes
+  ].filter(n => {
+    if (!n || !n.id || _seenNodeIds.has(n.id)) return false;
+    _seenNodeIds.add(n.id);
+    return true;
+  });
+
+  const nodesById = new Map(nodes.map(n => [n.id, n]));
+
+  // 8. ASSIGN BASE ANGLES BY CLUSTERING
+  sourcePositionNodes.forEach((node, i) => {
+    node.baseAngle = (i / sourcePositionNodes.length) * Math.PI * 2 - Math.PI / 2;
+  });
+
+  const recordsBySource = new Map();
+  sourcePositionNodes.forEach(sp => recordsBySource.set(sp.id, []));
+  const otherRecords = [];
+
+  finalRecordNodes.forEach(recNode => {
+    const recId = recNode.recordIds[0];
+    let classifiedSpId = "";
+    sourcePositionNodes.forEach(sp => {
+      if (sp.recordIds.includes(recId)) {
+        classifiedSpId = sp.id;
+      }
+    });
+
+    if (classifiedSpId) {
+      recordsBySource.get(classifiedSpId).push(recNode);
+    } else {
+      otherRecords.push(recNode);
+    }
+  });
+
+  sourcePositionNodes.forEach(sp => {
+    const list = recordsBySource.get(sp.id);
+    if (list.length === 0) return;
+    const centerAngle = sp.baseAngle;
+    const sectorWidth = 0.5;
+    const count = list.length;
+    list.forEach((recNode, i) => {
+      const offset = count > 1 ? ((i / (count - 1)) - 0.5) * sectorWidth : 0;
+      recNode.baseAngle = centerAngle + offset;
+    });
+  });
+
+  otherRecords.forEach((node, i) => {
+    node.baseAngle = (i / Math.max(otherRecords.length, 1)) * Math.PI * 2;
+  });
+
+  keywordNodes.forEach(kwNode => {
+    let sumCos = 0;
+    let sumSin = 0;
+    let count = 0;
+    kwNode.recordIds.forEach(recId => {
+      const recNode = nodesById.get(recId);
+      if (recNode && recNode.baseAngle !== undefined) {
+        sumCos += Math.cos(recNode.baseAngle);
+        sumSin += Math.sin(recNode.baseAngle);
+        count++;
+      }
+    });
+    if (count > 0) {
+      kwNode.baseAngle = Math.atan2(sumSin, sumCos);
+    } else {
+      kwNode.baseAngle = Math.random() * Math.PI * 2;
+    }
+  });
+
+  absenceNodes.forEach(absNode => {
+    let sumCos = 0;
+    let sumSin = 0;
+    let count = 0;
+    absNode.recordIds.forEach(recId => {
+      const recNode = nodesById.get(recId);
+      if (recNode && recNode.baseAngle !== undefined) {
+        sumCos += Math.cos(recNode.baseAngle);
+        sumSin += Math.sin(recNode.baseAngle);
+        count++;
+      }
+    });
+    if (count > 0) {
+      absNode.baseAngle = Math.atan2(sumSin, sumCos);
+    } else {
+      absNode.baseAngle = Math.random() * Math.PI * 2;
+    }
+  });
+
+  counterSearchNodes.forEach(csNode => {
+    let sumCos = 0;
+    let sumSin = 0;
+    let count = 0;
+    csNode.recordIds.forEach(recId => {
+      const recNode = nodesById.get(recId);
+      if (recNode && recNode.baseAngle !== undefined) {
+        sumCos += Math.cos(recNode.baseAngle);
+        sumSin += Math.sin(recNode.baseAngle);
+        count++;
+      }
+    });
+    absenceNodes.forEach(absNode => {
+      const intersection = absNode.recordIds.filter(id => csNode.recordIds.includes(id));
+      if (intersection.length > 0 && absNode.baseAngle !== undefined) {
+        sumCos += Math.cos(absNode.baseAngle) * 2;
+        sumSin += Math.sin(absNode.baseAngle) * 2;
+        count += 2;
+      }
+    });
+    if (count > 0) {
+      csNode.baseAngle = Math.atan2(sumSin, sumCos);
+    } else {
+      csNode.baseAngle = Math.random() * Math.PI * 2;
+    }
+  });
+
+  // 9. CREATE EDGES
+  const edges = [];
+  let edgeIdCounter = 1;
+  const addEdge = (fromId, toId, type, strength = 1) => {
+    if (!nodesById.has(fromId) || !nodesById.has(toId)) return;
+    edges.push({
+      id: `edge-${edgeIdCounter++}`,
+      from: fromId,
+      to: toId,
+      type: type,
+      strength: strength
+    });
+  };
+
+  sourcePositionNodes.forEach(sp => {
+    addEdge(queryNode.id, sp.id, "related_to", 1);
+  });
+
+  finalRecordNodes.forEach(recNode => {
+    const recId = recNode.recordIds[0];
+    sourcePositionNodes.forEach(sp => {
+      if (sp.recordIds.includes(recId)) {
+        addEdge(sp.id, recNode.id, "has_source_position", 1);
+      }
+    });
+  });
+
+  finalRecordNodes.forEach(recNode => {
+    const recId = recNode.recordIds[0];
+    keywordNodes.forEach(kw => {
+      if (kw.recordIds.includes(recId)) {
+        addEdge(recNode.id, kw.id, "contains_keyword", 1);
+      }
+    });
+  });
+
+  finalRecordNodes.forEach(recNode => {
+    const recId = recNode.recordIds[0];
+    absenceNodes.forEach(abs => {
+      if (abs.recordIds.includes(recId)) {
+        addEdge(recNode.id, abs.id, "raises_absence", 1);
+      }
+    });
+  });
+
+  counterSearchNodes.forEach(cs => {
+    absenceNodes.forEach(abs => {
+      const commonRecords = abs.recordIds.filter(id => cs.recordIds.includes(id));
+      if (commonRecords.length > 0) {
+        addEdge(abs.id, cs.id, "leads_to_search", 1.5);
+      }
+    });
+    finalRecordNodes.forEach(recNode => {
+      const recId = recNode.recordIds[0];
+      if (cs.recordIds.includes(recId)) {
+        addEdge(recNode.id, cs.id, "leads_to_search", 0.5);
+      }
+    });
+  });
+
+  const legend = [
+    { type: "record", label: "Record" },
+    { type: "keyword", label: "Keyword" },
+    { type: "tag", label: "Tag" },
+    { type: "source_position", label: "Source position" },
+    { type: "absence", label: "Absence" },
+    { type: "counter_search", label: "Counter-search" }
+  ];
+
+  const summaryLines = [
+    "Beyond the Data Map",
+    `Query: ${currentQuery || "(none)"}`,
+    `Selected records: ${activeRecords.length}`,
+    `Source frames: ${sourcePositionNodes.length}`,
+    `Shared keywords: ${keywordNodes.slice(0, 6).map(node => node.label).join(", ") || "None"}`,
+    `Repeated absences: ${absenceNodes.slice(0, 4).map(node => node.label).join(", ") || "None"}`,
+    `Suggested counter-searches: ${counterSearchNodes.slice(0, 4).map(node => node.label).join("; ") || "None"}`,
+    "Care note: Generated from visible metadata and selected records. Use as an inquiry map, not a final classification."
+  ];
+
+  const visualMap = {
+    title,
+    subtitle,
+    generatedAt,
+    currentQuery,
+    mapVersion:beyondDataMapState.mapVersion || 0,
+    nodes,
+    edges:edges.filter(edge => nodesById.has(String(edge.from)) && nodesById.has(String(edge.to))),
+    legend,
+    summary:summaryLines.join("\n")
+  };
+
+  return {
+    ...analysis,
+    currentQuery,
+    visualMap
+  };
+}
+
+function createFlowLayout(nodes) {
+  const groups = {
+    query:["query"],
+    first:["record"],
+    second:["keyword","tag","data_dimension","source_position","visible_label"],
+    third:["cluster","absence"],
+    fourth:["counter_search"]
+  };
+  const columnSpacing = 260;
+  const rowSpacing = 110;
+  const positions = [];
+  const grouped = {1:[],2:[],3:[],4:[]};
+  nodes.forEach(node => {
+    if (groups.query.includes(node.type)) grouped[1].push(node);
+    else if (groups.first.includes(node.type)) grouped[1].push(node);
+    else if (groups.second.includes(node.type)) grouped[2].push(node);
+    else if (groups.third.includes(node.type)) grouped[3].push(node);
+    else grouped[4].push(node);
+  });
+  const layoutNodes = nodes.map(node => ({...node}));
+  Object.entries(grouped).forEach(([column, list]) => {
+    const x = 120 + (Number(column) - 1) * columnSpacing;
+    list.forEach((node, index) => {
+      const item = layoutNodes.find(item => item.id === node.id);
+      if (!item) return;
+      item.x = x;
+      item.y = 80 + index * rowSpacing;
+      if (item.type === "query") {
+        item.x = 120;
+        item.y = 80;
+      }
+      if (item.type === "record" && item.id === "record-more") {
+        item.x = x;
+        item.y = 80 + Math.max(0, grouped[1].length - 1) * rowSpacing + 16;
+      }
+    });
+  });
+  return layoutNodes;
+}
+
+function createClusterLayout(nodes) {
+  const centerX = 520;
+  const centerY = 180;
+  const radius = 220;
+  const recordRadius = 120;
+  const counterRadius = 310;
+  const queryNode = nodes.find(node => node.type === "query");
+  const clusterNodes = nodes.filter(node => node.type === "cluster");
+  const sourceNodes = nodes.filter(node => node.type === "source_position");
+  const visibleNodes = nodes.filter(node => node.type === "visible_label");
+  const absenceNodes = nodes.filter(node => node.type === "absence");
+  const recordNodes = nodes.filter(node => node.type === "record");
+  const counterNodes = nodes.filter(node => node.type === "counter_search");
+  const layoutNodes = nodes.map(node => ({...node}));
+  if (queryNode) {
+    const q = layoutNodes.find(item => item.id === queryNode.id);
+    q.x = centerX;
+    q.y = centerY;
+  }
+  const placeRing = (items, ringRadius, offset = 0) => {
+    const count = items.length || 1;
+    items.forEach((item, index) => {
+      const node = layoutNodes.find(n => n.id === item.id);
+      if (!node) return;
+      const angle = (index / count) * Math.PI * 2 - Math.PI / 2 + offset;
+      node.x = centerX + Math.cos(angle) * ringRadius;
+      node.y = centerY + Math.sin(angle) * ringRadius;
+    });
+  };
+  placeRing(clusterNodes, radius, -0.4);
+  placeRing(sourceNodes, radius - 70, 0.8);
+  placeRing(visibleNodes, radius - 70, -1.2);
+  placeRing(absenceNodes, radius - 40, 0.2);
+  placeRing(recordNodes, recordRadius, 0.5);
+  placeRing(counterNodes, counterRadius, -0.7);
+  return layoutNodes;
+}
+
+function createSourcePositionLayout(nodes) {
+  const layoutNodes = nodes.map(node => ({...node}));
+  const queryNode = layoutNodes.find(node => node.type === "query");
+  if (queryNode) {
+    queryNode.x = 140;
+    queryNode.y = 90;
+  }
+  const sourceNodes = layoutNodes.filter(node => node.type === "source_position");
+  sourceNodes.forEach((node, index) => {
+    node.x = 260;
+    node.y = 90 + index * 140;
+  });
+  const recordNodes = layoutNodes.filter(node => node.type === "record");
+  recordNodes.forEach((node, index) => {
+    const parent = sourceNodes[index % Math.max(sourceNodes.length, 1)];
+    node.x = parent ? parent.x + 180 : 420;
+    node.y = 80 + (index % 4) * 110 + Math.floor(index / 4) * 10;
+  });
+  const restNodes = layoutNodes.filter(node => !["query","source_position","record"].includes(node.type));
+  restNodes.forEach((node, index) => {
+    node.x = 560 + Math.floor(index / 6) * 220;
+    node.y = 80 + (index % 6) * 100;
+  });
+  return layoutNodes;
+}
+
+function getBeyondDataMapSummary(visualMap) {
+  return visualMap.summary || "";
+}
+
+function getBeyondDataCompactNodeDescription(node) {
+  if (!node) return "";
+  const count = node.recordIds?.length || 0;
+  if (node.type === "keyword" || node.type === "tag") {
+    if (node.source === "query") return "From the current search.";
+    if (node.source === "tag" || node.source === "subject") return "Explicit tag or subject.";
+    if (node.source === "provider") return "Shared source term.";
+    if (count > 1) return `Appears in ${count} selected records.`;
+    return "Drawn from selected record language.";
+  }
+  if (node.type === "data_dimension") return "Reading dimension across selected records.";
+  return node.description || "";
+}
+
+function getBeyondDataNodeBadge(type = "") {
+  switch (type) {
+    case "record": return "Record";
+    case "keyword": return "Keyword";
+    case "tag": return "Tag";
+    case "data_dimension": return "Dimension";
+    case "source_position": return "Source";
+    case "absence": return "Absence";
+    case "counter_search": return "Counter-search";
+    case "visible_label": return "Label";
+    case "cluster": return "Cluster";
+    case "query": return "Query";
+    default: return "Point";
+  }
+}
+
+function renderBeyondDataIcon(name) {
+  const attrs = `width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"`;
+  if (name === "trash") {
+    return `<svg ${attrs}><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v5"/><path d="M14 11v5"/></svg>`;
+  }
+  if (name === "eye-off") {
+    return `<svg ${attrs}><path d="M3 3l18 18"/><path d="M10.6 10.6A2 2 0 0 0 13.4 13.4"/><path d="M9.9 4.24A10.7 10.7 0 0 1 12 4c7 0 10 8 10 8a14.3 14.3 0 0 1-3.1 4.5"/><path d="M6.6 6.6C3.2 8.9 2 12 2 12s3 8 10 8a10.9 10.9 0 0 0 4.1-.8"/></svg>`;
+  }
+  return `<svg ${attrs}><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>`;
+}
+
+function renderBeyondDataSimpleNodeCard(node, options = {}) {
+  if (!node) return "";
+  const active = String(beyondDataMapState.activeNodeId || "query") === String(node.id);
+  const hovered = String(beyondDataMapState.hoveredNodeId || "") === String(node.id);
+  const classes = [
+    "bdm-simple-card",
+    `bdm-simple-card--${String(node.type || "point").replace(/_/g, "-")}`,
+    active ? "is-active" : "",
+    hovered ? "is-hovered" : ""
+  ].filter(Boolean).join(" ");
+  const title = node.label || "Map point";
+  const titleText = truncateCardSummary(title, options.titleLength || (node.type === "record" ? 72 : 92));
+  const description = getBeyondDataCompactNodeDescription(node);
+  const compact = value => String(value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+  const titleCompact = compact(title);
+  const descriptionCompact = compact(description);
+  const shouldShowDescription = Boolean(description)
+    && descriptionCompact !== titleCompact
+    && !titleCompact.includes(descriptionCompact)
+    && !descriptionCompact.includes(titleCompact);
+  const recordCount = node.recordIds?.length || 0;
+  const canRemoveRecord = node.type === "record" && node.id !== "record-more";
+  const canHide = !["query", "record"].includes(node.type || "");
+  const action = canRemoveRecord
+    ? `<button type="button" class="bdm-icon-button bdm-icon-button--danger bdm-simple-icon-action" data-beyond-data-remove-record="${escapeHtml(node.id)}" aria-label="Remove ${escapeHtml(title)} from map" title="Remove from map">${renderBeyondDataIcon("trash")}</button>`
+    : canHide
+      ? `<button type="button" class="bdm-icon-button bdm-simple-icon-action" data-beyond-data-hide-node="${escapeHtml(node.id)}" aria-label="Hide ${escapeHtml(title)} from map" title="Hide from map">${renderBeyondDataIcon("eye-off")}</button>`
+      : "";
+  const count = recordCount && node.type !== "record"
+    ? `<span>${recordCount} record${recordCount !== 1 ? "s" : ""}</span>`
+    : "";
+  return `<article class="${classes}">
+    <div class="bdm-simple-card-header">
+      <button type="button" class="bdm-simple-card-main" data-beyond-data-node="${escapeHtml(node.id)}" aria-pressed="${active ? "true" : "false"}">
+        <span class="bdm-simple-kicker">${escapeHtml(getBeyondDataNodeBadge(node.type))}</span>
+        <strong>${escapeHtml(titleText)}</strong>
+        ${shouldShowDescription ? `<p>${escapeHtml(truncateCardSummary(description, options.descriptionLength || 120))}</p>` : ""}
+        ${count ? `<div class="bdm-simple-meta">${count}</div>` : ""}
+      </button>
+      ${action ? `<div class="bdm-simple-card-actions">${action}</div>` : ""}
+    </div>
+  </article>`;
+}
+
+function renderBeyondDataSimpleRecordRow(node) {
+  if (!node) return "";
+  const active = String(beyondDataMapState.activeNodeId || "query") === String(node.id);
+  const title = node.label || "Untitled record";
+  const rawDesc = getBeyondDataCompactNodeDescription(node);
+  // Suppress description if it duplicates or echoes the title (common for image records)
+  const titleNorm = title.toLowerCase().replace(/[^a-z0-9]/g, "").substring(0, 28);
+  const descNorm = (rawDesc || "").toLowerCase().replace(/[^a-z0-9]/g, "").substring(0, 28);
+  const description = rawDesc && descNorm !== titleNorm ? rawDesc : "";
+  return `<article class="bdm-simple-record-row ${active ? "is-active" : ""}">
+    <button type="button" class="bdm-simple-row-main" data-beyond-data-node="${escapeHtml(node.id)}" aria-pressed="${active ? "true" : "false"}">
+      <strong>${escapeHtml(truncateCardSummary(title, 82))}</strong>
+      ${description ? `<p>${escapeHtml(truncateCardSummary(description, 96))}</p>` : ""}
+    </button>
+    <button type="button" class="bdm-icon-button bdm-icon-button--danger bdm-simple-icon-action" data-beyond-data-remove-record="${escapeHtml(node.id)}" aria-label="Remove ${escapeHtml(title)} from map" title="Remove from map">${renderBeyondDataIcon("trash")}</button>
+  </article>`;
+}
+
+function renderBeyondDataSimpleFramePill(node) {
+  if (!node) return "";
+  const active = String(beyondDataMapState.activeNodeId || "query") === String(node.id);
+  const title = node.label || "Map point";
+  const recordCount = node.recordIds?.length || 0;
+  const description = getBeyondDataCompactNodeDescription(node);
+  return `<article class="bdm-simple-frame-pill bdm-simple-frame-pill--${String(node.type || "point").replace(/_/g, "-")} ${active ? "is-active" : ""}">
+    <button type="button" class="bdm-simple-frame-main" data-beyond-data-node="${escapeHtml(node.id)}" aria-pressed="${active ? "true" : "false"}">
+      <strong>${escapeHtml(truncateCardSummary(title, 54))}</strong>
+      ${recordCount ? `<em>${recordCount} record${recordCount !== 1 ? "s" : ""}</em>` : ""}
+      ${description ? `<p>${escapeHtml(truncateCardSummary(description, 72))}</p>` : ""}
+    </button>
+    <button type="button" class="bdm-icon-button bdm-simple-icon-action" data-beyond-data-hide-node="${escapeHtml(node.id)}" aria-label="Hide ${escapeHtml(title)} from map" title="Hide from map">${renderBeyondDataIcon("eye-off")}</button>
+  </article>`;
+}
+
+function renderBeyondDataSimpleSearchPanel(node) {
+  if (!node) {
+    return `<article class="bdm-simple-search-panel">
+      <span>Search otherwise</span>
+      <strong>No counter-search generated yet</strong>
+      <p>Select more records or change grouping to surface a sharper search path.</p>
+    </article>`;
+  }
+  const active = String(beyondDataMapState.activeNodeId || "query") === String(node.id);
+  const query = node.query || node.label || "Search selected records";
+  const description = getBeyondDataCompactNodeDescription(node);
+  return `<article class="bdm-simple-search-panel ${active ? "is-active" : ""}">
+    <div class="bdm-simple-search-panel-head">
+      <button type="button" class="bdm-simple-search-main" data-beyond-data-node="${escapeHtml(node.id)}" aria-pressed="${active ? "true" : "false"}">
+        <span>Counter-search</span>
+        <strong>${escapeHtml(truncateCardSummary(query, 88))}</strong>
+        ${description ? `<p>${escapeHtml(truncateCardSummary(description, 118))}</p>` : ""}
+      </button>
+      <button type="button" class="bdm-icon-button bdm-simple-icon-action" data-beyond-data-hide-node="${escapeHtml(node.id)}" aria-label="Hide ${escapeHtml(query)} from map" title="Hide from map">${renderBeyondDataIcon("eye-off")}</button>
+    </div>
+    <div class="bdm-simple-search-action">
+      <span>Suggested search</span>
+      <strong>${escapeHtml(query)}</strong>
+      <button type="button" data-beyond-data-search="${escapeHtml(query)}">Search this</button>
+    </div>
+  </article>`;
+}
+
+function getBeyondDataCommandTone(type = "") {
+  if (type === "query") return "query";
+  if (type === "record") return "record";
+  if (type === "keyword" || type === "tag" || type === "data_dimension") return "keyword";
+  if (type === "absence" || type === "care" || type === "living_practice") return "absence";
+  if (type === "counter_search") return "counter";
+  if (type === "source_position" || type === "visible_label" || type === "cluster") return "source";
+  return "point";
+}
+
+function getBeyondDataCommandGlyph(type = "") {
+  if (type === "query") return "Q";
+  if (type === "record") return "R";
+  if (type === "keyword" || type === "tag") return "#";
+  if (type === "data_dimension") return "D";
+  if (type === "absence") return "!";
+  if (type === "counter_search") return "S";
+  if (type === "source_position") return "P";
+  if (type === "visible_label") return "L";
+  if (type === "cluster") return "C";
+  return "·";
+}
+
+function createBeyondDataCommandLayout(visualMap) {
+  const nodes = Array.isArray(visualMap?.nodes) ? visualMap.nodes : [];
+  const center = { x: 50, y: 51 };
+  const buckets = {
+    query:nodes.filter(node => node.type === "query").slice(0, 1),
+    source:nodes.filter(node => ["source_position","visible_label","cluster"].includes(node.type || "")).slice(0, 7),
+    record:nodes.filter(node => node.type === "record").slice(0, 10),
+    keyword:nodes.filter(node => ["keyword","tag","data_dimension"].includes(node.type || "")).slice(0, 14),
+    absence:nodes.filter(node => node.type === "absence").slice(0, 7),
+    counter:nodes.filter(node => node.type === "counter_search").slice(0, 5)
+  };
+  const placed = new Map();
+  const add = (node, x, y, ring) => {
+    if (!node || placed.has(String(node.id))) return;
+    placed.set(String(node.id), { ...node, cx:Math.max(7, Math.min(93, x)), cy:Math.max(9, Math.min(91, y)), ring });
+  };
+  add(buckets.query[0] || nodes[0], center.x, center.y, 0);
+  const ringDefs = [
+    { list:buckets.source, rx:18, ry:13, offset:-0.25, ring:1 },
+    { list:buckets.record, rx:29, ry:21, offset:0.42, ring:2 },
+    { list:buckets.keyword, rx:40, ry:29, offset:-0.08, ring:3 },
+    { list:buckets.absence, rx:47, ry:36, offset:0.72, ring:4 },
+    { list:buckets.counter, rx:48, ry:39, offset:2.2, ring:5 }
+  ];
+  ringDefs.forEach(def => {
+    const count = Math.max(def.list.length, 1);
+    def.list.forEach((node, index) => {
+      const angle = (index / count) * Math.PI * 2 - Math.PI / 2 + def.offset;
+      add(node, center.x + Math.cos(angle) * def.rx, center.y + Math.sin(angle) * def.ry, def.ring);
+    });
+  });
+  return Array.from(placed.values());
+}
+
+function renderBeyondDataCommandCanvas(analysis) {
+  const visualMap = analysis?.visualMap && typeof analysis.visualMap === "object"
+    ? analysis.visualMap
+    : { nodes:[], edges:[], currentQuery:"", legend:[] };
+  const mapNodes = Array.isArray(visualMap.nodes) ? visualMap.nodes : [];
+  const mapEdges = Array.isArray(visualMap.edges) ? visualMap.edges : [];
+  const records = Array.isArray(analysis?.records) ? analysis.records : [];
+  const activeNodeId = beyondDataMapState.activeNodeId || "query";
+  const hoveredNodeId = beyondDataMapState.hoveredNodeId || "";
+  const positioned = createBeyondDataCommandLayout(visualMap);
+  const positionedById = new Map(positioned.map(node => [String(node.id), node]));
+  const edgeDefs = mapEdges
+    .filter(edge => positionedById.has(String(edge.from)) && positionedById.has(String(edge.to)))
+    .slice(0, 38)
+    .map(edge => {
+      const from = positionedById.get(String(edge.from));
+      const to = positionedById.get(String(edge.to));
+      const active = [edge.from, edge.to].map(String).includes(String(activeNodeId)) || [edge.from, edge.to].map(String).includes(String(hoveredNodeId));
+      const tone = getBeyondDataCommandTone(to?.type || from?.type || "");
+      const midX = (from.cx + to.cx) / 2;
+      const midY = (from.cy + to.cy) / 2 - 8;
+      return `<path class="bdm-command-edge bdm-command-edge--${tone}${active ? " is-active" : ""}" d="M ${from.cx} ${from.cy} Q ${midX} ${midY} ${to.cx} ${to.cy}" />`;
+    }).join("");
+  const nodeMarkup = positioned.map(node => {
+    const active = String(node.id) === String(activeNodeId);
+    const hovered = String(node.id) === String(hoveredNodeId);
+    const tone = getBeyondDataCommandTone(node.type || "");
+    const count = node.recordIds?.length || 0;
+    const label = node.label || "Map point";
+    return `<button type="button"
+      class="bdm-command-node bdm-command-node--${tone}${active ? " is-active" : ""}${hovered ? " is-hovered" : ""}"
+      style="left:${node.cx}%; top:${node.cy}%;"
+      data-beyond-data-node="${escapeHtml(node.id)}"
+      aria-pressed="${active ? "true" : "false"}"
+      aria-label="${escapeHtml(`${getBeyondDataNodeBadge(node.type)}: ${label}`)}"
+      title="${escapeHtml(label)}">
+        <span class="bdm-command-node-core"><span>${escapeHtml(getBeyondDataCommandGlyph(node.type))}</span></span>
+        <span class="bdm-command-node-label">${escapeHtml(truncateCardSummary(label, node.type === "query" ? 48 : 28))}</span>
+        ${count && node.type !== "query" ? `<span class="bdm-command-node-count">${count}</span>` : ""}
+    </button>`;
+  }).join("");
+  const termCount = mapNodes.filter(node => ["keyword","tag","data_dimension"].includes(node.type || "")).length;
+  const sourceCount = mapNodes.filter(node => ["source_position","visible_label","cluster"].includes(node.type || "")).length;
+  const absenceCount = mapNodes.filter(node => node.type === "absence").length;
+  const counterCount = mapNodes.filter(node => node.type === "counter_search").length;
+  return `<div class="bdm-command-canvas" data-beyond-data-canvas="true" aria-label="Beyond the Data command map">
+    <div class="bdm-command-asset-stage" aria-hidden="true">
+      <img class="bdm-command-asset bdm-command-asset--field" src="/assets/beyond-data/network-field.svg" alt="" loading="eager" />
+      <img class="bdm-command-asset bdm-command-asset--radar" src="/assets/beyond-data/proximity-radar.svg" alt="" loading="eager" />
+    </div>
+    <div class="bdm-command-rings" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <svg class="bdm-command-edges" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${edgeDefs}</svg>
+    ${nodeMarkup}
+    <div class="bdm-command-map-title">
+      <span>Map</span>
+      <strong>${escapeHtml(truncateCardSummary(visualMap.currentQuery || "Selected records", 54))}</strong>
+      <em>${records.length} record${records.length !== 1 ? "s" : ""} · ${termCount} terms · ${sourceCount} source frames · ${absenceCount} absences</em>
+    </div>
+    <div class="bdm-command-data-strip" aria-label="Map metrics">
+      <span><strong>${records.length}</strong><em>Records</em></span>
+      <span><strong>${termCount}</strong><em>Terms</em></span>
+      <span><strong>${sourceCount}</strong><em>Sources</em></span>
+      <span><strong>${absenceCount}</strong><em>Absences</em></span>
+      <span><strong>${counterCount}</strong><em>Searches</em></span>
+    </div>
+    <div class="bdm-command-legend" aria-label="Map legend">
+      <span><i class="is-record"></i>Records</span>
+      <span><i class="is-keyword"></i>Keywords</span>
+      <span><i class="is-source"></i>Source position</span>
+      <span><i class="is-absence"></i>Absence</span>
+      <span><i class="is-counter"></i>Counter-search</span>
+    </div>
+    <p class="bdm-command-care-note">Generated from visible metadata and selected records. Use as an inquiry map, not a final classification.</p>
+  </div>`;
+}
+
+function renderBeyondDataInteractiveMapView(analysis) {
+  const visualMap = analysis?.visualMap && typeof analysis.visualMap === "object"
+    ? analysis.visualMap
+    : { nodes:[], edges:[], currentQuery:"", legend:[] };
+  const mapNodes = Array.isArray(visualMap.nodes) ? visualMap.nodes : [];
+  const mapEdges = Array.isArray(visualMap.edges) ? visualMap.edges : [];
+  const records = Array.isArray(analysis?.records) ? analysis.records : [];
+  const activeNodeId = beyondDataMapState.activeNodeId || mapNodes[0]?.id || "query";
+  const selectedNode = mapNodes.find(node => node.id === activeNodeId) || mapNodes[0];
+  clearBeyondDataFlowCache();
+  
+  // Increment mapVersion so FlowMount fully remounts
+  beyondDataMapState.mapVersion = (beyondDataMapState.mapVersion || 0) + 1;
+  const flowState = {
+    visualMap,
+    layout: beyondDataMapState.activeLayout || "keyword",
+    viewMode: "radial",
+    activeNodeId,
+    hoveredNodeId: beyondDataMapState.hoveredNodeId,
+    mapVersion: beyondDataMapState.mapVersion,
+  };
+
+  try {
+    window.__beyondDataFlowLastRender = flowState;
+    window.dispatchEvent(new CustomEvent("beyond-data-flow:render", { detail: flowState }));
+    setTimeout(() => {
+      try {
+        window.dispatchEvent(new CustomEvent("beyond-data-flow:render", { detail: flowState }));
+      } catch (e) {
+        // swallow
+      }
+    }, 80);
+  } catch (error) {
+    console.warn("Unable to dispatch React Flow render event", error);
+  }
+
+  const hiddenCount = (beyondDataMapState.removedNodeIds || []).length + (beyondDataMapState.removedRecordIds || []).length;
+
+  return `<section class="bdm-board bdm-graph-board">
+    <div class="bdm-board-head">
+      <div>
+        <span>Command Map</span>
+        <strong>Relation, absence, source position and counter-search</strong>
+      </div>
+      <div class="bdm-layout-controls" aria-label="Map layout">
+        ${hiddenCount ? `<button type="button" class="bdm-layout-button" data-beyond-data-restore-hidden>Restore hidden</button>` : ""}
+        <button type="button" class="bdm-layout-button" data-beyond-data-mode="graph">Interactive graph</button>
+        <button type="button" class="bdm-layout-button" data-beyond-data-mode="matrix">View matrix</button>
+        <button type="button" class="bdm-layout-button" data-beyond-data-mode="clusters">View clusters</button>
+      </div>
+    </div>
+    <div id="beyondDataFlowHost" class="bdm-flow-root bdm-flow-root--full" role="region" aria-label="Interactive relational map canvas">
+      <div class="bdm-flow-loading">Preparing interactive map…</div>
+    </div>
+  </section>`;
+}
+
+function renderBeyondDataReactMapView(analysis) {
+  const visualMap = analysis?.visualMap && typeof analysis.visualMap === "object"
+    ? analysis.visualMap
+    : { nodes:[], edges:[], currentQuery:"", legend:[] };
+  const mapNodes = Array.isArray(visualMap.nodes) ? visualMap.nodes : [];
+  const mapEdges = Array.isArray(visualMap.edges) ? visualMap.edges : [];
+  const records = Array.isArray(analysis?.records) ? analysis.records : [];
+  const layout = beyondDataMapState.activeLayout || "keyword";
+  const activeNodeId = beyondDataMapState.activeNodeId || mapNodes[0]?.id || "query";
+  const hoveredNodeId = beyondDataMapState.hoveredNodeId;
+  const selectedNode = mapNodes.find(node => node.id === activeNodeId) || mapNodes[0];
+  // Increment mapVersion so FlowMount fully remounts (resets isMeasured) each time
+  // the Interactive tab is activated, even if the underlying data hasn't changed.
+  beyondDataMapState.mapVersion = (beyondDataMapState.mapVersion || 0) + 1;
+  const flowState = {
+    visualMap,
+    layout,
+    viewMode: "network",
+    activeNodeId,
+    hoveredNodeId,
+    mapVersion: beyondDataMapState.mapVersion,
+  };
+
+  try {
+    window.__beyondDataFlowLastRender = flowState;
+    window.dispatchEvent(new CustomEvent("beyond-data-flow:render", { detail: flowState }));
+    setTimeout(() => {
+      try {
+        window.dispatchEvent(new CustomEvent("beyond-data-flow:render", { detail: flowState }));
+      } catch (e) {
+        // swallow
+      }
+    }, 80);
+  } catch (error) {
+    console.warn("Unable to dispatch React Flow render event", error);
+  }
+
+  const layoutButtons = [
+    ["keyword", "Keyword map"],
+    ["source_position", "Source map"],
+    ["cluster", "Cluster map"]
+  ].map(([id, label]) => `<button type="button" data-beyond-data-layout="${id}" class="bdm-layout-button${layout === id ? " is-active" : ""}" aria-pressed="${layout === id ? "true" : "false"}">${escapeHtml(label)}</button>`).join("");
+
+  return `<section class="bdm-board bdm-graph-board">
+    <div class="bdm-board-head">
+      <div>
+        <span>Interactive map</span>
+        <strong>Explore record relations as an optional canvas</strong>
+      </div>
+      <div class="bdm-layout-controls" aria-label="Interactive map layout">
+        ${layoutButtons}
+        <button type="button" class="bdm-layout-button" data-beyond-data-reset-layout>Fit view</button>
+      </div>
+    </div>
+    <div id="beyondDataFlowHost" class="bdm-flow-root bdm-flow-root--full" role="region" aria-label="Interactive relational map canvas">
+      <div class="bdm-flow-loading">Preparing interactive map…</div>
+    </div>
+  </section>`;
+}
+
+function renderBeyondDataMapInspector(node, analysis) {
+  if (!node) return "<aside class='bdm-inspector'><p>No node selected.</p></aside>";
+  const recordCount = node.recordIds?.length || 0;
+  const recordChips = (node.recordIds || []).slice(0, 5).map(id => {
+    const record = getRecordByIdAny(id) || getSelectedBeyondDataRecords().find(record => String(record.id) === String(id));
+    return record ? `<button type="button" data-beyond-label-record="${escapeHtml(record.id)}">${escapeHtml(truncateCardSummary(record.title || "Untitled record", 40))}</button>` : "";
+  }).join("");
+  let details = "";
+  let actionButton = "";
+  if (node.type === "record") {
+    const record = getRecordByIdAny(node.id) || getSelectedBeyondDataRecords().find(record => String(record.id) === node.id);
+    details = `<p><strong>Provider</strong><br>${escapeHtml(record?.provider || record?.source || "Unknown")}</p>
+      <p><strong>Source position</strong><br>${escapeHtml(beyondDataSourcePosition(record || {}, analysis.currentQuery || ""))}</p>
+      <p><strong>Visible terms</strong><br>${escapeHtml((record ? beyondDataRecordTerms(record, analysis.currentQuery || "") : []).slice(0, 5).join(", ") || "None")}</p>
+      <p><strong>Possible absences</strong><br>${escapeHtml((record ? createBeyondLabelReading(record, analysis.currentQuery || "").outsideData.map(item => item.dimension).slice(0, 4).join(", ") : "None"))}</p>`;
+    actionButton = `<button type="button" data-beyond-label-record="${escapeHtml(node.id)}">Read beyond the label</button>
+      <button type="button" class="secondary" data-beyond-data-remove-record="${escapeHtml(node.id)}">Remove from map</button>`;
+  } else if (node.type === "keyword" || node.type === "tag") {
+    details = `<p>${escapeHtml(node.description || "Shared term across selected records.")}</p>
+      <p><strong>Source</strong><br>${escapeHtml(node.source || "record language")}</p>
+      <p><strong>Records using it</strong><br>${recordCount} record${recordCount !== 1 ? "s" : ""}</p>
+      <div class="bdm-record-chip-list">${recordChips}</div>`;
+    actionButton = `<button type="button" data-beyond-data-search="${escapeHtml(node.query || node.label || "")}">Search this keyword</button>
+      <button type="button" class="secondary" data-beyond-data-hide-node="${escapeHtml(node.id)}">Hide from map</button>`;
+  } else if (node.type === "data_dimension") {
+    details = `<p>${escapeHtml(node.description || "Reading dimension across this map.")}</p>
+      <p><strong>Records in this pattern</strong><br>${recordCount} record${recordCount !== 1 ? "s" : ""}</p>
+      <div class="bdm-record-chip-list">${recordChips}</div>`;
+    actionButton = `<button type="button" data-beyond-data-mode="matrix">View in matrix</button>
+      <button type="button" class="secondary" data-beyond-data-hide-node="${escapeHtml(node.id)}">Hide from map</button>`;
+  } else if (node.type === "cluster" || node.type === "source_position" || node.type === "visible_label") {
+    details = `<p>${escapeHtml(node.description || "Cluster explanation.")}</p>
+      <p><strong>Records</strong><br>${recordCount} record${recordCount !== 1 ? "s" : ""}</p>
+      <div class="bdm-record-chip-list">${recordChips}</div>`;
+    actionButton = `<button type="button" data-beyond-data-action="cluster" data-beyond-data-cluster="${escapeHtml(node.id)}">Read this cluster beyond the data</button>
+      <button type="button" class="secondary" data-beyond-data-hide-node="${escapeHtml(node.id)}">Hide from map</button>`;
+  } else if (node.type === "absence") {
+    details = `<p>${escapeHtml(node.description || "This absence shows what the selected records do not easily carry.")}</p>
+      <p><strong>Records</strong><br>${recordCount} record${recordCount !== 1 ? "s" : ""}</p>
+      <div class="bdm-record-chip-list">${recordChips}</div>`;
+    actionButton = `<button type="button" data-beyond-data-search="${escapeHtml(node.query || analysis.visualMap.currentQuery || "")}">Search this</button>
+      <button type="button" class="secondary" data-beyond-data-hide-node="${escapeHtml(node.id)}">Hide from map</button>`;
+  } else if (node.type === "counter_search") {
+    details = `<p>${escapeHtml(node.description || "Suggested counter-search query.")}</p>`;
+    actionButton = `<button type="button" data-beyond-data-search="${escapeHtml(node.query || "")}">Search this</button>
+      <button type="button" class="secondary" data-beyond-data-hide-node="${escapeHtml(node.id)}">Hide from map</button>`;
+  } else {
+    details = `<p>${escapeHtml(node.description || "Map node details.")}</p>`;
+  }
+  return `<aside class="bdm-inspector" data-node-type="${escapeHtml(node.type || "")}" aria-label="Inspector panel">
+    <div>
+      <span>${escapeHtml(String(node.type || "point").replace(/_/g, " "))}</span>
+      <strong>${escapeHtml(node.label || "Map point")}</strong>
+      <p>${escapeHtml(node.description || "Click a node to inspect its meaning and connections.")}</p>
+    </div>
+    <div class="bdm-inspector-details">${details}</div>
+    <div class="bdm-inspector-actions">${actionButton}</div>
+  </aside>`;
+}
+
+function renderBeyondDataExportView(analysis) {
+  const map = analysis?.visualMap && typeof analysis.visualMap === "object"
+    ? analysis.visualMap
+    : { title:"Beyond the Data Map", subtitle:"Relational reading map", generatedAt:new Date().toISOString(), currentQuery:"", nodes:[], edges:[], legend:[], summary:"" };
+  map.nodes = Array.isArray(map.nodes) ? map.nodes : [];
+  map.edges = Array.isArray(map.edges) ? map.edges : [];
+  map.legend = Array.isArray(map.legend) ? map.legend : [];
+  const records = Array.isArray(analysis?.records) ? analysis.records : [];
+  const summary = getBeyondDataMapSummary(map);
+  return `<section class="beyond-data-panel">
+    <div class="beyond-data-section-heading">
+      <span>Export this map</span>
+      <strong>Download or copy a research artefact</strong>
+      <p>Download the visual map or copy a text summary for notes, teaching or research.</p>
+    </div>
+    <div class="bdm-export-panel">
+      <div class="bdm-export-summary">
+        <p><strong>${escapeHtml(map.title)}</strong></p>
+        <p>${escapeHtml(map.subtitle)}</p>
+        <p>Generated: ${escapeHtml(new Date(map.generatedAt).toLocaleString())}</p>
+        <p>Selected records: ${records.length}</p>
+        <p>Current query: ${escapeHtml(map.currentQuery || "(none)")}</p>
+      </div>
+      <div class="bdm-export-actions">
+        <button type="button" data-beyond-data-export="png">Download PNG</button>
+        <button type="button" data-beyond-data-export="jpeg">Download JPEG</button>
+        <button type="button" data-beyond-data-export="svg">Download SVG</button>
+        <button type="button" data-beyond-data-export="summary">Copy summary</button>
+        <button type="button" disabled aria-disabled="true">Save map to Workbench (coming soon)</button>
+      </div>
+      <div class="bdm-export-note">Exports are generated in your browser from the visible map.</div>
+    </div>
+    <div class="bdm-export-textarea">
+      <label for="bdm-export-summary-text">Map summary</label>
+      <textarea id="bdm-export-summary-text" readonly>${escapeHtml(summary)}</textarea>
+    </div>
+  </section>`;
+}
+
+function renderBeyondDataMakingView(analysis) {
+  const records = Array.isArray(analysis?.records) ? analysis.records : [];
+  const clusters = Array.isArray(analysis?.clusters) ? analysis.clusters : [];
+  return `<section class="beyond-data-panel">
+    <div class="beyond-data-section-heading">
+      <span>How this map was made</span>
+      <strong>From selected records to relational nodes</strong>
+      <p>The map draws from visible record labels, repeated source positions, possible absences and suggested counter-search pathways.</p>
+    </div>
+    <div class="bdm-making-grid">
+      <article>
+        <strong>Selected records</strong>
+        <p>${records.length} records were included in the map. The visual map limits visible record nodes to 12 for readability.</p>
+      </article>
+      <article>
+        <strong>Clusters and patterns</strong>
+        <p>${clusters.length} cluster${clusters.length !== 1 ? "s" : ""} were generated from source position, repeated terms, provider groups and absences.</p>
+      </article>
+      <article>
+        <strong>Visible labels</strong>
+        <p>Local labels and record titles are surfaced as visible-label nodes. That keeps the map grounded in what the record itself shows.</p>
+      </article>
+      <article>
+        <strong>Counter-search paths</strong>
+        <p>The map includes suggested counter-search queries to follow absences, raised terms and cluster connections beyond the selected results.</p>
+      </article>
+    </div>
+  </section>`;
+}
+
+function renderBeyondDataMapSvgString(visualMap) {
+  visualMap = visualMap && typeof visualMap === "object" ? visualMap : {};
+  visualMap.nodes = Array.isArray(visualMap.nodes) ? visualMap.nodes : [];
+  visualMap.edges = Array.isArray(visualMap.edges) ? visualMap.edges : [];
+  visualMap.legend = Array.isArray(visualMap.legend) ? visualMap.legend : [];
+  const nodes = createBeyondDataCommandLayout(visualMap).map(node => ({ ...node, x:(node.cx || 50) * 10.8, y:(node.cy || 50) * 6.2 }));
+  const edges = visualMap.edges;
+  const width = 1080;
+  const height = 620;
+  const selectedRecordCount = visualMap.nodes.filter(node => node.type === "record" && node.id !== "record-more").length + (visualMap.nodes.find(node => node.id === "record-more")?.recordIds?.length || 0);
+  const nodeDefs = nodes.map(node => {
+    const tone = getBeyondDataCommandTone(node.type || "");
+    const nodeColor = tone === "query" ? "#2f6bff" : tone === "record" ? "#2f6bff" : tone === "keyword" ? "#34d8ff" : tone === "absence" ? "#ff314f" : tone === "counter" ? "#35d39a" : "#9b5cff";
+    const glow = tone === "absence" ? "#ff314f" : tone === "keyword" ? "#34d8ff" : tone === "counter" ? "#35d39a" : "#2f6bff";
+    const x = node.x || 100;
+    const y = node.y || 100;
+    const radius = tone === "query" ? 50 : tone === "record" ? 20 : 15;
+    return `<g transform="translate(${x}, ${y})">
+      <circle r="${radius + 9}" fill="${glow}" opacity="0.12" />
+      <circle r="${radius}" fill="${nodeColor}" opacity="${tone === "query" ? "0.95" : "0.88"}" stroke="rgba(255,255,255,0.42)" stroke-width="1" />
+      <text x="0" y="${radius + 20}" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="11" font-weight="700" fill="#f7f7fb">${escapeHtml(truncateCardSummary(node.label, tone === "query" ? 34 : 20))}</text>
+    </g>`;
+  }).join("");
+  const edgeDefs = edges.map(edge => {
+    const from = nodes.find(node => node.id === edge.from);
+    const to = nodes.find(node => node.id === edge.to);
+    if (!from || !to) return "";
+    const curve = `M ${from.x} ${from.y} C ${from.x + (to.x - from.x) * 0.3} ${from.y} ${to.x - (to.x - from.x) * 0.3} ${to.y} ${to.x} ${to.y}`;
+    return `<path d="${curve}" fill="none" stroke="rgba(91,126,255,0.36)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />`;
+  }).join("");
+  const legendItems = visualMap.legend.map((item, index) => {
+    const color = item.type === "record" ? "#2f6bff" : item.type === "keyword" || item.type === "tag" ? "#34d8ff" : item.type === "absence" ? "#ff314f" : item.type === "counter_search" ? "#35d39a" : "#9b5cff";
+    return `<g transform="translate(0, ${index * 22})"><circle cx="6" cy="6" r="6" fill="${color}" /><text x="18" y="10" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="12" fill="#dfe3ff">${escapeHtml(item.label)}</text></g>`;
+  }).join("");
+  return `<?xml version="1.0" encoding="UTF-8"?>
+  <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" style="background:#070814; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif;">
+    <defs>
+      <radialGradient id="bdmExportGlow" cx="62%" cy="18%" r="62%"><stop stop-color="#241a7a" stop-opacity="0.65"/><stop offset="1" stop-color="#070814" stop-opacity="0"/></radialGradient>
+      <pattern id="bdmDots" x="0" y="0" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="rgba(255,255,255,0.14)"/></pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="#070814" />
+    <rect width="100%" height="100%" fill="url(#bdmExportGlow)" />
+    <rect width="100%" height="100%" fill="url(#bdmDots)" opacity="0.42" />
+    <g transform="translate(40,40)">
+      <text x="0" y="0" font-size="24" font-weight="700" fill="#f7f7fb">${escapeHtml(visualMap.title)}</text>
+      <text x="0" y="28" font-size="14" fill="#aeb5d8">${escapeHtml(visualMap.subtitle)}</text>
+      <text x="0" y="52" font-size="12" fill="#8088aa">Generated: ${escapeHtml(new Date(visualMap.generatedAt).toLocaleString())}</text>
+      <text x="0" y="70" font-size="12" fill="#8088aa">Query: ${escapeHtml(visualMap.currentQuery || "(none)")}</text>
+      <text x="0" y="88" font-size="12" fill="#8088aa">Selected records: ${selectedRecordCount}</text>
+    </g>
+    <g transform="translate(0, 120)">${edgeDefs}${nodeDefs}</g>
+    <g transform="translate(40, 520)">${legendItems}</g>
+    <text x="40" y="580" font-size="10" fill="#8990b5">Generated from visible metadata and selected records. Read as an inquiry map, not a final classification.</text>
+  </svg>`;
+}
+
+function downloadBlob(blob, filename) {
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(link.href);
+}
+
+function exportMapAsSvg(visualMap, filename) {
+  try {
+    const svgString = renderBeyondDataMapSvgString(visualMap);
+    const blob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+    downloadBlob(blob, filename);
+  } catch (error) {
+    console.error(error);
+    alert("Unable to export SVG map.");
+  }
+}
+
+function exportMapAsPng(visualMap, filename) {
+  const svgString = renderBeyondDataMapSvgString(visualMap);
+  const img = new Image();
+  const svg = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgString)}`;
+  img.onload = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1080;
+    canvas.height = 620;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return alert("PNG export is not supported by this browser.");
+    ctx.fillStyle = "#070814";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    canvas.toBlob(blob => {
+      if (!blob) return alert("Unable to create PNG export.");
+      downloadBlob(blob, filename);
+    }, "image/png");
+  };
+  img.onerror = () => alert("Unable to generate PNG export.");
+  img.src = svg;
+}
+
+function exportMapAsJpeg(visualMap, filename) {
+  const svgString = renderBeyondDataMapSvgString(visualMap);
+  const img = new Image();
+  const svg = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgString)}`;
+  img.onload = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1080;
+    canvas.height = 620;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return alert("JPEG export is not supported by this browser.");
+    ctx.fillStyle = "#070814";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    canvas.toBlob(blob => {
+      if (!blob) return alert("Unable to create JPEG export.");
+      downloadBlob(blob, filename);
+    }, "image/jpeg", 0.95);
+  };
+  img.onerror = () => alert("Unable to generate JPEG export.");
+  img.src = svg;
+}
+
+function copyMapSummary(summary) {
+  if (!summary) return;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(summary).then(() => {
+      const message = document.querySelector(".bdm-copy-message");
+      if (message) message.textContent = "Summary copied to clipboard.";
+    }).catch(() => {
+      prompt("Copy the summary below", summary);
+    });
+  } else {
+    prompt("Copy the summary below", summary);
+  }
+}
+
+function renderBeyondDataMapConfirmation() {
+  const action = beyondDataMapState.pendingConfirm;
+  if (!action) return "";
+  const isNew = action === "new";
+  return `<div class="bdm-confirm" role="alertdialog" aria-label="${isNew ? "Start a new map" : "Clear this map"}">
+    <div>
+      <strong>${isNew ? "Start a new map?" : "Clear this map?"}</strong>
+      <p>${isNew ? "This clears the current map workspace and returns you to record selection." : "This removes selected records from the current map. Your library results remain unchanged."}</p>
+    </div>
+    <div>
+      <button type="button" class="secondary" data-beyond-data-cancel-confirm>Cancel</button>
+      <button type="button" data-beyond-data-confirm="${escapeHtml(action)}">${isNew ? "Start new map" : "Clear map"}</button>
+    </div>
+  </div>`;
+}
+
+function renderBeyondDataMapEmptyState() {
+  return `<section class="bdm-empty-state">
+    <span>No records mapped yet</span>
+    <h3>Select records from the library to create a relational map.</h3>
+    <p>The map workspace stays local to this browser view. Your library results are not changed when you clear or start again.</p>
+    <div>
+      <button type="button" data-beyond-data-close>Back to results</button>
+      <button type="button" class="secondary" data-beyond-data-select-visible>Select first 6 results</button>
+    </div>
+  </section>`;
+}
+
+function renderBeyondDataMapNoMatchesState() {
+  return `<section class="bdm-empty-state">
+    <span>No matches inside this map</span>
+    <h3>No selected records match the current map filter.</h3>
+    <p>Clear the map search to return to the full workspace.</p>
+    <div>
+      <button type="button" data-beyond-data-clear-search>Clear map search</button>
+      <button type="button" class="secondary" data-beyond-data-close>Back to results</button>
+    </div>
+  </section>`;
+}
+
+function renderBeyondDataMapAllRemovedState() {
+  return `<section class="bdm-empty-state">
+    <span>All records removed</span>
+    <h3>All records have been removed from this map.</h3>
+    <p>You can restore the removed records or start with a fresh library selection.</p>
+    <div>
+      <button type="button" data-beyond-data-restore-hidden>Restore records</button>
+      <button type="button" class="secondary" data-beyond-data-new>Start new map</button>
+    </div>
+  </section>`;
+}
+
+function renderBeyondDataMapModal() {
+  const root = ensureBeyondDataMapRoot();
+  if (!beyondDataMapState.open) {
+    root.innerHTML = "";
+    document.body.classList.remove("beyond-data-map-is-open");
+    return;
+  }
+  const allMapRecords = getAllBeyondDataMapRecords();
+  const selectedRecords = getSelectedBeyondDataRecords();
+  const records = getActiveBeyondDataRecords();
+  const analysis = createBeyondDataMap(records, getEffectiveSearchQuery() || libraryQuery);
+  const modeIcons = {
+    interactive: `<svg class="bdm-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="4" cy="8" r="2"/><circle cx="12" cy="4" r="2"/><circle cx="12" cy="12" r="2"/><line x1="6" y1="7.1" x2="10" y2="5"/><line x1="6" y1="8.9" x2="10" y2="11"/></svg>`,
+    graph: `<svg class="bdm-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="2.2"/><circle cx="2.5" cy="3" r="1.5"/><circle cx="13.5" cy="3" r="1.5"/><circle cx="2.5" cy="13" r="1.5"/><circle cx="13.5" cy="13" r="1.5"/><line x1="3.8" y1="3.8" x2="6.2" y2="6.5"/><line x1="12.2" y1="3.8" x2="9.8" y2="6.5"/><line x1="3.8" y1="12.2" x2="6.2" y2="9.5"/><line x1="12.2" y1="12.2" x2="9.8" y2="9.5"/></svg>`,
+    clusters: `<svg class="bdm-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="6.5" r="3.5"/><circle cx="3" cy="12.5" r="2"/><circle cx="13" cy="12.5" r="2"/><line x1="5.5" y1="9.5" x2="4" y2="10.5"/><line x1="10.5" y1="9.5" x2="12" y2="10.5"/></svg>`,
+    matrix: `<svg class="bdm-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><rect x="2" y="2" width="4" height="4" rx="1.2"/><rect x="9" y="2" width="4" height="4" rx="1.2"/><rect x="2" y="9" width="4" height="4" rx="1.2"/><rect x="9" y="9" width="4" height="4" rx="1.2"/></svg>`,
+    export: `<svg class="bdm-nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v8"/><path d="M5 5l3-3 3 3"/><path d="M3 11v2a1 1 0 001 1h8a1 1 0 001-1v-2"/></svg>`,
+  };
+  const modes = [
+    ["interactive", "Command Map"],
+    ["graph", "Interactive Graph"],
+    ["clusters", "Clusters"],
+    ["matrix", "Matrix"],
+    ["export", "Export"]
+  ];
+  const mode = beyondDataMapState.activeMode;
+  const content = !allMapRecords.length
+    ? renderBeyondDataMapEmptyState()
+    : !selectedRecords.length
+      ? renderBeyondDataMapAllRemovedState()
+    : records.length === 0
+      ? renderBeyondDataMapNoMatchesState()
+      : mode === "matrix"
+        ? renderBeyondDataMatrixView(analysis)
+        : mode === "paths"
+          ? renderBeyondDataReadingPathView(analysis)
+          : mode === "graph"
+            ? renderBeyondDataReactMapView(analysis)
+          : mode === "interactive"
+            ? renderBeyondDataInteractiveMapView(analysis)
+            : mode === "export"
+              ? renderBeyondDataExportView(analysis)
+              : renderBeyondDataClusterView(analysis);
+  const confirm = renderBeyondDataMapConfirmation();
+  const queryLabel = getEffectiveSearchQuery() || libraryQuery || "Selected library records";
+  const groupOptions = [
+    ["source_position", "Source position"],
+    ["keywords", "Keywords/tags"],
+    ["provider", "Provider"],
+    ["absence", "Possible absences"],
+    ["counter_search", "Counter-search path"],
+    ["record_type", "Record type"]
+  ];
+  const layoutOptions = [
+    ["keyword", "Proximity map"],
+    ["source_position", "Source map"]
+  ];
+  document.body.classList.add("beyond-data-map-is-open");
+  root.innerHTML = `<div class="beyond-data-map-overlay" data-beyond-data-close>
+    <section class="beyond-data-map-shell bdm-workspace" role="dialog" aria-modal="true" aria-labelledby="beyondDataMapTitle" tabindex="-1">
+      <header class="bdm-header">
+        <div class="bdm-title-block">
+          <p>Beyond the Data Map</p>
+          <h2 id="beyondDataMapTitle">Command Map</h2>
+          <span>Map records by relation, absence, source position and counter-search.</span>
+        </div>
+        <div class="bdm-header-meta" aria-label="Map status">
+          <div><span>Query</span><strong>${escapeHtml(truncateCardSummary(queryLabel, 34))}</strong></div>
+          <div><span>Records</span><strong>${selectedRecords.length}${allMapRecords.length !== selectedRecords.length ? ` / ${allMapRecords.length} active` : ""}${records.length !== selectedRecords.length ? ` · ${records.length} shown` : ""}</strong></div>
+        </div>
+        <div class="bdm-header-actions">
+          <button type="button" class="secondary" data-beyond-data-new>New map</button>
+          <button type="button" class="secondary${allMapRecords.length ? "" : " is-disabled"}" data-beyond-data-clear-map ${allMapRecords.length ? "" : "disabled"}>Clear map</button>
+          ${(beyondDataMapState.removedRecordIds.length || beyondDataMapState.removedNodeIds.length) ? `<button type="button" class="secondary" data-beyond-data-restore-hidden>Restore hidden points</button>` : ""}
+          <button type="button" data-beyond-data-mode="export">Export</button>
+          <button type="button" class="icon" data-beyond-data-close aria-label="Close Beyond the Data Map">&times;</button>
+        </div>
+      </header>
+      <div class="bdm-toolbar">
+        <label class="bdm-map-search">
+          <span>Search inside map</span>
+          <input type="search" data-beyond-data-search-within value="${escapeHtml(beyondDataMapState.searchWithinMap || "")}" placeholder="Filter records, tags, providers" />
+        </label>
+        <label>
+          <span>Layout</span>
+          <select data-beyond-data-layout-select>
+            ${layoutOptions.map(([id, label]) => `<option value="${id}" ${beyondDataMapState.activeLayout === id ? "selected" : ""}>${escapeHtml(label)}</option>`).join("")}
+          </select>
+        </label>
+        <label>
+          <span>Group by</span>
+          <select data-beyond-data-group-by>
+            ${groupOptions.map(([id, label]) => `<option value="${id}" ${beyondDataMapState.activeGroupBy === id ? "selected" : ""}>${escapeHtml(label)}</option>`).join("")}
+          </select>
+        </label>
+        <div class="bdm-toolbar-sep" role="separator"></div>
+        <nav class="bdm-view-tabs" aria-label="Beyond the Data Map views">
+          ${modes.map(([id, label]) => `<button type="button" data-beyond-data-mode="${id}" class="${mode === id ? "is-active" : ""}" aria-current="${mode === id ? "page" : "false"}">${modeIcons[id] || ""}${escapeHtml(label)}</button>`).join("")}
+        </nav>
+      </div>
+      <div class="beyond-data-map-body bdm-body">
+        ${confirm}
+        ${beyondDataMapState.message ? `<div class="bdm-status-message" role="status">${escapeHtml(beyondDataMapState.message)}</div>` : ""}
+        ${content}
+      </div>
+    </section>
+  </div>`;
+  bindBeyondDataMapModalEvents();
+  root.querySelector(".beyond-data-map-shell")?.focus({ preventScroll:true });
+}
+
+function bindBeyondDataMapModalEvents() {
+  const root = document.getElementById("beyondDataMapRoot");
+  if (!root) return;
+  const shell = root.querySelector(".beyond-data-map-shell");
+  if (shell) {
+    shell.addEventListener("keydown", event => {
+      if (event.key === "Escape") closeBeyondDataMap();
+    });
+  }
+  root.querySelectorAll("[data-beyond-data-close]").forEach(element => {
+    element.addEventListener("click", event => {
+      if (element === event.target || element.tagName === "BUTTON") closeBeyondDataMap();
+    });
+  });
+  root.querySelectorAll("[data-beyond-data-mode]").forEach(button => {
+    button.addEventListener("click", () => {
+      beyondDataMapState = {...beyondDataMapState, activeMode:button.dataset.beyondDataMode || "interactive", pendingConfirm:"", message:""};
+      renderBeyondDataMapModal();
+    });
+  });
+  root.querySelectorAll("[data-beyond-data-layout]").forEach(button => {
+    button.addEventListener("click", () => {
+      beyondDataMapState = {...beyondDataMapState, activeLayout:button.dataset.beyondDataLayout || "flow", message:""};
+      renderBeyondDataMapModal();
+    });
+  });
+  root.querySelector("[data-beyond-data-layout-select]")?.addEventListener("change", event => {
+    const select = event.currentTarget;
+    beyondDataMapState = {...beyondDataMapState, activeLayout:select.value || "flow", message:""};
+    renderBeyondDataMapModal();
+  });
+  root.querySelector("[data-beyond-data-group-by]")?.addEventListener("change", event => {
+    const select = event.currentTarget;
+    const nextGroup = select.value || "source_position";
+    const nextLayout = nextGroup === "keywords" ? "keyword" : nextGroup === "provider" || nextGroup === "record_type" ? "source_position" : beyondDataMapState.activeLayout;
+    beyondDataMapState = {...beyondDataMapState, activeGroupBy:nextGroup, activeLayout:nextLayout, activeNodeId:"query", message:""};
+    renderBeyondDataMapModal();
+  });
+  root.querySelector("[data-beyond-data-search-within]")?.addEventListener("input", event => {
+    const input = event.currentTarget;
+    window.clearTimeout(debounceTimer);
+    debounceTimer = window.setTimeout(() => {
+      beyondDataMapState = {...beyondDataMapState, searchWithinMap:input.value || "", activeNodeId:"query", message:""};
+      renderBeyondDataMapModal();
+    }, 180);
+  });
+  root.querySelectorAll("[data-beyond-data-clear-search]").forEach(button => {
+    button.addEventListener("click", () => {
+      beyondDataMapState = {...beyondDataMapState, searchWithinMap:"", message:""};
+      renderBeyondDataMapModal();
+    });
+  });
+  root.querySelectorAll("[data-beyond-data-new]").forEach(button => {
+    button.addEventListener("click", () => {
+      if (safeArray(beyondDataMapState.selectedRecordIds).length) {
+        beyondDataMapState = {...beyondDataMapState, pendingConfirm:"new", message:""};
+        renderBeyondDataMapModal();
+      } else {
+        closeBeyondDataMap();
+      }
+    });
+  });
+  root.querySelectorAll("[data-beyond-data-clear-map]").forEach(button => {
+    button.addEventListener("click", () => {
+      if (!safeArray(beyondDataMapState.selectedRecordIds).length) return;
+      beyondDataMapState = {...beyondDataMapState, pendingConfirm:"clear", message:""};
+      renderBeyondDataMapModal();
+    });
+  });
+  root.querySelectorAll("[data-beyond-data-restore-hidden]").forEach(button => {
+    button.addEventListener("click", () => restoreBeyondDataMapHiddenPoints());
+  });
+  root.querySelectorAll("[data-beyond-data-cancel-confirm]").forEach(button => {
+    button.addEventListener("click", () => {
+      beyondDataMapState = {...beyondDataMapState, pendingConfirm:"", message:""};
+      renderBeyondDataMapModal();
+    });
+  });
+  root.querySelectorAll("[data-beyond-data-confirm]").forEach(button => {
+    button.addEventListener("click", () => {
+      const action = button.dataset.beyondDataConfirm;
+      if (action === "new") {
+        clearBeyondDataMapWorkspace("New map started. Select records from the library to build it.");
+        return;
+      }
+      if (action === "clear") {
+        clearBeyondDataMapWorkspace("Map cleared.");
+      }
+    });
+  });
+  root.querySelectorAll("[data-beyond-data-remove-record]").forEach(button => {
+    button.addEventListener("click", () => removeBeyondDataMapRecord(button.dataset.beyondDataRemoveRecord || ""));
+  });
+  root.querySelectorAll("[data-beyond-data-hide-node]").forEach(button => {
+    button.addEventListener("click", () => hideBeyondDataMapNode(button.dataset.beyondDataHideNode || ""));
+  });
+  root.querySelectorAll("[data-beyond-data-reset-layout]").forEach(button => {
+    button.addEventListener("click", () => {
+      beyondDataMapState = {...beyondDataMapState, activeNodeId:"query", hoveredNodeId:"", message:"Map view reset."};
+      renderBeyondDataMapModal();
+    });
+  });
+  root.querySelectorAll("[data-beyond-data-select-visible]").forEach(button => {
+    button.addEventListener("click", () => {
+      const ids = getActiveBeyondDataRecords().slice(0, 6).map(record => String(record.id));
+      if (!ids.length) return;
+      setBeyondDataMapRecords(ids, { activeMode:"interactive", activeNodeId:"query", message:"First visible records added to the map." });
+      renderBeyondDataMapModal();
+    });
+  });
+  bindBeyondDataFlowEvents();
+  if (window.__beyondDataFlowLastRender && document.getElementById("beyondDataFlowHost")) {
+    window.requestAnimationFrame(() => {
+      window.dispatchEvent(new CustomEvent("beyond-data-flow:render", {
+        detail: window.__beyondDataFlowLastRender,
+      }));
+    });
+  }
+  root.querySelectorAll("[data-beyond-data-export]").forEach(button => {
+    button.addEventListener("click", async () => {
+      const format = button.dataset.beyondDataExport;
+      const analysis = createBeyondDataMap(getActiveBeyondDataRecords(), getEffectiveSearchQuery() || libraryQuery);
+      const timestamp = new Date().toISOString().slice(0, 10);
+      const slug = slugify(getEffectiveSearchQuery() || "selected-records");
+      const filenameBase = `beyond-data-map-${slug}-${timestamp}`;
+      const flowExport = window.beyondDataMapFlow || {};
+      if (format === "png") {
+        if (flowExport.exportAsPng) await flowExport.exportAsPng(`${filenameBase}.png`);
+        else exportMapAsPng(analysis.visualMap, `${filenameBase}.png`);
+      }
+      if (format === "jpeg") {
+        if (flowExport.exportAsJpeg) await flowExport.exportAsJpeg(`${filenameBase}.jpg`);
+        else exportMapAsJpeg(analysis.visualMap, `${filenameBase}.jpg`);
+      }
+      if (format === "svg") {
+        if (flowExport.exportAsSvg) await flowExport.exportAsSvg(`${filenameBase}.svg`);
+        else exportMapAsSvg(analysis.visualMap, `${filenameBase}.svg`);
+      }
+      if (format === "summary") {
+        if (flowExport.copySummary) await flowExport.copySummary(getBeyondDataMapSummary(analysis.visualMap));
+        else copyMapSummary(getBeyondDataMapSummary(analysis.visualMap));
+      }
+    });
+  });
+  root.querySelectorAll("[data-beyond-data-node]").forEach(button => {
+    button.addEventListener("mouseenter", () => {
+      beyondDataMapState = {...beyondDataMapState, hoveredNodeId:button.dataset.beyondDataNode || ""};
+      renderBeyondDataMapModal();
+    });
+    button.addEventListener("mouseleave", () => {
+      beyondDataMapState = {...beyondDataMapState, hoveredNodeId:""};
+      renderBeyondDataMapModal();
+    });
+    button.addEventListener("focus", () => {
+      beyondDataMapState = {...beyondDataMapState, hoveredNodeId:button.dataset.beyondDataNode || "", activeNodeId:button.dataset.beyondDataNode || ""};
+      renderBeyondDataMapModal();
+    });
+    button.addEventListener("click", () => {
+      beyondDataMapState = {...beyondDataMapState, activeNodeId:button.dataset.beyondDataNode || ""};
+      renderBeyondDataMapModal();
+    });
+  });
+  root.querySelectorAll("[data-beyond-label-record]").forEach(button => {
+    button.addEventListener("click", event => {
+      event.preventDefault();
+      event.stopPropagation();
+      const recordId = button.dataset.beyondLabelRecord || "";
+      if (!recordId) return;
+      closeBeyondDataMap();
+      openBeyondLabel(recordId);
+    });
+  });
+  root.querySelectorAll("[data-beyond-data-search]").forEach(button => {
+    button.addEventListener("click", () => {
+      const query = button.dataset.beyondDataSearch || "";
+      closeBeyondDataMap();
+      runBeyondLabelCounterSearch(query, "beyond_data_map");
+    });
+  });
+}
+
+function bindBeyondDataFlowEvents() {
+  if (beyondDataFlowEventsBound) return;
+  window.addEventListener("beyond-data-flow:node-click", (event) => {
+    const nodeId = event.detail?.nodeId ?? null;
+    // Only update state — do NOT call renderBeyondDataMapModal().
+    // Rebuilding the modal DOM destroys #beyondDataFlowHost, which tears down
+    // the React portal mid-render and causes every dot to jump/shake.
+    // The React InspectorPanel already handles node detail display.
+    beyondDataMapState = { ...beyondDataMapState, activeNodeId: nodeId ? String(nodeId) : "query" };
+  });
+  window.addEventListener("beyond-data-flow:hover-change", (event) => {
+    const hoveredNodeId = String(event.detail?.hoveredNodeId || "");
+    // Only update state — do NOT call renderBeyondDataMapModal().
+    // Hover fires on every mouse-move; calling renderBeyondDataMapModal() here
+    // was destroying and recreating #beyondDataFlowHost at ~60fps.
+    beyondDataMapState = { ...beyondDataMapState, hoveredNodeId };
+  });
+  window.addEventListener("beyond-data-flow:remove-record", (event) => {
+    removeBeyondDataMapRecord(event.detail?.recordId);
+  });
+  window.addEventListener("beyond-data-flow:hide-node", (event) => {
+    hideBeyondDataMapNode(event.detail?.nodeId);
+  });
+  window.addEventListener("beyond-data-flow:search", (event) => {
+    closeBeyondDataMap();
+    runBeyondLabelCounterSearch(event.detail?.query, "beyond_data_map");
+  });
+  window.addEventListener("beyond-data-flow:open-record", (event) => {
+    closeBeyondDataMap();
+    openBeyondLabel(event.detail?.recordId);
+  });
+  window.addEventListener("beyond-data-flow:restore-hidden", () => {
+    restoreBeyondDataMapHiddenPoints();
+  });
+  window.addEventListener("beyond-data-flow:clear-map", () => {
+    if (!safeArray(beyondDataMapState.selectedRecordIds).length) return;
+    clearBeyondDataMapWorkspace("Map cleared.");
+  });
+  window.addEventListener("beyond-data-flow:new-map", () => {
+    clearBeyondDataMapWorkspace("New map started. Select records from the library to build it.");
+    closeBeyondDataMap();
+  });
+  beyondDataFlowEventsBound = true;
+}
+
+function selectedBeyondLabelNode(record, analysis) {  const nodes = buildBeyondLabelNodes(record, analysis);
+  return nodes.find(node => node.id === beyondLabelState.selectedNodeId) || nodes[0];
+}
+
+function buildBeyondLabelNodes(record, analysis) {
+  // Minimal, resilient node builder for the Beyond the Label UI.
+  // Returns an array of node objects with shape expected by renderers:
+  // { id, type, label, title, why, caution, lens, search }
+  const nodes = [];
+  const archiveLabel = (analysis && analysis.archiveVoice && analysis.archiveVoice.label) || beyondLabelTitle(record) || "Untitled";
+
+  // Primary visible label node
+  nodes.push({
+    id: "visible-archive",
+    type: "visible",
+    label: archiveLabel,
+    title: archiveLabel,
+    why: "Visible in the record",
+  });
+
+  // Add meaningful visible tokens if available (keep lightweight)
+  try {
+    const extras = [];
+    if (record && record.creator) extras.push(beyondLabelTitle(record));
+    if (Array.isArray(record?.subjects)) extras.push(...record.subjects.slice(0, 2));
+    extras.forEach((t, i) => {
+      if (!t) return;
+      nodes.push({
+        id: `visible-${i + 1}`,
+        type: "visible",
+        label: String(t),
+        title: String(t),
+        why: "Visible metadata",
+      });
+    });
+  } catch (e) {
+    // swallow — extras are optional
+  }
+
+  // Absence / outside-data nodes (lens-aware)
+  if (analysis && Array.isArray(analysis.outsideData)) {
+    analysis.outsideData.forEach(item => {
+      const id = item && item.id ? String(item.id) : `absence-${Math.random().toString(36).slice(2,8)}`;
+      nodes.push({
+        id: `absence-${id}`,
+        type: "absence",
+        lens: item.id,
+        label: item.dimension || item.id || "Absence",
+        title: item.dimension || item.id || "Absence",
+        why: item.whyThisRecordRaisesIt || item.whyItMatters || "",
+        caution: item.doNotAssume || item.caution || "",
+        search: item.searchQuery || "",
+        intensity: item.intensity || undefined
+      });
+    });
+  }
+
+  // Counter-search suggestions
+  if (analysis && Array.isArray(analysis.counterSearches)) {
+    analysis.counterSearches.slice(0, 4).forEach((s, idx) => {
+      nodes.push({
+        id: `counter-${idx}`,
+        type: "counter_search",
+        label: s.query || `counter-${idx}`,
+        title: s.query || s.type || `Counter ${idx}`,
+        why: s.resists || "",
+        search: s.query || ""
+      });
+    });
+  }
+
+  return nodes;
+}
+
+function openBeyondDataMap(opts = {}) {
+  const hasIncomingSelection = Array.isArray(opts.selectedRecordIds);
+  beyondDataMapState = {
+    ...beyondDataMapState,
+    open: true,
+    activeMode: beyondDataMapState.activeMode || "interactive",
+    activeNodeId: beyondDataMapState.activeNodeId || "query",
+    removedRecordIds:hasIncomingSelection ? [] : beyondDataMapState.removedRecordIds || [],
+    removedNodeIds:hasIncomingSelection ? [] : beyondDataMapState.removedNodeIds || [],
+    mapVersion:hasIncomingSelection ? (beyondDataMapState.mapVersion || 0) + 1 : beyondDataMapState.mapVersion || 0,
+    pendingConfirm:"",
+    message:"",
+    // allow callers to pass initial selected ids
+    selectedRecordIds: hasIncomingSelection ? opts.selectedRecordIds.slice(0, 30) : safeArray(beyondDataMapState.selectedRecordIds)
+  };
+  if (hasIncomingSelection) clearBeyondDataFlowCache();
+  renderBeyondDataMapModal();
+}
+
+// Expose the open function to the global window so external scripts and
+// headless tests can open the legacy modal reliably even when this file is
+// loaded as a module.
+try {
+  if (typeof window !== "undefined") window.openBeyondDataMap = openBeyondDataMap;
+} catch (e) {
+  // noop
+}
+
+try {
+  document.addEventListener("click", event => {
+    const target = event.target;
+    const button = target?.closest?.("[data-beyond-data-open]");
+    if (!button || button.disabled) return;
+    event.preventDefault();
+    event.stopPropagation();
+    openBeyondDataMap();
+  }, true);
+} catch (e) {
+  // noop
+}
+
+try {
+  window.addEventListener("beyond-data-map:open", event => {
+    event.preventDefault?.();
+    openBeyondDataMap();
+  });
+} catch (e) {
+  // noop
+}
+
+function closeBeyondDataMap() {
+  beyondDataMapState = {...beyondDataMapState, open: false, activeClusterId: "", pendingConfirm:"", message: ""};
+  clearBeyondDataFlowCache();
+  const root = document.getElementById('beyondDataMapRoot');
+  if (root) root.innerHTML = "";
+  document.body.classList.remove('beyond-data-map-is-open');
+}
+
+function renderBeyondLabelNode(node) {
+  const active = node.id === beyondLabelState.selectedNodeId;
+  const classes = [
+    "beyond-label-node",
+    node.type === "absence" || node.type === "absence-more" ? "beyond-label-node--absence" : "beyond-label-node--visible",
+    active ? "is-active" : "",
+    node.intensity ? `is-${node.intensity}` : ""
+  ].filter(Boolean).join(" ");
+  return `<button type="button" class="${classes}" data-beyond-label-node="${escapeHtml(node.id)}" aria-pressed="${active ? "true" : "false"}" aria-label="Read layer: ${escapeHtml(node.title)}">
+    <span class="beyond-label-node-dot" aria-hidden="true"></span>
+    <span class="beyond-label-node-text">${escapeHtml(node.label)}</span>
+  </button>`;
+}
+
+function renderBeyondLabelConstellation(record, analysis) {
+  const nodes = buildBeyondLabelNodes(record, analysis);
+  const visibleNodes = nodes.filter(node => node.type === "visible");
+  const absenceNodes = nodes.filter(node => node.type !== "visible");
+  return `<section class="beyond-label-constellation" aria-label="Beyond the Label relation panel">
+    <div class="beyond-label-archive-card">
+      <span>Source label</span>
+      <strong class="beyond-label-archive-title" title="${escapeHtml(analysis.archiveVoice.label)}">${escapeHtml(analysis.archiveVoice.label)}</strong>
+      <small>${escapeHtml(analysis.archiveVoice.provider || beyondLabelSourceTypeLabel(analysis.archiveVoice.sourceType))}</small>
+    </div>
+    <div class="beyond-label-relation-group">
+      <div class="beyond-label-relation-heading"><span><i class="visible"></i>Visible in the record</span></div>
+      <div class="beyond-label-node-list">${visibleNodes.map(renderBeyondLabelNode).join("")}</div>
+    </div>
+    <div class="beyond-label-relation-group">
+      <div class="beyond-label-relation-heading"><span><i class="absence"></i>Outside the data</span></div>
+      <div class="beyond-label-node-list">${absenceNodes.map(renderBeyondLabelNode).join("")}</div>
+    </div>
+  </section>`;
+}
+
+function renderArchiveVoiceCard(analysis) {
+  return `<article class="beyond-label-voice-card">
+    <p class="beyond-label-kicker">The archive says</p>
+    <h3>${escapeHtml(analysis.archiveVoice.label)}</h3>
+    <p>${escapeHtml(analysis.archiveVoice.note)}</p>
+  </article>`;
+}
+
+function renderCounterReadingLensPicker(analysis) {
+  const activePrompt = analysis.counterReadings.find(item => item.id === beyondLabelState.selectedLens)?.prompt || analysis.counterReadings[0]?.prompt || "";
+  return `<section class="beyond-label-lens-panel">
+    <div class="beyond-label-section-heading">
+      <span>Read against the record</span>
+      <strong>${escapeHtml(BEYOND_LABEL_LENSES.find(lens => lens.id === beyondLabelState.selectedLens)?.label || "Lens")}</strong>
+    </div>
+    <div class="beyond-label-lens-picker" role="list" aria-label="Counter-reading lenses">
+      ${BEYOND_LABEL_LENSES.map(lens => `<button type="button" class="beyond-label-lens ${lens.id === beyondLabelState.selectedLens ? "is-active" : ""}" data-beyond-label-lens="${escapeHtml(lens.id)}">${escapeHtml(lens.label)}</button>`).join("")}
+    </div>
+    <p class="beyond-label-lens-prompt">${escapeHtml(activePrompt)}</p>
+  </section>`;
+}
+
+function renderCounterSearchCard(search, index) {
+  return `<article class="beyond-label-search-card" style="--delay:${Math.min(index * 70, 350)}ms">
+    <div class="beyond-label-search-card-meta">
+      <span class="beyond-label-search-type">${escapeHtml(search.type.replace(/_/g, " "))}</span>
+      <code>${escapeHtml(search.query)}</code>
+    </div>
+    <div class="beyond-label-search-card-copy">
+      <p><strong>What it resists</strong>${escapeHtml(search.resists)}</p>
+      <p><strong>What it may recover</strong>${escapeHtml(search.recovers)}</p>
+    </div>
+    <button type="button" data-beyond-label-search="${escapeHtml(search.query)}" data-beyond-label-search-type="${escapeHtml(search.type)}" aria-label="Search this: ${escapeHtml(search.query)}">Search this</button>
+  </article>`;
+}
+
+function renderRedescriptionWorksheet(analysis) {
+  const values = beyondLabelState.worksheet;
+  const prompts = analysis?.redescriptionPrompts || {
+    canSay:"What can be said from the visible record?",
+    cannotAssume:"What should not be assumed from the label?",
+    needsAnotherSource:"What needs another source?",
+    careQuestion:"What needs cultural care?"
+  };
+  return `<section class="beyond-label-worksheet">
+    <div class="beyond-label-section-heading">
+      <span>Re-describe with care</span>
+      <strong>${escapeHtml(prompts.canSay)}</strong>
+    </div>
+    <label>
+      <span>What I can say from the record</span>
+      <small>${escapeHtml(prompts.canSay)}</small>
+      <textarea data-beyond-label-field="fromRecord">${escapeHtml(values.fromRecord)}</textarea>
+    </label>
+    <label>
+      <span>What I cannot assume</span>
+      <small>${escapeHtml(prompts.cannotAssume)}</small>
+      <textarea data-beyond-label-field="cannotAssume">${escapeHtml(values.cannotAssume)}</textarea>
+    </label>
+    <label>
+      <span>What needs another source</span>
+      <small>${escapeHtml(prompts.needsAnotherSource)}</small>
+      <textarea data-beyond-label-field="needsSource">${escapeHtml(values.needsSource)}</textarea>
+    </label>
+    <label>
+      <span>What needs cultural care</span>
+      <small>${escapeHtml(prompts.careQuestion)}</small>
+      <textarea data-beyond-label-field="care">${escapeHtml(values.care)}</textarea>
+    </label>
+    <div class="beyond-label-worksheet-actions">
+      <button type="button" data-beyond-label-copy>Copy reflection</button>
+      <span aria-live="polite">${escapeHtml(beyondLabelState.copyMessage || "")}</span>
+    </div>
+  </section>`;
+}
+
+function renderBeyondLabelOpening(record, analysis) {
+  const absences = analysis.outsideData.slice(0, 5);
+  return `<section class="beyond-label-opening">
+    <article class="beyond-label-contrast-card beyond-label-contrast-card--archive">
+      <p class="beyond-label-kicker">The archive says</p>
+      <h3>${escapeHtml(analysis.archiveVoice.label)}</h3>
+      <dl>
+        <div><dt>Source</dt><dd>${escapeHtml(analysis.archiveVoice.provider || "Catalogue voice")}</dd></div>
+        <div><dt>Position</dt><dd>${escapeHtml(analysis.archiveVoice.sourcePosition || beyondLabelSourceTypeLabel(analysis.archiveVoice.sourceType))}</dd></div>
+      </dl>
+      <p>${escapeHtml(analysis.archiveVoice.note)}</p>
+    </article>
+    <article class="beyond-label-contrast-card beyond-label-contrast-card--absence">
+      <p class="beyond-label-kicker">What the label cannot hold</p>
+      <h3>What this record asks us to check.</h3>
+      <ul>${absences.map(item => `<li>${escapeHtml(item.dimension)}</li>`).join("")}</ul>
+    </article>
+    <p class="beyond-label-opening-statement">${escapeHtml(analysis.careNote)}</p>
+  </section>`;
+}
+
+function renderBeyondLabelAbsenceCards(analysis) {
+  return `<section class="beyond-label-absence-list">
+    ${analysis.outsideData.slice(0, 5).map(item => {
+      const search = analysis.counterSearches.find(candidate => candidate.type === item.id) || makeCounterSearch(`${item.dimension} ${libraryQuery || ""}`.trim(), "A single catalogue field standing in for a wider relation.", "Sources that can name this relation more responsibly.", item.id);
+      const query = item.searchQuery || search.query;
+      return `<article class="beyond-label-absence-card">
+        <h4>${escapeHtml(item.dimension)}</h4>
+        <p><strong>Why this record raises it</strong>${escapeHtml(item.whyThisRecordRaisesIt || item.whyItMatters)}</p>
+        <p><strong>Do not assume</strong>${escapeHtml(item.doNotAssume || item.caution || "This absence needs another source, not an invented answer.")}</p>
+        <div class="beyond-label-query-preview"><span>Search against this absence</span><code>${escapeHtml(query)}</code></div>
+        <button type="button" data-beyond-label-search="${escapeHtml(query)}" data-beyond-label-search-type="${escapeHtml(item.id)}" aria-label="Search this: ${escapeHtml(query)}">Search this</button>
+      </article>`;
+    }).join("")}
+  </section>`;
+}
+
+function getBeyondLabelSearchForNode(node, analysis) {
+  return analysis.counterSearches.find(search => search.type === node.lens || search.type === node.id.replace(/^absence-/, "")) ||
+    makeCounterSearch(node.search, "The record being read only through its received label.", "A wider path through maker, place, language, collection or care.", node.lens || "node");
+}
+
+function renderBeyondLabelSelectedCard(node, analysis, options = {}) {
+  const search = getBeyondLabelSearchForNode(node, analysis);
+  const pill = options.pill || (node.type === "absence" || node.type === "absence-more" ? "Meaningful absence" : "Visible in the record");
+  return `<article class="beyond-label-selected-card">
+    <span class="beyond-label-selected-pill">${escapeHtml(pill)}</span>
+    <h3>${escapeHtml(node.title)}</h3>
+    <p>${escapeHtml(node.why)}</p>
+    <p><strong>Do not assume</strong>${escapeHtml(node.caution || "The label is useful evidence, not the whole account.")}</p>
+    <div class="beyond-label-search-brief">
+      <span>Search against this ${node.type === "visible" ? "label" : "absence"}</span>
+      <code>${escapeHtml(search.query)}</code>
+      <p><strong>What it resists</strong>${escapeHtml(search.resists)}</p>
+      <p><strong>What it may recover</strong>${escapeHtml(search.recovers)}</p>
+    </div>
+    <button type="button" data-beyond-label-search="${escapeHtml(search.query)}" data-beyond-label-search-type="${escapeHtml(search.type)}" aria-label="Search this: ${escapeHtml(search.query)}">Search this</button>
+  </article>`;
+}
+
+function renderBeyondLabelStepContent(record, analysis, selectedNode) {
+  const filteredSearches = analysis.counterSearches
+    .filter(search => beyondLabelState.activeStep !== "position" || search.type === beyondLabelState.selectedLens || search.type === "adjacent");
+  const activeSearches = (filteredSearches.length ? filteredSearches : analysis.counterSearches)
+    .slice(0, beyondLabelState.activeStep === "search" ? 6 : 2);
+  if (beyondLabelState.activeStep === "label") {
+    return `<section class="beyond-label-step-panel">
+      <div class="beyond-label-section-heading"><span>What the label does</span><strong>Question the label</strong></div>
+      <div class="beyond-label-operation-grid">
+        ${analysis.labelOperations.slice(0, 3).map(item => `<article><h4>${escapeHtml(item.title.replace(/^It /, ""))}</h4><p>${escapeHtml(item.explanation)}</p></article>`).join("")}
+      </div>
+    </section>`;
+  }
+  if (beyondLabelState.activeStep === "absence") {
+    const nodes = buildBeyondLabelNodes(record, analysis);
+    const selectedAbsence = nodes.find(node => node.id === beyondLabelState.selectedNodeId && (node.type === "absence" || node.type === "absence-more")) ||
+      nodes.find(node => node.type === "absence") ||
+      selectedNode;
+    const related = nodes
+      .filter(node => (node.type === "absence" || node.type === "absence-more") && node.id !== selectedAbsence.id)
+      .slice(0, 3);
+    return `<section class="beyond-label-step-panel">
+      <div class="beyond-label-section-heading beyond-label-section-heading--stacked">
+        <span>What the data cannot hold</span>
+        <strong>Some absences are produced by the way records are made.</strong>
+      </div>
+      ${renderBeyondLabelSelectedCard(selectedAbsence, analysis, {pill:"Meaningful absence"})}
+      ${related.length ? `<div class="beyond-label-related-absence"><span>Related absences</span>${related.map(node => `<button type="button" data-beyond-label-node="${escapeHtml(node.id)}">${escapeHtml(node.title)}</button>`).join("")}</div>` : ""}
+    </section>`;
+  }
+  if (beyondLabelState.activeStep === "position") {
+    return `<section class="beyond-label-step-panel">
+      ${renderCounterReadingLensPicker(analysis)}
+      <div class="beyond-label-search-grid beyond-label-search-grid--compact">${activeSearches.map(renderCounterSearchCard).join("")}</div>
+    </section>`;
+  }
+  if (beyondLabelState.activeStep === "search") {
+    return `<section class="beyond-label-step-panel">
+      <div class="beyond-label-section-heading"><span>Search against the label</span><strong>Counter-search as method</strong></div>
+      <div class="beyond-label-search-grid">${analysis.counterSearches.map(renderCounterSearchCard).join("")}</div>
+    </section>`;
+  }
+  if (beyondLabelState.activeStep === "care") {
+    return renderRedescriptionWorksheet(analysis);
+  }
+  if (beyondLabelState.activeStep === "node") {
+    return `<section class="beyond-label-step-panel">
+      <div class="beyond-label-section-heading beyond-label-section-heading--stacked">
+        <span>${selectedNode.type === "visible" ? "Visible in the record" : "What the data cannot hold"}</span>
+        <strong>${escapeHtml(selectedNode.meaning)}</strong>
+      </div>
+      ${renderBeyondLabelSelectedCard(selectedNode, analysis)}
+    </section>`;
+  }
+  return renderBeyondLabelOpening(record, analysis);
+}
+
+function renderBeyondLabelExperience(record) {
+  const analysis = createBeyondLabelAnalysis(record, getEffectiveSearchQuery() || libraryQuery);
+  const selectedNode = selectedBeyondLabelNode(record, analysis);
+  return `<div class="beyond-label-overlay" data-beyond-label-overlay>
+    <section class="beyond-label-shell" role="dialog" aria-modal="true" aria-labelledby="beyondLabelTitle" tabindex="-1">
+      <header class="beyond-label-header">
+        <div>
+          <p class="beyond-label-eyebrow">BEYOND THE LABEL</p>
+          <h2 id="beyondLabelTitle">Read records otherwise</h2>
+          <p class="beyond-label-intro">Read this result through source voice, absence, relation and counter-search.</p>
+        </div>
+        <button type="button" class="beyond-label-close" data-beyond-label-close aria-label="Close Beyond the Label">&times;</button>
+      </header>
+      <div class="beyond-label-layer-rail" aria-label="Beyond the Label layers">
+        ${BEYOND_LABEL_LAYERS.map((layer, index) => `<button type="button" class="${beyondLabelState.activeStep === layer.id ? "is-active" : ""}" data-beyond-label-step="${escapeHtml(layer.id)}" aria-current="${beyondLabelState.activeStep === layer.id ? "step" : "false"}" data-short-label="${escapeHtml(["Archive","Label","Outside","Position","Search","Care"][index])}"><b>${index + 1}</b><span>${escapeHtml(layer.label)}</span></button>`).join("")}
+      </div>
+      <div class="beyond-label-grid">
+        <div class="beyond-label-left">
+          ${renderBeyondLabelConstellation(record, analysis)}
+          <p class="beyond-label-care-note">${escapeHtml(analysis.careNote || "")}</p>
+        </div>
+        <div class="beyond-label-right">${renderBeyondLabelStepContent(record, analysis, selectedNode)}</div>
+      </div>
+    </section>
+  </div>`;
+}
+
+function ensureBeyondLabelRoot() {
+  let root = document.getElementById("beyondLabelRoot");
+  if (!root) {
+    root = document.createElement("div");
+    root.id = "beyondLabelRoot";
+    document.body.appendChild(root);
+  }
+  return root;
+}
+
+function ensureBeyondDataMapRoot() {
+  let root = document.getElementById("beyondDataMapRoot");
+  if (!root) {
+    root = document.createElement("div");
+    root.id = "beyondDataMapRoot";
+    document.body.appendChild(root);
+  }
+  return root;
+}
+
+function renderBeyondLabelModal() {
+  const root = ensureBeyondLabelRoot();
+  if (!beyondLabelState.open || !beyondLabelState.recordId) {
+    root.innerHTML = "";
+    document.body.classList.remove("beyond-label-is-open");
+    document.removeEventListener("keydown", handleBeyondLabelKeydown);
+    return;
+  }
+  const record = getRecordByIdAny(beyondLabelState.recordId);
+  if (!record) return;
+  root.innerHTML = renderBeyondLabelExperience(record);
+  document.body.classList.add("beyond-label-is-open");
+  bindBeyondLabelModalEvents();
+  document.removeEventListener("keydown", handleBeyondLabelKeydown);
+  document.addEventListener("keydown", handleBeyondLabelKeydown);
+  const shell = root.querySelector(".beyond-label-shell");
+  if (shell) shell.focus({ preventScroll:true });
+}
+
+function openBeyondLabel(recordId) {
+  const record = getRecordByIdAny(recordId);
+  if (!record) return;
+  const changingRecord = beyondLabelState.recordId !== recordId;
+  beyondLabelState = {
+    ...beyondLabelState,
+    open:true,
+    recordId,
+    selectedNodeId:"source",
+    activeStep:"archive",
+    selectedLens:"place",
+    copyMessage:"",
+    worksheet:changingRecord ? { fromRecord:"", cannotAssume:"", needsSource:"", care:"" } : beyondLabelState.worksheet
+  };
+  renderBeyondLabelModal();
+}
+
+function closeBeyondLabel() {
+  beyondLabelState = {...beyondLabelState, open:false, copyMessage:""};
+  renderBeyondLabelModal();
+}
+
+function handleBeyondLabelKeydown(event) {
+  if (event.key === "Escape" && beyondLabelState.open) {
+    event.preventDefault();
+    closeBeyondLabel();
+  }
+}
+
+function bindBeyondLabelModalEvents() {
+  const root = document.getElementById("beyondLabelRoot");
+  if (!root) return;
+  root.querySelectorAll("[data-beyond-label-close]").forEach(button => {
+    button.addEventListener("click", closeBeyondLabel);
+  });
+  root.querySelectorAll("[data-beyond-label-overlay]").forEach(overlay => {
+    overlay.addEventListener("click", event => {
+      if (event.target === overlay) closeBeyondLabel();
+    });
+  });
+  root.querySelectorAll("[data-beyond-label-node]").forEach(button => {
+    button.addEventListener("click", () => {
+      beyondLabelState = {...beyondLabelState, activeStep:"node", selectedNodeId:button.dataset.beyondLabelNode || "source", copyMessage:""};
+      renderBeyondLabelModal();
+    });
+  });
+  root.querySelectorAll("[data-beyond-label-step]").forEach(button => {
+    button.addEventListener("click", () => {
+      beyondLabelState = {...beyondLabelState, activeStep:button.dataset.beyondLabelStep || "archive", copyMessage:""};
+      renderBeyondLabelModal();
+    });
+  });
+  root.querySelectorAll("[data-beyond-label-lens]").forEach(button => {
+    button.addEventListener("click", () => {
+      const lens = button.dataset.beyondLabelLens || "place";
+      const record = getRecordByIdAny(beyondLabelState.recordId);
+      const analysis = record ? createBeyondLabelAnalysis(record, getEffectiveSearchQuery() || libraryQuery) : null;
+      const match = record && analysis ? buildBeyondLabelNodes(record, analysis).find(node => node.lens === lens) : null;
+      beyondLabelState = {
+        ...beyondLabelState,
+        activeStep:"position",
+        selectedLens:lens,
+        selectedNodeId:match ? match.id : beyondLabelState.selectedNodeId,
+        copyMessage:""
+      };
+      renderBeyondLabelModal();
+    });
+  });
+  root.querySelectorAll("[data-beyond-label-search]").forEach(button => {
+    button.addEventListener("click", () => {
+      runBeyondLabelCounterSearch(button.dataset.beyondLabelSearch || "", button.dataset.beyondLabelSearchType || "");
+    });
+  });
+  root.querySelectorAll("[data-beyond-label-field]").forEach(field => {
+    field.addEventListener("input", () => {
+      beyondLabelState.worksheet = {
+        ...beyondLabelState.worksheet,
+        [field.dataset.beyondLabelField]:field.value
+      };
+      beyondLabelState.copyMessage = "";
+    });
+  });
+  const copyButton = root.querySelector("[data-beyond-label-copy]");
+  if (copyButton) copyButton.addEventListener("click", copyBeyondLabelReflection);
+}
+
+async function copyBeyondLabelReflection() {
+  const values = beyondLabelState.worksheet;
+  const text = [
+    "Beyond the Label reflection",
+    "",
+    `What I can say from the record:\n${values.fromRecord || ""}`,
+    `What I cannot assume:\n${values.cannotAssume || ""}`,
+    `What needs another source:\n${values.needsSource || ""}`,
+    `What needs cultural care:\n${values.care || ""}`
+  ].join("\n\n").trim();
+  try {
+    await navigator.clipboard.writeText(text);
+    beyondLabelState = {...beyondLabelState, copyMessage:"Copied"};
+  } catch (error) {
+    console.warn("Beyond the Label copy failed", error);
+    beyondLabelState = {...beyondLabelState, copyMessage:"Copy failed. Select the text manually."};
+  }
+  renderBeyondLabelModal();
+}
+
+function runBeyondLabelCounterSearch(rawQuery, suggestionType = "counter") {
+  const query = compactBeyondLabelQuery(rawQuery);
+  if (!query) return;
+  const originalQuery = String(getEffectiveSearchQuery() || libraryQuery || "").trim();
+  try {
+    if (typeof trackLibraryActivity === "function") {
+      trackLibraryActivity("beyond_label_counter_search_clicked", {
+        query,
+        sourceScope:sourceMode ? "all_sources" : "archive",
+        metadata:{
+          original_query:originalQuery,
+          suggested_query:query,
+          suggestion_type:suggestionType,
+          area:"library",
+          mode:"beyond_label"
+        }
+      });
+    }
+  } catch (error) {
+    console.warn("Beyond the Label analytics skipped.", error);
+  }
+  closeBeyondLabel();
+  pushRecentSearch(query);
+  currentPage = "library";
+  selectedRecordId = null;
+  clearMetadataFilters();
+  searchSuggestions = [];
+  activeSuggestionIndex = -1;
+  locationSearchHydrated = false;
+  applyLibraryQuery(query, true);
+  const nextUrl = `/library?q=${encodeURIComponent(query)}`;
+  if (window.location.pathname + window.location.search !== nextUrl) {
+    window.history.pushState({ archiveRoute:true, page:"library" }, "", nextUrl);
+  }
+  render();
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  requestAnimationFrame(() => {
+    const input = document.getElementById("mainSearch");
+    if (input) {
+      input.value = query;
+      input.focus({ preventScroll:true });
+    }
+    document.querySelector(".library-results-stack")?.scrollIntoView({
+      behavior:reducedMotion ? "auto" : "smooth",
+      block:"start"
+    });
+  });
+}
+
+function renderBeyondLabelRecordEntry(record) {
+  return `<section class="record-sidebar-card beyond-label-entry-card">
+    <p class="beyond-label-kicker">Beyond the Label</p>
+    <h2>Read records otherwise</h2>
+    <p>Move through source voice, absence, relation and counter-search without treating the label as neutral.</p>
+    <button type="button" data-beyond-label-record="${escapeHtml(record.id)}">Begin reading</button>
+  </section>`;
+}
+
+function getSelectedBeyondDataRecords() {
+  const selectedRecordIds = safeArray(beyondDataMapState.selectedRecordIds);
+  const removedRecordIds = safeArray(beyondDataMapState.removedRecordIds).map(String);
+  return selectedRecordIds
+    .filter(id => !removedRecordIds.includes(String(id)))
+    .map(id => getRecordByIdAny(id))
+    .filter(Boolean);
+}
+
+function getAllBeyondDataMapRecords() {
+  return safeArray(beyondDataMapState.selectedRecordIds)
+    .map(id => getRecordByIdAny(id))
+    .filter(Boolean);
+}
+
+function getActiveBeyondDataRecords() {
+  const records = getSelectedBeyondDataRecords();
+  const query = compactBeyondLabelQuery(beyondDataMapState.searchWithinMap || "").toLowerCase();
+  if (!query) return records;
+  return records.filter(record => {
+    const mappable = normalizeMappableRecord(record);
+    const haystack = [
+      mappable.title,
+      mappable.creator,
+      mappable.provider,
+      mappable.source,
+      mappable.description,
+      mappable.year,
+      mappable.place,
+      ...(mappable.tags || [])
+    ].join(" ").toLowerCase();
+    return haystack.includes(query);
+  });
+}
+
+function setBeyondDataMapRecords(nextIds, patch = {}) {
+  const uniqueIds = Array.from(new Set((nextIds || []).map(id => String(id)).filter(Boolean))).slice(0, 30);
+  const currentRemovedRecordIds = safeArray(beyondDataMapState.removedRecordIds);
+  beyondDataMapState = {
+    ...beyondDataMapState,
+    selectedRecordIds:uniqueIds,
+    removedRecordIds:Array.isArray(patch.removedRecordIds) ? patch.removedRecordIds : currentRemovedRecordIds.filter(id => uniqueIds.includes(String(id))),
+    removedNodeIds:Array.isArray(patch.removedNodeIds) ? patch.removedNodeIds : safeArray(beyondDataMapState.removedNodeIds),
+    activeNodeId:uniqueIds.length ? (patch.activeNodeId || beyondDataMapState.activeNodeId || "query") : "query",
+    hoveredNodeId:"",
+    pendingConfirm:"",
+    message:"",
+    mapVersion:(beyondDataMapState.mapVersion || 0) + 1,
+    ...patch
+  };
+}
+
+function removeBeyondDataMapRecord(recordId) {
+  const id = String(recordId || "");
+  if (!id) return;
+  const removed = Array.from(new Set([...(beyondDataMapState.removedRecordIds || []), id]));
+  const selectedRecordIds = safeArray(beyondDataMapState.selectedRecordIds);
+  const remaining = selectedRecordIds.filter(item => !removed.includes(String(item)));
+  setBeyondDataMapRecords(selectedRecordIds, {
+    removedRecordIds:removed,
+    activeNodeId:beyondDataMapState.activeNodeId === id ? "query" : beyondDataMapState.activeNodeId,
+    message:remaining.length ? "Record removed from this map." : "All records have been removed from this map."
+  });
+  clearBeyondDataFlowCache();
+  renderBeyondDataMapModal();
+}
+
+function hideBeyondDataMapNode(nodeId) {
+  const id = String(nodeId || "");
+  if (!id || id === "query") return;
+  const removedNodeIds = Array.from(new Set([...(beyondDataMapState.removedNodeIds || []), id]));
+  beyondDataMapState = {
+    ...beyondDataMapState,
+    removedNodeIds,
+    activeNodeId:"query",
+    hoveredNodeId:"",
+    mapVersion:(beyondDataMapState.mapVersion || 0) + 1,
+    message:"Point hidden from this map."
+  };
+  clearBeyondDataFlowCache();
+  renderBeyondDataMapModal();
+}
+
+function restoreBeyondDataMapHiddenPoints() {
+  beyondDataMapState = {
+    ...beyondDataMapState,
+    removedRecordIds:[],
+    removedNodeIds:[],
+    activeNodeId:"query",
+    hoveredNodeId:"",
+    mapVersion:(beyondDataMapState.mapVersion || 0) + 1,
+    message:"Hidden points restored."
+  };
+  clearBeyondDataFlowCache();
+  renderBeyondDataMapModal();
+}
+
+function clearBeyondDataFlowCache() {
+  try {
+    delete window.__beyondDataFlowLastRender;
+    window.dispatchEvent(new CustomEvent("beyond-data-flow:unmount"));
+  } catch (error) {
+    // noop
+  }
+}
+
+function clearBeyondDataMapWorkspace(message = "Map cleared.") {
+  setBeyondDataMapRecords([], {
+    activeMode:"interactive",
+    activeClusterId:"",
+    activeNodeId:"query",
+    removedRecordIds:[],
+    removedNodeIds:[],
+    searchWithinMap:"",
+    message
+  });
+  clearBeyondDataFlowCache();
+  renderBeyondDataMapModal();
+}
+
+function isBeyondDataRecordSelected(recordId) {
+  return safeArray(beyondDataMapState.selectedRecordIds).includes(String(recordId));
+}
+
+function toggleBeyondDataRecordSelection(recordId, selected) {
+  const id = String(recordId || "");
+  if (!id) return;
+  const current = new Set(safeArray(beyondDataMapState.selectedRecordIds));
+  if (selected) current.add(id);
+  else current.delete(id);
+  beyondDataMapState = {
+    ...beyondDataMapState,
+    selectedRecordIds:Array.from(current).slice(0, 30),
+    message:""
+  };
+  render();
+}
+
+function renderBeyondDataSelectionBar() {
+  const records = getSelectedBeyondDataRecords();
+  const count = records.length;
+  if (!count) {
+    return `<div class="beyond-data-map-hint" role="note">
+      <div>
+        <strong>Beyond the Data Map</strong>
+        <span>Step 1: choose records with the “Add to map” controls on result cards below. Step 2: create a cluster and matrix map.</span>
+      </div>
+      <button type="button" data-beyond-data-select-visible>Select first 6 results</button>
+    </div>`;
+  }
+  return `<div class="beyond-data-map-bar" role="region" aria-label="Beyond the Data Map selection">
+    <div>
+      <strong>${count} selected</strong>
+      <span>${count < 2 ? "Select one more record below, or use Select first 6 results, to create a reading map." : "Ready. Click Map selected records to open clusters, matrix, constellation and reading paths."}</span>
+    </div>
+    <div class="beyond-data-map-bar-actions">
+      <button type="button" class="secondary" data-beyond-data-select-visible>Select first 6</button>
+      <button type="button" class="secondary" data-beyond-data-clear>Clear</button>
+      <button type="button" data-beyond-data-open onclick="event.preventDefault(); window.dispatchEvent(new CustomEvent('beyond-data-map:open'));" ${count < 2 ? "disabled" : ""}>Map selected records</button>
+    </div>
+  </div>`;
+}
+
+function renderBeyondDataRecordChips(recordIds, recordsById) {
+  return recordIds
+    .map(id => {
+      const record = recordsById.get(String(id)) || getRecordByIdAny(id);
+      if (!record) return "";
+      return `<button type="button" class="beyond-data-record-chip" data-beyond-label-record="${escapeHtml(record.id)}" title="${escapeHtml(record.title || "Open record in Beyond the Label")}">${escapeHtml(truncateCardSummary(record.title || "Untitled record", 70))}</button>`;
+    })
+    .join("");
+}
+
+function renderBeyondDataClusterCard(cluster, analysis, recordsById, active) {
+  const counterSearches = Array.isArray(cluster?.counterSearches) ? cluster.counterSearches : [];
+  const recordIds = Array.isArray(cluster?.recordIds) ? cluster.recordIds : [];
+  const searches = counterSearches.length
+    ? counterSearches
+    : [{ query:`${getEffectiveSearchQuery() || libraryQuery || cluster?.label || "selected records"} ${cluster?.label || ""}`, reason:"Search beyond this cluster." }];
+  return `<article class="beyond-data-cluster-card${active ? " is-active" : ""}" data-beyond-data-cluster="${escapeHtml(cluster?.id || "")}" tabindex="0">
+    <div class="beyond-data-cluster-head">
+      <span>${escapeHtml(String(cluster?.type || "cluster").replace(/_/g, " "))}</span>
+      <strong>${escapeHtml(cluster?.label || "Cluster")}</strong>
+      <em>${recordIds.length} record${recordIds.length !== 1 ? "s" : ""}</em>
+    </div>
+    <p>${escapeHtml(cluster?.explanation || "Records grouped by a shared source position, term or reading dimension.")}</p>
+    <div class="beyond-data-record-chip-list">${renderBeyondDataRecordChips(recordIds, recordsById)}</div>
+    <div class="beyond-data-counter-list">
+      ${searches.map(search => `<div class="beyond-data-counter">
+        <span>Search this path</span>
+        <code>${escapeHtml(search.query)}</code>
+        <p>${escapeHtml(search.reason || "Use this search to move beyond the visible label.")}</p>
+        <button type="button" data-beyond-data-search="${escapeHtml(search.query)}">Search this path</button>
+      </div>`).join("")}
+    </div>
+  </article>`;
+}
+
+function renderBeyondDataClusterView(analysis) {
+  const recordsById = new Map(getSelectedBeyondDataRecords().map(record => [String(record.id), record]));
+  const clusters = Array.isArray(analysis?.clusters) ? analysis.clusters : [];
+  const activeId = beyondDataMapState.activeClusterId || clusters[0]?.id || "";
+  return `<section class="beyond-data-panel">
+    <div class="beyond-data-section-heading">
+      <span>Clusters</span>
+      <strong>Patterns across selected records</strong>
+      <p>Clusters are built from source position, provider, repeated terms and possible absences. They are starting points for reading, not final claims.</p>
+    </div>
+    <div class="beyond-data-cluster-grid">
+      ${clusters.length ? clusters.map(cluster => renderBeyondDataClusterCard(cluster, analysis, recordsById, cluster.id === activeId)).join("") : `<p>No clusters were generated for this map yet.</p>`}
+    </div>
+  </section>`;
+}
+
+function renderBeyondDataMatrixView(analysis) {
+  const rows = Array.isArray(analysis?.matrixRows) ? analysis.matrixRows : [];
+  return `<section class="beyond-data-panel">
+    <div class="beyond-data-section-heading">
+      <span>Matrix</span>
+      <strong>Compare records across reading dimensions</strong>
+      <p>Rows keep the record visible while columns ask what is centred, what may sit outside the data and where counter-search should begin.</p>
+    </div>
+    <div class="beyond-data-matrix-wrap">
+      <table class="beyond-data-matrix">
+        <thead>
+          <tr>
+            <th>Record</th>
+            <th>Source position</th>
+            <th>Provider</th>
+            <th>Centred voice</th>
+            <th>Possible absences</th>
+            <th>Counter-search</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map(row => `<tr>
+            <td><button type="button" data-beyond-label-record="${escapeHtml(row.recordId)}">${escapeHtml(row.title)}</button></td>
+            <td>${escapeHtml(row.sourcePosition)}</td>
+            <td>${escapeHtml(row.provider || "Unclear")}</td>
+            <td>${escapeHtml(row.centredVoice)}</td>
+            <td>${(Array.isArray(row.possibleAbsences) ? row.possibleAbsences : []).map(absence => `<span>${escapeHtml(absence)}</span>`).join("")}</td>
+            <td><code>${escapeHtml(row.suggestedCounterSearch)}</code><button type="button" data-beyond-data-search="${escapeHtml(row.suggestedCounterSearch)}">Search this</button></td>
+          </tr>`).join("") || `<tr><td colspan="6">No matrix rows were generated for this map yet.</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  </section>`;
+}
+
+function renderBeyondDataConstellationView(analysis) {
+  const terms = (Array.isArray(analysis?.sharedTerms) ? analysis.sharedTerms : []).slice(0, 8);
+  return `<section class="beyond-data-panel">
+    <div class="beyond-data-section-heading">
+      <span>Constellation</span>
+      <strong>Shared terms and relations</strong>
+      <p>This v1 keeps the graph calm: repeated terms become relation anchors, and selected records remain accessible through chips.</p>
+    </div>
+    <div class="beyond-data-constellation">
+      ${terms.length ? terms.map(term => `<article>
+        <span>${escapeHtml(term.count)} records</span>
+        <strong>${escapeHtml(term.term)}</strong>
+        <div class="beyond-data-record-chip-list">${renderBeyondDataRecordChips(term.recordIds, new Map(getSelectedBeyondDataRecords().map(record => [String(record.id), record])))}</div>
+      </article>`).join("") : `<p>No repeated terms emerged strongly enough yet. Try selecting records with a shared theme, provider or source type.</p>`}
+    </div>
+  </section>`;
+}
+
+function renderBeyondDataReadingPathView(analysis) {
+  const recordsById = new Map(getSelectedBeyondDataRecords().map(record => [String(record.id), record]));
+  const paths = Array.isArray(analysis?.suggestedReadingPaths) ? analysis.suggestedReadingPaths : [];
+  return `<section class="beyond-data-panel">
+    <div class="beyond-data-section-heading">
+      <span>Reading path</span>
+      <strong>Move from list to method</strong>
+      <p>Each path suggests a way to read the selected records as a relation, then search outward from the limits of the data.</p>
+    </div>
+    <div class="beyond-data-path-grid">
+      ${paths.length ? paths.map(path => `<article class="beyond-data-path-card">
+        <strong>${escapeHtml(path.title)}</strong>
+        <p>${escapeHtml(path.why)}</p>
+        <div class="beyond-data-record-chip-list">${renderBeyondDataRecordChips(path.recordIds, recordsById)}</div>
+        ${(path.counterSearches || []).slice(0, 3).map(search => `<div class="beyond-data-counter">
+          <code>${escapeHtml(search.query)}</code>
+          <p>${escapeHtml(search.reason || "Follow this path through search.")}</p>
+          <button type="button" data-beyond-data-search="${escapeHtml(search.query)}">Search this path</button>
+        </div>`).join("")}
+      </article>`).join("") : `<p>No reading paths were generated for this map yet.</p>`}
+    </div>
+  </section>`;
+}
+
 function renderCard(record) {
   const summary = getRecordCardSummary(record);
   const mode = getResultMode(record);
@@ -5817,6 +9521,11 @@ function renderCard(record) {
 
   const recordTypeLabel = escapeHtml(displayCardRecordType(record).toUpperCase());
   const handoffLayerClass = getResultRankGroup(record) === 1 ? " is-handoff-layer" : "";
+  const mapSelected = isBeyondDataRecordSelected(record.id);
+  const mapSelectControl = `<label class="beyond-data-select-control" data-stop-card-open="true">
+    <input type="checkbox" data-beyond-data-select="${escapeHtml(record.id)}" ${mapSelected ? "checked" : ""} aria-label="Add ${escapeHtml(record.title || "this record")} to Beyond the Data Map" />
+    <span>${mapSelected ? "Added to map" : "Add to map"}</span>
+  </label>`;
 
   const labelRow = hasThumb
     ? ""
@@ -5848,10 +9557,12 @@ function renderCard(record) {
       </div>
     </div>
     <footer class="record-card-actions cardFooter card-footer" data-stop-card-open="true">
+      ${mapSelectControl}
       <div class="record-card-actions-icons cardFooter__icons card-footer-icons">
         ${renderCardWorkspaceActions(record)}
       </div>
       <div class="record-card-actions-buttons cardFooter__actions card-footer-actions">
+        <button type="button" class="record-card-secondary-btn actionSecondary beyond-label-card-btn" data-beyond-label-record="${escapeHtml(record.id)}">Read beyond the label</button>
         <button type="button" class="record-card-secondary-btn actionSecondary" data-card-drawer-toggle aria-expanded="${drawerOpen ? "true" : "false"}">${drawerOpen ? "Hide details" : "More details"}</button>
         ${primarySourceControl}
       </div>
@@ -6004,6 +9715,7 @@ function renderRecord() {
           </main>
 
           <aside class="detail-side record-detail-sidebar">
+            ${renderBeyondLabelRecordEntry(record)}
             ${renderRecordWorkspaceTools(record)}
             ${renderActionList(record)}
             <section class="record-sidebar-card record-citation-card">
@@ -6164,8 +9876,8 @@ function buildAdvancedSearchExport(format = "plain") {
     .join(", ");
   const resultCounts = {
     archive: localResults.length,
-    live: liveResults.filter(item => getResultMode(item) === "live").length,
-    handoffs: liveResults.filter(item => getResultMode(item) === "external_handoff").length,
+    live: safeArray(liveResults).filter(item => getResultMode(item) === "live").length,
+    handoffs: safeArray(liveResults).filter(item => getResultMode(item) === "external_handoff").length,
     sources: liveStatus.sources || []
   };
   const payload = {
@@ -6771,7 +10483,7 @@ function renderUnifiedSearchStream(effectiveQuery) {
     title: effectiveQuery ? `Results for “${effectiveQuery}”` : "Archive search",
     description: "",
     countLabel: `${visible.length} shown`,
-    bodyHtml: `${openAccessStrip}<p class="library-unified-summary">${escapeHtml(summaryCount)}${escapeHtml(sourceSummary)}.</p><p class="library-unified-status">${escapeHtml(statusLine)}</p>${renderUnifiedSortControls()}${renderUnifiedSourceFilters()}${loadingHint}${
+    bodyHtml: `${openAccessStrip}<p class="library-unified-summary">${escapeHtml(summaryCount)}${escapeHtml(sourceSummary)}.</p><p class="library-unified-status">${escapeHtml(statusLine)}</p>${renderUnifiedSortControls()}${renderUnifiedSourceFilters()}${renderBeyondDataSelectionBar()}${loadingHint}${
       visible.length
         ? `<div class="library-results-grid card-grid results-grid library-unified-grid">${renderUnifiedResultsGrid(visible)}</div>`
         : `<div class="empty library-empty" role="status"><p>No results match this filter yet. Try another source tab or broaden your search.</p></div>`
@@ -7610,6 +11322,58 @@ document.querySelectorAll('[data-card-open-record]').forEach(button => {
     const recordId = card ? card.dataset.id : '';
     if (!recordId) return;
     navigate('record', recordId);
+  });
+});
+document.querySelectorAll('[data-beyond-label-record]').forEach(button => {
+  button.addEventListener('click', event => {
+    event.preventDefault();
+    event.stopPropagation();
+    const explicitId = button.dataset.beyondLabelRecord || "";
+    const card = button.closest('.record-card');
+    const recordId = explicitId || (card ? card.dataset.id : "");
+    if (!recordId) return;
+    openBeyondLabel(recordId);
+  });
+});
+document.querySelectorAll('[data-beyond-data-select]').forEach(input => {
+  input.addEventListener('click', event => {
+    event.stopPropagation();
+  });
+  input.addEventListener('change', event => {
+    event.preventDefault();
+    event.stopPropagation();
+    toggleBeyondDataRecordSelection(input.dataset.beyondDataSelect || "", input.checked);
+  });
+});
+document.querySelectorAll('[data-beyond-data-open]').forEach(button => {
+  button.addEventListener('click', event => {
+    event.preventDefault();
+    event.stopPropagation();
+    openBeyondDataMap();
+  });
+});
+document.querySelectorAll('[data-beyond-data-select-visible]').forEach(button => {
+  button.addEventListener('click', event => {
+    event.preventDefault();
+    event.stopPropagation();
+    const ids = Array.from(document.querySelectorAll('.library-unified-grid .record-card[data-id]'))
+      .map(card => card.dataset.id || "")
+      .filter(Boolean)
+      .slice(0, 6);
+    beyondDataMapState = {
+      ...beyondDataMapState,
+      selectedRecordIds:Array.from(new Set([...safeArray(beyondDataMapState.selectedRecordIds), ...ids])).slice(0, 30),
+      message:""
+    };
+    render();
+  });
+});
+document.querySelectorAll('[data-beyond-data-clear]').forEach(button => {
+  button.addEventListener('click', event => {
+    event.preventDefault();
+    event.stopPropagation();
+    beyondDataMapState = {...beyondDataMapState, selectedRecordIds:[], open:false, activeClusterId:"", message:""};
+    render();
   });
 });
 document.querySelectorAll('[data-card-bookmark]').forEach(button => {

@@ -2,31 +2,21 @@
 
 export const dynamic = "force-dynamic";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/src/lib/supabase/client";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
+  const supabase = useMemo(() => createClient(), []);
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const [isReady, setIsReady] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [supabase, setSupabase] = useState<ReturnType<typeof createClient> | null>(null);
 
   useEffect(() => {
-    try {
-      setSupabase(createClient());
-    } catch {
-      setMessage("Password reset is not configured. Please contact support.");
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!supabase) return;
-
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event) => {
@@ -40,16 +30,11 @@ export default function ResetPasswordPage() {
     });
 
     return () => subscription.unsubscribe();
-  }, [supabase]);
+  }, [supabase.auth]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setMessage("");
-
-    if (!supabase) {
-      setMessage("Password reset is not configured. Please contact support.");
-      return;
-    }
 
     if (password.length < 8) {
       setMessage("Please use at least 8 characters.");

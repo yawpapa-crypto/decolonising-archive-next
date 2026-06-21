@@ -30,6 +30,42 @@ const columnHelper = createColumnHelper<IntelligenceItem>();
 
 type SortingState = Array<{ id: string; desc: boolean }>;
 type IntelligenceCellContext<TValue = unknown> = CellContext<IntelligenceItem, TValue>;
+type TableRow = {
+  id: string;
+  original: IntelligenceItem;
+  getVisibleCells: () => TableCell[];
+};
+type TableCell = {
+  id: string;
+  column: {
+    columnDef: {
+      header?: unknown;
+      cell?: Parameters<typeof flexRender>[0];
+    };
+  };
+  getContext: () => object;
+};
+type TableColumn = {
+  id: string;
+  columnDef: { header?: unknown };
+  getIsVisible: () => boolean;
+  getToggleVisibilityHandler: () => () => void;
+};
+type TableHeader = {
+  id: string;
+  isPlaceholder: boolean;
+  column: {
+    getCanSort: () => boolean;
+    getToggleSortingHandler: () => ((event: unknown) => void) | undefined;
+    getIsSorted: () => false | "asc" | "desc";
+    columnDef: { header?: Parameters<typeof flexRender>[0] };
+  };
+  getContext: () => object;
+};
+type TableHeaderGroup = {
+  id: string;
+  headers: TableHeader[];
+};
 
 const DEFAULT_VISIBILITY: VisibilityState = {
   institution: false,
@@ -235,7 +271,7 @@ export default function IntelligenceRecordsTable({
 
       {showColumns ? (
         <div className="ri-column-picker">
-          {table.getAllLeafColumns().map((column) => {
+          {table.getAllLeafColumns().map((column: TableColumn) => {
             if (column.id === "title" || column.id === "actions") return null;
             return (
               <label key={column.id}>
@@ -254,9 +290,9 @@ export default function IntelligenceRecordsTable({
       <div className="ri-table-wrap">
         <table className="ri-table ri-dash-table">
           <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
+            {table.getHeaderGroups().map((headerGroup: TableHeaderGroup) => (
               <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
+                {headerGroup.headers.map((header: TableHeader) => (
                   <th key={header.id} scope="col">
                     {header.isPlaceholder ? null : (
                       <button
@@ -277,9 +313,9 @@ export default function IntelligenceRecordsTable({
           </thead>
           <tbody>
             {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => (
+              table.getRowModel().rows.map((row: TableRow) => (
                 <tr key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
+                  {row.getVisibleCells().map((cell: TableCell) => (
                     <td key={cell.id} data-label={cell.column.columnDef.header as string}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>

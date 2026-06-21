@@ -27,9 +27,9 @@ export default function ArchiveAppPage({ initialMemberSignedIn }: ArchiveAppPage
       </noscript>
 
       <Script
-        src="/assets/js/app.js"
+        id="archive-app-script"
+        src="/assets/js/app.js?v=20260616-bdm-zoom-fullscreen"
         strategy="afterInteractive"
-        type="module"
       />
     </PageShell>
   );

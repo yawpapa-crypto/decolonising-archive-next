@@ -12,7 +12,7 @@ const csp = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
-  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://vitals.vercel-insights.com",
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://vitals.vercel-insights.com https://openlibrary.org https://api.crossref.org https://collectionapi.metmuseum.org https://api.artic.edu",
   "media-src 'self' blob: https:",
 ].join("; ");
 
