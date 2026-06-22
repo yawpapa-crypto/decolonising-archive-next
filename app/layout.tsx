@@ -1,5 +1,6 @@
 import "./globals.css";
 import "./styles/platform-ui-consolidation.css";
+import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import {
   Geist,
@@ -55,6 +56,7 @@ export default function RootLayout({
         {children}
         <ArchiveGuidePanel />
         <AncestralAcknowledgementDialog />
+        <Analytics />
         <SpeedInsights />
       </body>
     </html>
