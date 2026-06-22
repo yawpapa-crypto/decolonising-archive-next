@@ -30,42 +30,6 @@ const columnHelper = createColumnHelper<IntelligenceItem>();
 
 type SortingState = Array<{ id: string; desc: boolean }>;
 type IntelligenceCellContext<TValue = unknown> = CellContext<IntelligenceItem, TValue>;
-type TableRow = {
-  id: string;
-  original: IntelligenceItem;
-  getVisibleCells: () => TableCell[];
-};
-type TableCell = {
-  id: string;
-  column: {
-    columnDef: {
-      header?: unknown;
-      cell?: Parameters<typeof flexRender>[0];
-    };
-  };
-  getContext: () => object;
-};
-type TableColumn = {
-  id: string;
-  columnDef: { header?: unknown };
-  getIsVisible: () => boolean;
-  getToggleVisibilityHandler: () => () => void;
-};
-type TableHeader = {
-  id: string;
-  isPlaceholder: boolean;
-  column: {
-    getCanSort: () => boolean;
-    getToggleSortingHandler: () => ((event: unknown) => void) | undefined;
-    getIsSorted: () => false | "asc" | "desc";
-    columnDef: { header?: Parameters<typeof flexRender>[0] };
-  };
-  getContext: () => object;
-};
-type TableHeaderGroup = {
-  id: string;
-  headers: TableHeader[];
-};
 
 const DEFAULT_VISIBILITY: VisibilityState = {
   institution: false,
@@ -209,6 +173,11 @@ export default function IntelligenceRecordsTable({
     getPaginationRowModel: getPaginationRowModel(),
     globalFilterFn: "includesString",
   });
+  type IntelligenceTableColumn = ReturnType<typeof table.getAllLeafColumns>[number];
+  type IntelligenceHeaderGroup = ReturnType<typeof table.getHeaderGroups>[number];
+  type IntelligenceHeader = IntelligenceHeaderGroup["headers"][number];
+  type IntelligenceTableRow = ReturnType<typeof table.getRowModel>["rows"][number];
+  type IntelligenceTableCell = ReturnType<IntelligenceTableRow["getVisibleCells"]>[number];
 
   return (
     <div className="ri-records ri-dash-records">
@@ -271,7 +240,7 @@ export default function IntelligenceRecordsTable({
 
       {showColumns ? (
         <div className="ri-column-picker">
-          {table.getAllLeafColumns().map((column: TableColumn) => {
+          {table.getAllLeafColumns().map((column: IntelligenceTableColumn) => {
             if (column.id === "title" || column.id === "actions") return null;
             return (
               <label key={column.id}>
@@ -290,9 +259,9 @@ export default function IntelligenceRecordsTable({
       <div className="ri-table-wrap">
         <table className="ri-table ri-dash-table">
           <thead>
-            {table.getHeaderGroups().map((headerGroup: TableHeaderGroup) => (
+            {table.getHeaderGroups().map((headerGroup: IntelligenceHeaderGroup) => (
               <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header: TableHeader) => (
+                {headerGroup.headers.map((header: IntelligenceHeader) => (
                   <th key={header.id} scope="col">
                     {header.isPlaceholder ? null : (
                       <button
@@ -313,9 +282,9 @@ export default function IntelligenceRecordsTable({
           </thead>
           <tbody>
             {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row: TableRow) => (
+              table.getRowModel().rows.map((row: IntelligenceTableRow) => (
                 <tr key={row.id}>
-                  {row.getVisibleCells().map((cell: TableCell) => (
+                  {row.getVisibleCells().map((cell: IntelligenceTableCell) => (
                     <td key={cell.id} data-label={cell.column.columnDef.header as string}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
