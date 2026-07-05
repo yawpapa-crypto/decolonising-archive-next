@@ -1,8 +1,7 @@
 "use client";
 
-import FederatedLiveDiscover, {
-  ghanaQueryForSource,
-} from "@/components/collections/FederatedLiveDiscover";
+import FederatedLiveDiscover from "@/components/collections/FederatedLiveDiscover";
+import { ghanaQueryForSource } from "@/lib/discovery/federated-discover";
 
 export default function GhanaLiveDiscover() {
   return (

@@ -9,7 +9,6 @@ import {
   FEDERATED_PREFETCH_LIMIT,
   FEDERATED_SOURCE_META,
   FEDERATED_SOURCE_ORDER,
-  runWithConcurrency,
   type DiscoverResult,
   type FederatedSourceId,
   type SourceStatus,
@@ -31,6 +30,21 @@ type Props = {
 
 const DISPLAY_LIMIT = 12;
 const EMPTY_EXTRA_SOURCE_IDS: FederatedSourceId[] = [];
+
+async function runWithConcurrency<T>(
+  items: T[],
+  concurrency: number,
+  worker: (item: T) => Promise<void>,
+): Promise<void> {
+  let index = 0;
+  const runners = Array.from({ length: Math.min(concurrency, items.length) }, async () => {
+    while (index < items.length) {
+      const current = items[index++];
+      await worker(current);
+    }
+  });
+  await Promise.all(runners);
+}
 
 function SafeImg({
   src,
@@ -627,5 +641,3 @@ export default function FederatedLiveDiscover({
     </>
   );
 }
-
-export { ghanaQueryForSource } from "@/lib/discovery/federated-discover";
