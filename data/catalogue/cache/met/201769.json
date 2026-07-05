@@ -1,0 +1,117 @@
+{
+  "objectID": 201769,
+  "isHighlight": false,
+  "accessionNumber": "54.147.66",
+  "accessionYear": "1954",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP241971.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP241971.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP241972.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP241976.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP241975.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP241974.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 164832,
+      "role": "Manufactory",
+      "name": "Meissen Manufactory",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500054662",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q822407",
+      "gender": ""
+    },
+    {
+      "constituentID": 36289,
+      "role": "Factory director",
+      "name": "Böttger Period",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    },
+    {
+      "constituentID": 38074,
+      "role": "Modeler",
+      "name": "Model attributed to Benjamin Thomae",
+      "constituentULAN_URL": "(not assigned)",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q1692666",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Figure",
+  "title": "Brighella on a pedestal",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Manufactory",
+  "artistPrefix": "",
+  "artistDisplayName": "Meissen Manufactory",
+  "artistDisplayBio": "German, 1710–present",
+  "artistSuffix": "",
+  "artistAlphaSort": "Meissen Manufactory",
+  "artistNationality": "German",
+  "artistBeginDate": "1710",
+  "artistEndDate": "9999",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q822407",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500054662",
+  "objectDate": "1710–13",
+  "objectBeginDate": 1710,
+  "objectEndDate": 1713,
+  "medium": "Stoneware with unfired colors",
+  "dimensions": "Overall (confirmed): 9 15/16 x 4 11/16 x 4 1/2 in. (25.2 x 11.9 x 11.4 cm); Height (of base): 3 in. (7.6cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": "of base",
+      "elementMeasurements": {
+        "Height": 7.6
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "confirmed",
+      "elementMeasurements": {
+        "Depth": 11.430023,
+        "Height": 25.2413,
+        "Width": 11.906274
+      }
+    }
+  ],
+  "creditLine": "Gift of R. Thornton Wilson, in memory of Florence Ellsworth Wilson, 1954",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Pottery",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/201769",
+  "tags": [
+    {
+      "term": "Masks",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300262834",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q161524"
+    },
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116309845",
+  "isTimelineWork": false,
+  "GalleryNumber": "533"
+}

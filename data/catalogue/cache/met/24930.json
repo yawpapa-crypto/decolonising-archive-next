@@ -1,0 +1,82 @@
+{
+  "objectID": 24930,
+  "isHighlight": false,
+  "accessionNumber": "1987.397",
+  "accessionYear": "1987",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/aa/original/DT5804.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/aa/web-large/DT5804.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/aa/original/DT5805.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/DT5806.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/DT5807.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/DT5808.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/DT5809.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 9504,
+      "role": "Gunsmith",
+      "name": "Gabriel de Algora",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "Arms and Armor",
+  "objectName": "Flintlock gun",
+  "title": "Gun with Flintlock a la moda",
+  "culture": "Spanish, Madrid",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Gunsmith",
+  "artistPrefix": "",
+  "artistDisplayName": "Gabriel de Algora",
+  "artistDisplayBio": "Spanish, Madrid, documented 1733–died 1761",
+  "artistSuffix": "",
+  "artistAlphaSort": "Algora, Gabriel de",
+  "artistNationality": "Spanish",
+  "artistBeginDate": "1733",
+  "artistEndDate": "1761",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "dated 1744",
+  "objectBeginDate": 1744,
+  "objectEndDate": 1744,
+  "medium": "Steel, gold, wood",
+  "dimensions": "L. of barrel 38 3/4 in. (98.4 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": "Length barrel",
+      "elementMeasurements": {
+        "Length": 98.43
+      }
+    }
+  ],
+  "creditLine": "Purchase, Gifts of George D. Pratt, Charles M. Schott Jr., and Bashford Dean, and Bashford Dean Memorial Collection, Funds from various donors, by exchange, 1987",
+  "geographyType": "Country of Origin",
+  "city": "Madrid",
+  "state": "",
+  "county": "",
+  "country": "Spain",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Firearms",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/24930",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116378852",
+  "isTimelineWork": false,
+  "GalleryNumber": "375"
+}

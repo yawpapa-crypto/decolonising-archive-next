@@ -1,0 +1,89 @@
+{
+  "objectID": 231255,
+  "isHighlight": false,
+  "accessionNumber": "2006.35",
+  "accessionYear": "2006",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP137569.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP137569.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP137570.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP137567.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP137568.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 43640,
+      "role": "Maker",
+      "name": "Camillo Mariani",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500009218",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q2528587",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Statue",
+  "title": "Mother ape",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Camillo Mariani",
+  "artistDisplayBio": "Italian, 1567–1611",
+  "artistSuffix": "",
+  "artistAlphaSort": "Mariani Camillo",
+  "artistNationality": "Italian",
+  "artistBeginDate": "1567",
+  "artistEndDate": "1611",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q2528587",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500009218",
+  "objectDate": "1595–96",
+  "objectBeginDate": 1595,
+  "objectEndDate": 1596,
+  "medium": "Bronze",
+  "dimensions": "Overall (confirmed): 25 1/8 × 13 × 20 5/8 in., 192 lb. (63.8 × 33 × 52.4 cm, 87.0906 kg)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "confirmed",
+      "elementMeasurements": {
+        "Depth": 52.387604,
+        "Height": 63.817627,
+        "Weight": 87.09063,
+        "Width": 33.020065
+      }
+    }
+  ],
+  "creditLine": "European Sculpture and Decorative Arts Fund, 2006",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture-Bronze",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/231255",
+  "tags": [
+    {
+      "term": "Monkeys",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250028",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q1367"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

@@ -1,0 +1,89 @@
+{
+  "objectID": 206332,
+  "isHighlight": false,
+  "accessionNumber": "1975.219a",
+  "accessionYear": "1975",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP105793.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP105793.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP105794.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/225500.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 166067,
+      "role": "Designer",
+      "name": "Designed by Sir Lawrence Alma-Tadema",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500008100",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q240526",
+      "gender": ""
+    },
+    {
+      "constituentID": 36143,
+      "role": "Manufacturer",
+      "name": "Johnstone Norman &amp; Co., London",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500337022",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Settee",
+  "title": "Settee",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Designer",
+  "artistPrefix": "Designed by",
+  "artistDisplayName": "Sir Lawrence Alma-Tadema",
+  "artistDisplayBio": "British (born The Netherlands), Dronrijp 1836–1912 Wiesbaden",
+  "artistSuffix": "",
+  "artistAlphaSort": "Alma-Tadema, Lawrence, Sir",
+  "artistNationality": "British, born The Netherlands",
+  "artistBeginDate": "1836",
+  "artistEndDate": "1912",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q240526",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500008100",
+  "objectDate": "ca. 1885",
+  "objectBeginDate": 1880,
+  "objectEndDate": 1890,
+  "medium": "Ebony, box and sandalwood, cedar, ivory inlay, incrustations of mother-of-pearl and brass",
+  "dimensions": "Overall: 35 1/2 × 58 1/4 × 28 in. (90.2 × 148 × 71.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 71.12014,
+        "Height": 90.17018,
+        "Width": 147.95529
+      }
+    }
+  ],
+  "creditLine": "Bequest of Elizabeth Love Godwin, 1975",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Woodwork-Furniture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-06-06T04:54:27.217Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/206332",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": "556"
+}

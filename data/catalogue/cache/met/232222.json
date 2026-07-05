@@ -1,0 +1,91 @@
+{
+  "objectID": 232222,
+  "isHighlight": false,
+  "accessionNumber": "2007.68",
+  "accessionYear": "2007",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP-13486-053.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP-13486-053.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP-13486-054.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/SF2007_68_silver marks.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/SF2007_68_mark.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 161847,
+      "role": "Designer",
+      "name": "Christopher Dresser",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500042183",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q1086650",
+      "gender": ""
+    },
+    {
+      "constituentID": 45146,
+      "role": "Manufactory",
+      "name": "Watcombe Pottery Co.",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Jug",
+  "title": "Jug",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Designer",
+  "artistPrefix": "",
+  "artistDisplayName": "Christopher Dresser",
+  "artistDisplayBio": "British, Glasgow, Scotland 1834–1904 Mulhouse",
+  "artistSuffix": "",
+  "artistAlphaSort": "Dresser, Christopher",
+  "artistNationality": "British, Scottish",
+  "artistBeginDate": "1834",
+  "artistEndDate": "1904",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q1086650",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500042183",
+  "objectDate": "ca. 1872–75",
+  "objectBeginDate": 1867,
+  "objectEndDate": 1880,
+  "medium": "Earthenware, silver mounts",
+  "dimensions": "8 5/8 × 6 1/2 × 6 in., 28.216oz. (21.9 × 16.5 × 15.2 cm, 800g)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 15.24003,
+        "Height": 21.907543,
+        "Weight": 0.8,
+        "Width": 16.510033
+      }
+    }
+  ],
+  "creditLine": "The Charles E. Sampson Memorial Fund, 2007",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Pottery",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/232222",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116240624",
+  "isTimelineWork": false,
+  "GalleryNumber": "516"
+}

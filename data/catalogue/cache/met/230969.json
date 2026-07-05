@@ -1,0 +1,112 @@
+{
+  "objectID": 230969,
+  "isHighlight": false,
+  "accessionNumber": "2003.431",
+  "accessionYear": "2003",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP150938.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP150938.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/271628.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 33500,
+      "role": "Artist",
+      "name": "Cameo by Benedetto Pistrucci",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500064192",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q327504",
+      "gender": ""
+    },
+    {
+      "constituentID": 45628,
+      "role": "Maker",
+      "name": "Mount by Carlo Giuliano",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500064490",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q3659440",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Cameo",
+  "title": "Head of Medusa",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "Cameo by",
+  "artistDisplayName": "Benedetto Pistrucci",
+  "artistDisplayBio": "Italian, 1783–1855, active England",
+  "artistSuffix": "",
+  "artistAlphaSort": "Pistrucci, Benedetto",
+  "artistNationality": "Italian",
+  "artistBeginDate": "1783",
+  "artistEndDate": "1855",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q327504",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500064192",
+  "objectDate": "cameo 1840–50, mount ca. 1860",
+  "objectBeginDate": 1840,
+  "objectEndDate": 1860,
+  "medium": "Red jasper mounted in gold with white enamel",
+  "dimensions": "Overall (visible cameo): 2 1/8 in. (5.3 cm), 53.2 mm;\r\nOverall (in setting): 2 11/16 x 2 11/16 in. (6.8 x 6.8 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 5.32
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 5.32
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "in setting",
+      "elementMeasurements": {
+        "Depth": 6.8262634,
+        "Width": 6.8262634
+      }
+    }
+  ],
+  "creditLine": "Purchase, Assunta Sommella Peluso, Ada Peluso, and Romano I. Peluso Gift, in memory of Ignazio Peluso, 2003",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Lapidary Work-Gems",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-06-24T04:50:17.007Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/230969",
+  "tags": [
+    {
+      "term": "Heads",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300375054",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q3409626"
+    },
+    {
+      "term": "Medusa",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901000543",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q160730"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116306687",
+  "isTimelineWork": true,
+  "GalleryNumber": "516"
+}

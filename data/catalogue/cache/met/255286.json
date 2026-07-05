@@ -1,0 +1,78 @@
+{
+  "objectID": 255286,
+  "isHighlight": false,
+  "accessionNumber": "69.11.70",
+  "accessionYear": "1969",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/gr/original/DP1289.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/gr/web-large/DP1289.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/gr/original/DP1289_69.11.70.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 52739,
+      "role": "Artist",
+      "name": "Attributed to the Group of Copenhagen 3817",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500067997",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "Greek and Roman Art",
+  "objectName": "Krateriskos",
+  "title": "Terracotta krateriskos (small mixing bowl)",
+  "culture": "Etruscan",
+  "period": "Late Classical or Hellenistic",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "Attributed to the",
+  "artistDisplayName": "Group of Copenhagen 3817",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Group of Copenhagen 3817",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500067997",
+  "objectDate": "ca. 300 BCE",
+  "objectBeginDate": -300,
+  "objectEndDate": -300,
+  "medium": "Terracotta",
+  "dimensions": "H. 9 1/2 in. (24.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 24.13
+      }
+    }
+  ],
+  "creditLine": "Purchase, Arthur Darby Nock Bequest, in memory of Gisela M. A. Richter, 1969",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Vases",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/255286",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116288024",
+  "isTimelineWork": false,
+  "GalleryNumber": "170"
+}

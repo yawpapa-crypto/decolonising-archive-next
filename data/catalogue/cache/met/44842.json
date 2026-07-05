@@ -1,0 +1,110 @@
+{
+  "objectID": 44842,
+  "isHighlight": false,
+  "accessionNumber": "1975.268.163",
+  "accessionYear": "1975",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DP-28032-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DP-28032-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/as/original/DP-28032-002.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-28032-003.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-28032-004.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-28032-005.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-28032-006.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-28032-007.jpg"
+  ],
+  "constituents": null,
+  "department": "Asian Art",
+  "objectName": "Figure",
+  "title": "Fudō Myōō (Achala Vidyaraja)",
+  "culture": "Japan",
+  "period": "Heian period (794–1185)",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "12th century",
+  "objectBeginDate": 1100,
+  "objectEndDate": 1199,
+  "medium": "Wood with lacquer, gold leaf, and color; joined-woodblock construction (yosegi-zukuri)",
+  "dimensions": "H. 63 3/4 in. (162 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 162
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "stand",
+      "elementMeasurements": {
+        "Depth": 59.69012,
+        "Width": 76.20015
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "Height with base",
+      "elementMeasurements": {
+        "Height": 204.47041
+      }
+    }
+  ],
+  "creditLine": "The Harry G. C. Packard Collection of Asian Art, Gift of Harry G. C. Packard, and Purchase, Fletcher, Rogers, Harris Brisbane Dick, and Louis V. Bell Funds, Joseph Pulitzer Bequest, and The Annenberg Fund Inc. Gift, 1975",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-02-28T04:58:01.027Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/44842",
+  "tags": [
+    {
+      "term": "Swords",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300037048",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q12791"
+    },
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    },
+    {
+      "term": "Buddhism",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300073738",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q748"
+    },
+    {
+      "term": "Deities",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300343850",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q178885"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q83562466",
+  "isTimelineWork": true,
+  "GalleryNumber": "224"
+}

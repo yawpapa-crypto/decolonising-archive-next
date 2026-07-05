@@ -1,0 +1,81 @@
+{
+  "objectID": 310874,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.445",
+  "accessionYear": "1978",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": null,
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Gold weight",
+  "title": "Gold Weight: Lobster Claw",
+  "culture": "Asante",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "19th–20th century",
+  "objectBeginDate": 1800,
+  "objectEndDate": 2000,
+  "medium": "Brass",
+  "dimensions": "H. 1 1/2 x W. 2 1/16 in. (3.8 x 5.2 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 3.81
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 5.2388,
+        "Width": 3.81
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of William W. Brill, 1961",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Ghana",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metal-Implements",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2024-05-07T04:52:08.193Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310874",
+  "tags": [
+    {
+      "term": "Lobsters",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300249724",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q61864890"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

@@ -1,0 +1,92 @@
+{
+  "objectID": 231686,
+  "isHighlight": false,
+  "accessionNumber": "1974.378.5a, b",
+  "accessionYear": "1974",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/204373.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/204373.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/204372.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/204379.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/204381.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 34368,
+      "role": "Maker",
+      "name": "Martin-Guillaume Biennais",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500061154",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q1694164",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Dish with cover",
+  "title": "Dish with cover (part of dining service)",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Martin-Guillaume Biennais",
+  "artistDisplayBio": "French, 1764–1843, active ca. 1796–1819",
+  "artistSuffix": "",
+  "artistAlphaSort": "Biennais, Martin-Guillaume",
+  "artistNationality": "French",
+  "artistBeginDate": "1764",
+  "artistEndDate": "1843",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q1694164",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500061154",
+  "objectDate": "ca. 1805",
+  "objectBeginDate": 1800,
+  "objectEndDate": 1810,
+  "medium": "Silver gilt",
+  "dimensions": "4 1/4 × 10 1/4 in. (10.8 × 26 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 10.795022,
+        "Width": 26.035051
+      }
+    }
+  ],
+  "creditLine": "Gift of Audrey B. Love, in memory of her husband, C. Ruxton Love Jr., 1974",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2020-11-11T04:39:11.573Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/231686",
+  "tags": [
+    {
+      "term": "Eagles",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250049",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q2092297"
+    },
+    {
+      "term": "Coat of Arms",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300126352",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q14659"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

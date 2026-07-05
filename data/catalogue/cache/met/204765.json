@@ -1,0 +1,100 @@
+{
+  "objectID": 204765,
+  "isHighlight": false,
+  "accessionNumber": "67.155.11",
+  "accessionYear": "1967",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/ES6008.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/ES6008.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/ES2167.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/ES2168.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/197272.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/131296.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/131297.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/100582.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/100583.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 162325,
+      "role": "Artist",
+      "name": "Auguste Rodin",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500016619",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q30755",
+      "gender": ""
+    },
+    {
+      "constituentID": 39712,
+      "role": "Founder",
+      "name": "Cast by Alexis Rudier",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500331542",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q56246396",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Statue",
+  "title": "The Age of Bronze (L'Age d'airain)",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Auguste Rodin",
+  "artistDisplayBio": "French, Paris 1840–1917 Meudon",
+  "artistSuffix": "",
+  "artistAlphaSort": "Rodin, Auguste",
+  "artistNationality": "French",
+  "artistBeginDate": "1840",
+  "artistEndDate": "1917",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q30755",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500016619",
+  "objectDate": "modeled 1876, cast in reduced size 19th century",
+  "objectBeginDate": 1876,
+  "objectEndDate": 1899,
+  "medium": "Bronze",
+  "dimensions": "Overall: 41 × 14 1/2 × 13 3/4 in. (104.1 × 36.8 × 34.9 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 34.92507,
+        "Height": 104.140205,
+        "Width": 36.830074
+      }
+    }
+  ],
+  "creditLine": "Bequest of Susan Vanderpoel Clark, 1967",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture-Bronze",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2022-08-09T04:53:06.323Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/204765",
+  "tags": [
+    {
+      "term": "Male Nudes",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300189568",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q40446"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

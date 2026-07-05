@@ -1,0 +1,81 @@
+{
+  "objectID": 310751,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.308",
+  "accessionYear": "1978",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": null,
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Gold weight",
+  "title": "Gold Weight: Zoomorphic",
+  "culture": "Asante",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "19th–20th century",
+  "objectBeginDate": 1800,
+  "objectEndDate": 2000,
+  "medium": "Brass",
+  "dimensions": "H. 1 1/8 x W. 2 in. (2.9 x 5.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 1.91
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 5.08,
+        "Height": 2.8575
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of Nelson A. Rockefeller, 1964",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Ghana",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "Volta River region",
+  "classification": "Metal-Implements",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2024-05-07T04:52:08.193Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310751",
+  "tags": [
+    {
+      "term": "Animals",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300249525",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q729"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

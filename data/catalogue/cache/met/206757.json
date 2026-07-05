@@ -1,0 +1,108 @@
+{
+  "objectID": 206757,
+  "isHighlight": false,
+  "accessionNumber": "1978.516.6",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP158211.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP158211.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP158212.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP158260.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/070.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/071.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/072.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DT2572.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/ES4761.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/ES2862.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/215076.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/215077.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/237792.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/237793.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 45724,
+      "role": "Artist",
+      "name": "After Giovanni Battista di Jacopo",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500014451",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q312617",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Statuette group",
+  "title": "Pluto and Cerberus",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "After",
+  "artistDisplayName": "Giovanni Battista di Jacopo",
+  "artistDisplayBio": "Italian, Florence 1494–1540 Fontainebleau",
+  "artistSuffix": "",
+  "artistAlphaSort": "Jacopo Giovanni Battista di",
+  "artistNationality": "Italian",
+  "artistBeginDate": "1494",
+  "artistEndDate": "1540",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q312617",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500014451",
+  "objectDate": "early 17th century",
+  "objectBeginDate": 1600,
+  "objectEndDate": 1615,
+  "medium": "Bronze",
+  "dimensions": "Height: 11 3/8; Width (elbow to forearm): 3 5/8; maximun depth (diagonal from tree trunk support behind leg to front edge of base): 5 1/16 in. (28.9 x 9.2 x 12.9 cm); Wt. 6lb. (2.7216kg)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "confirmed",
+      "elementMeasurements": {
+        "Depth": 12.8588,
+        "Height": 28.8926,
+        "Weight": 2.7216,
+        "Width": 9.2075
+      }
+    }
+  ],
+  "creditLine": "Gift of Mrs. Howard J. Sachs and Mr. Peter G. Sachs, in memory of Miss Edith L. Sachs, 1978",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture-Bronze",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/206757",
+  "tags": [
+    {
+      "term": "Male Nudes",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300189568",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q40446"
+    },
+    {
+      "term": "Dogs",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300265714",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q144"
+    },
+    {
+      "term": "Pluto",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901001954",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q152262"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116309325",
+  "isTimelineWork": false,
+  "GalleryNumber": "532"
+}

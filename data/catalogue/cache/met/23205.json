@@ -1,0 +1,98 @@
+{
+  "objectID": 23205,
+  "isHighlight": true,
+  "accessionNumber": "29.154.3",
+  "accessionYear": "1929",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/aa/original/LC-29_154_3-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/aa/web-large/LC-29_154_3-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-29_154_3-002.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-29_154_3-003.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-29_154_3-001gauntlets.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-29_154_3n-003.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-29_154_3j_k-002.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-29_154_3p-002-2.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-29_154_3i-002-2.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-29_154_3p-009-2.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/DT778.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/101070.jpg"
+  ],
+  "constituents": null,
+  "department": "Arms and Armor",
+  "objectName": "Armor",
+  "title": "Armor",
+  "culture": "Italian",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1400–1450 and later",
+  "objectBeginDate": 1375,
+  "objectEndDate": 1950,
+  "medium": "Steel, copper alloy, textile, leather",
+  "dimensions": "H. 66 1/2 in. (168.9 cm), Wt. 41 lb. (18.6 kg)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "Left gauntlet",
+      "elementMeasurements": {
+        "Depth": 11,
+        "Length": 16.668783,
+        "Weight": 0.367,
+        "Width": 13.2
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 168.9103
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "Right gauntlet",
+      "elementMeasurements": {
+        "Depth": 12.2,
+        "Length": 15.9,
+        "Weight": 0.429,
+        "Width": 13.5
+      }
+    }
+  ],
+  "creditLine": "Bashford Dean Memorial Collection, Gift of Helen Fahnestock Hubbard, in memory of her father, Harris C. Fahnestock, 1929",
+  "geographyType": "Country of Origin",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Italy",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Armor for Man",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-06-30T17:03:54.367Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/23205",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q78810519",
+  "isTimelineWork": true,
+  "GalleryNumber": ""
+}

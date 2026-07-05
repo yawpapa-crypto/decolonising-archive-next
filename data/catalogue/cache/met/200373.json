@@ -1,0 +1,98 @@
+{
+  "objectID": 200373,
+  "isHighlight": false,
+  "accessionNumber": "48.187.413, .414",
+  "accessionYear": "1948",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/145786.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/145786.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/145789.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/145790.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/145791.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/145792.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/145794.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 34244,
+      "role": "Maker",
+      "name": "Joseph-Pierre-Jacques Duguay",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500069979",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Ewer and basin",
+  "title": "Ewer and basin",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Joseph-Pierre-Jacques Duguay",
+  "artistDisplayBio": "born 1724, master 1756, recorded 1793",
+  "artistSuffix": "",
+  "artistAlphaSort": "Duguay Joseph-Pierre-Jacques",
+  "artistNationality": "",
+  "artistBeginDate": "1724",
+  "artistEndDate": "1824",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500069979",
+  "objectDate": "1761–62",
+  "objectBeginDate": 1761,
+  "objectEndDate": 1762,
+  "medium": "Silver",
+  "dimensions": "Height (ewer .413): 9 7/16 in. (24 cm);\r\nOverall (basin .414): 2 9/16 × 8 7/16 × 13 9/16 in. (6.5 × 21.4 × 34.4 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": "historic dimension",
+      "elementMeasurements": {
+        "Weight": 1.6161044
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "basin .414",
+      "elementMeasurements": {
+        "Depth": 34.44882,
+        "Height": 6.508763,
+        "Width": 21.431293
+      }
+    },
+    {
+      "elementName": "Height",
+      "elementDescription": "ewer .413",
+      "elementMeasurements": {
+        "Height": 23.971298
+      }
+    }
+  ],
+  "creditLine": "Bequest of Catherine D. Wentworth, 1948",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2023-02-07T04:46:51.34Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/200373",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116310220",
+  "isTimelineWork": false,
+  "GalleryNumber": "522"
+}

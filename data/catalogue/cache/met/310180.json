@@ -1,0 +1,85 @@
+{
+  "objectID": 310180,
+  "isHighlight": false,
+  "accessionNumber": "1976.239",
+  "accessionYear": "1976",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP-30675-002.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP-30675-002.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-30675-001.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 222923,
+      "role": "Artist",
+      "name": "Lower Niger Valley caster",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Altar ring",
+  "title": "Altar Ring",
+  "culture": "Yoruba peoples, Ife group",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Lower Niger Valley caster",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Lower Niger Valley caster",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "16th century",
+  "objectBeginDate": 1500,
+  "objectEndDate": 1600,
+  "medium": "Copper alloy",
+  "dimensions": "H. 2 1/2 × Diam. 7 in. (6.4 × 17.8 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 17.780035,
+        "Height": 6.350013
+      }
+    }
+  ],
+  "creditLine": "Rogers Fund, 1976",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Nigeria",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "Lower Niger River region",
+  "classification": "Egyptian Blue-Implements",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-05-31T04:50:53.377Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310180",
+  "tags": [
+    {
+      "term": "Birds",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300266506",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q5113"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": "343"
+}

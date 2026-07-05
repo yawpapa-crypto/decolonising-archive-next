@@ -1,0 +1,79 @@
+{
+  "objectID": 206306,
+  "isHighlight": false,
+  "accessionNumber": "1974.378.25",
+  "accessionYear": "1974",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/204376.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/204376.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/204382.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 34368,
+      "role": "Maker",
+      "name": "Martin-Guillaume Biennais",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500061154",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q1694164",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Plate",
+  "title": "Plate (part of a dining service)",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Martin-Guillaume Biennais",
+  "artistDisplayBio": "French, 1764–1843, active ca. 1796–1819",
+  "artistSuffix": "",
+  "artistAlphaSort": "Biennais, Martin-Guillaume",
+  "artistNationality": "French",
+  "artistBeginDate": "1764",
+  "artistEndDate": "1843",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q1694164",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500061154",
+  "objectDate": "ca. 1805",
+  "objectBeginDate": 1800,
+  "objectEndDate": 1810,
+  "medium": "Silver gilt",
+  "dimensions": "1 × 8 1/4 in. (2.5 × 21 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 20.955042,
+        "Height": 2.540005
+      }
+    }
+  ],
+  "creditLine": "Gift of Audrey B. Love, in memory of her husband, C. Ruxton Love Jr., 1974",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2021-04-06T04:41:04.967Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/206306",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

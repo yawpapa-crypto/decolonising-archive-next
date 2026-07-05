@@ -1,0 +1,83 @@
+{
+  "objectID": 317692,
+  "isHighlight": false,
+  "accessionNumber": "1994.312.20",
+  "accessionYear": "1994",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP-30066-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP-30066-001.jpg",
+  "additionalImages": [],
+  "constituents": null,
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Weight",
+  "title": "Gold Weight: Mudfish",
+  "culture": "Akan peoples",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "18th–19th century",
+  "objectBeginDate": 1700,
+  "objectEndDate": 1800,
+  "medium": "Brass",
+  "dimensions": "Height 1-7/8 in.",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 0.97,
+        "Height": 4.7625,
+        "Width": 5.08
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 0.97,
+        "Width": 5.08
+      }
+    }
+  ],
+  "creditLine": "Gift of Ernst Anspach, 1994",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Ghana",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metal-Implements",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-05-20T04:49:14.863Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/317692",
+  "tags": [
+    {
+      "term": "Fish",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300266085",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q152"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

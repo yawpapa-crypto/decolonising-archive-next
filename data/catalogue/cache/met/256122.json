@@ -1,0 +1,73 @@
+{
+  "objectID": 256122,
+  "isHighlight": false,
+  "accessionNumber": "1992.11.66",
+  "accessionYear": "1992",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/gr/original/DP322168.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/gr/web-large/DP322168.jpg",
+  "additionalImages": [],
+  "constituents": null,
+  "department": "Greek and Roman Art",
+  "objectName": "Head of a deity",
+  "title": "Marble head of a deity wearing a Dionysiac fillet",
+  "culture": "Roman",
+  "period": "Early Imperial, Julio-Claudian",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 14–68 CE",
+  "objectBeginDate": 14,
+  "objectEndDate": 68,
+  "medium": "Marble",
+  "dimensions": "H. 11 15/16 in. (30.4 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 30.39
+      }
+    }
+  ],
+  "creditLine": "Purchase, Anonymous Gift, in memory of Professor Charles M. Edwards, 1992",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Stone Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-10-24T04:51:05.727Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/256122",
+  "tags": [
+    {
+      "term": "Heads",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300375054",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q3409626"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116288228",
+  "isTimelineWork": true,
+  "GalleryNumber": "163"
+}

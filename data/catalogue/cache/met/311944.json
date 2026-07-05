@@ -1,0 +1,77 @@
+{
+  "objectID": 311944,
+  "isHighlight": true,
+  "accessionNumber": "1978.412.1504",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP23084.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP23084.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP134512.jpg"
+  ],
+  "constituents": null,
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Bird head figure",
+  "title": "Bird Head",
+  "culture": "Morobe province",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "Date unknown",
+  "objectBeginDate": -1000,
+  "objectEndDate": -100,
+  "medium": "Greenstone, ocher",
+  "dimensions": "H. 4 1/2 x W. 2 x D. 4 1/2 in. (11.4 x 5.1 x 11.4 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 11.43,
+        "Height": 11.43,
+        "Width": 5.08
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Purchase, Nelson A. Rockefeller Gift, 1966",
+  "geographyType": "",
+  "city": "",
+  "state": "Morobe province",
+  "county": "",
+  "country": "Papua New Guinea",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Stone-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-20T04:50:39.43Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/311944",
+  "tags": [
+    {
+      "term": "Birds",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300266506",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q5113"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q29384286",
+  "isTimelineWork": true,
+  "GalleryNumber": "354"
+}

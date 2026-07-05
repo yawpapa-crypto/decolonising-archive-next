@@ -1,0 +1,120 @@
+{
+  "objectID": 201768,
+  "isHighlight": false,
+  "accessionNumber": "54.147.65a–c",
+  "accessionYear": "1954",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP229677.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP229677.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP229678.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP229679.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP229691.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 164832,
+      "role": "Manufactory",
+      "name": "Meissen Manufactory",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500054662",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q822407",
+      "gender": ""
+    },
+    {
+      "constituentID": 34161,
+      "role": "Modeler",
+      "name": "Johann Gottlieb Kirchner",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500062549",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q15734321",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Table fountain",
+  "title": "Fountain and basin",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Manufactory",
+  "artistPrefix": "",
+  "artistDisplayName": "Meissen Manufactory",
+  "artistDisplayBio": "German, 1710–present",
+  "artistSuffix": "",
+  "artistAlphaSort": "Meissen Manufactory",
+  "artistNationality": "German",
+  "artistBeginDate": "1710",
+  "artistEndDate": "9999",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q822407",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500054662",
+  "objectDate": "ca. 1727–32",
+  "objectBeginDate": 1722,
+  "objectEndDate": 1737,
+  "medium": "Hard-paste porcelain decorated in polychrome enamels, gold; silver spout",
+  "dimensions": "Overall (assembled confirmed): 24 1/2 x 18 1/8 x 16 1/2 in. (62.2 x 46 x 41.9 cm); Other (54.147.65 a (fountain)): 13 1/4in. (33.7cm); Other (54.147.65 b (plinth)): 11 5/16 x 10in. (28.7 x 25.4cm); Other (basin confirmed): 3 1/8 x 18 3/8 x 13 5/8 in. (7.9 x 46.7 x 34.6 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": "54.147.65 b (plinth)",
+      "elementMeasurements": {
+        "Height": 28.7,
+        "Width": 25.4
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "54.147.65 a (fountain)",
+      "elementMeasurements": {
+        "Height": 33.7
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "assembled confirmed",
+      "elementMeasurements": {
+        "Depth": 41.910084,
+        "Height": 62.230125,
+        "Width": 46.037594
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "basin confirmed",
+      "elementMeasurements": {
+        "Height": 7.9375157,
+        "Length": 46.672592,
+        "Width": 34.6
+      }
+    }
+  ],
+  "creditLine": "Gift of R. Thornton Wilson, in memory of Florence Ellsworth Wilson, 1954",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Porcelain",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/201768",
+  "tags": [
+    {
+      "term": "Fountains",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300006179",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q483453"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116309846",
+  "isTimelineWork": false,
+  "GalleryNumber": "533"
+}

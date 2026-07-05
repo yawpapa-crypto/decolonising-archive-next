@@ -1,0 +1,111 @@
+{
+  "objectID": 45692,
+  "isHighlight": false,
+  "accessionNumber": "14.76.13",
+  "accessionYear": "1914",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/LC-14_76_13_jps-008.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/LC-14_76_13_jps-008.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/as/original/LC-14_76_13_jps-007.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/LC-14_76_13_jps-011.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/LC-14_76_13_jps-006.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/LC-14_76_13_jps-009.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/LC-14_76_13_jps-012.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/LC-14_76_13_jps-013.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/LC-14_76_13_jps-014.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/LC-14_76_13_jps-015.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/LC-14_76_13_jps-016.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/LC-14_76_13_jps-017.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 11724,
+      "role": "Artist",
+      "name": "Seal of Kano Motonobu",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500121002",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q1078015",
+      "gender": ""
+    }
+  ],
+  "department": "Asian Art",
+  "objectName": "Hanging scroll",
+  "title": "River Landscape in Evening",
+  "culture": "Japan",
+  "period": "Muromachi period (1392–1573) or Momoyama period (1573–1615)",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "Seal of",
+  "artistDisplayName": "Kano Motonobu",
+  "artistDisplayBio": "Japanese, 1477–1559",
+  "artistSuffix": "",
+  "artistAlphaSort": "Kano Motonobu",
+  "artistNationality": "Japanese",
+  "artistBeginDate": "1477",
+  "artistEndDate": "1559",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q1078015",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500121002",
+  "objectDate": "16th century",
+  "objectBeginDate": 1600,
+  "objectEndDate": 1699,
+  "medium": "Hanging scroll; ink on paper",
+  "dimensions": "Image: 25 1/2 × 12 1/2 in. (64.8 × 31.8 cm)\r\nOverall with mounting: 59 1/2 × 18 1/4 in. (151.1 × 46.4 cm)\r\nOverall with knobs: 59 1/2. × 20 1/8 in. × 1 in. (diam. of knobs)  (151.1 × 51.1 × 2.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall with knobs",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 2.540005,
+        "Height": 151.1303,
+        "Width": 51.117603
+      }
+    },
+    {
+      "elementName": "Overall with mounting",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 151.1303,
+        "Width": 46.35509
+      }
+    },
+    {
+      "elementName": "Image",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 64.77013,
+        "Width": 31.750063
+      }
+    }
+  ],
+  "creditLine": "Charles Stewart Smith Collection, Gift of Mrs. Charles Stewart Smith, Charles Stewart Smith Jr., and Howard Caswell Smith, in memory of Charles Stewart Smith, 1914",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Paintings",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-02-28T04:58:01.027Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/45692",
+  "tags": [
+    {
+      "term": "Landscapes",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132294",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q191163"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q78842413",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

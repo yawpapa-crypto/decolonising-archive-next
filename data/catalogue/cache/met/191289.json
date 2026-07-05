@@ -1,0 +1,87 @@
+{
+  "objectID": 191289,
+  "isHighlight": false,
+  "accessionNumber": "10.23",
+  "accessionYear": "1910",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/7381.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/7381.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 34262,
+      "role": "Artist",
+      "name": "Medalist: Jules Edouard Roiné",
+      "constituentULAN_URL": "(not assigned)",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q17015745",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Medallion-plaque",
+  "title": "Memorial of Circle of Friends of the Medallion, 1909",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "Medalist:",
+  "artistDisplayName": "Jules Edouard Roiné",
+  "artistDisplayBio": "French, Nantes 1857–1916",
+  "artistSuffix": "",
+  "artistAlphaSort": "Roiné Jules Edouard",
+  "artistNationality": "French",
+  "artistBeginDate": "1857",
+  "artistEndDate": "1916",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q17015745",
+  "artistULAN_URL": "(not assigned)",
+  "objectDate": "1909",
+  "objectBeginDate": 1909,
+  "objectEndDate": 1909,
+  "medium": "Bronze, cast",
+  "dimensions": "Diameter: 12 1/2 in. (318 mm)",
+  "measurements": [
+    {
+      "elementName": "Diameter",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 31.750063
+      }
+    }
+  ],
+  "creditLine": "Gift of Circle of Friends of the Medallion, 1910",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Medals and Plaquettes",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2021-06-05T04:45:37.2Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/191289",
+  "tags": [
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    },
+    {
+      "term": "Portraits",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300015637",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q134307"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

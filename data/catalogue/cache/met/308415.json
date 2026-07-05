@@ -1,0 +1,104 @@
+{
+  "objectID": 308415,
+  "isHighlight": false,
+  "accessionNumber": "63.226.13",
+  "accessionYear": "1963",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP-23896-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP-23896-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-23896-003.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-23896-004.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-23896-002.jpg"
+  ],
+  "constituents": null,
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Vessel",
+  "title": "Architectural Vessel",
+  "culture": "Moche",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "400–600 CE",
+  "objectBeginDate": 400,
+  "objectEndDate": 600,
+  "medium": "Ceramic",
+  "dimensions": "H. 8 7/16 × W. 5 1/2 × D. 8 in. (21.4 × 14 × 20.3 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Width": 13.97
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 21.5106,
+        "Width": 13.97
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 20.32004,
+        "Height": 21.431293,
+        "Width": 13.970028
+      }
+    }
+  ],
+  "creditLine": "Gift of Nathan Cummings, 1963",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Peru",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Containers",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-05-31T04:50:53.377Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/308415",
+  "tags": [
+    {
+      "term": "Animals",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300249525",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q729"
+    },
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    },
+    {
+      "term": "Snails",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300249702",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q308841"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": true,
+  "GalleryNumber": "362"
+}

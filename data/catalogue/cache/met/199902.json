@@ -1,0 +1,124 @@
+{
+  "objectID": 199902,
+  "isHighlight": false,
+  "accessionNumber": "48.174.16a–p, aa–pp, r",
+  "accessionYear": "1948",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP-38555-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP-38555-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP-38555-002.jpg"
+  ],
+  "constituents": null,
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Chessmen and box",
+  "title": "Chessmen (32) and box",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1885",
+  "objectBeginDate": 1880,
+  "objectEndDate": 1890,
+  "medium": "Olive wood; leather, glass",
+  "dimensions": "Height (each queen): 2 3/4 in. (7 cm);\r\nHeight (each king): 3 1/4 in. (8.3 cm);\r\nHeight (each bishop): 2 1/2 in. (6.4 cm);\r\nHeight (each knight): 2 3/8 in. (6 cm);\r\nHeight (each rook): 2 1/2 in. (6.4 cm);\r\nHeight (each pawn): 2 in. (5.1 cm);\r\nOverall (original box): 1 3/4 × 12 1/2 × 10 1/4 in. (4.4 × 31.8 × 26 cm)",
+  "measurements": [
+    {
+      "elementName": "Height",
+      "elementDescription": "each queen",
+      "elementMeasurements": {
+        "Height": 6.985014
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "original box",
+      "elementMeasurements": {
+        "Depth": 26.035051,
+        "Height": 4.4450088,
+        "Width": 31.750063
+      }
+    },
+    {
+      "elementName": "Height",
+      "elementDescription": "each pawn",
+      "elementMeasurements": {
+        "Height": 5.08001
+      }
+    },
+    {
+      "elementName": "Height",
+      "elementDescription": "each rook",
+      "elementMeasurements": {
+        "Height": 6.350013
+      }
+    },
+    {
+      "elementName": "Height",
+      "elementDescription": "each knight",
+      "elementMeasurements": {
+        "Height": 6.032512
+      }
+    },
+    {
+      "elementName": "Height",
+      "elementDescription": "each bishop",
+      "elementMeasurements": {
+        "Height": 6.350013
+      }
+    },
+    {
+      "elementName": "Height",
+      "elementDescription": "each king",
+      "elementMeasurements": {
+        "Height": 8.255016
+      }
+    }
+  ],
+  "creditLine": "Gift of Gustavus A. Pfeiffer, 1948",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Chess Sets",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-02-24T04:53:56.223Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/199902",
+  "tags": [
+    {
+      "term": "Chess",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300222748",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q718"
+    },
+    {
+      "term": "Games",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300069657",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q11410"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

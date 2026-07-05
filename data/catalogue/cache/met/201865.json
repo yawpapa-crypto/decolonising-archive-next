@@ -1,0 +1,91 @@
+{
+  "objectID": 201865,
+  "isHighlight": false,
+  "accessionNumber": "55.113",
+  "accessionYear": "1955",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP-921-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP-921-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP-921-002.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 163601,
+      "role": "Artist",
+      "name": "After a model by Giambologna",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500016387",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q220136",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Statuette group",
+  "title": "Nessus and Dejanira",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "After a model by",
+  "artistDisplayName": "Giambologna",
+  "artistDisplayBio": "Netherlandish, Douai 1529–1608 Florence",
+  "artistSuffix": "",
+  "artistAlphaSort": "Giambologna",
+  "artistNationality": "Netherlandish",
+  "artistBeginDate": "1529",
+  "artistEndDate": "1608",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q220136",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500016387",
+  "objectDate": "modeled: early 17th century, cast: probably late 19th century",
+  "objectBeginDate": 1600,
+  "objectEndDate": 1899,
+  "medium": "Bronze",
+  "dimensions": "Overall: 16 1/4 × 14 5/8 × 7 3/8 in. (41.3 × 37.1 × 18.7 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 18.732538,
+        "Height": 41.27508,
+        "Width": 37.147575
+      }
+    }
+  ],
+  "creditLine": "Gift of Robert F. Hogue, 1955",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture-Bronze",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/201865",
+  "tags": [
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    },
+    {
+      "term": "Centaurs",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300379740",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q83203"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

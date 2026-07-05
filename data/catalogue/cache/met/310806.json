@@ -1,0 +1,85 @@
+{
+  "objectID": 310806,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.368",
+  "accessionYear": "1978",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 231466,
+      "role": "Artist",
+      "name": "Bamana numu (blacksmith)",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Mask",
+  "title": "Ntomo Mask",
+  "culture": "Bamana peoples",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Bamana numu (blacksmith)",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Bamana numu (blacksmith)",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "19th–20th century",
+  "objectBeginDate": 1800,
+  "objectEndDate": 2000,
+  "medium": "Wood, cowrie shells, seeds, latex or resin",
+  "dimensions": "H. 23 11/16 x W. 8 1/2 x D. 5 in. (60.1 x 21.6 x 12.7 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 12.7
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 12.7,
+        "Height": 60.1133,
+        "Width": 21.59
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of Mr. and Mrs. Julius Carlebach, 1959",
+  "geographyType": "",
+  "city": "Bamako region (?)",
+  "state": "",
+  "county": "",
+  "country": "Mali",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Wood-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-20T04:50:39.43Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310806",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": true,
+  "GalleryNumber": ""
+}

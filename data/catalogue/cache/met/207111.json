@@ -1,0 +1,98 @@
+{
+  "objectID": 207111,
+  "isHighlight": false,
+  "accessionNumber": "1982.60.222",
+  "accessionYear": "1982",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP156809.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP156809.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP253210.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP156805.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP156806.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP156807.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP156808.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 37076,
+      "role": "Manufactory",
+      "name": "Höchst Manufactory",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500331057",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q97105166",
+      "gender": ""
+    },
+    {
+      "constituentID": 165541,
+      "role": "Modeler",
+      "name": "Model attributed to Johann Christoph Ludwig von Lücke",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500084895",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q15031269",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Figure",
+  "title": "Harlequin",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Manufactory",
+  "artistPrefix": "",
+  "artistDisplayName": "Höchst Manufactory",
+  "artistDisplayBio": "German, 1746–1796",
+  "artistSuffix": "",
+  "artistAlphaSort": "Höchst Manufactory",
+  "artistNationality": "German",
+  "artistBeginDate": "1746",
+  "artistEndDate": "1796",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q97105166",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500331057",
+  "objectDate": "ca. 1750–53",
+  "objectBeginDate": 1745,
+  "objectEndDate": 1758,
+  "medium": "Hard-paste porcelain decorated in polychrome enamels, gold",
+  "dimensions": "Overall (confirmed): 8 1/4 x 4 3/8 x 3 9/16 in. (21 x 11.1 x 9 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "confirmed",
+      "elementMeasurements": {
+        "Depth": 9.048768,
+        "Height": 20.955042,
+        "Width": 11.112522
+      }
+    }
+  ],
+  "creditLine": "The Jack and Belle Linsky Collection, 1982",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Porcelain",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/207111",
+  "tags": [
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116307211",
+  "isTimelineWork": false,
+  "GalleryNumber": "538"
+}

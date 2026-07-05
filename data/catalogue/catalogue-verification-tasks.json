@@ -1,0 +1,812 @@
+[
+  {
+    "id": "task-ARED-GH-00005-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00005",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (Kofi Antubam authority record)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:45.191Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00007-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00007",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Baba Issaka authority record)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:48.081Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00008-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00008",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (Kweku Kakanu authority research record)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:49.551Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00008-broken_secondary_link",
+    "catalogueRecordId": "ARED-GH-00008",
+    "taskType": "broken_secondary_link",
+    "description": "Manual review required: broken secondary link (Kweku Kakanu authority research record)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:49.551Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00009-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00009",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (Nana McCarthy authority research record)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:49.787Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00009-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00009",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Nana McCarthy authority research record)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:49.787Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00010-broken_secondary_link",
+    "catalogueRecordId": "ARED-GH-00010",
+    "taskType": "broken_secondary_link",
+    "description": "Manual review required: broken secondary link (Fante Asafo flags visual system)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:51.061Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00010-community_authority_required",
+    "catalogueRecordId": "ARED-GH-00010",
+    "taskType": "community_authority_required",
+    "description": "Manual review required: community authority required (Fante Asafo flags visual system)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:51.061Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00011-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00011",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (Mankesim Asafo company flag)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:51.888Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00011-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00011",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Mankesim Asafo company flag)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:51.888Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00011-community_authority_required",
+    "catalogueRecordId": "ARED-GH-00011",
+    "taskType": "community_authority_required",
+    "description": "Manual review required: community authority required (Mankesim Asafo company flag)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:51.888Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00012-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00012",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (Asafo company flag with three-headed creature)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:51.949Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00012-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00012",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Asafo company flag with three-headed creature)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:51.949Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00012-community_authority_required",
+    "catalogueRecordId": "ARED-GH-00012",
+    "taskType": "community_authority_required",
+    "description": "Manual review required: community authority required (Asafo company flag with three-headed creature)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:51.949Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00013-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00013",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Asafo flag depicting Elmina forts)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:52.446Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00013-community_authority_required",
+    "catalogueRecordId": "ARED-GH-00013",
+    "taskType": "community_authority_required",
+    "description": "Manual review required: community authority required (Asafo flag depicting Elmina forts)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:52.446Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00014-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00014",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Art, Honor, and Ridicule: Fante Asafo Flags from Southern Ghana)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:52.979Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00015-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00015",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (Artist Alliance Gallery Asafo flag collection)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:53.193Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00015-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00015",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Artist Alliance Gallery Asafo flag collection)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:53.193Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00015-rights_review_required",
+    "catalogueRecordId": "ARED-GH-00015",
+    "taskType": "rights_review_required",
+    "description": "Manual review required: rights review required (Artist Alliance Gallery Asafo flag collection)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:53.193Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00016-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00016",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Fowler Museum Asafo flag collection)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:53.773Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00016-community_authority_required",
+    "catalogueRecordId": "ARED-GH-00016",
+    "taskType": "community_authority_required",
+    "description": "Manual review required: community authority required (Fowler Museum Asafo flag collection)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:53.773Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00017-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00017",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Horniman bicentenary Asafo flags by Baba Issaka)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:55.123Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00018-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00018",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Asafo Flags from Ghana exhibition)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:56.601Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00018-community_authority_required",
+    "catalogueRecordId": "ARED-GH-00018",
+    "taskType": "community_authority_required",
+    "description": "Manual review required: community authority required (Asafo Flags from Ghana exhibition)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:56.601Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00019-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00019",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (Adinkra prestige cloth)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:56.956Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00019-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00019",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Adinkra prestige cloth)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:56.956Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00020-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00020",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (Kola nut dyed and stamped pattern cloth (Adinkira))",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:57.009Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00020-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00020",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Kola nut dyed and stamped pattern cloth (Adinkira))",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:57.009Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00021-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00021",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (Geometric Akan gold weight)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:57.123Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00021-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00021",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Geometric Akan gold weight)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:57.123Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00022-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00022",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (Sankofa bird gold weight)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:57.330Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00022-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00022",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Sankofa bird gold weight)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:57.330Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00023-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00023",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Asante silk kente man's wrap)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:57.444Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00024-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00024",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (Ewe kente cloth from Keta area)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:57.523Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00024-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00024",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Ewe kente cloth from Keta area)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:57.523Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00025-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00025",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Ewe kente cloth converted into gown)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:22:57.652Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00026-rights_review_required",
+    "catalogueRecordId": "ARED-GH-00026",
+    "taskType": "rights_review_required",
+    "description": "Manual review required: rights review required (National Museum of Ghana institutional record)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:23:04.134Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00027-rights_review_required",
+    "catalogueRecordId": "ARED-GH-00027",
+    "taskType": "rights_review_required",
+    "description": "Manual review required: rights review required (KNUST Department of Communication Design)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:23:09.857Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00028-rights_review_required",
+    "catalogueRecordId": "ARED-GH-00028",
+    "taskType": "rights_review_required",
+    "description": "Manual review required: rights review required (KNUST Department of Publishing Studies)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:23:12.746Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00029-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00029",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Kumasi Technical University Department of Graphic Design)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:23:16.525Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00029-rights_review_required",
+    "catalogueRecordId": "ARED-GH-00029",
+    "taskType": "rights_review_required",
+    "description": "Manual review required: rights review required (Kumasi Technical University Department of Graphic Design)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:23:16.525Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00030-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00030",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (The place of graphic design in national development)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:23:27.024Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00030-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00030",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (The place of graphic design in national development)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:23:27.024Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00031-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00031",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (Packaging design and production research corpus at KNUST)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:23:37.524Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00031-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00031",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Packaging design and production research corpus at KNUST)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:23:37.524Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00031-community_authority_required",
+    "catalogueRecordId": "ARED-GH-00031",
+    "taskType": "community_authority_required",
+    "description": "Manual review required: community authority required (Packaging design and production research corpus at KNUST)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:23:37.524Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00032-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00032",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (Graphic design studio assessment research at KNUST)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:23:48.027Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00032-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00032",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Graphic design studio assessment research at KNUST)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:23:48.027Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00034-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00034",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Gold Coast and Ghana newspaper visual culture research field)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:23:55.160Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00035-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00035",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Daily Graphic visual archive)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:23:56.689Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00035-rights_review_required",
+    "catalogueRecordId": "ARED-GH-00035",
+    "taskType": "rights_review_required",
+    "description": "Manual review required: rights review required (Daily Graphic visual archive)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:23:56.689Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00036-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00036",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Colonial map and survey graphics research field)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:23:59.514Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00036-source_is_tier_4_lead_only",
+    "catalogueRecordId": "ARED-GH-00036",
+    "taskType": "source_is_tier_4_lead_only",
+    "description": "Manual review required: source is tier 4 lead only (Colonial map and survey graphics research field)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:23:59.514Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00037-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00037",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Colonial and postcolonial postage stamp design research field)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:01.387Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00037-source_is_tier_4_lead_only",
+    "catalogueRecordId": "ARED-GH-00037",
+    "taskType": "source_is_tier_4_lead_only",
+    "description": "Manual review required: source is tier 4 lead only (Colonial and postcolonial postage stamp design research field)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:01.387Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00038-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00038",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (Currency and banknote design research field)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:02.661Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00038-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00038",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Currency and banknote design research field)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:02.661Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00039-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00039",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Ghanaian hand-painted cinema poster visual system)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:03.756Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00039-source_is_tier_4_lead_only",
+    "catalogueRecordId": "ARED-GH-00039",
+    "taskType": "source_is_tier_4_lead_only",
+    "description": "Manual review required: source is tier 4 lead only (Ghanaian hand-painted cinema poster visual system)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:03.756Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00039-rights_review_required",
+    "catalogueRecordId": "ARED-GH-00039",
+    "taskType": "rights_review_required",
+    "description": "Manual review required: rights review required (Ghanaian hand-painted cinema poster visual system)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:03.756Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00040-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00040",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Sign painting and public lettering in Ghana)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:04.755Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00040-rights_review_required",
+    "catalogueRecordId": "ARED-GH-00040",
+    "taskType": "rights_review_required",
+    "description": "Manual review required: rights review required (Sign painting and public lettering in Ghana)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:04.755Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00041-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00041",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (Funeral poster and programme visual culture)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:04.913Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00041-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00041",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Funeral poster and programme visual culture)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:04.913Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00041-community_authority_required",
+    "catalogueRecordId": "ARED-GH-00041",
+    "taskType": "community_authority_required",
+    "description": "Manual review required: community authority required (Funeral poster and programme visual culture)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:04.913Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00042-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00042",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (Religious poster and banner visual culture)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:04.959Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00042-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00042",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Religious poster and banner visual culture)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:04.959Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00042-community_authority_required",
+    "catalogueRecordId": "ARED-GH-00042",
+    "taskType": "community_authority_required",
+    "description": "Manual review required: community authority required (Religious poster and banner visual culture)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:04.959Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00042-rights_review_required",
+    "catalogueRecordId": "ARED-GH-00042",
+    "taskType": "rights_review_required",
+    "description": "Manual review required: rights review required (Religious poster and banner visual culture)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:04.959Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00043-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00043",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (Music cover and concert-poster visual culture)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:05.025Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00043-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00043",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Music cover and concert-poster visual culture)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:05.025Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00043-rights_review_required",
+    "catalogueRecordId": "ARED-GH-00043",
+    "taskType": "rights_review_required",
+    "description": "Manual review required: rights review required (Music cover and concert-poster visual culture)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:05.025Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00044-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00044",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (Political poster, party emblem and campaign graphic visual culture)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:05.072Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00044-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00044",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Political poster, party emblem and campaign graphic visual culture)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:05.072Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00045-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00045",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (Posuban shrine visual system)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:06.227Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00045-community_authority_required",
+    "catalogueRecordId": "ARED-GH-00045",
+    "taskType": "community_authority_required",
+    "description": "Manual review required: community authority required (Posuban shrine visual system)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:06.227Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00046-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00046",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (Sirigu women’s wall-painting visual system)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:06.328Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00046-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00046",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Sirigu women’s wall-painting visual system)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:06.328Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00046-community_authority_required",
+    "catalogueRecordId": "ARED-GH-00046",
+    "taskType": "community_authority_required",
+    "description": "Manual review required: community authority required (Sirigu women’s wall-painting visual system)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:06.328Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00047-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00047",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (Ga fantasy coffin design field)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:06.410Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00047-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00047",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Ga fantasy coffin design field)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:06.410Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00047-community_authority_required",
+    "catalogueRecordId": "ARED-GH-00047",
+    "taskType": "community_authority_required",
+    "description": "Manual review required: community authority required (Ga fantasy coffin design field)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:06.410Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00048-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00048",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (Ghanaian digital flyer and social-media design field)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:06.455Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00048-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00048",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (Ghanaian digital flyer and social-media design field)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:06.455Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00048-rights_review_required",
+    "catalogueRecordId": "ARED-GH-00048",
+    "taskType": "rights_review_required",
+    "description": "Manual review required: rights review required (Ghanaian digital flyer and social-media design field)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:06.455Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00049-rights_review_required",
+    "catalogueRecordId": "ARED-GH-00049",
+    "taskType": "rights_review_required",
+    "description": "Manual review required: rights review required (Ghanaian design education institutional genealogy)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:10.525Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00050-broken_primary_link",
+    "catalogueRecordId": "ARED-GH-00050",
+    "taskType": "broken_primary_link",
+    "description": "Manual review required: broken primary link (ARED History of Graphic Design in Ghana master collection)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:10.587Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00050-missing_second_independent_source",
+    "catalogueRecordId": "ARED-GH-00050",
+    "taskType": "missing_second_independent_source",
+    "description": "Manual review required: missing second independent source (ARED History of Graphic Design in Ghana master collection)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:10.587Z",
+    "resolvedAt": null
+  },
+  {
+    "id": "task-ARED-GH-00050-community_authority_required",
+    "catalogueRecordId": "ARED-GH-00050",
+    "taskType": "community_authority_required",
+    "description": "Manual review required: community authority required (ARED History of Graphic Design in Ghana master collection)",
+    "status": "open",
+    "createdAt": "2026-07-05T09:24:10.587Z",
+    "resolvedAt": null
+  }
+]

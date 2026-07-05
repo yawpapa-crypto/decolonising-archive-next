@@ -1,0 +1,84 @@
+{
+  "objectID": 310734,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.291",
+  "accessionYear": "1978",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 230890,
+      "role": "Artist",
+      "name": "Tellem or Dogon blacksmith",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Figure",
+  "title": "Double figure",
+  "culture": "Dogon or Tellem  peoples (?)",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Tellem or Dogon blacksmith",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Tellem or Dogon blacksmith",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "16th–20th century",
+  "objectBeginDate": 1500,
+  "objectEndDate": 2000,
+  "medium": "Wood",
+  "dimensions": "H. 29 x W. 6 x D. 4 1/4 in. (73.7 x 15.2 x 10.8 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 10.8,
+        "Height": 73.66,
+        "Width": 15.24
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of Nelson A. Rockefeller, 1969",
+  "geographyType": "",
+  "city": "Bandiagara region (?)",
+  "state": "",
+  "county": "",
+  "country": "Mali",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Wood-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-01-23T04:52:29.993Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310734",
+  "tags": [
+    {
+      "term": "Human Figures",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300404114",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q5937779"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

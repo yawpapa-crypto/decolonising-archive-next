@@ -1,0 +1,82 @@
+{
+  "objectID": 310740,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.297",
+  "accessionYear": "1978",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": null,
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Pendant",
+  "title": "Ram's Head Ornament",
+  "culture": "Lagoon peoples",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "19th–mid-20th century",
+  "objectBeginDate": 1800,
+  "objectEndDate": 1955,
+  "medium": "Gold or gold alloy",
+  "dimensions": "H. 3 3/8 x W. 3 5/8 x D. 5/8 in. (8.6 x 9.2 x 1.6 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 1.6
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 1.6,
+        "Height": 8.5725,
+        "Width": 9.22
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Purchase, Nelson A. Rockefeller Gift, 1955",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Côte d'Ivoire",
+  "region": "southern Côte d'Ivoire",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metal-Ornaments",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-20T04:50:39.43Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310740",
+  "tags": [
+    {
+      "term": "Rams",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250287",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q2929800"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

@@ -1,0 +1,82 @@
+{
+  "objectID": 209255,
+  "isHighlight": false,
+  "accessionNumber": "1998.459",
+  "accessionYear": "1998",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP109841.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP109841.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 37306,
+      "role": "Maker",
+      "name": "J.E. Terry and Co.",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Teapot",
+  "title": "Teapot",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "J.E. Terry and Co.",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "J.E. Terry and Co.",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1820–21",
+  "objectBeginDate": 1820,
+  "objectEndDate": 1821,
+  "medium": "Silver, wood",
+  "dimensions": "Height (approximate): 7 in. (17.8 cm)",
+  "measurements": [
+    {
+      "elementName": "Height",
+      "elementDescription": "approximate",
+      "elementMeasurements": {
+        "Height": 17.780035
+      }
+    }
+  ],
+  "creditLine": "Gift of Fong Chow, in memory of his parents, Yk and Rose Chow of Hong Kong, 1998",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/209255",
+  "tags": [
+    {
+      "term": "Coat of Arms",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300126352",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q14659"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": true,
+  "GalleryNumber": ""
+}

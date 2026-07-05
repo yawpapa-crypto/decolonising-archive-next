@@ -1,0 +1,95 @@
+{
+  "objectID": 207442,
+  "isHighlight": false,
+  "accessionNumber": "1983.575.35",
+  "accessionYear": "1983",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/SF1983_575_35_img1.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/SF1983_575_35_img1.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/SF1983_575_35_img2.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/SF1983_575_35_marks.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 35047,
+      "role": "Maker",
+      "name": "John Shaw",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Vinaigrette",
+  "title": "Vinaigrette",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "John Shaw",
+  "artistDisplayBio": "British, active 1803–1825",
+  "artistSuffix": "",
+  "artistAlphaSort": "Shaw John",
+  "artistNationality": "British",
+  "artistBeginDate": "1803",
+  "artistEndDate": "1825",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1807",
+  "objectBeginDate": 1807,
+  "objectEndDate": 1807,
+  "medium": "Silver",
+  "dimensions": "Length: 1 1/4 in. (3.2 cm)",
+  "measurements": [
+    {
+      "elementName": "Length",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 3.1750064
+      }
+    }
+  ],
+  "creditLine": "Gift of Herbert K. Reis, in memory of Rose-Frances K. Reis (Mrs. Ralph A. Reis), 1983",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/207442",
+  "tags": [
+    {
+      "term": "Flowers",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132399",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q506"
+    },
+    {
+      "term": "Leaves",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300011892",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q33971"
+    },
+    {
+      "term": "Insignia",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300028725",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q552345"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

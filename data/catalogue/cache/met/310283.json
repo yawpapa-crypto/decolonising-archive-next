@@ -1,0 +1,88 @@
+{
+  "objectID": 310283,
+  "isHighlight": false,
+  "accessionNumber": "1977.187.37",
+  "accessionYear": "1977",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP-25381-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP-25381-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-25381-004.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-25381-003.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-25381-002.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 232647,
+      "role": "Artist",
+      "name": "Ìgùn Ẹ́rọ̀nwwọ̀n (brass-casting guild) artists",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Head",
+  "title": "Ùhúnmwèlaò (head of an ọ́bà)",
+  "culture": "Edo peoples",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Ìgùn Ẹ́rọ̀nwwọ̀n (brass-casting guild) artists",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Ìgùn Ẹ́rọ̀nwwọ̀n (brass-casting guild) artists",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "19th century",
+  "objectBeginDate": 1800,
+  "objectEndDate": 1897,
+  "medium": "Brass, iron",
+  "dimensions": "H. 13 1/4 × W. 10 3/4 × D. 11 1/8 in. (33.7 × 27.3 × 28.3 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 28.257557,
+        "Height": 33.655067,
+        "Width": 27.305054
+      }
+    }
+  ],
+  "creditLine": "Bequest of Alice K. Bache, 1977",
+  "geographyType": "",
+  "city": "Court of Benin",
+  "state": "",
+  "county": "",
+  "country": "Nigeria",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metal-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-05-07T04:57:54.873Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310283",
+  "tags": [
+    {
+      "term": "Heads",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300375054",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q3409626"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": "342"
+}

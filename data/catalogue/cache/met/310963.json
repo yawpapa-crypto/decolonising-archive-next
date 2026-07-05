@@ -1,0 +1,92 @@
+{
+  "objectID": 310963,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.502",
+  "accessionYear": "1978",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 63422,
+      "role": "Artist",
+      "name": "Ochai",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Head crest",
+  "title": "Head Crest",
+  "culture": "Okpoto peoples, Idoma group",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Ochai",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Ochai",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1946",
+  "objectBeginDate": 1946,
+  "objectEndDate": 1946,
+  "medium": "Wood, fiber twine",
+  "dimensions": "H. 14 1/4 × W. 7 1/2 × D. 3 1/2 in. (36.2 × 19.1 × 8.9 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 9.53
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 35.8775
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 8.8900175,
+        "Height": 36.195072,
+        "Width": 19.050037
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of Nelson A. Rockefeller, 1965",
+  "geographyType": "",
+  "city": "Otobi village",
+  "state": "",
+  "county": "",
+  "country": "Nigeria",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "Benue River Valley region",
+  "classification": "Wood-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2022-12-15T08:50:39.81Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310963",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

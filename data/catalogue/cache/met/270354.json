@@ -1,0 +1,85 @@
+{
+  "objectID": 270354,
+  "isHighlight": false,
+  "accessionNumber": "61.565.12",
+  "accessionYear": "1961",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 164136,
+      "role": "Artist",
+      "name": "Philippe Halsman",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500026767",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q704572",
+      "gender": ""
+    }
+  ],
+  "department": "Photographs",
+  "objectName": "Photograph",
+  "title": "Princess Taibou Daillo, French West Africa",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Philippe Halsman",
+  "artistDisplayBio": "American (born Latvia), Riga 1901–1979 New York",
+  "artistSuffix": "",
+  "artistAlphaSort": "Halsman, Philippe",
+  "artistNationality": "American, born Latvia",
+  "artistBeginDate": "1901",
+  "artistEndDate": "1979",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q704572",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500026767",
+  "objectDate": "ca. 1960",
+  "objectBeginDate": 1958,
+  "objectEndDate": 1962,
+  "medium": "Chromogenic print",
+  "dimensions": "Image: 11 5/16 × 8 5/8 in. (28.7 × 21.9 cm)\r\nSheet: 11 5/16 × 8 5/8 in. (28.7 × 21.9 cm)",
+  "measurements": [
+    {
+      "elementName": "Sheet",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 28.7,
+        "Width": 21.9
+      }
+    },
+    {
+      "elementName": "Image",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 28.7,
+        "Width": 21.9
+      }
+    }
+  ],
+  "creditLine": "Purchase, Joseph Pulitzer Bequest, 1961",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Photographs",
+  "rightsAndReproduction": "Photo by Philippe Halsman / © Halsman Estate",
+  "linkResource": "",
+  "metadataDate": "2025-10-25T04:51:59.88Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/270354",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

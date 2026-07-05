@@ -1,0 +1,91 @@
+{
+  "objectID": 285146,
+  "isHighlight": false,
+  "accessionNumber": "2003.301",
+  "accessionYear": "2003",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 162181,
+      "role": "Artist",
+      "name": "Gabriel Orozco",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500114732",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q1242404",
+      "gender": ""
+    }
+  ],
+  "department": "Photographs",
+  "objectName": "Photograph",
+  "title": "Cemetery",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Gabriel Orozco",
+  "artistDisplayBio": "Mexican, born Jalapa Enriquez, 1962",
+  "artistSuffix": "",
+  "artistAlphaSort": "Orozco, Gabriel",
+  "artistNationality": "Mexican",
+  "artistBeginDate": "1962",
+  "artistEndDate": "9999",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q1242404",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500114732",
+  "objectDate": "2002",
+  "objectBeginDate": 2002,
+  "objectEndDate": 2002,
+  "medium": "Chromogenic print",
+  "dimensions": "Image: 85.7 x 118.7 cm (33 3/4 x 46 3/4 in.)\r\nFrame: 88.3 x 121.3 cm (34 3/4 x 47 3/4 in.)",
+  "measurements": [
+    {
+      "elementName": "Image",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 85.7252,
+        "Width": 118.7452
+      }
+    },
+    {
+      "elementName": "Framed",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 88.265175,
+        "Width": 121.28524
+      }
+    }
+  ],
+  "creditLine": "Purchase, Hideyuki Osawa Gift, 2003",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Photographs",
+  "rightsAndReproduction": "© Gabriel Orozco",
+  "linkResource": "",
+  "metadataDate": "2025-11-21T10:05:27.96Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/285146",
+  "tags": [
+    {
+      "term": "Cemeteries",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300266755",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q39614"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

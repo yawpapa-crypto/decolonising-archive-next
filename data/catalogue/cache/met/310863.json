@@ -1,0 +1,91 @@
+{
+  "objectID": 310863,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.434",
+  "accessionYear": "1978",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 233172,
+      "role": "Artist",
+      "name": "Mahongwe-Kota artist",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Reliquary figure",
+  "title": "Boho na bwete (face of the ancestor)",
+  "culture": "Kota peoples, Mahongwe group",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Mahongwe-Kota artist",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Mahongwe-Kota artist",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1879–early 20th century",
+  "objectBeginDate": 1879,
+  "objectEndDate": 1930,
+  "medium": "Wood, copper alloy sheet, copper alloy sheet-wire filaments, copper-alloy wire, iron and copper-alloy nails",
+  "dimensions": "H. 20 3/4 x W. 8 1/4 x D. 3 5/8 in. (52.7 x 21 x 9.2 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 9.19
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 9.19,
+        "Height": 52.705,
+        "Width": 20.96
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of Nelson A. Rockefeller, 1964",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Gabon or Republic of Congo",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "Ivindo River region",
+  "classification": "Metal-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-20T04:50:39.43Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310863",
+  "tags": [
+    {
+      "term": "Eyes",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300400484",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q7364"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": "344"
+}

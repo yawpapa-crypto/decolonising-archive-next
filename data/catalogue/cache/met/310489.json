@@ -1,0 +1,81 @@
+{
+  "objectID": 310489,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.33",
+  "accessionYear": "1978",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": null,
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Toggle",
+  "title": "Bear Head Toggle",
+  "culture": "Inuit",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "19th–20th century",
+  "objectBeginDate": 1800,
+  "objectEndDate": 2000,
+  "medium": "Ivory",
+  "dimensions": "H. 1 x W. 1 5/8 in. (2.5 x 4.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 1.91
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 4.1275,
+        "Width": 2.54
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of an Anonymous Donor, 1958",
+  "geographyType": "",
+  "city": "",
+  "state": "Alaska",
+  "county": "",
+  "country": "United States",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Bone/Ivory-Ornaments",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-06-04T04:49:29.85Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310489",
+  "tags": [
+    {
+      "term": "Bears",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300266516",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q30090244"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

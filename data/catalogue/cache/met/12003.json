@@ -1,0 +1,97 @@
+{
+  "objectID": 12003,
+  "isHighlight": false,
+  "accessionNumber": "07.90",
+  "accessionYear": "1907",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ad/original/DT2584.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ad/web-large/DT2584.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ad/original/DP170799.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 162366,
+      "role": "Artist",
+      "name": "Augustus Saint-Gaudens",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500124332",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q770625",
+      "gender": ""
+    }
+  ],
+  "department": "The American Wing",
+  "objectName": "Bust",
+  "title": "Head of Victory",
+  "culture": "American",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Augustus Saint-Gaudens",
+  "artistDisplayBio": "American, Dublin 1848–1907 Cornish, New Hampshire",
+  "artistSuffix": "",
+  "artistAlphaSort": "Saint-Gaudens, Augustus",
+  "artistNationality": "American",
+  "artistBeginDate": "1848",
+  "artistEndDate": "1907",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q770625",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500124332",
+  "objectDate": "1897–1903; cast 1907",
+  "objectBeginDate": 1897,
+  "objectEndDate": 1907,
+  "medium": "Bronze",
+  "dimensions": "8 x 7 x 6 1/2 in. (20.3 x 17.8 x 16.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 16.5,
+        "Height": 20.3,
+        "Weight": 5.8967614,
+        "Width": 17.8
+      }
+    }
+  ],
+  "creditLine": "Rogers Fund, 1907",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-01-14T04:51:02.887Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/12003",
+  "tags": [
+    {
+      "term": "Heads",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300375054",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q3409626"
+    },
+    {
+      "term": "Victory",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901000289",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q308902"
+    },
+    {
+      "term": "Allegory",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300055866",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q18535"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q83559839",
+  "isTimelineWork": true,
+  "GalleryNumber": "766"
+}

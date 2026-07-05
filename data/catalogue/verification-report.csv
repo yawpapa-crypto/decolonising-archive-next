@@ -1,0 +1,30 @@
+record_id,title,record_type,verification_status,primary_source,secondary_source,passed,notes
+ARED-GH-00001,Ghana national flag,designed object,verified,https://awarewomenartists.com/en/artiste/theodosia-salome-okoh/,https://peoplesgdarchive.org/item/15411/flag-of-ghana,yes,passed automated verification gate
+ARED-GH-00002,Theodosia Salome Okoh authority record,person,verified,https://awarewomenartists.com/en/artiste/theodosia-salome-okoh/,https://www.thenanaproject.org/written-stories/theodosia-okoh,yes,passed automated verification gate
+ARED-GH-00003,Ghana coat of arms,designed object,verified,https://www.amonkotei.com/life-history,https://www.wessexgallery.com/amon-kotei-ghanaian-artist,yes,passed automated verification gate
+ARED-GH-00004,Nii Amon Kotei authority record,person,verified,https://www.amonkotei.com/life-history,https://wadr.org/african-hero-amon-kotei-2/,yes,passed automated verification gate
+ARED-GH-00005,Kofi Antubam authority record,person,unverified,https://www.rem.routledge.com/articles/antubam-kofi-1922-1964,https://artsghana.net/kofi-antubam-in-reminiscence-gh-ak/,no,primary source unreachable (500)
+ARED-GH-00006,Kobina Badowah authority record,person,verified,https://www.studiomuseum.org/artists/kobina-badowah,https://fowler.ucla.edu/product/art-honor-ridicule-asafo-flags-southern-ghana/,yes,passed automated verification gate
+ARED-GH-00007,Baba Issaka authority record,person,verified,https://www.horniman.ac.uk/story/asafo-companies-fante-people-and-the-mfrankaa/,,yes,passed automated verification gate
+ARED-GH-00008,Kweku Kakanu authority research record,person,unverified,https://www.ft.com/content/9e412afd-0f10-4048-b224-c9110bacd370,https://www.maharam.com/stories/banks_asafo-flags,no,primary source unreachable (403)
+ARED-GH-00009,Nana McCarthy authority research record,person,unverified,https://www.maharam.com/stories/banks_asafo-flags,,no,primary source unreachable (307)
+ARED-GH-00011,Mankesim Asafo company flag,museum object,unverified,https://www.si.edu/object/asafo-flag%3Anmafa_88-10-1,,no,primary source unreachable (403)
+ARED-GH-00012,Asafo company flag with three-headed creature,museum object,unverified,https://www.brooklynmuseum.org/objects/188917,,no,primary source unreachable (429)
+ARED-GH-00013,Asafo flag depicting Elmina forts,museum object,verified,https://high.org/collection/asafo-flag-2/,,yes,passed automated verification gate
+ARED-GH-00014,"Art, Honor, and Ridicule: Fante Asafo Flags from Southern Ghana",publication,verified,https://fowler.ucla.edu/product/art-honor-ridicule-asafo-flags-southern-ghana/,,yes,passed automated verification gate
+ARED-GH-00017,Horniman bicentenary Asafo flags by Baba Issaka,museum collection group,verified,https://www.horniman.ac.uk/story/asafo-companies-fante-people-and-the-mfrankaa/,,yes,passed automated verification gate
+ARED-GH-00018,Asafo Flags from Ghana exhibition,exhibition,unverified,https://mingei.org/exhibitions/asafo-flags-from-ghana,,no,system/field/collection-level row requires object-level research
+ARED-GH-00019,Adinkra prestige cloth,museum object,unverified,https://www.metmuseum.org/art/collection/search/687569,,no,primary source unreachable (429)
+ARED-GH-00020,Kola nut dyed and stamped pattern cloth (Adinkira),museum object,unverified,https://www.metmuseum.org/art/collection/search/711933,,no,primary source unreachable (429)
+ARED-GH-00021,Geometric Akan gold weight,museum object,unverified,https://www.metmuseum.org/art/collection/search/317674,,no,primary source unreachable (429)
+ARED-GH-00022,Sankofa bird gold weight,museum object,unverified,https://www.britishmuseum.org/collection/object/E_Af1947-13-138,,no,primary source unreachable (403)
+ARED-GH-00023,Asante silk kente man's wrap,museum object,verified,https://www.britishmuseum.org/collection/object/E_Af2004-04-1,,yes,passed automated verification gate
+ARED-GH-00024,Ewe kente cloth from Keta area,museum object,unverified,https://www.britishmuseum.org/collection/object/E_Af1982-33-1,,no,primary source unreachable (403)
+ARED-GH-00025,Ewe kente cloth converted into gown,museum object,verified,https://www.britishmuseum.org/collection/object/E_Af1966-01-12,,yes,passed automated verification gate
+ARED-GH-00026,National Museum of Ghana institutional record,institution,verified,https://www.ghanamuseums.org/,https://en.wikipedia.org/wiki/National_Museum_of_Ghana,yes,passed automated verification gate
+ARED-GH-00027,KNUST Department of Communication Design,institution,verified,https://decode.knust.edu.gh/,https://cabe.knust.edu.gh/about-us,yes,passed automated verification gate
+ARED-GH-00028,KNUST Department of Publishing Studies,institution,verified,https://cabe.knust.edu.gh/about-us,https://cabe.knust.edu.gh/postgraduate-programmes,yes,passed automated verification gate
+ARED-GH-00029,Kumasi Technical University Department of Graphic Design,institution,unverified,https://kstu.edu.gh/academics/programmes/bachelor-arts-communication-design,,no,requires two independent credible sources
+ARED-GH-00030,The place of graphic design in national development,research publication,unverified,https://ir.knust.edu.gh/handle/123456789/3433,,no,primary source unreachable (This operation was aborted)
+ARED-GH-00032,Graphic design studio assessment research at KNUST,research publication,unverified,https://ir.knust.edu.gh/bitstream/123456789/7203/1/DEVELOPING%20INNOVATIVE%20ASSESSMENT%20STRATEGY.pdf,,no,primary source unreachable (This operation was aborted)
+ARED-GH-00035,Daily Graphic visual archive,publication archive,verified,https://ugspace.ug.edu.gh/bitstreams/360d9dae-7463-414b-80b5-dc4d38cdc5a9/download,,yes,passed automated verification gate

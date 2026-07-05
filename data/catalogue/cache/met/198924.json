@@ -1,0 +1,105 @@
+{
+  "objectID": 198924,
+  "isHighlight": false,
+  "accessionNumber": "41.190.46a, b",
+  "accessionYear": "1941",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP-94-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP-94-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP-94-002.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP-94-003.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/SF41_190_46ab.jpg"
+  ],
+  "constituents": null,
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Bowl",
+  "title": "Cylindrical container with cover",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1535–45",
+  "objectBeginDate": 1530,
+  "objectEndDate": 1550,
+  "medium": "Bronze",
+  "dimensions": "Overall .46 a, b (confirmed): 4 1/2 × 6 1/4 × 6 1/4 in. (11.4 × 15.9 × 15.9 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "Overall .46 a, b (confirmed)",
+      "elementMeasurements": {
+        "Depth": 15.875031,
+        "Height": 11.430023,
+        "Width": 15.875031
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "with cover",
+      "elementMeasurements": {
+        "Diameter": 15.875031,
+        "Height": 10.477521
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": ".46b (confirmed)",
+      "elementMeasurements": {
+        "Depth": 15.875031,
+        "Height": 6.6675134,
+        "Width": 15.875031
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": ".46a (confirmed)",
+      "elementMeasurements": {
+        "Depth": 10.795022,
+        "Height": 5.2387605,
+        "Width": 10.795022
+      }
+    }
+  ],
+  "creditLine": "Bequest of George Blumenthal, 1941",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture-Bronze",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/198924",
+  "tags": [
+    {
+      "term": "Putti",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250465",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q284865"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

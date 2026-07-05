@@ -1,0 +1,88 @@
+{
+  "objectID": 3288,
+  "isHighlight": false,
+  "accessionNumber": "46.151",
+  "accessionYear": "1946",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ad/original/137160.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ad/web-large/137160.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ad/original/137409.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/141941.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 1562,
+      "role": "Maker",
+      "name": "Thomas Danforth, I",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    },
+    {
+      "constituentID": 1563,
+      "role": "Maker",
+      "name": "John Danforth",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500332676",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The American Wing",
+  "objectName": "Dish",
+  "title": "Dish",
+  "culture": "American",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Thomas Danforth, I",
+  "artistDisplayBio": "1703–1786",
+  "artistSuffix": "",
+  "artistAlphaSort": "Danforth, I Thomas",
+  "artistNationality": "",
+  "artistBeginDate": "1703",
+  "artistEndDate": "1786",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1762–73",
+  "objectBeginDate": 1759,
+  "objectEndDate": 1773,
+  "medium": "Pewter",
+  "dimensions": "H. 3/4 in. (1.9 cm); Diam. 12 in. (30.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 30.4801,
+        "Height": 1.905
+      }
+    }
+  ],
+  "creditLine": "Gift of Mrs. J. Insley Blair, in memory of her husband, 1941",
+  "geographyType": "Made in",
+  "city": "Norwich",
+  "state": "Connecticut",
+  "county": "",
+  "country": "United States",
+  "region": "New England",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-03-31T09:41:00.23Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/3288",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116370576",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

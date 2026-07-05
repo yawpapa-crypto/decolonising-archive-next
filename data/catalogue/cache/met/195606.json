@@ -1,0 +1,82 @@
+{
+  "objectID": 195606,
+  "isHighlight": false,
+  "accessionNumber": "26.267.36",
+  "accessionYear": "1926",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/66556.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/66556.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 33077,
+      "role": "Maker",
+      "name": "Watchmaker: Callaud",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Watch",
+  "title": "Watch",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "Watchmaker:",
+  "artistDisplayName": "Callaud",
+  "artistDisplayBio": "active 1825",
+  "artistSuffix": "",
+  "artistAlphaSort": "Callaud",
+  "artistNationality": "",
+  "artistBeginDate": "1825",
+  "artistEndDate": "1825",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1840–60",
+  "objectBeginDate": 1835,
+  "objectEndDate": 1865,
+  "medium": "Gold, enamel",
+  "dimensions": "Diameter: 1 3/4 in. (4.4 cm)",
+  "measurements": [
+    {
+      "elementName": "Diameter",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 4.4450088
+      }
+    }
+  ],
+  "creditLine": "Anonymous Gift, in memory of Lady May Fletcher-Moulton, 1926",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Horology",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2021-04-30T11:13:27.41Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/195606",
+  "tags": [
+    {
+      "term": "Flowers",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132399",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q506"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

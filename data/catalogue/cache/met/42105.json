@@ -1,0 +1,99 @@
+{
+  "objectID": 42105,
+  "isHighlight": false,
+  "accessionNumber": "1986.267.351",
+  "accessionYear": "1986",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 12368,
+      "role": "Artist",
+      "name": "Shi Lu",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500329125",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q15928785",
+      "gender": ""
+    }
+  ],
+  "department": "Asian Art",
+  "objectName": "Hanging scroll",
+  "title": "Stately Pines on Mount Hua",
+  "culture": "China",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Shi Lu",
+  "artistDisplayBio": "Chinese, 1919–1982",
+  "artistSuffix": "",
+  "artistAlphaSort": "Shi Lu",
+  "artistNationality": "Chinese",
+  "artistBeginDate": "1919",
+  "artistEndDate": "1982",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q15928785",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500329125",
+  "objectDate": "early 1970s",
+  "objectBeginDate": 1970,
+  "objectEndDate": 1973,
+  "medium": "Hanging scroll; ink on paper",
+  "dimensions": "Image: 53 1/2 × 27 1/4 in. (135.9 × 69.2 cm)\r\nOverall with mounting: 87 1/4 × 34 in. (221.6 × 86.4 cm)\r\nOverall with knobs: 87 1/4 × 38 in. (221.6 × 96.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall with knobs",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 221.61545,
+        "Width": 96.520195
+      }
+    },
+    {
+      "elementName": "Overall with mounting",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 221.61545,
+        "Width": 86.360176
+      }
+    },
+    {
+      "elementName": "Image",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 135.89027,
+        "Width": 69.21514
+      }
+    }
+  ],
+  "creditLine": "Gift of Robert Hatfield Ellsworth, in memory of La Ferne Hatfield Ellsworth, 1986",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Paintings",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-20T04:50:39.43Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/42105",
+  "tags": [
+    {
+      "term": "Trees",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132410",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q10884"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q83562267",
+  "isTimelineWork": true,
+  "GalleryNumber": ""
+}

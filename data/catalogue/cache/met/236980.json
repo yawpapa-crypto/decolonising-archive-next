@@ -1,0 +1,100 @@
+{
+  "objectID": 236980,
+  "isHighlight": false,
+  "accessionNumber": "2009.419",
+  "accessionYear": "2009",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 162845,
+      "role": "Artist",
+      "name": "Sarah Bernhardt",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500167455",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q4605",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Head",
+  "title": "Funerary Portrait of Jacques Damala",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Sarah Bernhardt",
+  "artistDisplayBio": "French, Paris 1844–1923 Paris",
+  "artistSuffix": "",
+  "artistAlphaSort": "Bernhardt, Sarah",
+  "artistNationality": "French",
+  "artistBeginDate": "1844",
+  "artistEndDate": "1923",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q4605",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500167455",
+  "objectDate": "ca. 1889",
+  "objectBeginDate": 1884,
+  "objectEndDate": 1894,
+  "medium": "Marble",
+  "dimensions": "Overall (wt confirmed): 11 x 18 1/8 x 12 1/4 in., 97lb. (27.9 x 46 x 31.1 cm, 43.9989kg)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "wt confirmed",
+      "elementMeasurements": {
+        "Depth": 31.115063,
+        "Height": 27.940056,
+        "Weight": 43.998913,
+        "Width": 46.037594
+      }
+    }
+  ],
+  "creditLine": "Purchase, Assunta Sommella Peluso, Ignazio Peluso, Ada Peluso and Romano I. Peluso Gift, 2009",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/236980",
+  "tags": [
+    {
+      "term": "Heads",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300375054",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q3409626"
+    },
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    },
+    {
+      "term": "Portraits",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300015637",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q134307"
+    },
+    {
+      "term": "Actors",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025658",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q33999"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116373873",
+  "isTimelineWork": false,
+  "GalleryNumber": "556"
+}

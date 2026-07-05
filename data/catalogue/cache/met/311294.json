@@ -1,0 +1,96 @@
+{
+  "objectID": 311294,
+  "isHighlight": true,
+  "accessionNumber": "1978.412.823",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP-20711-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP-20711-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-20711-002.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-20711-003.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-20711-004.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-20711-012.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-20711-011.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-20711-009.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-20711-010.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-20711-008.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-20711-007.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-20711-006.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-20711-005.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 224223,
+      "role": "Artist",
+      "name": "Kambot artist",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Ancestor figure",
+  "title": "Ancestor figure",
+  "culture": "Kambot people",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Kambot artist",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Kambot artist",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "19th century",
+  "objectBeginDate": 1800,
+  "objectEndDate": 1900,
+  "medium": "Wood, paint, fiber",
+  "dimensions": "H. 96 × W. 23 × D. 18 in. (243.8 × 58.4 × 45.7 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 45.720093,
+        "Height": 243.84048,
+        "Width": 58.420116
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of Nelson A. Rockefeller, 1969",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Papua New Guinea",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "Lower Sepik, Keram River",
+  "classification": "Wood-Architectural",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-01-15T04:50:28.29Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/311294",
+  "tags": [
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q104413018",
+  "isTimelineWork": true,
+  "GalleryNumber": "354"
+}

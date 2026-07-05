@@ -1,0 +1,97 @@
+{
+  "objectID": 199985,
+  "isHighlight": false,
+  "accessionNumber": "48.174.102a–p, aa–pp, q, r, s",
+  "accessionYear": "1948",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": null,
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Chess set",
+  "title": "Chess set",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "20th century",
+  "objectBeginDate": 1900,
+  "objectEndDate": 1999,
+  "medium": "Limba wood, goatskin, cotton",
+  "dimensions": "Height (each king): 7 in. (17.8 cm);\r\nHeight (each pawn): 1 in. (2.5 cm);\r\nOverall (board): 17 1/2 × 15 3/4 in. (44.5 × 40 cm);\r\nOverall (original box): 6 1/2 × 12 3/4 × 8 1/4 in. (16.5 × 32.4 × 21 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "original box",
+      "elementMeasurements": {
+        "Depth": 20.955042,
+        "Height": 16.510033,
+        "Width": 32.385063
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "board",
+      "elementMeasurements": {
+        "Depth": 40.00508,
+        "Width": 44.45009
+      }
+    },
+    {
+      "elementName": "Height",
+      "elementDescription": "each pawn",
+      "elementMeasurements": {
+        "Height": 2.540005
+      }
+    },
+    {
+      "elementName": "Height",
+      "elementDescription": "each king",
+      "elementMeasurements": {
+        "Height": 17.780035
+      }
+    }
+  ],
+  "creditLine": "Gift of Gustavus A. Pfeiffer, 1948",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Chess Sets",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2021-11-09T04:35:24.483Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/199985",
+  "tags": [
+    {
+      "term": "Chess",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300222748",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q718"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

@@ -1,0 +1,103 @@
+{
+  "objectID": 199759,
+  "isHighlight": false,
+  "accessionNumber": "46.107a–h",
+  "accessionYear": "1946",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP293510.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP293510.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP293511.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP293512.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP293513.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 33380,
+      "role": "Maker",
+      "name": "Movement by Ahasuerus II Fromanteel",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500333441",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q4695008",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Longcase clock",
+  "title": "Longcase clock with calendar and alarm",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "Movement by",
+  "artistDisplayName": "Ahasuerus II Fromanteel",
+  "artistDisplayBio": "British, 1640–1703",
+  "artistSuffix": "",
+  "artistAlphaSort": "Fromanteel, Ahasuerus II",
+  "artistNationality": "British",
+  "artistBeginDate": "1640",
+  "artistEndDate": "1703",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q4695008",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500333441",
+  "objectDate": "ca. 1690–94",
+  "objectBeginDate": 1685,
+  "objectEndDate": 1699,
+  "medium": "Case: walnut and rosewood veneer on oak, and partly gilded limewood; Dial: gilded and silvered brass; Movement: brass and steel",
+  "dimensions": "Overall: 88 × 19 1/4 × 10 7/8 in. (223.5 × 48.9 × 27.6 cm); Width (dial plate): 10 1/2 in. (26.7 cm)",
+  "measurements": [
+    {
+      "elementName": "Height",
+      "elementDescription": "historic dimensions superseded",
+      "elementMeasurements": {
+        "Height": 223.52045
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 27.622555,
+        "Height": 223.52045,
+        "Width": 48.8951
+      }
+    },
+    {
+      "elementName": "Width",
+      "elementDescription": "dial plate",
+      "elementMeasurements": {
+        "Width": 26.670053
+      }
+    },
+    {
+      "elementName": "Diameter",
+      "elementDescription": "chapter ring",
+      "elementMeasurements": {
+        "Diameter": 24.9238
+      }
+    }
+  ],
+  "creditLine": "Bequest of John Munro Woolsey, 1946",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Horology",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-08-08T04:50:27.24Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/199759",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

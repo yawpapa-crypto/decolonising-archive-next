@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
   AODL_COLLECTIONS,
@@ -12,13 +13,26 @@ import {
   smithsonianCollectionSearchUrl,
   type SmithsonianOpenCollection,
 } from "@/lib/data/smithsonian-collections";
+import AfricanArchivesDiscover from "@/app/collections/african-archives/AfricanArchivesDiscover";
 import "@/app/styles/african-archives.css";
 
 type CatalogSource = "all" | "aodl" | "smithsonian";
+type PageView = "browse" | "discover";
+type BrowseLayout = "list" | "grid";
+
+const BROWSE_LAYOUT_KEY = "aa-browse-layout";
 
 type BrowseEntry =
   | { catalog: "aodl"; collection: ExternalArchiveCollection }
   | { catalog: "smithsonian"; collection: SmithsonianOpenCollection };
+
+const STATIC_ENTRIES: BrowseEntry[] = [
+  ...AODL_COLLECTIONS.map((collection) => ({ catalog: "aodl" as const, collection })),
+  ...SMITHSONIAN_COLLECTIONS.map((collection) => ({
+    catalog: "smithsonian" as const,
+    collection,
+  })),
+];
 
 function matchesQuery(entry: BrowseEntry, query: string): boolean {
   const q = query.trim().toLowerCase();
@@ -40,30 +54,102 @@ function matchesQuery(entry: BrowseEntry, query: string): boolean {
   return q.split(/\s+/).every((token) => haystack.includes(token));
 }
 
+function entryHref(entry: BrowseEntry, query: string): string {
+  if (entry.catalog === "smithsonian") {
+    return smithsonianCollectionSearchUrl(entry.collection, query || undefined);
+  }
+  return entry.collection.url;
+}
+
+function entryMeta(entry: BrowseEntry) {
+  const c = entry.collection;
+  const isSmithsonian = entry.catalog === "smithsonian";
+  return {
+    isSmithsonian,
+    sourceLabel: isSmithsonian ? "Smithsonian" : "AODL",
+    monogram: isSmithsonian ? "SI" : "AO",
+    placeLabel: c.countries.slice(0, 2).join(" · ") || "Global",
+    platformLabel: isSmithsonian ? `${entry.collection.unitCode} · ${c.platform}` : c.platform,
+    ctaLabel: isSmithsonian ? "Search ↗" : "Open ↗",
+  };
+}
+
 export default function AfricanArchivesClient() {
   const aodlFilters = useMemo(() => listAodlFilterOptions(), []);
   const smithsonianFilters = useMemo(() => listSmithsonianFilterOptions(), []);
 
-  const allEntries = useMemo<BrowseEntry[]>(
-    () => [
-      ...AODL_COLLECTIONS.map((collection) => ({ catalog: "aodl" as const, collection })),
-      ...SMITHSONIAN_COLLECTIONS.map((collection) => ({
-        catalog: "smithsonian" as const,
-        collection,
-      })),
-    ],
-    [],
-  );
+  const [pageView, setPageView] = useState<PageView>("browse");
+  const [allEntries, setAllEntries] = useState<BrowseEntry[]>(STATIC_ENTRIES);
+  const [catalogSource, setCatalogSource] = useState<"api" | "static">("static");
+  const [catalogLoading, setCatalogLoading] = useState(true);
 
   const [query, setQuery] = useState("");
   const [catalog, setCatalog] = useState<CatalogSource>("all");
+  const [browseLayout, setBrowseLayout] = useState<BrowseLayout>("list");
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem(BROWSE_LAYOUT_KEY);
+    if (stored === "list" || stored === "grid") setBrowseLayout(stored);
+  }, []);
+
+  function setLayout(layout: BrowseLayout) {
+    setBrowseLayout(layout);
+    window.localStorage.setItem(BROWSE_LAYOUT_KEY, layout);
+  }
 
   useEffect(() => {
     const source = new URLSearchParams(window.location.search).get("source");
     if (source === "smithsonian" || source === "aodl") {
       setCatalog(source);
     }
+    const view = new URLSearchParams(window.location.search).get("view");
+    if (view === "discover") setPageView("discover");
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    setCatalogLoading(true);
+
+    fetch("/api/archive-collections?limit=120", {
+      headers: { Accept: "application/json" },
+      cache: "no-store",
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (cancelled) return;
+        if (data?.ok && (data.aodl?.length || data.smithsonian?.length)) {
+          const entries: BrowseEntry[] = [
+            ...(data.aodl as ExternalArchiveCollection[]).map((collection) => ({
+              catalog: "aodl" as const,
+              collection,
+            })),
+            ...(data.smithsonian as SmithsonianOpenCollection[]).map((collection) => ({
+              catalog: "smithsonian" as const,
+              collection,
+            })),
+          ];
+          setAllEntries(entries);
+          setCatalogSource("api");
+        } else {
+          setAllEntries(STATIC_ENTRIES);
+          setCatalogSource("static");
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setAllEntries(STATIC_ENTRIES);
+          setCatalogSource("static");
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setCatalogLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const [country, setCountry] = useState("");
   const [theme, setTheme] = useState("");
   const [mediaType, setMediaType] = useState("");
@@ -90,6 +176,15 @@ export default function AfricanArchivesClient() {
       platforms: sort(platforms),
     };
   }, [aodlFilters, smithsonianFilters]);
+
+  const aodlCount = useMemo(
+    () => allEntries.filter((e) => e.catalog === "aodl").length,
+    [allEntries],
+  );
+  const smithsonianCount = useMemo(
+    () => allEntries.filter((e) => e.catalog === "smithsonian").length,
+    [allEntries],
+  );
 
   const filtered = useMemo(() => {
     return allEntries.filter((entry) => {
@@ -129,186 +224,295 @@ export default function AfricanArchivesClient() {
   }
 
   return (
-    <div className="african-archives-page">
-      <header className="african-archives-hero">
-        <div className="hero-eyebrow">
-          Curated external discovery · {AODL_COLLECTIONS.length} AODL +{" "}
-          {SMITHSONIAN_COLLECTIONS.length} Smithsonian units
-        </div>
-        <h1>African &amp; Global Archive Collections</h1>
-        <p className="lead">
-          A curated gateway to open African oral histories, photographs, objects, manuscripts,
-          audio, video, and cultural heritage collections hosted externally by AODL, the
-          Smithsonian Institution, and partner projects.
+    <div className="aa-page">
+      <section className="aa-hero">
+        <nav className="aa-crumb" aria-label="Breadcrumb">
+          <Link href="/collections">Collections</Link>
+          <span>/</span>
+          <span>African &amp; Global Archives</span>
+        </nav>
+        <p className="aa-hero-kicker">
+          {catalogLoading
+            ? "Loading catalogue…"
+            : `${aodlCount} AODL · ${smithsonianCount} Smithsonian units`}
+          {!catalogLoading && catalogSource === "api" ? " · via API" : ""}
         </p>
-        <p className="african-archives-disclaimer" role="note">
-          <span aria-hidden="true">↗</span>
-          <span>
-            This page stores descriptive metadata and links only. Collections open on partner
-            sites in a new tab. Smithsonian metadata is CC0 1.0 — still show attribution and
-            respect cultural, person, and image sensitivity. No bulk metadata download or media
-            rehosting occurs here.
-          </span>
+        <h1 className="aa-hero-title">
+          African &amp;
+          <br />
+          Global Archive
+          <br />
+          Collections
+        </h1>
+        <p className="aa-hero-lead">
+          Open African oral histories, photographs, objects, manuscripts, audio and video — linked
+          from partner sites. Metadata only; collections open externally.
         </p>
-      </header>
-
-      <div className="african-archives-controls">
-        <div className="african-archives-search-row">
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search collections, countries, themes, media types…"
-            aria-label="Search archive collections"
-          />
-        </div>
-
-        <div className="african-archives-filters">
-          <label>
-            Source
-            <select value={catalog} onChange={(e) => setCatalog(e.target.value as CatalogSource)}>
-              <option value="all">All sources</option>
-              <option value="aodl">AODL</option>
-              <option value="smithsonian">Smithsonian Open Access</option>
-            </select>
-          </label>
-          <label>
-            Country
-            <select value={country} onChange={(e) => setCountry(e.target.value)}>
-              <option value="">All countries</option>
-              {filterOptions.countries.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Theme
-            <select value={theme} onChange={(e) => setTheme(e.target.value)}>
-              <option value="">All themes</option>
-              {filterOptions.themes.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Media type
-            <select value={mediaType} onChange={(e) => setMediaType(e.target.value)}>
-              <option value="">All media types</option>
-              {filterOptions.mediaTypes.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Language
-            <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-              <option value="">All languages</option>
-              {filterOptions.languages.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Platform / unit
-            <select value={platform} onChange={(e) => setPlatform(e.target.value)}>
-              <option value="">All platforms</option>
-              {filterOptions.platforms.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-      </div>
-
-      <div className="african-archives-meta">
-        <span>
-          Showing {filtered.length} of {allEntries.length} collections
-        </span>
-        {hasFilters ? (
-          <button type="button" className="african-archives-clear" onClick={clearFilters}>
-            Clear filters
+        <nav className="aa-view-nav" aria-label="Page sections">
+          <button
+            type="button"
+            className={`aa-view-btn${pageView === "browse" ? " is-active" : ""}`}
+            onClick={() => setPageView("browse")}
+          >
+            Browse collections
           </button>
-        ) : null}
-        <a href="/sources">← Source directory</a>
-        <a href="/library">Library search →</a>
-      </div>
+          <button
+            type="button"
+            className={`aa-view-btn${pageView === "discover" ? " is-active" : ""}`}
+            onClick={() => setPageView("discover")}
+          >
+            Discover live
+          </button>
+        </nav>
+      </section>
 
-      {filtered.length ? (
-        <div className="african-archives-grid">
-          {filtered.map((entry) => {
-            const c = entry.collection;
-            const isSmithsonian = entry.catalog === "smithsonian";
-            const href = isSmithsonian
-              ? smithsonianCollectionSearchUrl(entry.collection, query || undefined)
-              : c.url;
-            const actionLabel = isSmithsonian ? "Search collection ↗" : "Open collection ↗";
-            const hostNote = isSmithsonian
-              ? "Hosted externally by Smithsonian Open Access (CC0 metadata)"
-              : "Hosted externally by AODL or partner project";
+      {pageView === "browse" && (
+        <>
+          <section className="aa-filter-band">
+            <div className="aa-filter-inner">
+              <h2 className="aa-band-title">Find a collection</h2>
+              <input
+                type="search"
+                className="aa-search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search collections, countries, themes…"
+                aria-label="Search archive collections"
+              />
+              <div className="aa-filters">
+                <label>
+                  Source
+                  <select
+                    value={catalog}
+                    onChange={(e) => setCatalog(e.target.value as CatalogSource)}
+                  >
+                    <option value="all">All</option>
+                    <option value="aodl">AODL</option>
+                    <option value="smithsonian">Smithsonian</option>
+                  </select>
+                </label>
+                <label>
+                  Country
+                  <select value={country} onChange={(e) => setCountry(e.target.value)}>
+                    <option value="">All</option>
+                    {filterOptions.countries.map((value) => (
+                      <option key={value} value={value}>
+                        {value}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Theme
+                  <select value={theme} onChange={(e) => setTheme(e.target.value)}>
+                    <option value="">All</option>
+                    {filterOptions.themes.map((value) => (
+                      <option key={value} value={value}>
+                        {value}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Media
+                  <select value={mediaType} onChange={(e) => setMediaType(e.target.value)}>
+                    <option value="">All</option>
+                    {filterOptions.mediaTypes.map((value) => (
+                      <option key={value} value={value}>
+                        {value}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Language
+                  <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+                    <option value="">All</option>
+                    {filterOptions.languages.map((value) => (
+                      <option key={value} value={value}>
+                        {value}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+              <div className="aa-meta">
+                <span>
+                  {catalogLoading
+                    ? "Loading catalogue…"
+                    : `${filtered.length} of ${allEntries.length} collections`}
+                </span>
+                {catalogSource === "static" && !catalogLoading && (
+                  <span className="aa-meta-note">Local fallback catalogue</span>
+                )}
+                {hasFilters && (
+                  <button type="button" className="aa-clear" onClick={clearFilters}>
+                    Clear filters
+                  </button>
+                )}
+              </div>
+            </div>
+          </section>
 
-            return (
-              <article
-                key={`${entry.catalog}-${c.id}`}
-                className={`aodl-collection-card${isSmithsonian ? " is-smithsonian" : ""}`}
-              >
-                <div className="aodl-collection-card__head">
-                  <span className={isSmithsonian ? "smithsonian-badge" : "aodl-badge"}>
-                    {isSmithsonian ? "Smithsonian" : "AODL"}
-                  </span>
-                  <span className="aodl-type-badge">
-                    {isSmithsonian ? "Open cultural collection" : "External open collection"}
-                  </span>
+          <section className="aa-list-section">
+            <div className="aa-list-inner">
+              <div className="aa-list-header">
+                <div>
+                  <h2 className="aa-list-heading">Browse collections</h2>
+                  <p className="aa-disclaimer">
+                    ↗ Links open partner sites. Smithsonian metadata is CC0 — show attribution and
+                    respect cultural sensitivity. No media rehosting on this platform.
+                  </p>
                 </div>
-                <h2>{c.title}</h2>
-                <p className="aodl-collection-card__platform">
-                  {isSmithsonian ? `${entry.collection.unitCode} · ${c.platform}` : c.platform}
-                </p>
-                <p>{c.description}</p>
-                <div className="aodl-tag-row">
-                  {c.mediaTypes.slice(0, 4).map((value) => (
-                    <span key={value} className="aodl-tag is-media">
-                      {value}
-                    </span>
-                  ))}
-                  {c.countries.slice(0, 2).map((value) => (
-                    <span key={value} className="aodl-tag">
-                      {value}
-                    </span>
-                  ))}
-                  {c.themes.slice(0, 2).map((value) => (
-                    <span key={value} className="aodl-tag">
-                      {value}
-                    </span>
-                  ))}
-                </div>
-                <a
-                  className={isSmithsonian ? "smithsonian-open-btn" : "aodl-open-btn"}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <div
+                  className="aa-layout-toggle"
+                  role="group"
+                  aria-label="Collection view"
                 >
-                  {actionLabel}
-                </a>
-                <p className="aodl-host-note">{hostNote}</p>
-              </article>
-            );
-          })}
-        </div>
-      ) : (
-        <div className="african-archives-empty" role="status">
-          No collections match your filters. Try clearing filters or broadening your search.
-        </div>
+                  <button
+                    type="button"
+                    className={`aa-layout-btn${browseLayout === "list" ? " is-active" : ""}`}
+                    aria-pressed={browseLayout === "list"}
+                    onClick={() => setLayout("list")}
+                  >
+                    List
+                  </button>
+                  <button
+                    type="button"
+                    className={`aa-layout-btn${browseLayout === "grid" ? " is-active" : ""}`}
+                    aria-pressed={browseLayout === "grid"}
+                    onClick={() => setLayout("grid")}
+                  >
+                    Thumbnails
+                  </button>
+                </div>
+              </div>
+
+              {catalogLoading ? (
+                <div className="aa-empty" role="status">
+                  Loading archive catalogue from API…
+                </div>
+              ) : filtered.length ? (
+                browseLayout === "list" ? (
+                  <ol className="aa-collection-list">
+                    {filtered.map((entry, index) => (
+                      <CollectionRow
+                        key={`${entry.catalog}-${entry.collection.id}`}
+                        entry={entry}
+                        index={index}
+                        query={query}
+                      />
+                    ))}
+                  </ol>
+                ) : (
+                  <ul className="aa-collection-grid">
+                    {filtered.map((entry, index) => (
+                      <CollectionCard
+                        key={`${entry.catalog}-${entry.collection.id}`}
+                        entry={entry}
+                        index={index}
+                        query={query}
+                      />
+                    ))}
+                  </ul>
+                )
+              ) : (
+                <div className="aa-empty" role="status">
+                  No collections match your filters.
+                </div>
+              )}
+            </div>
+          </section>
+        </>
       )}
+
+      {pageView === "discover" && <AfricanArchivesDiscover />}
     </div>
+  );
+}
+
+function CollectionRow({
+  entry,
+  index,
+  query,
+}: {
+  entry: BrowseEntry;
+  index: number;
+  query: string;
+}) {
+  const c = entry.collection;
+  const href = entryHref(entry, query);
+  const meta = entryMeta(entry);
+  const num = String(index + 1).padStart(2, "0");
+
+  return (
+    <li className={`aa-collection-row${meta.isSmithsonian ? " is-smithsonian" : " is-aodl"}`}>
+      <span className="aa-row-num">{num}</span>
+      <div className="aa-row-body">
+        <div className="aa-row-top">
+          <span className="aa-row-source">{meta.sourceLabel}</span>
+          <span className="aa-row-place">{meta.placeLabel}</span>
+        </div>
+        <h3 className="aa-row-title">{c.title}</h3>
+        <p className="aa-row-platform">{meta.platformLabel}</p>
+        <p className="aa-row-desc">{c.description}</p>
+        <div className="aa-row-tags">
+          {c.mediaTypes.slice(0, 3).map((t) => (
+            <span key={t}>{t}</span>
+          ))}
+        </div>
+      </div>
+      <div className="aa-row-side">
+        <div className="aa-row-thumb" aria-hidden="true">
+          <span>{meta.monogram}</span>
+        </div>
+        <a className="aa-row-cta" href={href} target="_blank" rel="noopener noreferrer">
+          {meta.ctaLabel}
+        </a>
+      </div>
+    </li>
+  );
+}
+
+function CollectionCard({
+  entry,
+  index,
+  query,
+}: {
+  entry: BrowseEntry;
+  index: number;
+  query: string;
+}) {
+  const c = entry.collection;
+  const href = entryHref(entry, query);
+  const meta = entryMeta(entry);
+  const num = String(index + 1).padStart(2, "0");
+  const excerpt =
+    c.description.length > 120 ? `${c.description.slice(0, 120)}…` : c.description;
+
+  return (
+    <li className={`aa-grid-card${meta.isSmithsonian ? " is-smithsonian" : " is-aodl"}`}>
+      <a className="aa-grid-card-link" href={href} target="_blank" rel="noopener noreferrer">
+        <div className="aa-grid-thumb" aria-hidden="true">
+          <span className="aa-grid-monogram">{meta.monogram}</span>
+          <span className="aa-grid-num">{num}</span>
+        </div>
+        <div className="aa-grid-body">
+          <div className="aa-grid-top">
+            <span className="aa-grid-source">{meta.sourceLabel}</span>
+            <span className="aa-grid-place">{meta.placeLabel}</span>
+          </div>
+          <h3 className="aa-grid-title">{c.title}</h3>
+          <p className="aa-grid-platform">{meta.platformLabel}</p>
+          <p className="aa-grid-desc">{excerpt}</p>
+          <div className="aa-grid-tags">
+            {c.mediaTypes.slice(0, 2).map((t) => (
+              <span key={t}>{t}</span>
+            ))}
+          </div>
+          <span className="aa-grid-cta">{meta.ctaLabel}</span>
+        </div>
+      </a>
+    </li>
   );
 }

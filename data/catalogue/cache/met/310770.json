@@ -1,0 +1,95 @@
+{
+  "objectID": 310770,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.328",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP-30073-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP-30073-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-30073-002.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-30073-004.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-30073-003.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 222923,
+      "role": "Artist",
+      "name": "Lower Niger Valley caster",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Head figure",
+  "title": "Staff finial with ram's head",
+  "culture": "Lower Niger Bronze Industry",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Lower Niger Valley caster",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Lower Niger Valley caster",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "15th–19th century",
+  "objectBeginDate": 1400,
+  "objectEndDate": 1897,
+  "medium": "Copper alloy",
+  "dimensions": "H. 7 1/4 × W. 3 1/4 × D. 3 7/8 in. (18.4 × 8.3 × 9.8 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Width": 5.69
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 9.84252,
+        "Height": 18.415037,
+        "Width": 8.255016
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of Nelson A. Rockefeller, 1964",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Nigeria",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "Lower Niger River region",
+  "classification": "Metal-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-20T04:50:39.43Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310770",
+  "tags": [
+    {
+      "term": "Rams",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250287",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q2929800"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": "343"
+}

@@ -1,0 +1,98 @@
+{
+  "objectID": 266125,
+  "isHighlight": false,
+  "accessionNumber": "1989.1073",
+  "accessionYear": "1989",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 54906,
+      "role": "Artist",
+      "name": "Josef Sudek",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500021756",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q1356243",
+      "gender": ""
+    }
+  ],
+  "department": "Photographs",
+  "objectName": "Photograph",
+  "title": "Prichod Noci",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Josef Sudek",
+  "artistDisplayBio": "Czech, 1896–1976",
+  "artistSuffix": "",
+  "artistAlphaSort": "Sudek, Josef",
+  "artistNationality": "Czech",
+  "artistBeginDate": "1896",
+  "artistEndDate": "1976",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q1356243",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500021756",
+  "objectDate": "1948–64",
+  "objectBeginDate": 1948,
+  "objectEndDate": 1964,
+  "medium": "Gelatin silver print",
+  "dimensions": "28.8 x 38.8 cm (11 5/16 x 15 1/4 in.)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 28.8,
+        "Width": 38.8
+      }
+    }
+  ],
+  "creditLine": "Purchase, The Horace W. Goldsmith Foundation Gift, through Joyce and Robert Menschel, 1989",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Photographs",
+  "rightsAndReproduction": "© Josef Sudek, courtesy of Josef Sudek Estate",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/266125",
+  "tags": [
+    {
+      "term": "Sculpture",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300047090",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q860861"
+    },
+    {
+      "term": "Still Life",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300015638",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q170571"
+    },
+    {
+      "term": "Chairs",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300037772",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q15026"
+    },
+    {
+      "term": "Tables",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300039548",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q14748"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": true,
+  "GalleryNumber": ""
+}

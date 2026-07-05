@@ -1,0 +1,84 @@
+{
+  "objectID": 207434,
+  "isHighlight": false,
+  "accessionNumber": "1983.575.27",
+  "accessionYear": "1983",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/SF1983_575_27_img1.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/SF1983_575_27_img1.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/SF1983_575_27_img2.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 35036,
+      "role": "Maker",
+      "name": "John Bettridge",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500084561",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q6221805",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Vinaigrette",
+  "title": "Vinaigrette",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "John Bettridge",
+  "artistDisplayBio": "British, active 1817–1834, died 1835",
+  "artistSuffix": "",
+  "artistAlphaSort": "Bettridge John",
+  "artistNationality": "British",
+  "artistBeginDate": "1817",
+  "artistEndDate": "1835",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q6221805",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500084561",
+  "objectDate": "1824",
+  "objectBeginDate": 1824,
+  "objectEndDate": 1824,
+  "medium": "Silver",
+  "dimensions": "Length: 1 1/4 in. (3.2 cm)",
+  "measurements": [
+    {
+      "elementName": "Length",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 3.1750064
+      }
+    }
+  ],
+  "creditLine": "Gift of Herbert K. Reis, in memory of Rose-Frances K. Reis (Mrs. Ralph A. Reis), 1983",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/207434",
+  "tags": [
+    {
+      "term": "Flowers",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132399",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q506"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

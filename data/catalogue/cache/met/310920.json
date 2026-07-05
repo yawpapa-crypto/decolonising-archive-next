@@ -1,0 +1,85 @@
+{
+  "objectID": 310920,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.457",
+  "accessionYear": "1978",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 231866,
+      "role": "Artist",
+      "name": "Nafara-Senufo artist",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Headdress",
+  "title": "Kworo headdress",
+  "culture": "Senufo peoples",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Nafara-Senufo artist",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Nafara-Senufo artist",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "19th–mid-20th century",
+  "objectBeginDate": 1800,
+  "objectEndDate": 1960,
+  "medium": "Wood, cloth, cane, plant fiber, mud",
+  "dimensions": "H. 35 × W. 22 × D. 8 in. (88.9 × 55.9 × 20.3 cm)\r\nD. 9 1/2 in. w/mount",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 16.51
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 20.32004,
+        "Height": 88.90018,
+        "Width": 55.88011
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of Allan Frumkin, 1962",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "northern Côte d'Ivoire",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Wood",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-06-11T15:45:16.593Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310920",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": true,
+  "GalleryNumber": "341"
+}

@@ -1,0 +1,90 @@
+{
+  "objectID": 231675,
+  "isHighlight": false,
+  "accessionNumber": "1974.378.31",
+  "accessionYear": "1974",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/204377.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/204377.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 34532,
+      "role": "Maker",
+      "name": "Pierre-Benoît Lorillon",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    },
+    {
+      "constituentID": 34368,
+      "role": "Purveyor",
+      "name": "Martin-Guillaume Biennais",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500061154",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q1694164",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Knife",
+  "title": "Knife (part of a dining service)",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Pierre-Benoît Lorillon",
+  "artistDisplayBio": "active 1788–ca. 1836",
+  "artistSuffix": "",
+  "artistAlphaSort": "Lorillon, Pierre-Benoît",
+  "artistNationality": "",
+  "artistBeginDate": "1788",
+  "artistEndDate": "1836",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1805",
+  "objectBeginDate": 1800,
+  "objectEndDate": 1810,
+  "medium": "Silver gilt, steel",
+  "dimensions": "Length: 7 3/4 in. (19.7 cm)",
+  "measurements": [
+    {
+      "elementName": "Length",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 19.68504
+      }
+    }
+  ],
+  "creditLine": "Gift of Audrey B. Love, in memory of her husband, C. Ruxton Love Jr., 1974",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2021-04-06T04:41:04.967Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/231675",
+  "tags": [
+    {
+      "term": "Coat of Arms",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300126352",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q14659"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

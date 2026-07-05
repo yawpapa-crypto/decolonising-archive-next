@@ -1,0 +1,82 @@
+{
+  "objectID": 49742,
+  "isHighlight": false,
+  "accessionNumber": "1998.544.84",
+  "accessionYear": "1998",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DP359915.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DP359915.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/as/original/1998_544_84.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP359627.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP359911.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP359912.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP359913.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP359914.jpg"
+  ],
+  "constituents": null,
+  "department": "Asian Art",
+  "objectName": "Fastener",
+  "title": "Weighted Fastener",
+  "culture": "Indonesia (Java)",
+  "period": "Central Javanese period",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "second half of the 8th–second half of the 10th century",
+  "objectBeginDate": 750,
+  "objectEndDate": 999,
+  "medium": "Gold",
+  "dimensions": "H. 1 1/8 in. (2.9 cm); Diam. (top) 7/8 in. (2.2 cm); Diam. of base 1 1/16 in. (2.7 cm)",
+  "measurements": [
+    {
+      "elementName": "Diam. of base",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 2.6987555
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 2.2225044,
+        "Height": 2.8575058
+      }
+    }
+  ],
+  "creditLine": "The Samuel Eilenberg-Jonathan P. Rosen Collection of Indonesian Gold, Bequest of Samuel Eilenberg and Gift of Jonathan P. Rosen, 1998",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Jewelry",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-04-22T04:57:36.72Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/49742",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

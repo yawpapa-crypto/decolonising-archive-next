@@ -1,0 +1,146 @@
+{
+  "objectID": 226696,
+  "isHighlight": false,
+  "accessionNumber": "41.190.135",
+  "accessionYear": "1941",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP-29559-002.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP-29559-002.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP-29559-001.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DT222021.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DT222022.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DT222023.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DT222024.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DT222025.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DT222919.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DT222920.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DT222921.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DT222922.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DT222923.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DT222924.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 163740,
+      "role": "Designer",
+      "name": "Design attributed to Giovanni Battista Lodi da Cremona",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500524319",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q29228073",
+      "gender": ""
+    },
+    {
+      "constituentID": 161743,
+      "role": "Artist",
+      "name": "After a print by Giovanni Jacopo Caraglio",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500025904",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q705640",
+      "gender": ""
+    },
+    {
+      "constituentID": 162222,
+      "role": "Designer",
+      "name": "Border design attributed to Giovanni Francesco Penni",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500021943",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q2327761",
+      "gender": ""
+    },
+    {
+      "constituentID": 165322,
+      "role": "Workshop director",
+      "name": "Weaving workshop directed by Willem de Pannemaker",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500057351",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q6167534",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Tapestry",
+  "title": "Aglauros’s Vision of the Bridal Chamber of Herse, from the Story of Mercury and Herse",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Designer",
+  "artistPrefix": "Design attributed to",
+  "artistDisplayName": "Giovanni Battista Lodi da Cremona",
+  "artistDisplayBio": "Italian, active 1540–52",
+  "artistSuffix": "",
+  "artistAlphaSort": "Lodi da Cremona, Giovanni Battista",
+  "artistNationality": "Italian",
+  "artistBeginDate": "1540",
+  "artistEndDate": "1552",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q29228073",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500524319",
+  "objectDate": "designed ca. 1540, woven ca. 1570",
+  "objectBeginDate": 1535,
+  "objectEndDate": 1575,
+  "medium": "Wool, silk and precious metal-wrapped threads (20-22 warps per inch, 8-9 warps per cm.)",
+  "dimensions": "weight confirmed, includes tube: 14 ft. 4 in. × 17 ft. 9 in., 173 lb. (436.9 × 541 cm, 78.5 kg)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "weight confirmed, includes tube",
+      "elementMeasurements": {
+        "Height": 436.8809,
+        "Weight": 78.47228,
+        "Width": 541.0211
+      }
+    }
+  ],
+  "creditLine": "Bequest of George Blumenthal, 1941",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Textiles-Tapestries",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/226696",
+  "tags": [
+    {
+      "term": "Bedrooms",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300004364",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q193837"
+    },
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    },
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    },
+    {
+      "term": "Putti",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250465",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q284865"
+    },
+    {
+      "term": "Mercury",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901001345",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q1150"
+    },
+    {
+      "term": "Beds",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300038697",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q42177"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q85634616",
+  "isTimelineWork": true,
+  "GalleryNumber": "520"
+}

@@ -1,0 +1,97 @@
+{
+  "objectID": 309769,
+  "isHighlight": false,
+  "accessionNumber": "1971.30",
+  "accessionYear": "1971",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DT831.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DT831.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP164445.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP164446.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP164447.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP164448.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 232516,
+      "role": "Artist",
+      "name": "Mende, Vai, or Temne artist",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Textile",
+  "title": "Interior Hanging",
+  "culture": "Mende, Vai, or Temne peoples",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Mende, Vai, or Temne artist",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Mende, Vai, or Temne artist",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "early–mid-19th century",
+  "objectBeginDate": 1800,
+  "objectEndDate": 1870,
+  "medium": "Cotton, wool, natural dye",
+  "dimensions": "W. 51 x L. 120 in. (129.5 x 304.8 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Width": 129.54
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 304.8,
+        "Width": 129.54
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 304.8006,
+        "Width": 129.54025
+      }
+    }
+  ],
+  "creditLine": "Rogers Fund, 1971",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Sierra Leone",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Textiles-Woven-Brocade",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-05-02T04:50:40.06Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/309769",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": true,
+  "GalleryNumber": ""
+}

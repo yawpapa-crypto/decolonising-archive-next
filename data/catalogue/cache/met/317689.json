@@ -1,0 +1,82 @@
+{
+  "objectID": 317689,
+  "isHighlight": false,
+  "accessionNumber": "1994.312.17",
+  "accessionYear": "1994",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/vs1994_312_17a.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/vs1994_312_17a.jpg",
+  "additionalImages": [],
+  "constituents": null,
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Weight",
+  "title": "Gold Weight",
+  "culture": "Akan peoples",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "18th–19th century",
+  "objectBeginDate": 1700,
+  "objectEndDate": 1897,
+  "medium": "Brass",
+  "dimensions": "H. 1 3/8 x W. 1/2 in. (3.5 x 1.3cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 3.51,
+        "Width": 1.27
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 3.4925,
+        "Width": 1.27
+      }
+    }
+  ],
+  "creditLine": "Gift of Ernst Anspach, 1994",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Ghana",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metal-Implements",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-05-20T04:49:14.863Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/317689",
+  "tags": [
+    {
+      "term": "Birds",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300266506",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q5113"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

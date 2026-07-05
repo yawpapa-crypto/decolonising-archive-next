@@ -1,0 +1,89 @@
+{
+  "objectID": 38550,
+  "isHighlight": false,
+  "accessionNumber": "1978.525",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/1978_525_F.JPG",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/1978_525_F.JPG",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/as/original/1978_525_L.JPG",
+    "https://images.metmuseum.org/CRDImages/as/original/1978_525_R.JPG",
+    "https://images.metmuseum.org/CRDImages/as/original/1978_525_B.JPG"
+  ],
+  "constituents": null,
+  "department": "Asian Art",
+  "objectName": "Head",
+  "title": "Head of Lokeshvara",
+  "culture": "Cambodia",
+  "period": "Angkor period",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. second half of the 12th century",
+  "objectBeginDate": 1140,
+  "objectEndDate": 1199,
+  "medium": "Stone",
+  "dimensions": "H. 3 9/16 in. (9.1 cm); W. 2 3/4 (7 cm); D. 2 1/4 in. (5.7 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 5.715,
+        "Height": 9.1,
+        "Width": 6.985
+      }
+    }
+  ],
+  "creditLine": "Gift of Mary Kennedy, in memory of her mother, Josephine McMahon Kennedy and her brother, James J. Kennedy, 1978",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/38550",
+  "tags": [
+    {
+      "term": "Heads",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300375054",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q3409626"
+    },
+    {
+      "term": "Buddhism",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300073738",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q748"
+    },
+    {
+      "term": "Bodhisattvas",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300264360",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q178149"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

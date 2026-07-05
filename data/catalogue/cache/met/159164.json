@@ -1,0 +1,103 @@
+{
+  "objectID": 159164,
+  "isHighlight": false,
+  "accessionNumber": "2009.300.613a–f",
+  "accessionYear": "2009",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/22.1702_22.1720_22.1730a-b_22.1731_25321_front_CP4.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/22.1702_22.1720_22.1730a-b_22.1731_25321_front_CP4.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/22.1730a, 23.189, 24.152 bw.JPG",
+    "https://images.metmuseum.org/CRDImages/es/original/22.1730a-b bw.JPG",
+    "https://images.metmuseum.org/CRDImages/es/original/22.1730a-b_print_bw.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/22.1702_22.1720_22.1730a-b_22.1731_25321_side_CP4.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/22.1702 bw.JPG",
+    "https://images.metmuseum.org/CRDImages/es/original/22.1720_CP2.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/22.1730a-b_CP2.jpg"
+  ],
+  "constituents": null,
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Ensemble",
+  "title": "Ensemble",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "late 19th century",
+  "objectBeginDate": 1851,
+  "objectEndDate": 1899,
+  "medium": "cotton, wool, linen, glass, metal",
+  "dimensions": "Length at CB (a): 27 in. (68.6 cm)\r\nLength at CB (b): 35 in. (88.9 cm)\r\nOther (c): 12 cm (4 3/4 in.)\r\nOther (d, e): 16 in. (40.6 cm)\r\nLength at CB (f): 37 in. (94 cm)",
+  "measurements": [
+    {
+      "elementName": "Length at CB",
+      "elementDescription": "b",
+      "elementMeasurements": {
+        "Length": 88.90018
+      }
+    },
+    {
+      "elementName": "Length at CB",
+      "elementDescription": "a",
+      "elementMeasurements": {
+        "Length": 68.58014
+      }
+    },
+    {
+      "elementName": "Length at CB",
+      "elementDescription": "f",
+      "elementMeasurements": {
+        "Length": 93.98019
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "d, e",
+      "elementMeasurements": {
+        "Length": 40.64008
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "c",
+      "elementMeasurements": {
+        "Width": 12
+      }
+    }
+  ],
+  "creditLine": "Brooklyn Museum Costume Collection at The Metropolitan Museum of Art, Gift of the Brooklyn Museum, 2009; Museum Expedition 1922, Robert B. Woodward Memorial Fund, 1922",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Main dress-Womenswear",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/159164",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

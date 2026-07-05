@@ -1,0 +1,73 @@
+{
+  "objectID": 254557,
+  "isHighlight": false,
+  "accessionNumber": "46.111.6",
+  "accessionYear": "1946",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/gr/original/DP114706.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/gr/web-large/DP114706.jpg",
+  "additionalImages": [],
+  "constituents": null,
+  "department": "Greek and Roman Art",
+  "objectName": "Head with hair in layers",
+  "title": "Terracotta head",
+  "culture": "Greek, Cretan",
+  "period": "Archaic",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "7th century BCE",
+  "objectBeginDate": -699,
+  "objectEndDate": -600,
+  "medium": "Terracotta",
+  "dimensions": "H. 2 3/16 in. (5.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 5.5
+      }
+    }
+  ],
+  "creditLine": "Gift of Alexander Boyd Hawes, in memory of his mother, Harriet Boyd Hawes, 1946",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Terracottas",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/254557",
+  "tags": [
+    {
+      "term": "Heads",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300375054",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q3409626"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116286977",
+  "isTimelineWork": false,
+  "GalleryNumber": "171"
+}

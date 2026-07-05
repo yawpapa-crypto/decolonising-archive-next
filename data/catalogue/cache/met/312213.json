@@ -1,0 +1,91 @@
+{
+  "objectID": 312213,
+  "isHighlight": false,
+  "accessionNumber": "1979.206.41",
+  "accessionYear": "1979",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 236900,
+      "role": "Artist",
+      "name": "Senufo or Tussian blacksmith",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Figure",
+  "title": "Figurine",
+  "culture": "Senufo or Tussian peoples",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Senufo or Tussian blacksmith",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Senufo or Tussian blacksmith",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "19th–mid-20th century",
+  "objectBeginDate": 1800,
+  "objectEndDate": 1955,
+  "medium": "Copper alloy",
+  "dimensions": "H. 1 5/8 x W. 7/8 x D. 1/4 in. (4.1 x 2.2 x 0.6 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 0.64
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 0.64,
+        "Height": 4.1275,
+        "Width": 2.24
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Bequest of Nelson A. Rockefeller, 1979",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Côte d'Ivoire or Burkina Faso",
+  "region": "northern Côte d'Ivoire or SW Burkina Faso",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metal-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-04-15T04:58:02.433Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/312213",
+  "tags": [
+    {
+      "term": "Human Figures",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300404114",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q5937779"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": true,
+  "GalleryNumber": ""
+}

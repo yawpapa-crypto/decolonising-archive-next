@@ -1,0 +1,85 @@
+{
+  "objectID": 310800,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.362",
+  "accessionYear": "1978",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 234128,
+      "role": "Artist",
+      "name": "Bamana or Senufo blacksmith",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Mask",
+  "title": "Kòmòkun or kònòkun (head of Kòmò or Kònò) helmet mask",
+  "culture": "Bamana peoples",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Bamana or Senufo blacksmith",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Bamana or Senufo blacksmith",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "19th–mid-20th century",
+  "objectBeginDate": 1800,
+  "objectEndDate": 1950,
+  "medium": "Wood, cloth, plant fiber, applied organic materials",
+  "dimensions": "H. 11 1/2 × W. 13 1/2 × D. 35 3/4 in. (29.2 × 34.3 × 90.8 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 29.21
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 90.80518,
+        "Height": 29.21,
+        "Width": 34.29007
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of Mr. and Mrs. Robert L. Stolper, 1959",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Mali, Burkina Faso, or Côte d'Ivoire",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Wood-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-06-11T15:45:16.593Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310800",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": true,
+  "GalleryNumber": "341"
+}

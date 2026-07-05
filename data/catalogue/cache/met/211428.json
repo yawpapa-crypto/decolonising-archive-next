@@ -1,0 +1,87 @@
+{
+  "objectID": 211428,
+  "isHighlight": false,
+  "accessionNumber": "00.19.49",
+  "accessionYear": "1900",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/SFES2833D.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/SFES2833D.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 199883,
+      "role": "Maker",
+      "name": "Saunders &amp; Shepherd",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Souvenir spoon",
+  "title": "Souvenir spoon with finial in form of John Bull",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Saunders & Shepherd",
+  "artistDisplayBio": "British, 1869–present",
+  "artistSuffix": "",
+  "artistAlphaSort": "Saunders & Shepherd",
+  "artistNationality": "British",
+  "artistBeginDate": "1869",
+  "artistEndDate": "9999",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1894–95",
+  "objectBeginDate": 1894,
+  "objectEndDate": 1895,
+  "medium": "Silver-gilt",
+  "dimensions": "Length: 4 1/2 in. (11.4 cm)",
+  "measurements": [
+    {
+      "elementName": "Length",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 11.430023
+      }
+    }
+  ],
+  "creditLine": "Gift of Sir William H. Redding, in memory of his wife, 1900",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2023-03-01T04:48:17.327Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/211428",
+  "tags": [
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    },
+    {
+      "term": "Insignia",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300028725",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q552345"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

@@ -1,0 +1,91 @@
+{
+  "objectID": 310775,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.333",
+  "accessionYear": "1978",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 232737,
+      "role": "Artist",
+      "name": "Mossi(?) blacksmith",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Mask",
+  "title": "Wan-rulugu (hornbill mask)",
+  "culture": "Mossi",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Mossi(?) blacksmith",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Mossi(?) blacksmith",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "19th–first half 20th century",
+  "objectBeginDate": 1800,
+  "objectEndDate": 1950,
+  "medium": "Ceiba(?) wood, pigment",
+  "dimensions": "H. 30 3/8 x W. 21 5/8 x D. 9 1/8 in. (77.2 x 54.9 x 23.2 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 23.16
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 23.16,
+        "Height": 77.1525,
+        "Width": 54.94
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of Nelson A. Rockefeller, 1969",
+  "geographyType": "",
+  "city": "",
+  "state": "Yatenga region",
+  "county": "",
+  "country": "Burkina Faso",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "White Volta River region",
+  "classification": "Wood-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-09-25T04:51:07.587Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310775",
+  "tags": [
+    {
+      "term": "Birds",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300266506",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q5113"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": "341"
+}

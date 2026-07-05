@@ -1,0 +1,94 @@
+{
+  "objectID": 256208,
+  "isHighlight": false,
+  "accessionNumber": "1995.45.2",
+  "accessionYear": "1995",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/gr/original/DT3849.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/gr/web-large/DT3849.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/gr/original/DT3848.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 49270,
+      "role": "Artist",
+      "name": "Attributed to the Metope Painter",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "Greek and Roman Art",
+  "objectName": "Loutrophoros",
+  "title": "Terracotta loutrophoros (ceremonial vase for water)",
+  "culture": "Greek, South Italian, Apulian",
+  "period": "Late Classical",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "Attributed to the",
+  "artistDisplayName": "Metope Painter",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Metope Painter",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "3rd quarter of the 4th century BCE",
+  "objectBeginDate": -350,
+  "objectEndDate": -325,
+  "medium": "Terracotta",
+  "dimensions": "32 3/4 in. (83.2 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 83.185165
+      }
+    }
+  ],
+  "creditLine": "Purchase, The Bernard and Audrey Aronson Charitable Trust Gift, in memory of her beloved husband, Bernard Aronson, 1995",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Vases",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-10-24T04:51:05.727Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/256208",
+  "tags": [
+    {
+      "term": "Male Nudes",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300189568",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q40446"
+    },
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    },
+    {
+      "term": "Lions",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300310388",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q140"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116288106",
+  "isTimelineWork": true,
+  "GalleryNumber": "160"
+}

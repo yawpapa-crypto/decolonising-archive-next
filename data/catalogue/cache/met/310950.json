@@ -1,0 +1,92 @@
+{
+  "objectID": 310950,
+  "isHighlight": true,
+  "accessionNumber": "1978.412.489",
+  "accessionYear": "1978",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 219151,
+      "role": "Artist",
+      "name": "Senufo artist",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Mask",
+  "title": "Kpeliye’e headdress",
+  "culture": "Senufo peoples",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Senufo artist",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Senufo artist",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "19th–mid-20th century",
+  "objectBeginDate": 1800,
+  "objectEndDate": 1960,
+  "medium": "Wood, horns, quills, raffia fiber, cotton cloth, feathers, metal, applied organic materials",
+  "dimensions": "H. 30 1/4 x W. 13 x  D. 9 in. (76.8 x 33 x 22.9 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": "overall",
+      "elementMeasurements": {
+        "Depth": 22.86,
+        "Height": 76.84,
+        "Width": 33.02
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "wood",
+      "elementMeasurements": {
+        "Depth": 10.16
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 10.16
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Purchase, Nelson A. Rockefeller Gift, 1965",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Côte d'Ivoire",
+  "region": "northern Côte d'Ivoire",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Wood-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-01-23T04:52:29.993Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310950",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": true,
+  "GalleryNumber": "341"
+}

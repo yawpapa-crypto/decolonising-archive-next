@@ -1,0 +1,90 @@
+{
+  "objectID": 310459,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.459a-c",
+  "accessionYear": "1978",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 155898,
+      "role": "Artist",
+      "name": "Yoruba artist",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Altar",
+  "title": "Ilé-orí (house for the head) shrine with ìbọrí",
+  "culture": "Yoruba peoples",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Yoruba artist",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Yoruba artist",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "19th–20th century",
+  "objectBeginDate": 1800,
+  "objectEndDate": 2000,
+  "medium": "Cowrie shells, cotton, leather, mixed media offerings",
+  "dimensions": "H. 13 3/4 x Diam. 10 in. (35 x 25.4 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": "c)",
+      "elementMeasurements": {
+        "Height": 13.34
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 25.4
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 35.0044
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of the William W. Brill Foundation, 1962",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Nigeria",
+  "region": "southwestern region",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Beads-Costumes",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-20T04:50:39.43Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310459",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": "343"
+}

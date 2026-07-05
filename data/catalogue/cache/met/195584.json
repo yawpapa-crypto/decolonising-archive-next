@@ -1,0 +1,80 @@
+{
+  "objectID": 195584,
+  "isHighlight": false,
+  "accessionNumber": "26.267.13a, b",
+  "accessionYear": "1926",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/SF26_267_13_img1.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/SF26_267_13_img1.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/SF26_267_13_img2.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/SF26_267_13_img3.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/SF26_267_13_img4.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/SF26_267_13_mark.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/66534.jpg"
+  ],
+  "constituents": null,
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Watch with key",
+  "title": "Watch and key",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1835",
+  "objectBeginDate": 1830,
+  "objectEndDate": 1840,
+  "medium": "Gold, enamel",
+  "dimensions": "Diameter: 1 11/16 in. (4.3 cm)",
+  "measurements": [
+    {
+      "elementName": "Diameter",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 4.2862587
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 0.111
+      }
+    }
+  ],
+  "creditLine": "Anonymous Gift, in memory of Lady May Fletcher-Moulton, 1926",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Horology",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/195584",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

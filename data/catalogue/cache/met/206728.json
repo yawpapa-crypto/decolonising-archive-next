@@ -1,0 +1,88 @@
+{
+  "objectID": 206728,
+  "isHighlight": false,
+  "accessionNumber": "1978.287",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP-16097-149.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP-16097-149.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 33142,
+      "role": "Maker",
+      "name": "G.U.",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Rattle and teether",
+  "title": "Child's rattle and teether",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "G.U.",
+  "artistDisplayBio": "active Birmingham",
+  "artistSuffix": "",
+  "artistAlphaSort": "U., G.",
+  "artistNationality": "",
+  "artistBeginDate": "1785",
+  "artistEndDate": "1885",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1835–36",
+  "objectBeginDate": 1835,
+  "objectEndDate": 1836,
+  "medium": "Silver, coral",
+  "dimensions": "5 3/8 × 1 3/4 in. (13.7 × 4.4 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 13.652527,
+        "Width": 4.4450088
+      }
+    }
+  ],
+  "creditLine": "Purchase, Gifts in memory of Mrs. Thomas Clearwater, Leo D. Bretter Gift, Bequest of Adeline R. Brown, by exchange, Osceola Foundation, Inc. Gift, and Gifts of Dr. and Mrs. A.L. Garbat, Manya Garbat Starr and Julian A. Garbat, by exchange, 1978",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver In Combination",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/206728",
+  "tags": [
+    {
+      "term": "Amulets",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300266585",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q131557"
+    },
+    {
+      "term": "Toys",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300211037",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q11422"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

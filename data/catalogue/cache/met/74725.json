@@ -1,0 +1,99 @@
+{
+  "objectID": 74725,
+  "isHighlight": false,
+  "accessionNumber": "2008.359.46",
+  "accessionYear": "2008",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DP166113.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DP166113.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/as/original/LC-2008_359_46_001.jpg"
+  ],
+  "constituents": null,
+  "department": "Asian Art",
+  "objectName": "Painting",
+  "title": "A Maharana and His Retinue Hunting Boar",
+  "culture": "Western India, Rajasthan, Udaipur",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "early 18th century",
+  "objectBeginDate": 1700,
+  "objectEndDate": 1733,
+  "medium": "Ink and wash on paper",
+  "dimensions": "Image (sight): 13 1/2 x 23 in. (34.3 x 58.4 cm)",
+  "measurements": [
+    {
+      "elementName": "Framed",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 50.800102,
+        "Width": 81.28016
+      }
+    },
+    {
+      "elementName": "Image",
+      "elementDescription": "sight",
+      "elementMeasurements": {
+        "Height": 34.29007,
+        "Width": 58.420116
+      }
+    }
+  ],
+  "creditLine": "Gift of Subhash Kapoor, in memory of his parents, Smt Shashi Kanta and Shree Parshotam Ram Kapoor, 2008",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Paintings",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-20T04:50:39.43Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/74725",
+  "tags": [
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    },
+    {
+      "term": "Hunting",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300239666",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q36963"
+    },
+    {
+      "term": "Boars",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250112",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q58697"
+    },
+    {
+      "term": "Horses",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250148",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q726"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q78707827",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

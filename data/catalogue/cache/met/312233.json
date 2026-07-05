@@ -1,0 +1,84 @@
+{
+  "objectID": 312233,
+  "isHighlight": false,
+  "accessionNumber": "1979.206.436",
+  "accessionYear": "1979",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP258285.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP258285.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/vs1979_206_436.jpg"
+  ],
+  "constituents": null,
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Ornament",
+  "title": "Bird Head Ornament",
+  "culture": "Haida",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "19th century",
+  "objectBeginDate": 1800,
+  "objectEndDate": 1900,
+  "medium": "Argillite, shell",
+  "dimensions": "H. 2 15/16 x W. 2 3/4 x W. 1/2 in. (7.5 x 7 x 1.3cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 1.27
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 1.27,
+        "Height": 7.5406,
+        "Width": 6.99
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Bequest of Nelson A. Rockefeller, 1979",
+  "geographyType": "",
+  "city": "",
+  "state": "British Columbia",
+  "county": "",
+  "country": "Canada",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Stone-Ornaments",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-02-04T04:58:06.107Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/312233",
+  "tags": [
+    {
+      "term": "Birds",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300266506",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q5113"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

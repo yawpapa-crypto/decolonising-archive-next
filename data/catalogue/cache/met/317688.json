@@ -1,0 +1,91 @@
+{
+  "objectID": 317688,
+  "isHighlight": false,
+  "accessionNumber": "1994.312.16",
+  "accessionYear": "1994",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP102133.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP102133.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 219152,
+      "role": "Artist",
+      "name": "Akan artist",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Weight",
+  "title": "Gold Weight: Bird (Sankofa)",
+  "culture": "Akan peoples",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Akan artist",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Akan artist",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "18th–19th century",
+  "objectBeginDate": 1700,
+  "objectEndDate": 1800,
+  "medium": "Brass",
+  "dimensions": "Height 1-3/4 in.",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 4.445,
+        "Width": 1.27
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 3.18,
+        "Width": 1.27
+      }
+    }
+  ],
+  "creditLine": "Gift of Ernst Anspach, 1994",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Ghana",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metal-Implements",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-09-12T04:50:41.41Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/317688",
+  "tags": [
+    {
+      "term": "Birds",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300266506",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q5113"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

@@ -241,6 +241,9 @@ export default function NavbarClient({
           >
             Library
           </a>
+          <Link href="/collections" className="nav-link">
+            Collections
+          </Link>
           <a
             href="/sources"
             className="nav-link"
@@ -486,6 +489,9 @@ export default function NavbarClient({
         >
           Library
         </a>
+        <Link href="/collections" className="nav-link" onClick={handleNavClick}>
+          Collections
+        </Link>
         <a
           href="/sources"
           className="nav-link"

@@ -1,0 +1,92 @@
+{
+  "objectID": 83616,
+  "isHighlight": false,
+  "accessionNumber": "1994.161.1",
+  "accessionYear": "1994",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 20184,
+      "role": "Design House",
+      "name": "House of Chanel",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500329589",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q218115",
+      "gender": ""
+    },
+    {
+      "constituentID": 163904,
+      "role": "Designer",
+      "name": "Karl Lagerfeld",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500228104",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q76716",
+      "gender": ""
+    },
+    {
+      "constituentID": 27059,
+      "role": "Secondary Line",
+      "name": "Chanel Boutique",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "Costume Institute",
+  "objectName": "Dress",
+  "title": "Dress",
+  "culture": "French",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Design House",
+  "artistPrefix": "",
+  "artistDisplayName": "House of Chanel",
+  "artistDisplayBio": "French, founded 1910",
+  "artistSuffix": "",
+  "artistAlphaSort": "Chanel, House of",
+  "artistNationality": "French",
+  "artistBeginDate": "1910",
+  "artistEndDate": "9999",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q218115",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500329589",
+  "objectDate": "fall/winter 1987–88",
+  "objectBeginDate": 1987,
+  "objectEndDate": 1988,
+  "medium": "synthetic fiber, plastic (vinyl)",
+  "dimensions": "",
+  "measurements": [
+    {
+      "elementName": "Length at CB",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 99.0602
+      }
+    }
+  ],
+  "creditLine": "Gift of Thomas Shoemaker, in memory of Michael L. Cipriano, 1994",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/83616",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": true,
+  "GalleryNumber": ""
+}

@@ -1,0 +1,92 @@
+{
+  "objectID": 311711,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.1244",
+  "accessionYear": "1978",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 163040,
+      "role": "Artist",
+      "name": "Minan",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    },
+    {
+      "constituentID": 63897,
+      "role": "Artist",
+      "name": "Manamjik",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Ritual object",
+  "title": "Ceremonial Cylinder (Basu Suangkus)",
+  "culture": "Asmat people",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Minan",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Minan",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "mid-20th century",
+  "objectBeginDate": 1900,
+  "objectEndDate": 2000,
+  "medium": "Wood, sago palm leaves, fiber, seeds, cassowary quills, paint",
+  "dimensions": "H. 85 x W. 13 x D. 13 in. (215.9 x 33 x 33 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 33.0201,
+        "Height": 215.9004,
+        "Width": 33.0201
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection; Gift of Nelson A. Rockefeller and Mrs. Mary C. Rockefeller, 1965",
+  "geographyType": "",
+  "city": "Biwar village",
+  "state": "West Papua",
+  "county": "",
+  "country": "Indonesia",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "Sor River",
+  "classification": "Wood-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-11-06T04:50:53.52Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/311711",
+  "tags": [
+    {
+      "term": "Heads",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300375054",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q3409626"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

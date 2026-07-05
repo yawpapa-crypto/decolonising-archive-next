@@ -1,0 +1,79 @@
+{
+  "objectID": 38603,
+  "isHighlight": false,
+  "accessionNumber": "1993.284",
+  "accessionYear": "1993",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/1993_284.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/1993_284.jpg",
+  "additionalImages": [],
+  "constituents": null,
+  "department": "Asian Art",
+  "objectName": "Relief fragment",
+  "title": "Head of Manjushri, the Bodhisattva of Transcendent Wisdom",
+  "culture": "Indonesia (Java)",
+  "period": "Central Javanese period",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "9th–early 10th century",
+  "objectBeginDate": 800,
+  "objectEndDate": 933,
+  "medium": "Andesite",
+  "dimensions": "H. 11 1/8 in. (28.2 cm); W. 21 1/16 in. (53.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 28.2,
+        "Width": 53.5
+      }
+    }
+  ],
+  "creditLine": "Gift of Estate of Anthony Gardner, in his memory, 1993",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/38603",
+  "tags": [
+    {
+      "term": "Bodhisattvas",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300264360",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q178149"
+    },
+    {
+      "term": "Manjushri",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901000407",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q471696"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116374541",
+  "isTimelineWork": false,
+  "GalleryNumber": "247"
+}

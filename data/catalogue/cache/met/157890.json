@@ -1,0 +1,101 @@
+{
+  "objectID": 157890,
+  "isHighlight": false,
+  "accessionNumber": "2009.300.3000a–e",
+  "accessionYear": "2009",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ci/original/31.455-.459_front_CP4.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ci/web-large/31.455-.459_front_CP4.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ci/original/31.455-.459_back_CP4.jpg",
+    "https://images.metmuseum.org/CRDImages/ci/original/31.455-.459 bw.JPG"
+  ],
+  "constituents": null,
+  "department": "Costume Institute",
+  "objectName": "Ensemble",
+  "title": "Ensemble",
+  "culture": "Russian",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "third quarter 17th–19th century",
+  "objectBeginDate": 1675,
+  "objectEndDate": 1899,
+  "medium": "linen, cotton, wool, pigment, metal, silk, glass, mother-of-pearl",
+  "dimensions": "",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "(a)",
+      "elementMeasurements": {
+        "Length": 114.30023
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "(e)",
+      "elementMeasurements": {
+        "Length": 73.66015,
+        "Width": 2.540005
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "(d)",
+      "elementMeasurements": {
+        "Length": 162.56032,
+        "Width": 12.700026
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "(c)",
+      "elementMeasurements": {
+        "Length": 27.940056,
+        "Width": 27.940056
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "(b)",
+      "elementMeasurements": {
+        "Length": 30.48006
+      }
+    }
+  ],
+  "creditLine": "Brooklyn Museum Costume Collection at The Metropolitan Museum of Art, Gift of the Brooklyn Museum, 2009; Gift of Mrs. Edward S. Harkness in memory of her mother, Elizabeth Greenman Stillman, 1931",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/157890",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q100145748",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

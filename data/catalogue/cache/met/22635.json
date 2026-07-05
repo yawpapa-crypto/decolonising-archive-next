@@ -1,0 +1,76 @@
+{
+  "objectID": 22635,
+  "isHighlight": false,
+  "accessionNumber": "17.192.141",
+  "accessionYear": "1917",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/aa/original/DT257906.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/aa/web-large/DT257906.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/aa/original/sfrl17.192.141_167430.jpg"
+  ],
+  "constituents": null,
+  "department": "Arms and Armor",
+  "objectName": "Shield boss",
+  "title": "Shield Boss",
+  "culture": "Western European, Gallo-Roman (found in Vermand, France)",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "late 4th century",
+  "objectBeginDate": 350,
+  "objectEndDate": 400,
+  "medium": "Iron, silver, gold, glass",
+  "dimensions": "H. 6 1/4 in. (16 cm); Diam. 7 7/8 in. (19.99 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": "Diameter (with rim)",
+      "elementMeasurements": {
+        "Diameter": 19.99
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "Height",
+      "elementMeasurements": {
+        "Height": 16
+      }
+    }
+  ],
+  "creditLine": "Gift of J. Pierpont Morgan, 1917",
+  "geographyType": "Country of Origin",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Shields-Parts of",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-20T04:50:39.43Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/22635",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116325089",
+  "isTimelineWork": false,
+  "GalleryNumber": "373"
+}

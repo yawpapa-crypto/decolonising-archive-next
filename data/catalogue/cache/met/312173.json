@@ -1,0 +1,82 @@
+{
+  "objectID": 312173,
+  "isHighlight": false,
+  "accessionNumber": "1979.206.1",
+  "accessionYear": "1979",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": null,
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Buffalo head figure",
+  "title": "Figure: Buffalo Head",
+  "culture": "Ewe peoples",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "19th–20th century",
+  "objectBeginDate": 1800,
+  "objectEndDate": 2000,
+  "medium": "Terracotta",
+  "dimensions": "H. 9 x W. 9 1/8 x D. 4 5/8 in. (22.9 x 23.2 x 11.7 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 11.71
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 11.71,
+        "Height": 22.86,
+        "Width": 23.16
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Bequest of Nelson A. Rockefeller, 1979",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Togo or Ghana (possibly Kpandu)",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-20T04:50:39.43Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/312173",
+  "tags": [
+    {
+      "term": "Buffalos",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250108",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q82728"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

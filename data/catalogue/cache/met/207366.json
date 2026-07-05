@@ -1,0 +1,83 @@
+{
+  "objectID": 207366,
+  "isHighlight": false,
+  "accessionNumber": "1983.183.6",
+  "accessionYear": "1983",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/SF1983_183_6_img2.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/SF1983_183_6_img2.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/SF1983_183_6_img3.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/SF1983_183_6_img4.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/SF1983_183_6_img1.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/238703.jpg"
+  ],
+  "constituents": null,
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Beaker",
+  "title": "Beaker (Stopa)",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1714",
+  "objectBeginDate": 1709,
+  "objectEndDate": 1719,
+  "medium": "Silver gilt",
+  "dimensions": "Height: 6 3/16 in. (15.7 cm)",
+  "measurements": [
+    {
+      "elementName": "Height",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 15.716282
+      }
+    }
+  ],
+  "creditLine": "Bequest of Vladimir M. Eitingon, in memory of his wife, Nadine (Nadia) Eitingon, 1982",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2021-06-29T04:39:38.347Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/207366",
+  "tags": [
+    {
+      "term": "Eagles",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250049",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q2092297"
+    },
+    {
+      "term": "Coat of Arms",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300126352",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q14659"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

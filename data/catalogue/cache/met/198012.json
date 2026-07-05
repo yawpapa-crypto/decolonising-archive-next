@@ -1,0 +1,88 @@
+{
+  "objectID": 198012,
+  "isHighlight": false,
+  "accessionNumber": "37.160.9",
+  "accessionYear": "1937",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP108691_1.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP108691_1.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP108692.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP108693.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 34132,
+      "role": "Maker",
+      "name": "Clockmaker: probably Jean-Philippe Gosselin",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    },
+    {
+      "constituentID": 37101,
+      "role": "Maker",
+      "name": "Case maker: Jean-Joseph de Saint Germain",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500115618",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q52154219",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Mantel clock",
+  "title": "Mantel clock (pendule à console)",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "Clockmaker: probably",
+  "artistDisplayName": "Jean-Philippe Gosselin",
+  "artistDisplayBio": "French, recorded as master in Paris 1717, died 1766",
+  "artistSuffix": "",
+  "artistAlphaSort": "Gosselin, Jean-Philippe",
+  "artistNationality": "French",
+  "artistBeginDate": "1666",
+  "artistEndDate": "1766",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1750",
+  "objectBeginDate": 1745,
+  "objectEndDate": 1755,
+  "medium": "Case: bronze, formerly gilded, silvered or lacquered; dial: white enamel, with black numerals; movement: brass and steel",
+  "dimensions": "Overall: 16 × 12 in. (40.6 × 30.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 40.64008,
+        "Width": 30.48006
+      }
+    }
+  ],
+  "creditLine": "Bequest of Ogden Mills, 1929",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Horology",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-03-14T04:55:42.9Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/198012",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116310487",
+  "isTimelineWork": true,
+  "GalleryNumber": "529"
+}

@@ -1,0 +1,89 @@
+{
+  "objectID": 198099,
+  "isHighlight": false,
+  "accessionNumber": "38.50.62",
+  "accessionYear": "1938",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/116456.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/116456.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 33084,
+      "role": "Maker",
+      "name": "Probably Castelli",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Snuffbox",
+  "title": "Snuffbox",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "Probably",
+  "artistDisplayName": "Castelli",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "CASTELLI",
+  "artistNationality": "",
+  "artistBeginDate": "1700",
+  "artistEndDate": "1900",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "mid-18th century",
+  "objectBeginDate": 1730,
+  "objectEndDate": 1765,
+  "medium": "Earthenware; silver",
+  "dimensions": "Overall: 1 1/2 × 3 × 2 in. (3.8 × 7.6 × 5.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 5.08001,
+        "Height": 3.8100076,
+        "Width": 7.620015
+      }
+    }
+  ],
+  "creditLine": "Bequest of Kate Read Blacque, in memory of her husband, Valentine Alexander Blacque, 1937",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Pottery",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2020-09-16T18:35:19.457Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/198099",
+  "tags": [
+    {
+      "term": "Faces",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300251798",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q37017"
+    },
+    {
+      "term": "Flowers",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132399",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q506"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

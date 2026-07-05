@@ -1,0 +1,78 @@
+{
+  "objectID": 198085,
+  "isHighlight": false,
+  "accessionNumber": "38.50.48a, b",
+  "accessionYear": "1938",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/SF38_50_48_img1.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/SF38_50_48_img1.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/SF38_50_48_img2.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 165560,
+      "role": "Maker",
+      "name": "Joseph Etienne Blerzy",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500524496",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q22661422",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Étui",
+  "title": "Sealing wax case (étui)",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Joseph Etienne Blerzy",
+  "artistDisplayBio": "French, active 1750–1806",
+  "artistSuffix": "",
+  "artistAlphaSort": "Blerzy, Joseph Etienne",
+  "artistNationality": "French",
+  "artistBeginDate": "1750",
+  "artistEndDate": "1806",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q22661422",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500524496",
+  "objectDate": "1783–84",
+  "objectBeginDate": 1783,
+  "objectEndDate": 1784,
+  "medium": "Gold and enamel",
+  "dimensions": "Length: 4 5/8 in. (11.7 cm)",
+  "measurements": [
+    {
+      "elementName": "Length",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 11.747523
+      }
+    }
+  ],
+  "creditLine": "Bequest of Kate Read Blacque, in memory of her husband, Valentine Alexander Blacque, 1937",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Gold and Platinum",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2024-03-29T10:36:46.263Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/198085",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

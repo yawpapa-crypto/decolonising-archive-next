@@ -1,0 +1,98 @@
+{
+  "objectID": 197033,
+  "isHighlight": false,
+  "accessionNumber": "32.100.155",
+  "accessionYear": "1932",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP200059.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP200059.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP200061.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 34678,
+      "role": "Artist",
+      "name": "Tullio Lombardo",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500004395",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q1350301",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Half-length statue",
+  "title": "A Young Warrior",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Tullio Lombardo",
+  "artistDisplayBio": "Italian, ca. 1455–1532",
+  "artistSuffix": ", and workshop",
+  "artistAlphaSort": "Lombardo, Tullio",
+  "artistNationality": "Italian",
+  "artistBeginDate": "1455",
+  "artistEndDate": "1532",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q1350301",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500004395",
+  "objectDate": "1490s",
+  "objectBeginDate": 1490,
+  "objectEndDate": 1499,
+  "medium": "White marble",
+  "dimensions": "Overall (wt. confirmed): 34 1/2 × 21 (12 1/2 in. at base) × 14 in., 250 lb., (87.6 × 53.3 × 35.6 cm (31.8 cm), 113.4 kg)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "wt confirmed",
+      "elementMeasurements": {
+        "Depth": 35.5601,
+        "Height": 87.6302,
+        "Length": 31.7501,
+        "Weight": 113.399254,
+        "Width": 53.3401
+      }
+    }
+  ],
+  "creditLine": "The Friedsam Collection, Bequest of Michael Friedsam, 1931",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-02-21T04:53:26.397Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/197033",
+  "tags": [
+    {
+      "term": "Armor",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300226591",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q20793164"
+    },
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    },
+    {
+      "term": "Warriors",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300261945",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q1250916"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116374103",
+  "isTimelineWork": true,
+  "GalleryNumber": "504"
+}

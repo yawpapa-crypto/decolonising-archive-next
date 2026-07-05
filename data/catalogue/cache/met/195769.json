@@ -1,0 +1,90 @@
+{
+  "objectID": 195769,
+  "isHighlight": false,
+  "accessionNumber": "27.97.32",
+  "accessionYear": "1927",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/LC-27_97_32-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/LC-27_97_32-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/LC-27_97_32-002.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 135979,
+      "role": "Maker",
+      "name": "Style of Maestro Giorgio Andreoli",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500011429",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q1346997",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Dish",
+  "title": "Dish (one of a pair)",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "Style of",
+  "artistDisplayName": "Maestro Giorgio Andreoli",
+  "artistDisplayBio": "Italian (Gubbio), active first half of 16th century",
+  "artistSuffix": "",
+  "artistAlphaSort": "Andreoli, Giorgio Maestro",
+  "artistNationality": "Italian",
+  "artistBeginDate": "1500",
+  "artistEndDate": "1550",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q1346997",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500011429",
+  "objectDate": "ca. 1525–35",
+  "objectBeginDate": 1520,
+  "objectEndDate": 1540,
+  "medium": "Maiolica (tin-glazed earthenware), lustered",
+  "dimensions": "Overall (confirmed): 2 × 9 1/8 in. (5.1 × 23.2 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "confirmed",
+      "elementMeasurements": {
+        "Diameter": 23.177546,
+        "Height": 5.08001
+      }
+    }
+  ],
+  "creditLine": "Gift of V. Everit Macy, in memory of his wife, Edith Carpenter Macy, 1927",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Pottery",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/195769",
+  "tags": [
+    {
+      "term": "Heads",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300375054",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q3409626"
+    },
+    {
+      "term": "Cupid",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300380105",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q5011"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

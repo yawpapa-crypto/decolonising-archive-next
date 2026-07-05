@@ -1,0 +1,95 @@
+{
+  "objectID": 255772,
+  "isHighlight": false,
+  "accessionNumber": "1983.11.1",
+  "accessionYear": "1983",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/gr/original/DP272633.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/gr/web-large/DP272633.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/gr/original/DP272634.jpg",
+    "https://images.metmuseum.org/CRDImages/gr/original/DP271289.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 49254,
+      "role": "Artist",
+      "name": "Attributed to Euthymides, Potter",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500115442",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q560260",
+      "gender": ""
+    }
+  ],
+  "department": "Greek and Roman Art",
+  "objectName": "Oinochoe, fragmentary",
+  "title": "Fragment of a terracotta oinochoe, joins 1981.11.9",
+  "culture": "Greek, Attic",
+  "period": "Archaic",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "Attributed to",
+  "artistDisplayName": "Euthymides, Potter",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Euthymides Potter",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q560260",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500115442",
+  "objectDate": "ca. 520 BCE",
+  "objectBeginDate": -520,
+  "objectEndDate": -520,
+  "medium": "Terracotta",
+  "dimensions": "H. 1 9/16 in. (4 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 3.99
+      }
+    }
+  ],
+  "creditLine": "Purchase, David L. Klein Jr. Memorial Foundation Inc., Jerome Levy Foundation, and Junior League of Bronxville Gifts, 1983",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Vases",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/255772",
+  "tags": [
+    {
+      "term": "Aphrodite",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901000612",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q35500"
+    },
+    {
+      "term": "Athena",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901000069",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q37122"
+    },
+    {
+      "term": "Hermes",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901000721",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q41484"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116292844",
+  "isTimelineWork": false,
+  "GalleryNumber": "157"
+}

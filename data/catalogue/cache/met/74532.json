@@ -1,0 +1,87 @@
+{
+  "objectID": 74532,
+  "isHighlight": false,
+  "accessionNumber": "2009.2",
+  "accessionYear": "2009",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DP222943.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DP222943.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/as/original/DP222957.jpg"
+  ],
+  "constituents": null,
+  "department": "Asian Art",
+  "objectName": "Figure",
+  "title": "Bodhisattva Avalokiteshvara",
+  "culture": "China",
+  "period": "Late Ming (1368–1644) or Qing (1644–1911) dynasty",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "19th century",
+  "objectBeginDate": 1800,
+  "objectEndDate": 1899,
+  "medium": "Leaded brass with pigment and gilding, lost-wax cast",
+  "dimensions": "H. 6 7/8 in. (17.5 cm); W. 5 5/8 in. (14.3 cm); D. 3 9/16 in. (9 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 9,
+        "Height": 17.5,
+        "Width": 14.3
+      }
+    }
+  ],
+  "creditLine": "Purchase, Bequest of Florance Waterbury, in memory of her father, John I. Waterbury, by exchange, 2009",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/74532",
+  "tags": [
+    {
+      "term": "Buddhism",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300073738",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q748"
+    },
+    {
+      "term": "Avalokiteshvara",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901000085",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q193849"
+    },
+    {
+      "term": "Bodhisattvas",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300264360",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q178149"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

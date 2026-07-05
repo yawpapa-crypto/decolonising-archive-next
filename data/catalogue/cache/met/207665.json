@@ -1,0 +1,83 @@
+{
+  "objectID": 207665,
+  "isHighlight": false,
+  "accessionNumber": "1986.320a–c",
+  "accessionYear": "1986",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP225864.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP225864.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP225865.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP225866.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/ES4674.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/ES3356.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 34007,
+      "role": "Maker",
+      "name": "Jacques-Nicolas Roettiers",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500031436",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q6120343",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Tureen with cover",
+  "title": "Tureen with cover and liner",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Jacques-Nicolas Roettiers",
+  "artistDisplayBio": "1736–1788, master 1765, retired 1777",
+  "artistSuffix": "",
+  "artistAlphaSort": "Roettiers Jacques-Nicolas",
+  "artistNationality": "",
+  "artistBeginDate": "1736",
+  "artistEndDate": "1788",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q6120343",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500031436",
+  "objectDate": "1775–76",
+  "objectBeginDate": 1775,
+  "objectEndDate": 1776,
+  "medium": "Silver",
+  "dimensions": "Overall: 12 1/4 × 15 1/2 × 9 7/8 in. (31.1 × 39.4 × 25.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 25.1,
+        "Height": 31.1,
+        "Width": 39.4
+      }
+    }
+  ],
+  "creditLine": "Gift of Dorothy C. Livingston, in loving memory of Robert R. Livingston, 1986",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/207665",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116307349",
+  "isTimelineWork": false,
+  "GalleryNumber": "522"
+}

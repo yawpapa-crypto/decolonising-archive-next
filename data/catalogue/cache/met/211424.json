@@ -1,0 +1,87 @@
+{
+  "objectID": 211424,
+  "isHighlight": false,
+  "accessionNumber": "00.19.46",
+  "accessionYear": "1900",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/SFES2829D.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/SFES2829D.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 199883,
+      "role": "Maker",
+      "name": "Saunders &amp; Shepherd",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Souvenir spoon",
+  "title": "Souvenir spoon with profile portraits of Queen Victoria",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Saunders & Shepherd",
+  "artistDisplayBio": "British, 1869–present",
+  "artistSuffix": "",
+  "artistAlphaSort": "Saunders & Shepherd",
+  "artistNationality": "British",
+  "artistBeginDate": "1869",
+  "artistEndDate": "9999",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1896–97",
+  "objectBeginDate": 1896,
+  "objectEndDate": 1897,
+  "medium": "Silver, silver-parcel",
+  "dimensions": "Length: 4 3/4 in. (12.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Length",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 12.085344
+      }
+    }
+  ],
+  "creditLine": "Gift of Sir William H. Redding, in memory of his wife, 1900",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2020-09-16T18:35:19.457Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/211424",
+  "tags": [
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    },
+    {
+      "term": "Profiles",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300123319",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q4382010"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

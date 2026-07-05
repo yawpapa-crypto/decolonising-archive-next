@@ -1,0 +1,85 @@
+{
+  "objectID": 19766,
+  "isHighlight": false,
+  "accessionNumber": "2021.109a–vv",
+  "accessionYear": "2021",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 1117,
+      "role": "Maker",
+      "name": "Duncan Phyfe",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500082047",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q3041258",
+      "gender": ""
+    }
+  ],
+  "department": "The American Wing",
+  "objectName": "Bedstead",
+  "title": "Bedstead",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Duncan Phyfe",
+  "artistDisplayBio": "American (born Scotland), near Lock Fannich, Ross-Shire, Scotland 1768/1770–1854 New York",
+  "artistSuffix": "",
+  "artistAlphaSort": "Phyfe, Duncan",
+  "artistNationality": "American, born Scotland",
+  "artistBeginDate": "1770",
+  "artistEndDate": "1854",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q3041258",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500082047",
+  "objectDate": "1815–25",
+  "objectBeginDate": 1815,
+  "objectEndDate": 1825,
+  "medium": "Mahogany, mahogany veneer, vert antique, gilded cast brass",
+  "dimensions": "84 × 63 × 80 in. (213.4 × 160 × 203.2 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "Each post",
+      "elementMeasurements": {
+        "Length": 243.8405
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 203.20041,
+        "Height": 213.36043,
+        "Width": 160.02032
+      }
+    }
+  ],
+  "creditLine": "Gift of Juliana Curran Terian, 2021",
+  "geographyType": "Made in",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "United States",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-30T04:54:21.21Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/19766",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

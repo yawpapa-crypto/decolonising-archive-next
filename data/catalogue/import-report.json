@@ -1,0 +1,16 @@
+{
+  "buildId": "2026-07-05-taxonomy-v1",
+  "importedAt": "2026-07-05T10:32:18.514Z",
+  "sourceFiles": [
+    "research-catalogue-final.csv",
+    "research-catalogue-historical.csv"
+  ],
+  "totalRecords": 138,
+  "museumVerified": 88,
+  "historicalDocumented": 50,
+  "verifiedAtImport": 88,
+  "notes": [
+    "Museum object records (verified) plus documented historical entries (source-located / partially verified).",
+    "source_facts and ared_interpretation remain separated in CSV and on detail pages."
+  ]
+}

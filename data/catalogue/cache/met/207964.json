@@ -1,0 +1,92 @@
+{
+  "objectID": 207964,
+  "isHighlight": false,
+  "accessionNumber": "1991.89",
+  "accessionYear": "1991",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP-613-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP-613-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP-613-002.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP-613-003.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 33855,
+      "role": "Artist",
+      "name": "Girolamo Campagna",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500013174",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q281653",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Head",
+  "title": "Onofrio Panvinio",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Girolamo Campagna",
+  "artistDisplayBio": "Italian, Verona 1549–1625 Venice",
+  "artistSuffix": "",
+  "artistAlphaSort": "Campagna, Girolamo",
+  "artistNationality": "Italian",
+  "artistBeginDate": "1549",
+  "artistEndDate": "1625",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q281653",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500013174",
+  "objectDate": "early 1570s",
+  "objectBeginDate": 1570,
+  "objectEndDate": 1575,
+  "medium": "Bronze, iron (hook at back of neck)",
+  "dimensions": "Overall (confirmed): 12 1/8 × 9 1/4 × 12 3/8 in. (30.8 × 23.5 × 31.4 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "confirmed",
+      "elementMeasurements": {
+        "Depth": 31.432564,
+        "Height": 30.797562,
+        "Width": 23.495047
+      }
+    }
+  ],
+  "creditLine": "Edith Perry Chapman Fund, 1991",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture-Bronze",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/207964",
+  "tags": [
+    {
+      "term": "Heads",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300375054",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q3409626"
+    },
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

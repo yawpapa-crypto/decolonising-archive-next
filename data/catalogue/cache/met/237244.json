@@ -1,0 +1,95 @@
+{
+  "objectID": 237244,
+  "isHighlight": false,
+  "accessionNumber": "1996.436.2a, b",
+  "accessionYear": "1996",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/ES4098.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/ES4098.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/ES4097.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/ES4096.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/ES4095.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/262493.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/262296.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/262297.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/262298.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 38895,
+      "role": "Maker",
+      "name": "Alois Simpert Eschenlohr",
+      "constituentULAN_URL": "(not assigned)",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q112921643",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Hot milk pot",
+  "title": "Hot milk pot",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Alois Simpert Eschenlohr",
+  "artistDisplayBio": "1785–1837, master 1824?",
+  "artistSuffix": "",
+  "artistAlphaSort": "Eschenlohr Alois Simpert",
+  "artistNationality": "",
+  "artistBeginDate": "1785",
+  "artistEndDate": "1837",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q112921643",
+  "artistULAN_URL": "(not assigned)",
+  "objectDate": "1823–24",
+  "objectBeginDate": 1823,
+  "objectEndDate": 1824,
+  "medium": "Silver, ebony, ivory, macassar ivory",
+  "dimensions": "Height (with cover): 8 5/16 in. (21.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Height",
+      "elementDescription": "with cover",
+      "elementMeasurements": {
+        "Height": 21.113792
+      }
+    }
+  ],
+  "creditLine": "Gift of Wolfram Koeppe, in memory of Walter E. Stait, 1996",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2023-02-07T04:46:51.34Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/237244",
+  "tags": [
+    {
+      "term": "Faces",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300251798",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q37017"
+    },
+    {
+      "term": "Flowers",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132399",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q506"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116306825",
+  "isTimelineWork": false,
+  "GalleryNumber": "553"
+}

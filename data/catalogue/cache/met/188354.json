@@ -1,0 +1,79 @@
+{
+  "objectID": 188354,
+  "isHighlight": false,
+  "accessionNumber": "98.1.2",
+  "accessionYear": "1898",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/17539.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/17539.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/118365.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/118366.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 37298,
+      "role": "Maker",
+      "name": "J.F.",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Ewer",
+  "title": "Ewer",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "J.F.",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "J.F.",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1793–94",
+  "objectBeginDate": 1793,
+  "objectEndDate": 1794,
+  "medium": "Silver",
+  "dimensions": "Height: 12 1/2 in. (31.8 cm)",
+  "measurements": [
+    {
+      "elementName": "Height",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 31.750063
+      }
+    }
+  ],
+  "creditLine": "Gift of Mrs. Isaac Gibson Jaffray, in memory of her husband, 1898",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2021-04-30T11:13:27.41Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/188354",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

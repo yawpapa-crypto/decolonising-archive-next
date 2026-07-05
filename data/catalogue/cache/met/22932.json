@@ -1,0 +1,136 @@
+{
+  "objectID": 22932,
+  "isHighlight": true,
+  "accessionNumber": "26.145.315a, b",
+  "accessionYear": "1926",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/aa/original/LC-26_145_315a-002.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/aa/web-large/LC-26_145_315a-002.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/aa/original/DT756.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-26_145_315a-032.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-26_145_315a-029.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-26_145_315a-025.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-26_145_315a-024.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-26_145_315a-023.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-26_145_315a-021.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-26_145_315a-018.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-26_145_315a-017.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-26_145_315a-015.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-26_145_315a-014.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-26_145_315a-013.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-26_145_315a-012.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-26_145_315a-008.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-26_145_315a-006.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-26_145_315a-005.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-26_145_315a-004.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-26_145_315a-003.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 9493,
+      "role": "Goldsmith",
+      "name": "James Morisset",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500034095",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "Arms and Armor",
+  "objectName": "Presentation smallsword with scabbard",
+  "title": "Presentation Smallsword with Scabbard",
+  "culture": "British, London",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Goldsmith",
+  "artistPrefix": "",
+  "artistDisplayName": "James Morisset",
+  "artistDisplayBio": "British, London 1738–1815",
+  "artistSuffix": "",
+  "artistAlphaSort": "Morisset James",
+  "artistNationality": "British",
+  "artistBeginDate": "1768",
+  "artistEndDate": "1815",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500034095",
+  "objectDate": "hallmarked for 1797–98",
+  "objectBeginDate": 1797,
+  "objectEndDate": 1798,
+  "medium": "Silver, enamel, steel, paste brilliants, wood, fish skin",
+  "dimensions": "L. 41 1/2 in. (105.4 cm); L. of blade 34 in. (86.4 cm); Wt. 1 lb. (453.6 g); Wt. of scabbard 3 oz. (85 g)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": "Length overall",
+      "elementMeasurements": {
+        "Length": 105.41
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "Weight with scabbard",
+      "elementMeasurements": {
+        "Weight": 0.539
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "Weight",
+      "elementMeasurements": {
+        "Weight": 0.454
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "Gr. thickness of blade",
+      "elementMeasurements": {
+        "Thickness": 0.79
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "Gr. width of blade",
+      "elementMeasurements": {
+        "Width": 1.91
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "Length of blade",
+      "elementMeasurements": {
+        "Length": 86.36
+      }
+    }
+  ],
+  "creditLine": "Gift of Jean Jacques Reubell, in memory of his mother, Julia C. Coster, and of his wife, Adeline E. Post, both of New York City, 1926",
+  "geographyType": "Country of Origin",
+  "city": "London",
+  "state": "",
+  "county": "",
+  "country": "England",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Swords",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-03-28T04:49:34.793Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/22932",
+  "tags": [
+    {
+      "term": "Coat of Arms",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300126352",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q14659"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q29383129",
+  "isTimelineWork": true,
+  "GalleryNumber": "376"
+}

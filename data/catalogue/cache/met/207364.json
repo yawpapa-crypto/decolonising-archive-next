@@ -1,0 +1,102 @@
+{
+  "objectID": 207364,
+  "isHighlight": false,
+  "accessionNumber": "1983.183.4",
+  "accessionYear": "1983",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP-12878-199.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP-12878-199.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP-12878-200.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP-12878-201.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP-12878-202.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP-12878-203.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP-12878-204.jpg"
+  ],
+  "constituents": null,
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Watch",
+  "title": "Watch, with a portrait of Alexander II, czar of Russia (r. 1855–81)",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1860–70",
+  "objectBeginDate": 1855,
+  "objectEndDate": 1875,
+  "medium": "Case of gold and enamel; jeweled movement, with Chinese duplex escapement",
+  "dimensions": "2 1/8 x 5/8 in. (5.4 x 1.6cm); Diameter: 1 15/16 in. (4.9 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 1.6,
+        "Height": 5.4
+      }
+    },
+    {
+      "elementName": "Diameter",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 4.92126
+      }
+    }
+  ],
+  "creditLine": "Bequest of Vladimir M. Eitingon, in memory of his parents, Michail and Betty Eitingon, 1982",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Horology",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/207364",
+  "tags": [
+    {
+      "term": "Eagles",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250049",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q2092297"
+    },
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    },
+    {
+      "term": "Portraits",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300015637",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q134307"
+    },
+    {
+      "term": "Coat of Arms",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300126352",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q14659"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116309147",
+  "isTimelineWork": false,
+  "GalleryNumber": "554"
+}

@@ -1,0 +1,84 @@
+{
+  "objectID": 318524,
+  "isHighlight": false,
+  "accessionNumber": "2000.160.60",
+  "accessionYear": "2000",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 219142,
+      "role": "Artist",
+      "name": "Bamana artist",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Wrapper",
+  "title": "Wrapper (Bogolanfini)",
+  "culture": "Bamana peoples",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Bamana artist",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Bamana artist",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "20th century",
+  "objectBeginDate": 1875,
+  "objectEndDate": 2025,
+  "medium": "Cotton",
+  "dimensions": "Width 43-1/2 in.",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 165.7
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 165.7,
+        "Width": 110.5
+      }
+    }
+  ],
+  "creditLine": "Gift of John B. Elliott through the Mercer Trust, 2000",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Mali",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Textiles-Woven",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-10-25T04:51:59.88Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/318524",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

@@ -1,0 +1,82 @@
+{
+  "objectID": 197457,
+  "isHighlight": false,
+  "accessionNumber": "33.145.1",
+  "accessionYear": "1933",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/94777.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/94777.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/118409.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/118411.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/118412.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/118413.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/118410.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 34282,
+      "role": "Maker",
+      "name": "Louis-Antoine Taillepied",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500076358",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Spoon",
+  "title": "Serving spoon",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Louis-Antoine Taillepied",
+  "artistDisplayBio": "born ca. 1734, master 1760, active 1806 (?)",
+  "artistSuffix": "",
+  "artistAlphaSort": "Taillepied Louis-Antoine",
+  "artistNationality": "",
+  "artistBeginDate": "1734",
+  "artistEndDate": "1834",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500076358",
+  "objectDate": "1767–68",
+  "objectBeginDate": 1767,
+  "objectEndDate": 1768,
+  "medium": "Silver",
+  "dimensions": "Length: 16 3/4 in. (42.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Length",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 42.545086
+      }
+    }
+  ],
+  "creditLine": "Gift of Mrs. Donald Atkinson, Mrs. Leslie W. Devereux and Reginald T. Townsend, in memory of their mother, Eugenie Gilbert Townsend, 1933",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2020-03-02T21:50:01.377Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/197457",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

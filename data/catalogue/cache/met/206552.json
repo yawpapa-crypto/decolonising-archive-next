@@ -1,0 +1,81 @@
+{
+  "objectID": 206552,
+  "isHighlight": false,
+  "accessionNumber": "1976.206a–c",
+  "accessionYear": "1976",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/ES2761.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/ES2761.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/210670.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/269107.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/210671.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 34007,
+      "role": "Maker",
+      "name": "Jacques-Nicolas Roettiers",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500031436",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q6120343",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Dish with cover and liner",
+  "title": "Dish with cover and liner",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Jacques-Nicolas Roettiers",
+  "artistDisplayBio": "1736–1788, master 1765, retired 1777",
+  "artistSuffix": "",
+  "artistAlphaSort": "Roettiers Jacques-Nicolas",
+  "artistNationality": "",
+  "artistBeginDate": "1736",
+  "artistEndDate": "1788",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q6120343",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500031436",
+  "objectDate": "1775–76",
+  "objectBeginDate": 1775,
+  "objectEndDate": 1776,
+  "medium": "Silver",
+  "dimensions": "Overall: 7 1/2 × 12 1/4 in. (19.1 × 31.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 31.115063,
+        "Height": 19.050037
+      }
+    }
+  ],
+  "creditLine": "Anonymous Gift, in memory of Robert Livingston Clarkson, 1976",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2020-11-14T04:40:04.457Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/206552",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

@@ -1,0 +1,79 @@
+{
+  "objectID": 250914,
+  "isHighlight": false,
+  "accessionNumber": "20.49.2",
+  "accessionYear": "1920",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/gr/original/GR875.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/gr/web-large/GR875.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/gr/original/DT277656.jpg",
+    "https://images.metmuseum.org/CRDImages/gr/original/h1_20.49.2-12.jpg"
+  ],
+  "constituents": null,
+  "department": "Greek and Roman Art",
+  "objectName": "Skyphos",
+  "title": "Silver skyphos (drinking cup)",
+  "culture": "Roman",
+  "period": "Late Republican",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "mid-1st century BCE",
+  "objectBeginDate": -75,
+  "objectEndDate": -25,
+  "medium": "Silver",
+  "dimensions": "Overall: 3 3/4 x 6 5/16 in. (9.5 x 16 cm)\r\ndiameter  4 3/16 in. (10.7 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 10.69
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 9.5,
+        "Weight": 0.4672,
+        "Width": 16
+      }
+    }
+  ],
+  "creditLine": "Rogers Fund, 1920",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Gold and Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-06-16T04:51:27.217Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/250914",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116293121",
+  "isTimelineWork": false,
+  "GalleryNumber": "166"
+}

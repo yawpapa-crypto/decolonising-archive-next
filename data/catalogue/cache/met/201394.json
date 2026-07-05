@@ -1,0 +1,95 @@
+{
+  "objectID": 201394,
+  "isHighlight": false,
+  "accessionNumber": "52.2.2",
+  "accessionYear": "1952",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/151827.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/151827.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 164856,
+      "role": "Manufactory",
+      "name": "Sèvres Manufactory",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500054661",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q653307",
+      "gender": ""
+    },
+    {
+      "constituentID": 33680,
+      "role": "Modeler",
+      "name": "Etienne-Maurice Falconet",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500115285",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q289246",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Group",
+  "title": "The Broken Shoe (Le Sabot Cassé)",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Manufactory",
+  "artistPrefix": "",
+  "artistDisplayName": "Sèvres Manufactory",
+  "artistDisplayBio": "French, 1740–present",
+  "artistSuffix": "",
+  "artistAlphaSort": "Sèvres Manufactory",
+  "artistNationality": "French",
+  "artistBeginDate": "1740",
+  "artistEndDate": "9999",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q653307",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500054661",
+  "objectDate": "ca. 1760",
+  "objectBeginDate": 1755,
+  "objectEndDate": 1765,
+  "medium": "Soft-paste biscuit porcelain",
+  "dimensions": "Height: 6 11/16 in. (17 cm)",
+  "measurements": [
+    {
+      "elementName": "Height",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 16.986284
+      }
+    }
+  ],
+  "creditLine": "Gift of R. Thornton Wilson, in memory of Florence Ellsworth Wilson, 1952",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Porcelain",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2023-02-07T04:46:51.34Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/201394",
+  "tags": [
+    {
+      "term": "Children",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025945",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q7569"
+    },
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116310640",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

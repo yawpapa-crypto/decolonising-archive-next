@@ -1,0 +1,88 @@
+{
+  "objectID": 285119,
+  "isHighlight": false,
+  "accessionNumber": "2003.159",
+  "accessionYear": "2003",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 163031,
+      "role": "Artist",
+      "name": "Malick Sidibé",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500125335",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q781717",
+      "gender": ""
+    }
+  ],
+  "department": "Photographs",
+  "objectName": "Photograph",
+  "title": "[Man Standing Before Striped Background]",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Malick Sidibé",
+  "artistDisplayBio": "Malian, Soloba 1936–2016 Bamako",
+  "artistSuffix": "",
+  "artistAlphaSort": "Sidibé, Malick",
+  "artistNationality": "Malian",
+  "artistBeginDate": "1936",
+  "artistEndDate": "2016-04-14",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q781717",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500125335",
+  "objectDate": "1976",
+  "objectBeginDate": 1976,
+  "objectEndDate": 1976,
+  "medium": "Gelatin silver print",
+  "dimensions": "14 x 8.9 cm (5 1/2 x 3 1/2 in.)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 13.97,
+        "Width": 8.89
+      }
+    }
+  ],
+  "creditLine": "Purchase, Nancy Lane Gift, 2003",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Photographs",
+  "rightsAndReproduction": "© Estate of Malick Sidibé",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/285119",
+  "tags": [
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    },
+    {
+      "term": "Portraits",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300015637",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q134307"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

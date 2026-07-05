@@ -1,0 +1,83 @@
+{
+  "objectID": 309959,
+  "isHighlight": true,
+  "accessionNumber": "1974.271.35",
+  "accessionYear": "1974",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP-42545-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP-42545-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DT1274.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-42545-004.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-42545-003.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-42545-002.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 223242,
+      "role": "Artist",
+      "name": "Lambayeque (Sicán) artist(s)",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Mask",
+  "title": "Funerary mask",
+  "culture": "Lambayeque (Sicán)",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Lambayeque (Sicán) artist(s)",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Lambayeque (Sicán) artist(s)",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "900–1100 CE",
+  "objectBeginDate": 900,
+  "objectEndDate": 1100,
+  "medium": "Gold, silver-copper alloy, cinnabar",
+  "dimensions": "H. 11 1/2 in. × W. 19 1/2 in. × D. 4 in. (29.2 × 49.5 × 10.2 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 10.16002,
+        "Height": 29.21,
+        "Width": 49.53
+      }
+    }
+  ],
+  "creditLine": "Gift and Bequest of Alice K. Bache, 1974, 1977",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Peru",
+  "region": "North Coast",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Gold",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-23T04:54:48.75Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/309959",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q29384217",
+  "isTimelineWork": true,
+  "GalleryNumber": "361"
+}

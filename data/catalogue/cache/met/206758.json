@@ -1,0 +1,94 @@
+{
+  "objectID": 206758,
+  "isHighlight": false,
+  "accessionNumber": "1978.516.7",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP-734-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP-734-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP-734-003.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP-734-004.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 165366,
+      "role": "Artist",
+      "name": "Attributed to Ferdinando Tacca",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500006323",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q3068740",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Statuette group",
+  "title": "Two women wrestling",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "Attributed to",
+  "artistDisplayName": "Ferdinando Tacca",
+  "artistDisplayBio": "Italian, Florence 1619–1686 Florence",
+  "artistSuffix": "",
+  "artistAlphaSort": "Tacca, Ferdinando",
+  "artistNationality": "Italian",
+  "artistBeginDate": "1619",
+  "artistEndDate": "1686",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q3068740",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500006323",
+  "objectDate": "late 17th century?",
+  "objectBeginDate": 1675,
+  "objectEndDate": 1800,
+  "medium": "Bronze, on later stone base",
+  "dimensions": "Overall (confirmed): 13 9/16 × 7 1/2 × 8 3/8 in. (34.4 × 19.1 × 21.3 cm)",
+  "measurements": [
+    {
+      "elementName": "Height",
+      "elementDescription": "historic dimension, superceded",
+      "elementMeasurements": {
+        "Height": 34.92507
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "confirmed",
+      "elementMeasurements": {
+        "Depth": 21.272543,
+        "Height": 34.44882,
+        "Width": 19.050037
+      }
+    }
+  ],
+  "creditLine": "Gift of Mrs. Howard J. Sachs and Mr. Peter G. Sachs, in memory of Miss Edith L. Sachs, 1978",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture-Bronze",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/206758",
+  "tags": [
+    {
+      "term": "Female Nudes",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300189568",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q40446"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

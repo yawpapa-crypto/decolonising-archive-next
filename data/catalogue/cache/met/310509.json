@@ -1,0 +1,82 @@
+{
+  "objectID": 310509,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.53",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP-23619-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP-23619-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-23619-004.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-23619-003.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-23619-002.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 224093,
+      "role": "Artist",
+      "name": "Nasca artist(s)",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Bottle",
+  "title": "Bottle with seated figure",
+  "culture": "Nasca",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Nasca artist(s)",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Nasca artist(s)",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1–300 CE",
+  "objectBeginDate": 1,
+  "objectEndDate": 300,
+  "medium": "Ceramic, slip",
+  "dimensions": "H. 9 1/8 × W. 5 1/4 × D. 5 1/4 in. (23.2 × 13.3 × 13.3 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 13.335027,
+        "Height": 23.177546,
+        "Width": 13.335027
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of Mr. and Mrs. Raymond Wielgus, 1960",
+  "geographyType": "",
+  "city": "South Coast",
+  "state": "",
+  "county": "",
+  "country": "Peru",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Containers",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-05-31T04:50:53.377Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310509",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116406853",
+  "isTimelineWork": true,
+  "GalleryNumber": "362"
+}

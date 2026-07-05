@@ -1,0 +1,96 @@
+{
+  "objectID": 44288,
+  "isHighlight": false,
+  "accessionNumber": "1996.126.1",
+  "accessionYear": "1996",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 11774,
+      "role": "Artist",
+      "name": "Young Yang Chung",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "Asian Art",
+  "objectName": "Rank badge",
+  "title": "Contemporary Rank Badge",
+  "culture": "Korea",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Young Yang Chung",
+  "artistDisplayBio": "Korean, born 1936",
+  "artistSuffix": "",
+  "artistAlphaSort": "Young Yang Chung",
+  "artistNationality": "Korean",
+  "artistBeginDate": "1936",
+  "artistEndDate": "9999",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "20th century",
+  "objectBeginDate": 1936,
+  "objectEndDate": 1999,
+  "medium": "Silk and metallic thread on silk",
+  "dimensions": "9 1/4 x 9 1/4in. (23.5 x 23.5cm)\r\nMounted: 14 5/8 x 14 5/8 in. (37.1 x 37.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": "Mounted ",
+      "elementMeasurements": {
+        "Height": 37.1,
+        "Width": 37.1
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 23.5,
+        "Width": 23.5
+      }
+    }
+  ],
+  "creditLine": "Gift of Young Y. Chung, Ph.D., in memory of Jean Mailey, 1996",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Textiles-Embroidered",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/44288",
+  "tags": [
+    {
+      "term": "Peacocks",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250082",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q201251"
+    },
+    {
+      "term": "Flowers",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132399",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q506"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

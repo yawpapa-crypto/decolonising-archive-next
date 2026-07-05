@@ -1,0 +1,97 @@
+{
+  "objectID": 199372,
+  "isHighlight": false,
+  "accessionNumber": "43.100.62",
+  "accessionYear": "1943",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/201851.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/201851.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/201852.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/201853.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 35211,
+      "role": "Manufactory",
+      "name": "Imperial Porcelain Manufactory, St. Petersburg",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500331504",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q1303887",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Bottle cooler",
+  "title": "Bottle cooler",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Manufactory",
+  "artistPrefix": "",
+  "artistDisplayName": "Imperial Porcelain Manufactory, St. Petersburg",
+  "artistDisplayBio": "Russian, 1744–present",
+  "artistSuffix": "",
+  "artistAlphaSort": "Imperial Porcelain Manufactory, St. Petersburg",
+  "artistNationality": "Russian",
+  "artistBeginDate": "1744",
+  "artistEndDate": "9999",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q1303887",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500331504",
+  "objectDate": "ca. 1760",
+  "objectBeginDate": 1755,
+  "objectEndDate": 1765,
+  "medium": "Hard-paste porcelain",
+  "dimensions": "Height: 5 1/2 in. (14 cm); Diameter: 6 1/8 in. (15.6 cm)",
+  "measurements": [
+    {
+      "elementName": "Diameter",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 15.557531
+      }
+    },
+    {
+      "elementName": "Height",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 13.970028
+      }
+    }
+  ],
+  "creditLine": "Gift of R. Thornton Wilson, in memory of Florence Ellsworth Wilson, 1943",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Porcelain",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2023-02-07T04:46:51.34Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/199372",
+  "tags": [
+    {
+      "term": "Birds",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300266506",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q5113"
+    },
+    {
+      "term": "Plants",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132360",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q756"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116310743",
+  "isTimelineWork": false,
+  "GalleryNumber": "553"
+}

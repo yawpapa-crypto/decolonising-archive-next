@@ -1,0 +1,83 @@
+{
+  "objectID": 39649,
+  "isHighlight": true,
+  "accessionNumber": "18.56.36",
+  "accessionYear": "1918",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DP356176.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DP356176.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/as/original/DP356175.jpg"
+  ],
+  "constituents": null,
+  "department": "Asian Art",
+  "objectName": "Bowl",
+  "title": "Bowl with dragons amid waves",
+  "culture": "China",
+  "period": "Five Dynasties (907–960) to Northern Song dynasty (960–1127)",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "10th–11th century",
+  "objectBeginDate": 900,
+  "objectEndDate": 1099,
+  "medium": "Stoneware with carved and incised decoration under celadon glaze (Yue ware)",
+  "dimensions": "H. 4 1/2 in. (11 .4 cm); Diam. 10 5/8 in. (27 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 26.987555,
+        "Height": 11.430023
+      }
+    },
+    {
+      "elementName": "Diam. of foot",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 8.572517
+      }
+    }
+  ],
+  "creditLine": "Rogers Fund, 1918",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-06-15T08:57:24.243Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/39649",
+  "tags": [
+    {
+      "term": "Dragons",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300375726",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q7559"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q29383290",
+  "isTimelineWork": true,
+  "GalleryNumber": ""
+}

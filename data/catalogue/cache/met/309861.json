@@ -1,0 +1,86 @@
+{
+  "objectID": 309861,
+  "isHighlight": true,
+  "accessionNumber": "1978.412.10",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DT1256.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DT1256.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/AO1978.412.10.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 223131,
+      "role": "Artist",
+      "name": "Eastern Nahua artist(s)",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Censer",
+  "title": "Xantil (deity censer)",
+  "culture": "Eastern Nahua",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Eastern Nahua artist(s)",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Eastern Nahua artist(s)",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1200–1521 CE",
+  "objectBeginDate": 1200,
+  "objectEndDate": 1521,
+  "medium": "Ceramic, slip",
+  "dimensions": "H. 22 5/8 x W. 15 1/8 x D. 9 in. (57.5 x 38.4 x 22.9 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 22.86,
+        "Height": 57.4675,
+        "Width": 38.4
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of Nelson A. Rockefeller, 1969",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Mexico",
+  "region": "Tehuacan Valley",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-05-31T04:50:53.377Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/309861",
+  "tags": [
+    {
+      "term": "Deities",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300343850",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q178885"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q29384212",
+  "isTimelineWork": true,
+  "GalleryNumber": "360"
+}

@@ -1,0 +1,122 @@
+{
+  "objectID": 186836,
+  "isHighlight": false,
+  "accessionNumber": "86.7.2a, b",
+  "accessionYear": "1886",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP149970.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP149970.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP149971.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP149968.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP149969.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP119106.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP119107.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP119098.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP119099.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP119100.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 164856,
+      "role": "Manufactory",
+      "name": "Sèvres Manufactory",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500054661",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q653307",
+      "gender": ""
+    },
+    {
+      "constituentID": 33559,
+      "role": "Decorator",
+      "name": "Charles Nicolas Dodin",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500115713",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q2958259",
+      "gender": ""
+    },
+    {
+      "constituentID": 163775,
+      "role": "Artist",
+      "name": "Decoration after a design by Jean Michel Moreau le Jeune",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500028967",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q321972",
+      "gender": ""
+    },
+    {
+      "constituentID": 35987,
+      "role": "Maker",
+      "name": "Gilded by Henry-Martin Prévost",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500024026",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q97340263",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Vase",
+  "title": "Vase with cover (vase des âges) (one of a pair)",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Manufactory",
+  "artistPrefix": "",
+  "artistDisplayName": "Sèvres Manufactory",
+  "artistDisplayBio": "French, 1740–present",
+  "artistSuffix": "",
+  "artistAlphaSort": "Sèvres Manufactory",
+  "artistNationality": "French",
+  "artistBeginDate": "1740",
+  "artistEndDate": "9999",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q653307",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500054661",
+  "objectDate": "1782",
+  "objectBeginDate": 1782,
+  "objectEndDate": 1782,
+  "medium": "Soft-paste porcelain decorated in polychrome enamels, gold",
+  "dimensions": "Overall (confirmed): H. 19 x W. 10 11/16 x D. 8 9/16 in. (48.3 x 27.1 x 21.7 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "confirmed",
+      "elementMeasurements": {
+        "Depth": 21.748793,
+        "Height": 48.260098,
+        "Width": 27.146305
+      }
+    }
+  ],
+  "creditLine": "Bequest of Celine B. Hosack, in memory of her husband, Alexander E. Hosack M. D., 1886",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Porcelain",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-10-24T04:51:05.727Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/186836",
+  "tags": [
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    },
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

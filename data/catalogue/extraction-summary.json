@@ -1,0 +1,30 @@
+{
+  "extractedAt": "2026-07-05T10:31:41.990Z",
+  "target": 2000,
+  "totalRecords": 88,
+  "targetMet": false,
+  "byInstitution": {
+    "Metropolitan Museum of Art": 53,
+    "Cleveland Museum of Art": 35
+  },
+  "byVisualSystem": {
+    "Land, cosmology and authority": 74,
+    "Cloth, pattern and social identity": 4,
+    "Popular and everyday graphics": 10
+  },
+  "byPeriod": {
+    "Coastal contact and transcultural exchange, c. 1471–1874": 63,
+    "Colonial print and institutional design, 1874–1945": 13,
+    "Post-independence public and popular graphics, 1966–1992": 1,
+    "Anticolonial and independence visual culture, 1945–1966": 7,
+    "Democratic, digital and diasporic design, 1992–present": 4
+  },
+  "duplicatesMerged": 0,
+  "excluded": 1219,
+  "nextSteps": [
+    "Add British Museum SPARQL/dump extractor (goldweights, textiles)",
+    "Add Smithsonian NMAfA with API key",
+    "Add Ghana Museums, PRAA, university repositories",
+    "Extract individual Asafo flags from Fowler/Brooklyn/Horniman catalogues"
+  ]
+}

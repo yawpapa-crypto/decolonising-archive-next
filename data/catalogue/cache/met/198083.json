@@ -1,0 +1,78 @@
+{
+  "objectID": 198083,
+  "isHighlight": false,
+  "accessionNumber": "38.50.46a, b",
+  "accessionYear": "1938",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/SF38_50_46_img1.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/SF38_50_46_img1.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/SF38_50_46_img2.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 33814,
+      "role": "Maker",
+      "name": "Georges-Antoine Croze",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Étui",
+  "title": "Sealing wax case (étui)",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Georges-Antoine Croze",
+  "artistDisplayBio": "master 1777, active 1790",
+  "artistSuffix": "",
+  "artistAlphaSort": "CROZE GEORGES-ANTOINE",
+  "artistNationality": "",
+  "artistBeginDate": "1777",
+  "artistEndDate": "1790",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1785–86",
+  "objectBeginDate": 1785,
+  "objectEndDate": 1786,
+  "medium": "Gold, enamel",
+  "dimensions": "4 7/8 in. (12.4 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 12.3825245
+      }
+    }
+  ],
+  "creditLine": "Bequest of Kate Read Blacque, in memory of her husband, Valentine Alexander Blacque, 1937",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Gold and Platinum",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2022-10-20T04:55:06.267Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/198083",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

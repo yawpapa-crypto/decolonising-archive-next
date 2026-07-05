@@ -1,0 +1,79 @@
+{
+  "objectID": 61815,
+  "isHighlight": false,
+  "accessionNumber": "68.149.7",
+  "accessionYear": "1968",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/68_149_7_S2.JPG",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/68_149_7_S2.JPG",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/as/original/68_149_7_S3.JPG",
+    "https://images.metmuseum.org/CRDImages/as/original/68_149_7_TQ.JPG",
+    "https://images.metmuseum.org/CRDImages/as/original/68_149_7_Bm.JPG"
+  ],
+  "constituents": null,
+  "department": "Asian Art",
+  "objectName": "Figure",
+  "title": "Bird with Lion's Head",
+  "culture": "China",
+  "period": "Tang dynasty (618–907)",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "",
+  "objectBeginDate": 618,
+  "objectEndDate": 907,
+  "medium": "Marble",
+  "dimensions": "Gr. H. ca 5 3/8 in. (13.7 cm); Gr. W. 5 1/2 in. (14 cm); Gr. D. 2 1/2 in. (6.4 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 6.4,
+        "Height": 13.7,
+        "Width": 14
+      }
+    }
+  ],
+  "creditLine": "Bequest of Florance Waterbury, in memory of her father, John I. Waterbury, 1968",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/61815",
+  "tags": [
+    {
+      "term": "Birds",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300266506",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q5113"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

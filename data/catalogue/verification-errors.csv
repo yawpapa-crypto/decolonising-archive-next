@@ -1,0 +1,63 @@
+record_id,error_type,field,detail,url
+ARED-GH-00005,broken_link,source_url,http_500,https://www.rem.routledge.com/articles/antubam-kofi-1922-1964
+ARED-GH-00007,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00008,broken_link,source_url,http_403,https://www.ft.com/content/9e412afd-0f10-4048-b224-c9110bacd370
+ARED-GH-00008,broken_link,secondary_source_url,http_307,https://www.maharam.com/stories/banks_asafo-flags
+ARED-GH-00009,broken_link,source_url,http_307,https://www.maharam.com/stories/banks_asafo-flags
+ARED-GH-00009,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00010,broken_link,secondary_source_url,http_429,https://www.brooklynmuseum.org/objects/188917
+ARED-GH-00011,broken_link,source_url,http_403,https://www.si.edu/object/asafo-flag%3Anmafa_88-10-1
+ARED-GH-00011,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00012,broken_link,source_url,http_429,https://www.brooklynmuseum.org/objects/188917
+ARED-GH-00012,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00013,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00014,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00015,broken_link,source_url,http_307,https://www.maharam.com/stories/banks_asafo-flags
+ARED-GH-00015,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00016,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00017,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00018,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00019,broken_link,source_url,http_429,https://www.metmuseum.org/art/collection/search/687569
+ARED-GH-00019,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00020,broken_link,source_url,http_429,https://www.metmuseum.org/art/collection/search/711933
+ARED-GH-00020,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00021,broken_link,source_url,http_429,https://www.metmuseum.org/art/collection/search/317674
+ARED-GH-00021,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00022,broken_link,source_url,http_403,https://www.britishmuseum.org/collection/object/E_Af1947-13-138
+ARED-GH-00022,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00023,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00024,broken_link,source_url,http_403,https://www.britishmuseum.org/collection/object/E_Af1982-33-1
+ARED-GH-00024,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00025,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00029,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00030,broken_link,source_url,fetch failed,https://ir.knust.edu.gh/handle/123456789/3433
+ARED-GH-00030,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00031,broken_link,source_url,fetch failed,https://ir.knust.edu.gh/bitstreams/34f8772d-afed-48a1-ac82-2bdd5642c136/download
+ARED-GH-00031,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00032,broken_link,source_url,fetch failed,https://ir.knust.edu.gh/bitstream/123456789/7203/1/DEVELOPING%20INNOVATIVE%20ASSESSMENT%20STRATEGY.pdf
+ARED-GH-00032,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00034,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00035,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00036,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00037,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00038,broken_link,source_url,fetch failed,https://www.bog.gov.gh/
+ARED-GH-00038,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00039,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00040,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00041,broken_link,source_url,http_429,https://ared.design/
+ARED-GH-00041,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00042,broken_link,source_url,http_429,https://ared.design/
+ARED-GH-00042,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00043,broken_link,source_url,http_429,https://ared.design/
+ARED-GH-00043,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00044,broken_link,source_url,http_429,https://ared.design/
+ARED-GH-00044,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00045,broken_link,source_url,http_429,https://www.brooklynmuseum.org/objects/188917
+ARED-GH-00046,broken_link,source_url,http_429,https://ared.design/
+ARED-GH-00046,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00047,broken_link,source_url,http_429,https://ared.design/
+ARED-GH-00047,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00048,broken_link,source_url,http_429,https://ared.design/
+ARED-GH-00048,missing_second_source,secondary_source_url,No second independent source recorded,
+ARED-GH-00050,broken_link,source_url,http_429,https://ared.design/
+ARED-GH-00050,missing_second_source,secondary_source_url,No second independent source recorded,

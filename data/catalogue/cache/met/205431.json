@@ -1,0 +1,101 @@
+{
+  "objectID": 205431,
+  "isHighlight": false,
+  "accessionNumber": "1971.206.27",
+  "accessionYear": "1971",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP221956.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP221956.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP221957.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/197684.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP158811.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 34045,
+      "role": "Maker",
+      "name": "Clockmaker: Jean Godde l&#39;aîné",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500052650",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    },
+    {
+      "constituentID": 33545,
+      "role": "Maker",
+      "name": "Case maker: Charles Cressent",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500001075",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q2958822",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Wall clock",
+  "title": "Wall clock (pendule en cartel)",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "Clockmaker:",
+  "artistDisplayName": "Jean Godde l'aîné",
+  "artistDisplayBio": "French, ca. 1668–1748/49",
+  "artistSuffix": "",
+  "artistAlphaSort": "Godde l'aîné Jean",
+  "artistNationality": "French",
+  "artistBeginDate": "1668",
+  "artistEndDate": "1749",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500052650",
+  "objectDate": "ca. 1740–45",
+  "objectBeginDate": 1735,
+  "objectEndDate": 1750,
+  "medium": "Case: gilded bronze, oak, and tortoiseshell on brass marquetry on oak; Dial: white enamel and gilded brass with blued-steel hands; Movement: brass and steel",
+  "dimensions": "Overall: 52 1/2 × 24 1/2 × 15 1/2 in. (133.4 × 62.2 × 39.4 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 39.37008,
+        "Height": 133.35027,
+        "Width": 62.230125
+      }
+    }
+  ],
+  "creditLine": "Gift of Mr. and Mrs. Charles Wrightsman, 1971",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Horology",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-11-21T10:05:27.96Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/205431",
+  "tags": [
+    {
+      "term": "Flowers",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132399",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q506"
+    },
+    {
+      "term": "Angels",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300379004",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q235113"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116242506",
+  "isTimelineWork": false,
+  "GalleryNumber": "526"
+}

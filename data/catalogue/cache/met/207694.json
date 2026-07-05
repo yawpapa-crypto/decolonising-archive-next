@@ -1,0 +1,93 @@
+{
+  "objectID": 207694,
+  "isHighlight": false,
+  "accessionNumber": "1987.180",
+  "accessionYear": "1987",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/ES5379.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/ES5379.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/ES3415.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/248985.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 39656,
+      "role": "Maker",
+      "name": "Possibly by William Garrard",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    },
+    {
+      "constituentID": 39657,
+      "role": "Maker",
+      "name": "James Young",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Coffeepot",
+  "title": "Coffeepot",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "Possibly by",
+  "artistDisplayName": "William Garrard",
+  "artistDisplayBio": "active 1735–73",
+  "artistSuffix": "",
+  "artistAlphaSort": "Garrard William",
+  "artistNationality": "",
+  "artistBeginDate": "1735",
+  "artistEndDate": "1773",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1780–81",
+  "objectBeginDate": 1780,
+  "objectEndDate": 1781,
+  "medium": "Silver, wood",
+  "dimensions": "Height: 13 in. (33 cm)",
+  "measurements": [
+    {
+      "elementName": "Height",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 33.020065
+      }
+    }
+  ],
+  "creditLine": "Gift of Brenda Winthrop Jordan and Grenville B. Winthrop III, in memory of their mother, Brenda Lihme Winthrop, 1987",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2021-06-29T04:39:38.347Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/207694",
+  "tags": [
+    {
+      "term": "Garlands",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300167386",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q756600"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

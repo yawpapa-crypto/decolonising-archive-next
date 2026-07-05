@@ -1,0 +1,84 @@
+{
+  "objectID": 311253,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.1302",
+  "accessionYear": "1978",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 63413,
+      "role": "Artist",
+      "name": "Jiop",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Belt",
+  "title": "Head Ornament or Woman's Dance Belt",
+  "culture": "Asmat people",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Jiop",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Jiop",
+  "artistNationality": "",
+  "artistBeginDate": "1920",
+  "artistEndDate": "2020",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "mid-20th century",
+  "objectBeginDate": 1900,
+  "objectEndDate": 2000,
+  "medium": "Fiber, cassowary feathers, seeds",
+  "dimensions": "H. 42 x W. 18 1/2 in. (106.7 x 47 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 46.99
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 46.99,
+        "Width": 106.68
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection; Gift of Nelson A. Rockefeller and Mrs. Mary C. Rockefeller, 1965",
+  "geographyType": "",
+  "city": "Sauwa village",
+  "state": "West Papua",
+  "county": "",
+  "country": "Indonesia",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "Pomatsj River",
+  "classification": "Feathers-Costumes",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-11-06T04:50:53.52Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/311253",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

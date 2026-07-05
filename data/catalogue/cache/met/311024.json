@@ -1,0 +1,82 @@
+{
+  "objectID": 311024,
+  "isHighlight": true,
+  "accessionNumber": "1978.412.563",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP231466.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP231466.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP234589.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP231467.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP234588.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 219152,
+      "role": "Artist",
+      "name": "Akan artist",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Head",
+  "title": "Nsodie (memorial head)",
+  "culture": "Akan peoples",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Akan artist",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Akan artist",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "17th–mid-18th century",
+  "objectBeginDate": 1600,
+  "objectEndDate": 1750,
+  "medium": "Terracotta",
+  "dimensions": "H. 8 in. × W. 5 1/2 in. × D. 4 3/4 in. (20.3 × 14 × 12.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 12.065024,
+        "Height": 20.32,
+        "Width": 13.970028
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Purchase, Nelson A. Rockefeller Gift, 1967",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Ghana",
+  "region": "Twifo-Heman traditional area",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-01-23T04:52:29.993Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/311024",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q29384277",
+  "isTimelineWork": true,
+  "GalleryNumber": "341"
+}

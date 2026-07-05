@@ -1,0 +1,83 @@
+{
+  "objectID": 75912,
+  "isHighlight": false,
+  "accessionNumber": "2010.340",
+  "accessionYear": "2010",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DP266903.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DP266903.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/as/original/2010_340_Strm1_01.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/2010_340_Strm1_02.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/2010_340_Strm1_03.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/2010_340_Strm1_04.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/2010_340_Strm1_d.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP266901.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP266900.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP266902.jpg"
+  ],
+  "constituents": null,
+  "department": "Asian Art",
+  "objectName": "Hip wrapper",
+  "title": "Hip Wrapper (Tuppotiya)",
+  "culture": "India (for Indonesian market)",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "late 18th century",
+  "objectBeginDate": 1767,
+  "objectEndDate": 1799,
+  "medium": "Mordant- and resist-dyed plain-weave cotton",
+  "dimensions": "Warp 137 in. (348 cm); weft 40 1/2 in. (102.9 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 102.87021,
+        "Width": 347.98068
+      }
+    }
+  ],
+  "creditLine": "Purchase, Fernando Family Trust Gift, in honor of Dr. Quintus and Mrs. Wimala Fernando, 2010",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Textiles-Painted and Dyed",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/75912",
+  "tags": [
+    {
+      "term": "Flowers",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132399",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q506"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

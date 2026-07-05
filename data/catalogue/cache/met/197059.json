@@ -1,0 +1,86 @@
+{
+  "objectID": 197059,
+  "isHighlight": false,
+  "accessionNumber": "32.100.181",
+  "accessionYear": "1932",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP-110-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP-110-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP-110-002.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 163601,
+      "role": "Modeler",
+      "name": "After a model by Giambologna",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500016387",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q220136",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Statuette",
+  "title": "Venus Urania",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Modeler",
+  "artistPrefix": "After a model by",
+  "artistDisplayName": "Giambologna",
+  "artistDisplayBio": "Netherlandish, Douai 1529–1608 Florence",
+  "artistSuffix": "",
+  "artistAlphaSort": "Giambologna",
+  "artistNationality": "Netherlandish",
+  "artistBeginDate": "1529",
+  "artistEndDate": "1608",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q220136",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500016387",
+  "objectDate": "17th–18th century",
+  "objectBeginDate": 1600,
+  "objectEndDate": 1799,
+  "medium": "Bronze, fire-gilt",
+  "dimensions": "Overall (confirmed): 5 × 2 5/8 × 2 in. (12.7 × 6.7 × 5.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "confirmed",
+      "elementMeasurements": {
+        "Depth": 5.08001,
+        "Height": 12.700026,
+        "Width": 6.6675134
+      }
+    }
+  ],
+  "creditLine": "The Friedsam Collection, Bequest of Michael Friedsam, 1931",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture-Bronze",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/197059",
+  "tags": [
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

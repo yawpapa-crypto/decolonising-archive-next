@@ -1,0 +1,84 @@
+{
+  "objectID": 318383,
+  "isHighlight": false,
+  "accessionNumber": "1999.487",
+  "accessionYear": "1999",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 63235,
+      "role": "Artist",
+      "name": "Women&#39;s weaving cooperative in Akwete",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": "Female"
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Wrapper",
+  "title": "Wrapper",
+  "culture": "Ndoki-Igbo peoples",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Women's weaving cooperative in Akwete",
+  "artistDisplayBio": "Nigerian",
+  "artistSuffix": "",
+  "artistAlphaSort": "Women's weaving cooperative in Akwete",
+  "artistNationality": "Nigerian",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "Female",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "early 1990s",
+  "objectBeginDate": 1985,
+  "objectEndDate": 1995,
+  "medium": "Cotton, dye",
+  "dimensions": "W. 49 1/2 x L. 83 in. (125.73 x 210.82 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 210.82042,
+        "Width": 125.73
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Width": 125.73
+      }
+    }
+  ],
+  "creditLine": "Gift of Robert and Anita LaGamma, 1999",
+  "geographyType": "",
+  "city": "Akwete",
+  "state": "",
+  "county": "",
+  "country": "Nigeria",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Textiles-Woven",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-01-21T04:52:24.343Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/318383",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

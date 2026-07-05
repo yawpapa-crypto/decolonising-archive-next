@@ -1,0 +1,77 @@
+{
+  "objectID": 206784,
+  "isHighlight": false,
+  "accessionNumber": "1979.135.21",
+  "accessionYear": "1979",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP-174-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP-174-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP-174-002.jpg"
+  ],
+  "constituents": null,
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Statuette",
+  "title": "Crouching Venus",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "second half 18th century",
+  "objectBeginDate": 1750,
+  "objectEndDate": 1799,
+  "medium": "Bronze",
+  "dimensions": "Overall (confirmed): 7 7/8 × 6 × 3 3/4 in. (20 × 15.2 × 9.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "confirmed",
+      "elementMeasurements": {
+        "Depth": 9.525019,
+        "Height": 20.00254,
+        "Width": 15.24003
+      }
+    }
+  ],
+  "creditLine": "Bequest of Mary Cushing Fosburgh, 1978",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture-Bronze",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/206784",
+  "tags": [
+    {
+      "term": "Venus",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901001064",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q47652"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

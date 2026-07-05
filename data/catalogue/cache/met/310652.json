@@ -1,0 +1,80 @@
+{
+  "objectID": 310652,
+  "isHighlight": true,
+  "accessionNumber": "1978.412.203",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP-23559-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP-23559-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-23559-002.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 224094,
+      "role": "Artist",
+      "name": "Cupisnique artist(s)",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Bottle",
+  "title": "Bottle with caiman",
+  "culture": "Cupisnique",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Cupisnique artist(s)",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Cupisnique artist(s)",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1000–800 BCE",
+  "objectBeginDate": -1000,
+  "objectEndDate": -800,
+  "medium": "Ceramic, post-fire paint (cinnabar)",
+  "dimensions": "H. 12 3/4 × W. 8 1/16 × D. 5 3/8 in. (32.4 × 20.5 × 13.7 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 13.652527,
+        "Height": 32.385063,
+        "Width": 20.47879
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Purchase, Nelson A. Rockefeller Gift, 1967",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Peru",
+  "region": "Tembladera",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Containers",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-06-04T04:55:34.617Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310652",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q29384266",
+  "isTimelineWork": true,
+  "GalleryNumber": ""
+}

@@ -1,0 +1,104 @@
+{
+  "objectID": 11916,
+  "isHighlight": false,
+  "accessionNumber": "07.224",
+  "accessionYear": "1907",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ad/original/DP340536.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ad/web-large/DP340536.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ad/original/07.224.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 162310,
+      "role": "Artist",
+      "name": "William Rimmer",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500016416",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q3637109",
+      "gender": ""
+    },
+    {
+      "constituentID": 228017,
+      "role": "Founder",
+      "name": "Cast by John Williams",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The American Wing",
+  "objectName": "Sculpture",
+  "title": "The Falling Gladiator",
+  "culture": "American",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "William Rimmer",
+  "artistDisplayBio": "American (born England), Liverpool 1816–1879 South Milford, Massachusetts",
+  "artistSuffix": "",
+  "artistAlphaSort": "Rimmer, William",
+  "artistNationality": "American, born England",
+  "artistBeginDate": "1816",
+  "artistEndDate": "1879",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q3637109",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500016416",
+  "objectDate": "1861; cast 1907",
+  "objectBeginDate": 1861,
+  "objectEndDate": 1907,
+  "medium": "Bronze",
+  "dimensions": "63 x 41 x 38 1/8 in. (160 x 104.1 x 96.8 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 96.8,
+        "Height": 160,
+        "Weight": 170.0989,
+        "Width": 104.1
+      }
+    },
+    {
+      "elementName": "Base",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 120.01524,
+        "Height": 40.64008,
+        "Width": 111.76022
+      }
+    }
+  ],
+  "creditLine": "Rogers Fund, 1907",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-30T04:54:21.21Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/11916",
+  "tags": [
+    {
+      "term": "Male Nudes",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300189568",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q40446"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116378087",
+  "isTimelineWork": false,
+  "GalleryNumber": "700"
+}

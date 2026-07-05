@@ -1,0 +1,73 @@
+{
+  "objectID": 44718,
+  "isHighlight": false,
+  "accessionNumber": "1992.307",
+  "accessionYear": "1992",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/25532.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/25532.jpg",
+  "additionalImages": [],
+  "constituents": null,
+  "department": "Asian Art",
+  "objectName": "Weight",
+  "title": "Weight in the Form of a Feline",
+  "culture": "China",
+  "period": "Western Han dynasty (206 BCE– 9 CE)",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "2nd–1st century BCE",
+  "objectBeginDate": -200,
+  "objectEndDate": -1,
+  "medium": "Bronze inlaid with gold and silver",
+  "dimensions": "Gr. W. 2 1/4 in. (5.7 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Width": 5.7
+      }
+    }
+  ],
+  "creditLine": "Purchase, Bequest of Dorothy Graham Bennett, 1992",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-02-06T04:55:31.413Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/44718",
+  "tags": [
+    {
+      "term": "Animals",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300249525",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q729"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116314174",
+  "isTimelineWork": false,
+  "GalleryNumber": "207"
+}

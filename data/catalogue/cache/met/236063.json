@@ -1,0 +1,82 @@
+{
+  "objectID": 236063,
+  "isHighlight": false,
+  "accessionNumber": "2007.489",
+  "accessionYear": "2007",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP159423.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP159423.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP159424.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP159425.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/SF2007_489_marks.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 46065,
+      "role": "Maker",
+      "name": "Pierre Joseph Jacques Tiberghien",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500440446",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q23858205",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Ewer",
+  "title": "Ewer (aiguière)",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Pierre Joseph Jacques Tiberghien",
+  "artistDisplayBio": "1755–1810",
+  "artistSuffix": "",
+  "artistAlphaSort": "Tiberghien Pierre Joseph Jacques",
+  "artistNationality": "",
+  "artistBeginDate": "1755",
+  "artistEndDate": "1810",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q23858205",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500440446",
+  "objectDate": "ca. 1800",
+  "objectBeginDate": 1795,
+  "objectEndDate": 1805,
+  "medium": "Silver, ebony",
+  "dimensions": "Overall: 15 1/4 × 7 × 5 3/8 in. (38.7 × 17.8 × 13.7 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 13.6525,
+        "Height": 38.7351,
+        "Width": 17.78
+      }
+    }
+  ],
+  "creditLine": "Anonymous Gift, in memory of Frederick Johnston Mali, great-grandson of John Taylor Johnston, 2007",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/236063",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

@@ -1,0 +1,117 @@
+{
+  "objectID": 231782,
+  "isHighlight": false,
+  "accessionNumber": "56.80.2a–c",
+  "accessionYear": "1956",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP223283.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP223283.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP223284.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP223285.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP119890.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP119889.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP119891.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP119896.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP119897.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP223300.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP223279.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP223280.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP223281.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP223282.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP223299.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 164856,
+      "role": "Manufactory",
+      "name": "Sèvres Manufactory",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500054661",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q653307",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Vase with cover",
+  "title": "Vase with cover (Vase en tour) (one of a pair)",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Manufactory",
+  "artistPrefix": "",
+  "artistDisplayName": "Sèvres Manufactory",
+  "artistDisplayBio": "French, 1740–present",
+  "artistSuffix": "",
+  "artistAlphaSort": "Sèvres Manufactory",
+  "artistNationality": "French",
+  "artistBeginDate": "1740",
+  "artistEndDate": "9999",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q653307",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500054661",
+  "objectDate": "ca. 1763",
+  "objectBeginDate": 1758,
+  "objectEndDate": 1768,
+  "medium": "Soft-paste porcelain decorated in polychrome enamels, gold",
+  "dimensions": "Overall (confirmed): H. 20 1/8 x W. 8 1/4 x D. 7 7/8 in. (51.1 x 21 x 20-20.5 cm);\r\nHt. on gilt bronze base: 22 3/16 in. (56.4 cm); Diam. 7 3/4 in.",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 56.35636
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "confirmed",
+      "elementMeasurements": {
+        "Depth": 20.00254,
+        "Height": 51.117603,
+        "Width": 20.955042
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 19.68504
+      }
+    }
+  ],
+  "creditLine": "Gift of R. Thornton Wilson, in memory of Florence Ellsworth Wilson, 1956",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Porcelain",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-09-06T04:50:52.72Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/231782",
+  "tags": [
+    {
+      "term": "Flowers",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132399",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q506"
+    },
+    {
+      "term": "Trophies",
+      "AAT_URL": null,
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q927580"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": true,
+  "GalleryNumber": "523"
+}

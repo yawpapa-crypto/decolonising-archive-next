@@ -1,0 +1,84 @@
+{
+  "objectID": 310454,
+  "isHighlight": true,
+  "accessionNumber": "1978.412.1558a-d",
+  "accessionYear": "1978",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 224136,
+      "role": "Artist",
+      "name": "Belauan artist",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Gable figure",
+  "title": "Dilukai (gable figure)",
+  "culture": "Belauan peoples",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Belauan artist",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Belauan artist",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "late 19th–early 20th century",
+  "objectBeginDate": 1800,
+  "objectEndDate": 1950,
+  "medium": "Wood, paint",
+  "dimensions": "H. 26 in. × W. 38 in. × D. 10 1/4 in. (66 × 96.5 × 26 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 26.035051,
+        "Height": 66.04013,
+        "Width": 96.52
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of Nelson A. Rockefeller, and Purchase, Nelson A. Rockefeller Gift, 1970",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Republic of Palau",
+  "region": "Caroline Islands",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Wood-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-03-26T04:54:24.577Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310454",
+  "tags": [
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": true,
+  "GalleryNumber": "351"
+}

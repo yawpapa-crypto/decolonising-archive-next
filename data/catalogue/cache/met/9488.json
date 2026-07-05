@@ -1,0 +1,89 @@
+{
+  "objectID": 9488,
+  "isHighlight": false,
+  "accessionNumber": "1984.443.9",
+  "accessionYear": "1984",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ad/original/DP208146.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ad/web-large/DP208146.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ad/original/DP208147.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/ADA3796.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/239079.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/239080.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/ADA2613.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 1270,
+      "role": "Maker",
+      "name": "Union Porcelain Works",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500333024",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q18356506",
+      "gender": ""
+    }
+  ],
+  "department": "The American Wing",
+  "objectName": "Vase",
+  "title": "Vase",
+  "culture": "American",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Union Porcelain Works",
+  "artistDisplayBio": "American, 1863–1922",
+  "artistSuffix": "",
+  "artistAlphaSort": "Union Porcelain Works",
+  "artistNationality": "American",
+  "artistBeginDate": "1863",
+  "artistEndDate": "1922",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q18356506",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500333024",
+  "objectDate": "1879",
+  "objectBeginDate": 1879,
+  "objectEndDate": 1879,
+  "medium": "Porcelain",
+  "dimensions": "H. 8 5/8 in. (21.9 cm); Diam. 4 3/8 in. (11.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 11.1125,
+        "Height": 21.9075
+      }
+    }
+  ],
+  "creditLine": "Gift of Florence I. Balasny-Barnes, in memory of her sister, Yvette B. Gould, 1984",
+  "geographyType": "Made in",
+  "city": "Brooklyn",
+  "state": "New York",
+  "county": "",
+  "country": "United States",
+  "region": "Mid-Atlantic",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-10-30T04:51:32.82Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/9488",
+  "tags": [
+    {
+      "term": "Turtles",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300310264",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q32945370"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116341793",
+  "isTimelineWork": false,
+  "GalleryNumber": "706"
+}

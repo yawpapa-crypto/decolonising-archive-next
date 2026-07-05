@@ -1,0 +1,84 @@
+{
+  "objectID": 310781,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.339",
+  "accessionYear": "1978",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 155460,
+      "role": "Artist",
+      "name": "Baga artist",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Headdress",
+  "title": "a-Mantsho-ña-Tshol (master of medicine) headdress",
+  "culture": "Baga peoples",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Baga artist",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Baga artist",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "19th–first half of 20th century",
+  "objectBeginDate": 1800,
+  "objectEndDate": 1950,
+  "medium": "Wood (Pterocarpus erinaceus), pigment",
+  "dimensions": "H. 54 7/16 × W. 7 × D. 32 in. (138.3 × 17.8 × 81.3 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 81.28016,
+        "Height": 138.27153,
+        "Width": 17.780035
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of Nelson A. Rockefeller, 1964",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Guinea",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "Niger River region",
+  "classification": "Wood-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-20T04:50:39.43Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310781",
+  "tags": [
+    {
+      "term": "Serpents",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300417734",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q2102"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": true,
+  "GalleryNumber": "341"
+}

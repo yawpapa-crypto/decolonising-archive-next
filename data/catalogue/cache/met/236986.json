@@ -1,0 +1,79 @@
+{
+  "objectID": 236986,
+  "isHighlight": false,
+  "accessionNumber": "2010.110.4",
+  "accessionYear": "2010",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP339138.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP339138.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP344746.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 45864,
+      "role": "Maker",
+      "name": "Attributed to Paulus Brölfft",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Footed beaker",
+  "title": "Footed beaker",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "Attributed to",
+  "artistDisplayName": "Paulus Brölfft",
+  "artistDisplayBio": "active 1574–1602",
+  "artistSuffix": "",
+  "artistAlphaSort": "Brölfft, Paulus",
+  "artistNationality": "",
+  "artistBeginDate": "1525",
+  "artistEndDate": "1625",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "second half 16th century",
+  "objectBeginDate": 1550,
+  "objectEndDate": 1599,
+  "medium": "Silver, partially gilded",
+  "dimensions": "Overall: 7 15/16 x 3 1/4 in. (20.2 x 8.2 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 20.2,
+        "Width": 8.2
+      }
+    }
+  ],
+  "creditLine": "Gift of The Salgo Trust for Education, New York, in memory of Nicolas M. Salgo, 2010",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-11-10T04:52:12.933Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/236986",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q96162089",
+  "isTimelineWork": true,
+  "GalleryNumber": ""
+}

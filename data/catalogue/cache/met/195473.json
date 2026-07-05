@@ -1,0 +1,123 @@
+{
+  "objectID": 195473,
+  "isHighlight": true,
+  "accessionNumber": "26.168.77",
+  "accessionYear": "1926",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP106601.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP106601.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP106602.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP106603.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP106604.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP111798.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP111799.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP111800.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP111801.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP103176.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP106599.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 162225,
+      "role": "Designer",
+      "name": "Designed by Charles Percier",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500012660",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q969714",
+      "gender": ""
+    },
+    {
+      "constituentID": 36493,
+      "role": "Maker",
+      "name": "Probably by François-Honoré-Georges Jacob-Desmalter",
+      "constituentULAN_URL": "(not assigned)",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q449885",
+      "gender": ""
+    },
+    {
+      "constituentID": 34368,
+      "role": "Maker",
+      "name": "Silver mounts by Martin-Guillaume Biennais",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500061154",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q1694164",
+      "gender": ""
+    },
+    {
+      "constituentID": 161827,
+      "role": "Decorator",
+      "name": "Decoration after drawings by Baron Dominique Vivant Denon",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500032492",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q468618",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Coin cabinet",
+  "title": "Coin cabinet",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Designer",
+  "artistPrefix": "Designed by",
+  "artistDisplayName": "Charles Percier",
+  "artistDisplayBio": "French, Paris 1764–1838 Paris",
+  "artistSuffix": "",
+  "artistAlphaSort": "Percier, Charles",
+  "artistNationality": "French",
+  "artistBeginDate": "1764",
+  "artistEndDate": "1838",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q969714",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500012660",
+  "objectDate": "ca. 1809–19",
+  "objectBeginDate": 1800,
+  "objectEndDate": 1810,
+  "medium": "Mahogany (probably Swietenia mahagoni), applied and inlaid silver",
+  "dimensions": "Overall: 35 1/2 × 19 3/4 × 14 3/4 in. (90.2 × 50.2 × 37.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 37.5,
+        "Height": 90.2,
+        "Width": 50.2
+      }
+    }
+  ],
+  "creditLine": "Bequest of Collis P. Huntington, 1900",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Woodwork-Furniture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/195473",
+  "tags": [
+    {
+      "term": "Insects",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300310470",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q1390"
+    },
+    {
+      "term": "Scarabs",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300230813",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q2442735"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q29383557",
+  "isTimelineWork": true,
+  "GalleryNumber": "553"
+}

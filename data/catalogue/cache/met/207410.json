@@ -1,0 +1,79 @@
+{
+  "objectID": 207410,
+  "isHighlight": false,
+  "accessionNumber": "1983.575.3",
+  "accessionYear": "1983",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/SF1983_575_3_img2.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/SF1983_575_3_img2.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/SF1983_575_3_marks.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/SF1983_575_3_img1.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 35035,
+      "role": "Maker",
+      "name": "Joseph Taylor",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Snuffbox",
+  "title": "Snuffbox",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Joseph Taylor",
+  "artistDisplayBio": "British, 1767–1827",
+  "artistSuffix": "",
+  "artistAlphaSort": "Taylor Joseph",
+  "artistNationality": "British",
+  "artistBeginDate": "1767",
+  "artistEndDate": "1827",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1808",
+  "objectBeginDate": 1808,
+  "objectEndDate": 1808,
+  "medium": "Silver",
+  "dimensions": "Length: 1 1/2 in. (3.8 cm)",
+  "measurements": [
+    {
+      "elementName": "Length",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 3.8100076
+      }
+    }
+  ],
+  "creditLine": "Gift of Herbert K. Reis, in memory of Rose-Frances K. Reis (Mrs. Ralph A. Reis), 1983",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/207410",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

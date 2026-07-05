@@ -1,0 +1,84 @@
+{
+  "objectID": 207425,
+  "isHighlight": false,
+  "accessionNumber": "1983.575.18",
+  "accessionYear": "1983",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/SF1983_575_18_img1.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/SF1983_575_18_img1.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/SF1983_575_18_img2.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 35039,
+      "role": "Maker",
+      "name": "Probably by John Lawrence &amp; Co.",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Vinaigrette",
+  "title": "Vinaigrette",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "Probably by",
+  "artistDisplayName": "John Lawrence & Co.",
+  "artistDisplayBio": "British, active from 1813",
+  "artistSuffix": "",
+  "artistAlphaSort": "John Lawrence & Co.",
+  "artistNationality": "British",
+  "artistBeginDate": "1813",
+  "artistEndDate": "1899",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1817",
+  "objectBeginDate": 1817,
+  "objectEndDate": 1817,
+  "medium": "Silver",
+  "dimensions": "Length: 3/4 in. (1.9 cm)",
+  "measurements": [
+    {
+      "elementName": "Length",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 1.9050038
+      }
+    }
+  ],
+  "creditLine": "Gift of Herbert K. Reis, in memory of Rose-Frances K. Reis (Mrs. Ralph A. Reis), 1983",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/207425",
+  "tags": [
+    {
+      "term": "Flowers",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132399",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q506"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

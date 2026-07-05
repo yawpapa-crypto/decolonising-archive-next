@@ -1,0 +1,87 @@
+{
+  "objectID": 73383,
+  "isHighlight": false,
+  "accessionNumber": "2007.75a, b",
+  "accessionYear": "2007",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DP146806.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DP146806.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/as/original/DP146807.jpg"
+  ],
+  "constituents": null,
+  "department": "Asian Art",
+  "objectName": "Figure",
+  "title": "Buddhist Deity, Ushnishavijaya (Zun Sheng fo mu)",
+  "culture": "China",
+  "period": "Qing dynasty (1644–1911)",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "late 17th–18th century",
+  "objectBeginDate": 1667,
+  "objectEndDate": 1799,
+  "medium": "Gilt brass; lost-wax cast",
+  "dimensions": "H. 7 in. (17.8 cm); W. 4 3/4 in. (12.1 cm); D. 3 3/4 in. (9.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 9.525,
+        "Height": 17.78,
+        "Width": 12.065
+      }
+    }
+  ],
+  "creditLine": "Purchase, Friends of Asian Art Gifts, 2007",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-10-18T04:50:47.33Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/73383",
+  "tags": [
+    {
+      "term": "Bow and Arrow",
+      "AAT_URL": null,
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q19827042"
+    },
+    {
+      "term": "Buddhism",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300073738",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q748"
+    },
+    {
+      "term": "Deities",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300343850",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q178885"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q83562750",
+  "isTimelineWork": true,
+  "GalleryNumber": "208"
+}

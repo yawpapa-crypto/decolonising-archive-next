@@ -1,0 +1,83 @@
+{
+  "objectID": 49476,
+  "isHighlight": false,
+  "accessionNumber": "1986.267.80",
+  "accessionYear": "1986",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DP162537.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DP162537.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 12212,
+      "role": "Artist",
+      "name": "Qian Huian",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q10564133",
+      "gender": ""
+    }
+  ],
+  "department": "Asian Art",
+  "objectName": "Folding fan mounted as an album leaf",
+  "title": "Woman in a garden",
+  "culture": "China",
+  "period": "Qing dynasty (1644–1911)",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Qian Huian",
+  "artistDisplayBio": "Chinese, 1833–1911",
+  "artistSuffix": "",
+  "artistAlphaSort": "Qian Huian",
+  "artistNationality": "Chinese",
+  "artistBeginDate": "1833",
+  "artistEndDate": "1911",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q10564133",
+  "artistULAN_URL": "",
+  "objectDate": "dated 1876",
+  "objectBeginDate": 1876,
+  "objectEndDate": 1876,
+  "medium": "Folding fan mounted as an album leaf; ink and color on alum paper",
+  "dimensions": "7 1/4 x 21 in. (18.4 x 53.3 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 18.4,
+        "Width": 53.3
+      }
+    }
+  ],
+  "creditLine": "Gift of Robert Hatfield Ellsworth, in memory of La Ferne Hatfield Ellsworth, 1986",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Paintings",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-11-13T04:51:50.813Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/49476",
+  "tags": [
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q78822238",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

@@ -1,0 +1,80 @@
+{
+  "objectID": 188006,
+  "isHighlight": false,
+  "accessionNumber": "95.14.19",
+  "accessionYear": "1895",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/43179.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/43179.jpg",
+  "additionalImages": [],
+  "constituents": null,
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Snuffbox",
+  "title": "Snuffbox",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1765–66",
+  "objectBeginDate": 1765,
+  "objectEndDate": 1766,
+  "medium": "Gold, vernis Martin",
+  "dimensions": "Overall: 1 1/2 × 3 1/4 × 2 1/8 in. (3.8 × 8.3 × 5.4 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 5.397511,
+        "Height": 3.8100076,
+        "Width": 8.255016
+      }
+    }
+  ],
+  "creditLine": "The Moses Lazarus Collection, Gift of Josephine and Sarah Lazarus, in memory of their father, 1888-95",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Gold and Platinum",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2020-09-16T18:35:19.457Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/188006",
+  "tags": [
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    },
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

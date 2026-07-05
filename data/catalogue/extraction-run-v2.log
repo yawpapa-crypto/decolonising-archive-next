@@ -1,0 +1,40 @@
+=== ARED object-level catalogue extraction ===
+Target: 2000 individually documented records
+
+[1/2] Metropolitan Museum of Art…
+(node:28851) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Met search "Ghana": 131 (total unique 131)
+Met search "Akan peoples": 3 (total unique 132)
+Met search "Asante": 129 (total unique 132)
+Met search "Ashanti": 129 (total unique 132)
+Met search "Adinkra": 127 (total unique 132)
+Met search "kente": 149 (total unique 153)
+Met search "Fante": 127 (total unique 153)
+Met search "Asafo": 127 (total unique 153)
+Met search "Gold Coast": 78 (total unique 182)
+Met search "gold weight": 74 (total unique 205)
+Met search "goldweight": 127 (total unique 205)
+Met search "Ghanaian": 129 (total unique 205)
+Met search "Ewe kente": 1 (total unique 205)
+Met search "Ghana textile": 3 (total unique 205)
+Met search "textile wrapper Ghana": 98 (total unique 293)
+Met search "nsodie": 128 (total unique 293)
+Met search "Akan brass": 0 (total unique 293)
+Met search "Adinkra stamp": 0 (total unique 293)
+Met search "Fante flag": 0 (total unique 293)
+Met search "Ashanti gold": 2 (total unique 293)
+Met unique object IDs to fetch: 293
+  fetched 293/293
+Met objects retrieved: 95
+
+[2/2] Cleveland Museum of Art…
+Cleveland records: 25
+
+=== Extraction complete ===
+Verified object records: 29
+Target (2000): NOT YET — run additional extractors
+→ data/catalogue/research-catalogue-final.csv
+
+Additional institutional extractors required to reach target.
+Cached Met responses saved — re-run to resume without re-fetching.

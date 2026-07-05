@@ -1,0 +1,357 @@
+{
+  "objectID": 22741,
+  "isHighlight": false,
+  "accessionNumber": "19.131.1a–r, t–w, .2a–f, l",
+  "accessionYear": "1919",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/aa/original/DT753.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/aa/web-large/DT753.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 181041,
+      "role": "Armorer",
+      "name": "Made in the Royal Workshops at Greenwich",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "Arms and Armor",
+  "objectName": "Armor garniture",
+  "title": "Armor Garniture, Probably of King Henry VIII of England (reigned 1509–47)",
+  "culture": "British, Greenwich",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Armorer",
+  "artistPrefix": "Made in the",
+  "artistDisplayName": "Royal Workshops at Greenwich",
+  "artistDisplayBio": "British, Greenwich, 1511–1640s",
+  "artistSuffix": "",
+  "artistAlphaSort": "Royal Workshops at Greenwich",
+  "artistNationality": "British",
+  "artistBeginDate": "1511",
+  "artistEndDate": "1650",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "dated 1527",
+  "objectBeginDate": 1527,
+  "objectEndDate": 1527,
+  "medium": "Steel, gold, leather, copper alloys",
+  "dimensions": "Overall H. 73 in. (185.4 cm); Wt. 62 lb. 12 oz. (28.45 kg); reinforcing breastplate (19.131.1h) and lance rest (19.131.1t): combined Wt. 7 lb. 5.3 oz. (3324 g); reinforcing abdominal plate (19.131.1u): Wt. 2 lb. 10.6 oz. (1206 g)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.2m Modern Upper Crinet Strap",
+      "elementMeasurements": {
+        "Length": 73.66
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.2b Horse Head Defense",
+      "elementMeasurements": {
+        "Height": 67.31,
+        "Width": 29.2
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1w Left Shin and Knee Defense",
+      "elementMeasurements": {
+        "Height": 45.72,
+        "Width": 15.9
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1v Right Shin and Knee Defense",
+      "elementMeasurements": {
+        "Height": 45.72,
+        "Width": 15.9
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1l Left Riding Gauntlet",
+      "elementMeasurements": {
+        "Height": 33.02,
+        "Width": 12.7
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1 Overall Armor Height ",
+      "elementMeasurements": {
+        "Height": 185.42
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.2d Modern Bit",
+      "elementMeasurements": {
+        "Height": 31.75,
+        "Width": 15.2
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1q Right Sabaton (with spur)",
+      "elementMeasurements": {
+        "Height": 38.1
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1g Ventral Plate",
+      "elementMeasurements": {
+        "Height": 23.5,
+        "Width": 22.9
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1f Left Shoulder Defense",
+      "elementMeasurements": {
+        "Height": 26.67,
+        "Width": 41.9
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.2k Modern Lower Crinet Strap",
+      "elementMeasurements": {
+        "Length": 81.28
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.2a Saddle",
+      "elementMeasurements": {
+        "Depth": 54.6,
+        "Height": 48.77,
+        "Width": 63.5
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1o Right Thigh Defense",
+      "elementMeasurements": {
+        "Height": 80.01,
+        "Width": 19.1
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1h Breastplate Reinforce",
+      "elementMeasurements": {
+        "Height": 31.75,
+        "Width": 38.7
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1a Helmet",
+      "elementMeasurements": {
+        "Height": 27.94,
+        "Width": 23.5
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.2l Modern Lambrequin",
+      "elementMeasurements": {
+        "Length": 71.12
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.2f Modern Stirrup",
+      "elementMeasurements": {
+        "Height": 13.97,
+        "Width": 17.8
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1u Abdominal Reinforce Plate",
+      "elementMeasurements": {
+        "Length": 40.01,
+        "Width": 14
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1n Jousting Bridle Gauntlet",
+      "elementMeasurements": {
+        "Height": 49.53,
+        "Width": 17.8
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1k Right Riding Gauntlet",
+      "elementMeasurements": {
+        "Height": 25.4,
+        "Width": 14.6
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1c Breastplate w/ Taces and Tassets",
+      "elementMeasurements": {
+        "Height": 68.58,
+        "Width": 20.3
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1b Neck Defense (Colletin)",
+      "elementMeasurements": {
+        "Height": 38.1,
+        "Width": 30.5
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.2i Modern Right Bridle Strap",
+      "elementMeasurements": {
+        "Height": 38.1,
+        "Width": 111.8
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.2h Modern Reins",
+      "elementMeasurements": {
+        "Length": 233.68
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.2c Horse Neck Defense",
+      "elementMeasurements": {
+        "Height": 81.28,
+        "Width": 36.8
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1e Right Shoulder Defense",
+      "elementMeasurements": {
+        "Height": 26.67,
+        "Width": 16.5
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1d Backplate w/ Loin Guard ",
+      "elementMeasurements": {
+        "Height": 53.34,
+        "Width": 17
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.2j Modern Left Bridle Strap",
+      "elementMeasurements": {
+        "Length": 96.52
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.2g Saddle Cloth",
+      "elementMeasurements": {
+        "Height": 67.31,
+        "Width": 109.2
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.2e Modern Stirrup",
+      "elementMeasurements": {
+        "Height": 13.34,
+        "Width": 19.7
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1t Lance Rest",
+      "elementMeasurements": {
+        "Height": 12.7,
+        "Width": 8.3
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1i Right Arm Defense",
+      "elementMeasurements": {
+        "Height": 53.34,
+        "Width": 21.6
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.2n Modern Tail Strap",
+      "elementMeasurements": {
+        "Length": 71.12
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1r Left Sabaton (with spur)",
+      "elementMeasurements": {
+        "Height": 38.1
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1p Left Thigh Defense",
+      "elementMeasurements": {
+        "Height": 80.01,
+        "Width": 19.1
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1m Locking Gauntlet",
+      "elementMeasurements": {
+        "Height": 26.67,
+        "Width": 12.7
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "19.131.1j Left Arm Defense",
+      "elementMeasurements": {
+        "Height": 55.88,
+        "Width": 21.6
+      }
+    }
+  ],
+  "creditLine": "Purchase, William H. Riggs Gift and Rogers Fund, 1919",
+  "geographyType": "Country of Origin",
+  "city": "Greenwich",
+  "state": "",
+  "county": "",
+  "country": "England",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Armor for Horse and Man",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-04-29T04:57:03.81Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/22741",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116378642",
+  "isTimelineWork": true,
+  "GalleryNumber": "371"
+}

@@ -1,0 +1,127 @@
+{
+  "objectID": 23094,
+  "isHighlight": false,
+  "accessionNumber": "29.150.11a–f",
+  "accessionYear": "1929",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/aa/original/DT280695.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/aa/web-large/DT280695.jpg",
+  "additionalImages": [],
+  "constituents": null,
+  "department": "Arms and Armor",
+  "objectName": "Portions of a parade armor",
+  "title": "Portions of a Parade Armor",
+  "culture": "Italian, Milan",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1575",
+  "objectBeginDate": 1550,
+  "objectEndDate": 1600,
+  "medium": "Steel, gold, silver, textile",
+  "dimensions": "Wt. 19 lb. 6 oz. (8800 g)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": "Helmet (weight)",
+      "elementMeasurements": {
+        "Weight": 2.9937
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "Helmet (depth- beak to comb)",
+      "elementMeasurements": {
+        "Depth": 32.8613
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "Breastplate (including tassets)",
+      "elementMeasurements": {
+        "Depth": 23.495,
+        "Height": 60.9601,
+        "Width": 43.8151
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "Breastplate (weight- inlcudes lance rest and tassets)",
+      "elementMeasurements": {
+        "Weight": 4.536
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "Helmet (height- collar to comb)",
+      "elementMeasurements": {
+        "Height": 40.0051
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "Helmet (width at collar)",
+      "elementMeasurements": {
+        "Width": 22.5425
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "Backplate (weight)",
+      "elementMeasurements": {
+        "Weight": 1.277
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "Backplate",
+      "elementMeasurements": {
+        "Depth": 16.5,
+        "Height": 37.2,
+        "Width": 36.1951
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Weight": 8.799782
+      }
+    }
+  ],
+  "creditLine": "Bashford Dean Memorial Collection, Bequest of Bashford Dean, 1928",
+  "geographyType": "Country of Origin",
+  "city": "Milan",
+  "state": "",
+  "county": "",
+  "country": "Italy",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Armor for Man",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-20T04:50:39.43Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/23094",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116322156",
+  "isTimelineWork": false,
+  "GalleryNumber": "374"
+}

@@ -1,0 +1,93 @@
+{
+  "objectID": 206773,
+  "isHighlight": false,
+  "accessionNumber": "1978.524.2a–e",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP103156.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP103156.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 34088,
+      "role": "Maker",
+      "name": "Jean-Baptiste-Claude Odiot",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500025155",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q3176320",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Cruet frame",
+  "title": "Cruet frame (one of a pair)",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Jean-Baptiste-Claude Odiot",
+  "artistDisplayBio": "French, 1763–1850",
+  "artistSuffix": "",
+  "artistAlphaSort": "Odiot, Jean-Baptiste-Claude",
+  "artistNationality": "French",
+  "artistBeginDate": "1763",
+  "artistEndDate": "1850",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q3176320",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500025155",
+  "objectDate": "ca. 1817",
+  "objectBeginDate": 1812,
+  "objectEndDate": 1822,
+  "medium": "Silver gilt, glass",
+  "dimensions": "15 3/16 × 12 in. (38.6 × 30.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 38.57633,
+        "Length": 30.48006
+      }
+    }
+  ],
+  "creditLine": "Gift of Audrey Love, in memory of C. Ruxton Love Jr., 1978",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/206773",
+  "tags": [
+    {
+      "term": "Leda",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901001941",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q182019"
+    },
+    {
+      "term": "Swans",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250103",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q34384"
+    },
+    {
+      "term": "Lions",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300310388",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q140"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

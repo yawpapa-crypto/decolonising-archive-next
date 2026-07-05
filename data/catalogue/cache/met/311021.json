@@ -1,0 +1,87 @@
+{
+  "objectID": 311021,
+  "isHighlight": true,
+  "accessionNumber": "1978.412.560",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP-25400-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP-25400-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-25400-002.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 232535,
+      "role": "Artist",
+      "name": "Grassfields artists",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Mask",
+  "title": "Helmet crest from a nja masquerade",
+  "culture": "Bamum kingdom",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Grassfields artists",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Grassfields artists",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1800–80",
+  "objectBeginDate": 1800,
+  "objectEndDate": 1880,
+  "medium": "Wood, copper, glass beads, raffia palm, cowrie shells",
+  "dimensions": "H. 26 x W. 14 x D. 10 3/4 in. (66 x 35.6 x 27.3 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 27.31
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 27.31,
+        "Height": 66.04,
+        "Width": 35.56
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Purchase, Nelson A. Rockefeller Gift, 1967",
+  "geographyType": "",
+  "city": "Foumban",
+  "state": "",
+  "county": "",
+  "country": "Cameroon",
+  "region": "Bamum",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Beads-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-02-07T04:59:02.893Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/311021",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q29384274",
+  "isTimelineWork": false,
+  "GalleryNumber": "344"
+}

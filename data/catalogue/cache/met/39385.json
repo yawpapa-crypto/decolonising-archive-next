@@ -1,0 +1,82 @@
+{
+  "objectID": 39385,
+  "isHighlight": false,
+  "accessionNumber": "99.35.3024",
+  "accessionYear": "1899",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DP123353.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DP123353.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/as/original/DP123354.jpg"
+  ],
+  "constituents": null,
+  "department": "Asian Art",
+  "objectName": "Coin",
+  "title": "Coin of Kanishka",
+  "culture": "Pakistan (ancient region of Gandhara)",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 130",
+  "objectBeginDate": 120,
+  "objectEndDate": 140,
+  "medium": "Gold",
+  "dimensions": "Diam. 9/16 in. (1.4 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 0.9
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 1.4
+      }
+    }
+  ],
+  "creditLine": "Bequest of Joseph H. Durkee, 1898",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/39385",
+  "tags": [
+    {
+      "term": "Gandhara",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300018889",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q213651"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116318237",
+  "isTimelineWork": true,
+  "GalleryNumber": "235"
+}
