@@ -294,6 +294,7 @@ export default async function AdminUsersPage({
             <span>Role</span>
             <span>Activity</span>
             <span>Status</span>
+            <span>Profile</span>
             <span>Actions</span>
           </div>
 
@@ -305,7 +306,9 @@ export default async function AdminUsersPage({
             filteredUsers.map((user) => (
               <div className="admin-users-row" key={user.id}>
                 <div className="admin-user-identity">
-                  <strong>{user.fullName || user.email || "Unnamed user"}</strong>
+                  <Link href={`/admin/users/${user.id}`} className="admin-user-identity-link">
+                    <strong>{user.fullName || user.email || "Unnamed user"}</strong>
+                  </Link>
                   <span>{user.email ?? "No email on account"}</span>
                   <code>{user.id}</code>
                 </div>
@@ -346,6 +349,12 @@ export default async function AdminUsersPage({
                       ? "Email confirmed"
                       : "Email not confirmed"}
                   </span>
+                </div>
+
+                <div className="admin-user-profile-link">
+                  <Link href={`/admin/users/${user.id}`} className="admin-button admin-button-secondary admin-button-compact">
+                    View profile →
+                  </Link>
                 </div>
 
                 <AdminUserRowActions

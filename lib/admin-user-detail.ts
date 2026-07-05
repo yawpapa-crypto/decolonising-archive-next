@@ -18,6 +18,8 @@ function num(row: RawRow, key: string): number {
 export type AdminUserDetail = {
   profile: RawRow | null;
   authLastSignIn: string | null;
+  newsletterOptIn: boolean;
+  newsletterSubscribedAt: string | null;
   recentActivity: RawRow[];
   recentSearches: RawRow[];
   recentSessions: RawRow[];
@@ -29,6 +31,7 @@ export type AdminUserDetail = {
     totalEvents: number;
     totalErrors: number;
     savedRecords: number;
+    savedSearches: number;
     readingLists: number;
     communityPosts: number;
     communityComments: number;
@@ -59,6 +62,7 @@ export async function getAdminUserDetail(userId: string): Promise<AdminUserDetai
     sessionsResult,
     errorsResult,
     savedRecordsResult,
+    savedSearchesResult,
     readingListsResult,
     communityPostsResult,
     communityCommentsResult,
@@ -89,6 +93,7 @@ export async function getAdminUserDetail(userId: string): Promise<AdminUserDetai
       .order("created_at", { ascending: false })
       .limit(50),
     db.from("bookmarks").select("id").eq("user_id", userId),
+    db.from("saved_searches").select("id").eq("user_id", userId),
     db.from("reading_lists").select("id").eq("user_id", userId),
     db.from("community_posts").select("id").eq("user_id", userId),
     db.from("community_post_comments").select("id").eq("user_id", userId),
@@ -99,9 +104,17 @@ export async function getAdminUserDetail(userId: string): Promise<AdminUserDetai
       ? (profileResult.value.data as RawRow | null)
       : null;
 
-  const authLastSignIn =
+  const authUser =
     authResult.status === "fulfilled" && !authResult.value.error
-      ? (authResult.value.data.user?.last_sign_in_at ?? null)
+      ? authResult.value.data.user
+      : null;
+
+  const authLastSignIn = authUser?.last_sign_in_at ?? null;
+  const authMetadata = (authUser?.user_metadata ?? {}) as Record<string, unknown>;
+  const newsletterOptIn = Boolean(authMetadata.newsletter_opt_in);
+  const newsletterSubscribedAt =
+    typeof authMetadata.newsletter_subscribed_at === "string"
+      ? authMetadata.newsletter_subscribed_at
       : null;
 
   const activity =
@@ -118,6 +131,9 @@ export async function getAdminUserDetail(userId: string): Promise<AdminUserDetai
 
   const savedRecordCount =
     savedRecordsResult.status === "fulfilled" ? (savedRecordsResult.value.data ?? []).length : 0;
+
+  const savedSearchCount =
+    savedSearchesResult.status === "fulfilled" ? (savedSearchesResult.value.data ?? []).length : 0;
 
   const readingListCount =
     readingListsResult.status === "fulfilled" ? (readingListsResult.value.data ?? []).length : 0;
@@ -137,6 +153,8 @@ export async function getAdminUserDetail(userId: string): Promise<AdminUserDetai
   return {
     profile,
     authLastSignIn,
+    newsletterOptIn,
+    newsletterSubscribedAt,
     recentActivity: activity,
     recentSearches: searches,
     recentSessions: sessions,
@@ -148,6 +166,7 @@ export async function getAdminUserDetail(userId: string): Promise<AdminUserDetai
       totalEvents: activity.length,
       totalErrors: errors.length,
       savedRecords: savedRecordCount,
+      savedSearches: savedSearchCount,
       readingLists: readingListCount,
       communityPosts: communityPostCount,
       communityComments: communityCommentCount,

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AncestralAcknowledgementButton } from "@/src/components/site/AncestralAcknowledgement";
+import NewsletterSignupForm from "@/components/newsletter/NewsletterSignupForm";
 
 // ─── Link data ────────────────────────────────────────────────────────────────
 
@@ -106,6 +107,7 @@ export default function SiteFooter() {
             <p className="site-footer__support-note">
               Support is voluntary. Core beta access remains open.
             </p>
+            <NewsletterSignupForm variant="footer" />
           </aside>
         </div>
 

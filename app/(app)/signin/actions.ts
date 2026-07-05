@@ -9,6 +9,11 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/src/lib/supabase/server";
 import { updateLastLogin } from "@/src/lib/auth-hooks";
+import { recordNewsletterOptIn } from "@/lib/newsletter-consent";
+
+function newsletterOptIn(formData: FormData) {
+  return formData.get("newsletter_opt_in") === "on";
+}
 
 function siteUrl() {
   const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
@@ -47,6 +52,7 @@ export async function signInWithPassword(formData: FormData) {
   const password = String(formData.get("password") ?? "");
   const next = safeNext(formData.get("next"));
   const statusPath = safeStatusPath(formData.get("statusPath"));
+  const wantsNewsletter = newsletterOptIn(formData);
 
   if (!email || !password) {
     redirect(
@@ -74,6 +80,18 @@ export async function signInWithPassword(formData: FormData) {
 
   if (data.user?.id) {
     await updateLastLogin(data.user.id);
+    if (wantsNewsletter) {
+      const fullName =
+        typeof data.user.user_metadata?.full_name === "string"
+          ? data.user.user_metadata.full_name
+          : null;
+      await recordNewsletterOptIn({
+        userId: data.user.id,
+        email,
+        firstName: fullName,
+        source: "signin",
+      });
+    }
   }
 
   revalidatePath("/", "layout");

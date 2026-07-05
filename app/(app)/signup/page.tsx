@@ -75,6 +75,10 @@ export default async function SignUpPage({
                 />
                 <small className="auth-hint">At least 8 characters.</small>
               </label>
+              <label className="auth-checkbox">
+                <input type="checkbox" name="newsletter_opt_in" />
+                <span>Email me occasional updates about collections, tools, and community features.</span>
+              </label>
               <button type="submit" className="auth-submit">
                 Create account
               </button>

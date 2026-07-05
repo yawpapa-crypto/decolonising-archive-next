@@ -130,11 +130,17 @@ export default async function AdminUserDetailPage({ params }: { params: Params }
           <dd>{fmt(str(profile ?? {}, "last_seen_at"))}</dd>
           <dt>Profile visibility</dt>
           <dd>{str(profile ?? {}, "profile_visibility") || "private"}</dd>
+          <dt>Newsletter</dt>
+          <dd>
+            {detail.newsletterOptIn ? "Subscribed" : "Not subscribed"}
+            {detail.newsletterSubscribedAt ? ` · since ${fmt(detail.newsletterSubscribedAt)}` : ""}
+          </dd>
         </dl>
       </section>
 
       {/* Summary stats */}
       <section className="admin-overview-grid">
+        <StatCard label="Saved searches" value={detail.stats.savedSearches} />
         <StatCard label="Searches" value={detail.stats.totalSearches} />
         <StatCard label="Sessions" value={detail.stats.totalSessions} />
         <StatCard label="Events" value={detail.stats.totalEvents} />
