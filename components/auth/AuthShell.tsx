@@ -9,7 +9,7 @@ const COPY = {
   signin: {
     kicker: "Welcome back",
     title: "Sign in to your research workspace",
-    body: "Pick up saved records, reading lists, and searches across the archive — from Ghana collections to federated library sources.",
+    body: "Pick up saved records, reading lists, and searches across the archive and federated library sources.",
   },
   signup: {
     kicker: "Join the archive",
@@ -31,7 +31,7 @@ export default function AuthShell({ mode, children }: Props) {
           <h2 className="auth-split-title">{copy.title}</h2>
           <p className="auth-split-body">{copy.body}</p>
           <ul className="auth-split-points">
-            <li>Ghana graphic design &amp; African archives</li>
+            <li>Collections, archives &amp; library sources</li>
             <li>Bookmarks, reading lists &amp; saved searches</li>
             <li>Workbench notes &amp; community reading</li>
           </ul>
