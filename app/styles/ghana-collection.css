@@ -2005,7 +2005,10 @@
 .ghana-live-source-tabs {
   display: flex;
   gap: 0.35rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
   border-bottom: 1px solid var(--col-line);
   margin-bottom: 1.25rem;
   padding-bottom: 0;
@@ -2538,6 +2541,15 @@
   font-size: 0.75rem;
   color: var(--col-muted);
   font-style: italic;
+}
+
+.ghana-discover-total--line {
+  flex: 1 1 100%;
+  margin-left: 0;
+  font-style: normal;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--col-ink);
 }
 
 /* Results pane */

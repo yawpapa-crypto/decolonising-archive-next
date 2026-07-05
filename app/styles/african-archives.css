@@ -699,12 +699,22 @@
   color: rgba(17, 17, 17, 0.6);
 }
 
+.aa-disc-total--line {
+  flex: 1 1 100%;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: #111;
+}
+
 .aa-disc-tabs {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 0;
   border-bottom: 2px solid #111;
   margin-bottom: 1.25rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
 }
 
 .aa-disc-tab {
