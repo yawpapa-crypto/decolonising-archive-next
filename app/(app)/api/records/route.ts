@@ -6,6 +6,9 @@ import { isGuardResponse, requireAdminApi } from "@/src/lib/security/auth-guards
 type Entity = { id: string; [key: string]: unknown };
 
 export async function GET() {
+  const guard = await requireAdminApi();
+  if (isGuardResponse(guard)) return guard;
+
   const { data, error } = await supabase
     .from("records")
     .select("id, content")
