@@ -234,13 +234,38 @@ function QuickSuggestModal({
   onClose: () => void;
 }) {
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const link =
     result.sourceUrl || result.html_url || result.externalLinks?.[0]?.url || "";
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // In production this POSTs to /api/archive/suggest-item
-    setSent(true);
+    setSubmitting(true);
+    setError(null);
+    const form = new FormData(e.currentTarget);
+    try {
+      const res = await fetch("/api/collections/suggest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          title: String(form.get("title") ?? ""),
+          source: String(form.get("source") ?? ""),
+          url: String(form.get("url") ?? "") || undefined,
+          notes: String(form.get("notes") ?? "") || undefined,
+          collectionSlug: "ghana-graphic-design",
+        }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) {
+        throw new Error(json.error || "Could not submit suggestion");
+      }
+      setSent(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not submit suggestion");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -249,9 +274,9 @@ function QuickSuggestModal({
         {sent ? (
           <>
             <h2>Suggestion submitted</h2>
-            <p>The ARED team will review and add this to the collection queue if it meets the criteria.</p>
+            <p>The curatorial team has been notified by email and in the admin dashboard.</p>
             <div className="ghana-suggest-actions">
-              <button className="ghana-suggest-submit" onClick={onClose}>Close</button>
+              <button type="button" className="ghana-suggest-submit" onClick={onClose}>Close</button>
             </div>
           </>
         ) : (
@@ -281,9 +306,12 @@ function QuickSuggestModal({
                   defaultValue={`Discovered via ${SOURCE_LABELS[source]} live search. ${result.creator ? `Creator: ${result.creator}.` : ""}`}
                 />
               </div>
+              {error && <p className="ghana-suggest-error">{error}</p>}
               <div className="ghana-suggest-actions">
-                <button type="button" className="ghana-suggest-cancel" onClick={onClose}>Cancel</button>
-                <button type="submit" className="ghana-suggest-submit">Submit →</button>
+                <button type="button" className="ghana-suggest-cancel" onClick={onClose} disabled={submitting}>Cancel</button>
+                <button type="submit" className="ghana-suggest-submit" disabled={submitting}>
+                  {submitting ? "Sending…" : "Submit →"}
+                </button>
               </div>
             </form>
           </>
