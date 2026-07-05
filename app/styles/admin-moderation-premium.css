@@ -76,8 +76,9 @@
 /* Combined actions column */
 .admin-moderation-premium .admin-user-actions {
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
   min-width: 0;
 }
@@ -87,7 +88,8 @@
 }
 
 .admin-moderation-premium .admin-user-actions__block .admin-small-button {
-  width: 100%;
+  width: auto;
+  min-width: 72px;
 }
 
 .admin-moderation-premium .admin-user-actions__hint {
@@ -164,7 +166,8 @@
   background: #fff !important;
   color: var(--admin-red-deep) !important;
   font-weight: 600;
-  width: 100%;
+  width: auto;
+  min-width: 72px;
 }
 
 .admin-moderation-premium .admin-danger-button--outline:hover:not(:disabled) {

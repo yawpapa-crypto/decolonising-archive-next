@@ -84,9 +84,14 @@ export default async function SignInPage({
                 minLength={8}
               />
             </label>
-            <label className="auth-checkbox">
+            <label className="auth-optin">
               <input type="checkbox" name="newsletter_opt_in" />
-              <span>Subscribe to email updates from Decolonising Archive.</span>
+              <span className="auth-optin-copy">
+                <strong>Join our email list</strong>
+                <small>
+                  Occasional updates on collections, research tools, and community features.
+                </small>
+              </span>
             </label>
             <button type="submit" className="auth-submit">
               Sign in
@@ -112,8 +117,6 @@ export default async function SignInPage({
               </button>
             </form>
           </details>
-
-          <div className="auth-divider"><span>or</span></div>
 
           <div className="auth-divider"><span>or</span></div>
 

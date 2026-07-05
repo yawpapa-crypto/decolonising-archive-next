@@ -7,6 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bell, Menu, Search, X } from "lucide-react";
 import "@/app/styles/admin-moderation-premium.css";
+import "@/app/styles/admin-user-detail.css";
 
 const NAV: { href: string; label: string }[] = [
   { href: "/admin", label: "Dashboard" },

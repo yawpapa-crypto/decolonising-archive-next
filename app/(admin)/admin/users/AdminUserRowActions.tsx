@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { deleteUserAccount, updateUserStatus } from "./actions";
 
 type Props = {
@@ -25,10 +24,6 @@ export default function AdminUserRowActions({ userId, email, status, isSelf }: P
 
   return (
     <div className="admin-user-actions">
-      <Link href={`/admin/users/${userId}`} className="admin-small-button admin-secondary-button">
-        View profile
-      </Link>
-
       <form action={updateUserStatus} className="admin-user-actions__block">
         <input type="hidden" name="user_id" value={userId} />
         <input type="hidden" name="status" value={isBlocked ? "active" : "blocked"} />

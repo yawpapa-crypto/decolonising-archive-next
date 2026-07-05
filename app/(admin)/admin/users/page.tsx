@@ -294,7 +294,6 @@ export default async function AdminUsersPage({
             <span>Role</span>
             <span>Activity</span>
             <span>Status</span>
-            <span>Profile</span>
             <span>Actions</span>
           </div>
 
@@ -309,8 +308,13 @@ export default async function AdminUsersPage({
                   <Link href={`/admin/users/${user.id}`} className="admin-user-identity-link">
                     <strong>{user.fullName || user.email || "Unnamed user"}</strong>
                   </Link>
-                  <span>{user.email ?? "No email on account"}</span>
-                  <code>{user.id}</code>
+                  <span className="admin-user-email">{user.email ?? "No email on account"}</span>
+                  <code className="admin-user-id" title={user.id}>
+                    {user.id.slice(0, 8)}…
+                  </code>
+                  <Link href={`/admin/users/${user.id}`} className="admin-user-profile-inline">
+                    View profile →
+                  </Link>
                 </div>
 
                 <form action={updateUserRole} className="admin-inline-form admin-role-form">
@@ -332,11 +336,16 @@ export default async function AdminUsersPage({
                 </form>
 
                 <div className="admin-user-activity">
-                  <span>Joined {formatDate(user.createdAt)}</span>
-                  <span>Last sign-in {formatDate(user.lastSignInAt)}</span>
-                  <span>
-                    {user.bookmarkCount} bookmarks, {user.savedSearchCount} searches,{" "}
-                    {user.readingListCount} lists
+                  <span className="admin-user-activity-line">
+                    Joined {formatDate(user.createdAt)}
+                  </span>
+                  <span className="admin-user-activity-line">
+                    Last sign-in {formatDate(user.lastSignInAt)}
+                  </span>
+                  <span className="admin-user-activity-stats">
+                    <strong>{user.bookmarkCount}</strong> bookmarks ·{" "}
+                    <strong>{user.savedSearchCount}</strong> searches ·{" "}
+                    <strong>{user.readingListCount}</strong> lists
                   </span>
                 </div>
 
@@ -349,12 +358,6 @@ export default async function AdminUsersPage({
                       ? "Email confirmed"
                       : "Email not confirmed"}
                   </span>
-                </div>
-
-                <div className="admin-user-profile-link">
-                  <Link href={`/admin/users/${user.id}`} className="admin-button admin-button-secondary admin-button-compact">
-                    View profile →
-                  </Link>
                 </div>
 
                 <AdminUserRowActions

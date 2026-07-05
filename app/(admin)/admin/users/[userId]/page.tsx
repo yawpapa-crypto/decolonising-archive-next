@@ -75,7 +75,7 @@ export default async function AdminUserDetailPage({ params }: { params: Params }
   const name = displayName(profile);
 
   return (
-    <div className="admin-dashboard">
+    <div className="admin-dashboard admin-user-detail-page admin-moderation-premium">
       <div className="admin-breadcrumb">
         <Link href="/admin/users">← Users</Link>
         <span>/</span>

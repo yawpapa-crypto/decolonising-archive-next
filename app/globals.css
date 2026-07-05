@@ -4580,13 +4580,19 @@ footer:not(.site-footer) span, footer:not(.site-footer) a { font-size: 11px; col
 .admin-error-status { border: 1px solid #b00020; background: #fff5f5; color: #8a0018; padding: 12px 14px; font-size: 14px; line-height: 1.5 }
 .admin-users-surface { display: flex; flex-direction: column; gap: 18px }
 .admin-users-table { display: flex; flex-direction: column; border: 1px solid #111; overflow-x: auto }
-.admin-users-row { display: grid; grid-template-columns: minmax(220px, 1.3fr) minmax(150px, .65fr) minmax(240px, 1fr) minmax(140px, .65fr) minmax(130px, .55fr) minmax(150px, .7fr); gap: 16px; align-items: center; min-width: 1080px; padding: 14px 16px; border-bottom: 1px solid #e7e7e1; font-size: 14px; line-height: 1.45; color: #222 }
+.admin-users-row { display: grid; grid-template-columns: minmax(220px, 1.45fr) minmax(148px, 0.72fr) minmax(220px, 1.05fr) minmax(120px, 0.58fr) minmax(200px, 0.85fr); gap: 14px; align-items: start; min-width: 960px; padding: 16px 18px; border-bottom: 1px solid #e7e7e1; font-size: 14px; line-height: 1.45; color: #222 }
 .admin-users-row:last-child { border-bottom: none }
-.admin-user-identity, .admin-user-activity, .admin-user-status, .admin-user-profile-link { display: flex; flex-direction: column; gap: 5px; min-width: 0 }
+.admin-user-identity, .admin-user-activity, .admin-user-status { display: flex; flex-direction: column; gap: 5px; min-width: 0 }
 .admin-user-identity-link { color: inherit; text-decoration: none }
 .admin-user-identity-link:hover strong { text-decoration: underline }
+.admin-user-email { color: #5b5b55; overflow-wrap: anywhere }
+.admin-user-id { font-size: 11px; color: #8a847c; background: #f4f4ef; padding: 3px 6px; width: fit-content; border-radius: 4px }
+.admin-user-profile-inline { font-size: 12px; font-weight: 650; color: #9f1239; text-decoration: none; width: fit-content }
+.admin-user-profile-inline:hover { text-decoration: underline }
+.admin-user-activity-line { color: #5b5b55; overflow-wrap: anywhere }
+.admin-user-activity-stats { color: #444; font-size: 13px }
+.admin-user-activity-stats strong { color: #111; font-weight: 700 }
 .admin-user-identity strong { font-size: 15px; line-height: 1.25; color: #111; overflow-wrap: anywhere }
-.admin-button-compact { font-size: 12px; padding: 0 12px; min-height: 32px; display: inline-flex; align-items: center; justify-content: center; width: fit-content }
 .admin-user-identity span, .admin-user-activity span, .admin-user-status span { color: #5b5b55; overflow-wrap: anywhere }
 .admin-user-identity code { font-size: 11px; color: #6a6a63; background: #f4f4ef; padding: 3px 5px; overflow-wrap: anywhere }
 .admin-inline-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap }
@@ -5563,6 +5569,45 @@ footer:not(.site-footer) span, footer:not(.site-footer) a { font-size: 11px; col
   text-transform: none;
   letter-spacing: normal;
   font-weight: 400;
+}
+
+.auth-optin {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  background: #fafaf7;
+  cursor: pointer;
+}
+
+.auth-optin input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: #111;
+  cursor: pointer;
+}
+
+.auth-optin-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.auth-optin-copy strong {
+  font-size: 13px;
+  font-weight: 650;
+  color: #111;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.auth-optin-copy small {
+  font-size: 12px;
+  line-height: 1.45;
+  color: #666;
 }
 
 .auth-hint {
