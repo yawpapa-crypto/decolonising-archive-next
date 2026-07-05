@@ -35,7 +35,15 @@ const securityHeaders = [
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   turbopack: {
-    root: "/Users/E127943/Library/CloudStorage/OneDrive-SouthernCrossUniversity/decolonising-archive-next-main",
+    root: __dirname,
+  },
+  // Met cache + catalogue JSON are read at runtime via fs — include in server traces on Vercel.
+  outputFileTracingIncludes: {
+    "/api/catalogue/records": ["./data/catalogue/**/*"],
+    "/api/catalogue/records/[id]": ["./data/catalogue/**/*"],
+    "/api/catalogue/record-image": ["./data/catalogue/**/*"],
+    "/api/catalogue/stats": ["./data/catalogue/**/*"],
+    "/collections/ghana-graphic-design/[id]": ["./data/catalogue/**/*"],
   },
   webpack: (config, { isServer }) => {
     if (isServer) {
