@@ -30,6 +30,7 @@ type Props = {
 };
 
 const DISPLAY_LIMIT = 12;
+const EMPTY_EXTRA_SOURCE_IDS: FederatedSourceId[] = [];
 
 function SafeImg({
   src,
@@ -290,13 +291,14 @@ export default function FederatedLiveDiscover({
   heading,
   description,
   collectionSlug = "ghana-graphic-design",
-  extraSourceIds = [],
+  extraSourceIds = EMPTY_EXTRA_SOURCE_IDS,
   queryForSource,
   enableSuggest = false,
 }: Props) {
+  const extraSourceKey = extraSourceIds.join("|");
   const sourceIds = useMemo(
     () => [...FEDERATED_SOURCE_ORDER, ...extraSourceIds.filter((id) => !FEDERATED_SOURCE_ORDER.includes(id))],
-    [extraSourceIds],
+    [extraSourceKey, extraSourceIds],
   );
 
   const [query, setQuery] = useState(defaultQuery);
@@ -313,6 +315,8 @@ export default function FederatedLiveDiscover({
   );
   const abortRef = useRef<AbortController | null>(null);
   const prefetchGeneration = useRef(0);
+  const discoverInitialisedRef = useRef(false);
+  const runDiscoverSearchRef = useRef<typeof runDiscoverSearch | null>(null);
 
   const resolveQuery = useCallback(
     (sourceId: FederatedSourceId, base: string) =>
@@ -398,11 +402,17 @@ export default function FederatedLiveDiscover({
     [loadSource, sourceIds],
   );
 
+  runDiscoverSearchRef.current = runDiscoverSearch;
+
   useEffect(() => {
-    runDiscoverSearch(defaultQuery, activeTab);
-    return () => abortRef.current?.abort();
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- initial load only
-  }, []);
+    if (discoverInitialisedRef.current) return;
+    discoverInitialisedRef.current = true;
+    void runDiscoverSearchRef.current?.(defaultQuery, "wikimedia");
+    return () => {
+      abortRef.current?.abort();
+      discoverInitialisedRef.current = false;
+    };
+  }, [defaultQuery]);
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
