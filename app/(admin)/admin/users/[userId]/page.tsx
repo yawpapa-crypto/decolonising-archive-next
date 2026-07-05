@@ -124,6 +124,24 @@ export default async function AdminUserDetailPage({ params }: { params: Params }
           <dd>{str(profile ?? {}, "role") || "member"}</dd>
           <dt>Affiliation</dt>
           <dd>{str(profile ?? {}, "affiliation") || "—"}</dd>
+          <dt>Organisation</dt>
+          <dd>{str(profile ?? {}, "organisation") || "—"}</dd>
+          <dt>Role / practice</dt>
+          <dd>{str(profile ?? {}, "role_title") || "—"}</dd>
+          <dt>Location</dt>
+          <dd>
+            {[str(profile ?? {}, "city"), str(profile ?? {}, "state_region"), str(profile ?? {}, "country")]
+              .filter(Boolean)
+              .join(", ") || "—"}
+          </dd>
+          <dt>Collection interest</dt>
+          <dd>{detail.collectionInterest || "—"}</dd>
+          <dt>Research interests</dt>
+          <dd>{str(profile ?? {}, "research_interests") || "—"}</dd>
+          <dt>Heard about us</dt>
+          <dd>{detail.heardAbout || "—"}</dd>
+          <dt>Phone</dt>
+          <dd>{detail.phone || "—"}</dd>
           <dt>Last login</dt>
           <dd>{fmt(str(profile ?? {}, "last_login_at") || detail.authLastSignIn)}</dd>
           <dt>Last seen</dt>

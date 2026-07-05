@@ -20,6 +20,9 @@ export type AdminUserDetail = {
   authLastSignIn: string | null;
   newsletterOptIn: boolean;
   newsletterSubscribedAt: string | null;
+  collectionInterest: string | null;
+  heardAbout: string | null;
+  phone: string | null;
   recentActivity: RawRow[];
   recentSearches: RawRow[];
   recentSessions: RawRow[];
@@ -68,7 +71,7 @@ export async function getAdminUserDetail(userId: string): Promise<AdminUserDetai
     communityCommentsResult,
   ] = await Promise.allSettled([
     db.from("profiles")
-      .select("id, email, full_name, display_name, preferred_name, avatar_url, short_bio, affiliation, organisation, website, role, profile_visibility, created_at, updated_at, last_login_at, last_seen_at")
+      .select("id, email, full_name, display_name, preferred_name, avatar_url, short_bio, affiliation, organisation, role_title, website, country, state_region, city, research_interests, role, profile_visibility, created_at, updated_at, last_login_at, last_seen_at")
       .eq("id", userId)
       .maybeSingle(),
     adminDb.auth.admin.getUserById(userId),
@@ -116,6 +119,13 @@ export async function getAdminUserDetail(userId: string): Promise<AdminUserDetai
     typeof authMetadata.newsletter_subscribed_at === "string"
       ? authMetadata.newsletter_subscribed_at
       : null;
+  const collectionInterest =
+    typeof authMetadata.collection_interest === "string"
+      ? authMetadata.collection_interest
+      : null;
+  const heardAbout =
+    typeof authMetadata.heard_about === "string" ? authMetadata.heard_about : null;
+  const phone = typeof authMetadata.phone === "string" ? authMetadata.phone : null;
 
   const activity =
     activityResult.status === "fulfilled" ? ((activityResult.value.data ?? []) as RawRow[]) : [];
@@ -155,6 +165,9 @@ export async function getAdminUserDetail(userId: string): Promise<AdminUserDetai
     authLastSignIn,
     newsletterOptIn,
     newsletterSubscribedAt,
+    collectionInterest,
+    heardAbout,
+    phone,
     recentActivity: activity,
     recentSearches: searches,
     recentSessions: sessions,

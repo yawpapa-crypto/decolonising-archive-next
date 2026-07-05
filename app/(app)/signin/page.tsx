@@ -1,20 +1,13 @@
-// Sign-in page. Offers four methods:
-//   1. Email + password
-//   2. Magic link (passwordless)
-//   3. Google OAuth
-//   4. GitHub OAuth
-//
-// Already-signed-in users are bounced to the workspace.
+// Sign-in page — email/password, OAuth, optional newsletter opt-in.
 
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import PageShell from "@/src/components/layout/PageShell";
+import AuthPageShell from "@/components/auth/AuthPageShell";
+import AuthShell from "@/components/auth/AuthShell";
 import { getCurrentUser } from "@/src/lib/auth";
-import {
-  requestPasswordReset,
-  signInWithPassword,
-} from "./actions";
+import { requestPasswordReset, signInWithPassword } from "./actions";
 import OAuthButtons from "./OAuthButtons";
+import "@/app/styles/auth-pages.css";
 
 type SearchParams = Promise<{
   next?: string;
@@ -37,29 +30,26 @@ export default async function SignInPage({
   if (user) redirect(next);
 
   return (
-    <PageShell>
-      <main className="auth-page">
+    <AuthPageShell>
+      <AuthShell mode="signin">
         <div className="auth-card">
           <p className="auth-eyebrow">Decolonising Archive</p>
           <h1 className="auth-title">Sign in</h1>
           <p className="auth-sub">
-            Members get bookmarks, saved searches, and reading lists across the
-            archive. Curator and admin tools are unlocked by an admin.
+            Members get bookmarks, saved searches, and reading lists across the archive.
+            Curator and admin tools are unlocked by an admin.
           </p>
 
           {sp.error ? <p className="auth-error">{sp.error}</p> : null}
           {sp.updated ? <p className="auth-notice">{sp.updated}</p> : null}
           {sp.sent ? (
             <p className="auth-notice">
-              We sent a email and password to{" "}
-              <strong>{sp.email ?? "your email"}</strong>. Open it on this
-              device to finish signing in.
+              We sent a sign-in link to <strong>{sp.email ?? "your email"}</strong>.
             </p>
           ) : null}
           {sp.resetSent ? (
             <p className="auth-notice">
-              We sent a password reset link to{" "}
-              <strong>{sp.email ?? "your email"}</strong>.
+              We sent a password reset link to <strong>{sp.email ?? "your email"}</strong>.
             </p>
           ) : null}
 
@@ -67,12 +57,7 @@ export default async function SignInPage({
             <input type="hidden" name="next" value={next} />
             <label className="auth-field">
               <span>Email</span>
-              <input
-                type="email"
-                name="email"
-                autoComplete="email"
-                required
-              />
+              <input type="email" name="email" autoComplete="email" required />
             </label>
             <label className="auth-field">
               <span>Password</span>
@@ -88,9 +73,7 @@ export default async function SignInPage({
               <input type="checkbox" name="newsletter_opt_in" />
               <span className="auth-optin-copy">
                 <strong>Join our email list</strong>
-                <small>
-                  Occasional updates on collections, research tools, and community features.
-                </small>
+                <small>Occasional updates on collections, tools, and community features.</small>
               </span>
             </label>
             <button type="submit" className="auth-submit">
@@ -130,7 +113,7 @@ export default async function SignInPage({
             .
           </p>
         </div>
-      </main>
-    </PageShell>
+      </AuthShell>
+    </AuthPageShell>
   );
 }
