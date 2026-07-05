@@ -81,6 +81,7 @@ const CATEGORY_MAP: Record<string, keyof AdminNotificationSettings> = {
   takedown_request_received:    "notify_moderation",
   community_post_reported:      "notify_moderation",
   source_request_received:      "notify_source_requests",
+  collection_item_suggested:    "notify_source_requests",
   user_joined:                  "notify_user_activity",
   high_activity_user:           "notify_user_activity",
   search_zero_results_spike:    "notify_search_trends",
@@ -96,6 +97,7 @@ const ALWAYS_IMMEDIATE: Set<string> = new Set([
   "security_or_permission_error",
   "schema_error",
   "app_error_spike",
+  "collection_item_suggested",
 ]);
 
 // ---------------------------------------------------------------------------
@@ -238,7 +240,7 @@ async function getUserEmail(userId: string): Promise<string | null> {
 /**
  * Build an immediate-alert email payload.
  */
-function buildAlertEmail(
+export function buildAlertEmail(
   input: AdminNotificationInput,
   toEmail: string,
 ): AdminEmailPayload {

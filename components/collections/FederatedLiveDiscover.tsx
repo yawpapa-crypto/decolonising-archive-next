@@ -5,14 +5,14 @@ import {
   buildDiscoveryStatusLine,
   defaultSourceState,
   fetchFederatedSource,
+  FEDERATED_FETCH_CONCURRENCY,
+  FEDERATED_PREFETCH_LIMIT,
   FEDERATED_SOURCE_META,
   FEDERATED_SOURCE_ORDER,
-  ghanaQueryForSource,
-  initialSourceMap,
+  runWithConcurrency,
   type DiscoverResult,
   type FederatedSourceId,
   type SourceStatus,
-  type WikiPage,
 } from "@/lib/discovery/federated-discover";
 
 type Variant = "ghana" | "african";
@@ -23,11 +23,13 @@ type Props = {
   searchPlaceholder: string;
   heading: string;
   description: string;
-  /** Extra sources appended after the standard federation set (e.g. AODL) */
+  collectionSlug?: string;
   extraSourceIds?: FederatedSourceId[];
   queryForSource?: (sourceId: FederatedSourceId, baseQuery: string) => string;
   enableSuggest?: boolean;
 };
+
+const DISPLAY_LIMIT = 12;
 
 function SafeImg({
   src,
@@ -57,18 +59,53 @@ function SafeImg({
 function SuggestModal({
   result,
   sourceLabel,
+  collectionSlug,
   onClose,
 }: {
   result: DiscoverResult;
   sourceLabel: string;
+  collectionSlug: string;
   onClose: () => void;
 }) {
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const link =
     result.sourceUrl ||
     result.html_url ||
     result.externalLinks?.[0]?.url ||
     result.wikimediaPage?.canonicalurl;
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setSubmitting(true);
+    setError(null);
+    const form = new FormData(e.currentTarget);
+    try {
+      const res = await fetch("/api/collections/suggest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          title: String(form.get("title") ?? ""),
+          source: String(form.get("source") ?? ""),
+          url: String(form.get("url") ?? "") || undefined,
+          notes: String(form.get("notes") ?? "") || undefined,
+          submitterName: String(form.get("submitterName") ?? "") || undefined,
+          submitterEmail: String(form.get("submitterEmail") ?? "") || undefined,
+          collectionSlug,
+        }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) {
+        throw new Error(json.error || "Could not submit suggestion");
+      }
+      setSent(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not submit suggestion");
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <div className="ghana-suggest-overlay" onClick={onClose}>
@@ -76,7 +113,9 @@ function SuggestModal({
         {sent ? (
           <>
             <h2>Suggestion submitted</h2>
-            <p>The ARED team will review this item for the collection.</p>
+            <p>
+              Thank you — the curatorial team has been notified by email and in the admin dashboard.
+            </p>
             <div className="ghana-suggest-actions">
               <button type="button" className="ghana-suggest-submit" onClick={onClose}>
                 Close
@@ -89,13 +128,7 @@ function SuggestModal({
             <p>
               Submit this item from <strong>{sourceLabel}</strong> for curatorial review.
             </p>
-            <form
-              className="ghana-suggest-form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                setSent(true);
-              }}
-            >
+            <form className="ghana-suggest-form" onSubmit={handleSubmit}>
               <div className="ghana-suggest-field">
                 <label>Title</label>
                 <input type="text" name="title" defaultValue={result.title} required />
@@ -110,12 +143,29 @@ function SuggestModal({
                   <input type="url" name="url" defaultValue={link} />
                 </div>
               )}
+              <div className="ghana-suggest-field">
+                <label>Your name (optional)</label>
+                <input type="text" name="submitterName" autoComplete="name" />
+              </div>
+              <div className="ghana-suggest-field">
+                <label>Your email (optional)</label>
+                <input type="email" name="submitterEmail" autoComplete="email" />
+              </div>
+              <div className="ghana-suggest-field">
+                <label>Notes on rights / licence</label>
+                <textarea
+                  name="notes"
+                  rows={3}
+                  placeholder="e.g. CC BY-SA via Wikimedia, CC0 from Smithsonian…"
+                />
+              </div>
+              {error && <p className="ghana-suggest-error">{error}</p>}
               <div className="ghana-suggest-actions">
-                <button type="button" className="ghana-suggest-cancel" onClick={onClose}>
+                <button type="button" className="ghana-suggest-cancel" onClick={onClose} disabled={submitting}>
                   Cancel
                 </button>
-                <button type="submit" className="ghana-suggest-submit">
-                  Submit →
+                <button type="submit" className="ghana-suggest-submit" disabled={submitting}>
+                  {submitting ? "Sending…" : "Submit →"}
                 </button>
               </div>
             </form>
@@ -239,6 +289,7 @@ export default function FederatedLiveDiscover({
   searchPlaceholder,
   heading,
   description,
+  collectionSlug = "ghana-graphic-design",
   extraSourceIds = [],
   queryForSource,
   enableSuggest = false,
@@ -251,13 +302,17 @@ export default function FederatedLiveDiscover({
   const [query, setQuery] = useState(defaultQuery);
   const [inputValue, setInputValue] = useState(defaultQuery);
   const [sources, setSources] = useState<Record<FederatedSourceId, SourceStatus>>(() =>
-    initialSourceMap(sourceIds),
+    Object.fromEntries(sourceIds.map((id) => [id, defaultSourceState()])) as Record<
+      FederatedSourceId,
+      SourceStatus
+    >,
   );
-  const [activeTab, setActiveTab] = useState<FederatedSourceId>(sourceIds[0]);
+  const [activeTab, setActiveTab] = useState<FederatedSourceId>("wikimedia");
   const [suggestItem, setSuggestItem] = useState<{ result: DiscoverResult; label: string } | null>(
     null,
   );
   const abortRef = useRef<AbortController | null>(null);
+  const prefetchGeneration = useRef(0);
 
   const resolveQuery = useCallback(
     (sourceId: FederatedSourceId, base: string) =>
@@ -265,71 +320,114 @@ export default function FederatedLiveDiscover({
     [queryForSource],
   );
 
-  const fetchAll = useCallback(
-    async (q: string) => {
+  const patchSource = useCallback((sourceId: FederatedSourceId, patch: Partial<SourceStatus>) => {
+    setSources((prev) => ({
+      ...prev,
+      [sourceId]: { ...prev[sourceId], ...patch },
+    }));
+  }, []);
+
+  const loadSource = useCallback(
+    async (
+      sourceId: FederatedSourceId,
+      q: string,
+      signal: AbortSignal,
+      limit: number,
+      force = false,
+    ) => {
+      setSources((prev) => {
+        const current = prev[sourceId];
+        if (!force && (current?.loading || current?.loaded)) return prev;
+        return {
+          ...prev,
+          [sourceId]: { ...defaultSourceState(), loading: true },
+        };
+      });
+
+      try {
+        const { data, error, count } = await fetchFederatedSource(sourceId, {
+          query: q,
+          signal,
+          queryForSource: resolveQuery,
+          limit,
+        });
+        if (signal.aborted) return;
+        patchSource(sourceId, {
+          data,
+          loading: false,
+          error,
+          loaded: true,
+          count,
+        });
+      } catch (err) {
+        if ((err as Error).name === "AbortError") return;
+        patchSource(sourceId, {
+          data: [],
+          loading: false,
+          error: "Source unavailable",
+          loaded: true,
+          count: null,
+        });
+      }
+    },
+    [patchSource, resolveQuery],
+  );
+
+  const runDiscoverSearch = useCallback(
+    async (q: string, priorityTab: FederatedSourceId) => {
       abortRef.current?.abort();
       const ctrl = new AbortController();
       abortRef.current = ctrl;
+      prefetchGeneration.current += 1;
+      const generation = prefetchGeneration.current;
 
       setSources(
         Object.fromEntries(
-          sourceIds.map((id) => [id, { ...defaultSourceState(), loading: true }]),
+          sourceIds.map((id) => [id, defaultSourceState()]),
         ) as Record<FederatedSourceId, SourceStatus>,
       );
 
-      await Promise.all(
-        sourceIds.map(async (sourceId) => {
-          try {
-            const { data, error, count } = await fetchFederatedSource(sourceId, {
-              query: q,
-              signal: ctrl.signal,
-              queryForSource: resolveQuery,
-            });
-            if (ctrl.signal.aborted) return;
-            setSources((prev) => ({
-              ...prev,
-              [sourceId]: { data, loading: false, error, loaded: true, count },
-            }));
-          } catch (err) {
-            if ((err as Error).name === "AbortError") return;
-            setSources((prev) => ({
-              ...prev,
-              [sourceId]: {
-                data: [],
-                loading: false,
-                error: "Source unavailable",
-                loaded: true,
-                count: null,
-              },
-            }));
-          }
-        }),
-      );
+      await loadSource(priorityTab, q, ctrl.signal, DISPLAY_LIMIT, true);
+
+      const rest = sourceIds.filter((id) => id !== priorityTab);
+      void runWithConcurrency(rest, FEDERATED_FETCH_CONCURRENCY, async (sourceId) => {
+        if (ctrl.signal.aborted || generation !== prefetchGeneration.current) return;
+        await loadSource(sourceId, q, ctrl.signal, FEDERATED_PREFETCH_LIMIT, true);
+      });
     },
-    [resolveQuery, sourceIds],
+    [loadSource, sourceIds],
   );
 
   useEffect(() => {
-    fetchAll(defaultQuery);
+    runDiscoverSearch(defaultQuery, activeTab);
     return () => abortRef.current?.abort();
-  }, [defaultQuery, fetchAll]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- initial load only
+  }, []);
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
     const q = inputValue.trim() || defaultQuery;
     setQuery(q);
-    fetchAll(q);
+    runDiscoverSearch(q, activeTab);
+  }
+
+  function handleTabChange(sourceId: FederatedSourceId) {
+    setActiveTab(sourceId);
+    const current = sources[sourceId];
+    if (!current?.loaded && !current?.loading) {
+      abortRef.current?.abort();
+      const ctrl = new AbortController();
+      abortRef.current = ctrl;
+      void loadSource(sourceId, query, ctrl.signal, DISPLAY_LIMIT, true);
+    }
   }
 
   const current = sources[activeTab] ?? defaultSourceState();
+  const visibleResults = current.data.slice(0, DISPLAY_LIMIT);
   const statusLine = buildDiscoveryStatusLine(sources, sourceIds);
-  const allLoaded = sourceIds.every((id) => sources[id]?.loaded);
+  const anyLoading = sourceIds.some((id) => sources[id]?.loading);
   const totalResults = sourceIds.reduce((n, id) => n + (sources[id]?.data.length ?? 0), 0);
   const isWikimediaTab = activeTab === "wikimedia";
-
-  const shellClass =
-    variant === "ghana" ? "ghana-discover ghana-tab-panel" : "aa-discover";
-  const innerClass = variant === "african" ? "aa-list-inner" : undefined;
 
   return (
     <>
@@ -337,12 +435,13 @@ export default function FederatedLiveDiscover({
         <SuggestModal
           result={suggestItem.result}
           sourceLabel={suggestItem.label}
+          collectionSlug={collectionSlug}
           onClose={() => setSuggestItem(null)}
         />
       )}
 
-      <section className={shellClass}>
-        <div className={innerClass}>
+      <section className={variant === "ghana" ? "ghana-discover ghana-tab-panel" : "aa-discover"}>
+        <div className={variant === "african" ? "aa-list-inner" : undefined}>
           {variant === "ghana" ? (
             <div className="ghana-discover-header ghana-discover-header--editorial">
               <div>
@@ -395,9 +494,9 @@ export default function FederatedLiveDiscover({
                   : "aa-disc-total aa-disc-total--line"
               }
             >
-              {allLoaded ? statusLine : "Searching connected sources…"}
+              {anyLoading ? "Searching connected sources…" : statusLine}
             </span>
-            {allLoaded && (
+            {!anyLoading && (
               <span className={variant === "ghana" ? "ghana-discover-total" : "aa-disc-total"}>
                 {totalResults} results for &ldquo;{query}&rdquo;
               </span>
@@ -423,7 +522,7 @@ export default function FederatedLiveDiscover({
                       ? `ghana-live-source-tab${activeTab === id ? " is-active" : ""}`
                       : `aa-disc-tab${activeTab === id ? " is-active" : ""}`
                   }
-                  onClick={() => setActiveTab(id)}
+                  onClick={() => handleTabChange(id)}
                 >
                   {variant === "ghana" && <span>{meta.icon}</span>}
                   <span>{meta.label}</span>
@@ -465,9 +564,9 @@ export default function FederatedLiveDiscover({
               </p>
             )}
 
-            {!current.loading && current.data.length > 0 && isWikimediaTab && (
+            {!current.loading && visibleResults.length > 0 && isWikimediaTab && (
               <div className="ghana-disc-wiki-grid">
-                {current.data.map((result) => (
+                {visibleResults.map((result) => (
                   <WikiGridCard
                     key={result.id}
                     result={result}
@@ -485,13 +584,9 @@ export default function FederatedLiveDiscover({
               </div>
             )}
 
-            {!current.loading && current.data.length > 0 && !isWikimediaTab && (
-              <div
-                className={
-                  variant === "ghana" ? "ghana-disc-result-list" : "aa-disc-grid"
-                }
-              >
-                {current.data.map((result) => (
+            {!current.loading && visibleResults.length > 0 && !isWikimediaTab && (
+              <div className={variant === "ghana" ? "ghana-disc-result-list" : "aa-disc-grid"}>
+                {visibleResults.map((result) => (
                   <ResultCard
                     key={result.id}
                     result={result}
@@ -513,8 +608,8 @@ export default function FederatedLiveDiscover({
 
           {variant === "ghana" && (
             <div className="ghana-live-footer" style={{ marginTop: "1.5rem" }}>
-              Results are live — not stored in ARED. Suggest items to add them to the curatorial
-              queue. All rights belong to the respective source institutions.
+              Results are live — not stored in ARED. Suggestions notify the curatorial team by email
+              and in the admin dashboard. All rights belong to the respective source institutions.
             </div>
           )}
         </div>
@@ -523,4 +618,4 @@ export default function FederatedLiveDiscover({
   );
 }
 
-export { ghanaQueryForSource };
+export { ghanaQueryForSource } from "@/lib/discovery/federated-discover";

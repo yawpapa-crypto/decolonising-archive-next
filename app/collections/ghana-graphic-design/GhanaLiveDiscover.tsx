@@ -11,7 +11,8 @@ export default function GhanaLiveDiscover() {
       defaultQuery="ghana graphic design"
       searchPlaceholder="Search across all sources…"
       heading="Search connected sources"
-      description="Same live federation as the main library — Archive, OpenAlex, Wikidata, Library of Congress, Smithsonian, open access, catalogues (Wikimedia, Open Library, The Met), and more. Use + Suggest to nominate items for the collection."
+      description="Same live federation as the main library — loaded in small batches so your browser stays responsive. Use + Suggest to nominate items; submissions go to the admin dashboard and curatorial email."
+      collectionSlug="ghana-graphic-design"
       queryForSource={ghanaQueryForSource}
       enableSuggest
     />

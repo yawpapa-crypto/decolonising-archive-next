@@ -73,6 +73,12 @@ export const FEDERATED_SOURCE_ORDER: FederatedSourceId[] = [
 
 export const CATALOGUE_SOURCE_IDS: FederatedSourceId[] = ["wikimedia", "openlibrary", "met"];
 
+/** Max parallel upstream fetches — keeps Discover from freezing the browser. */
+export const FEDERATED_FETCH_CONCURRENCY = 2;
+
+/** Smaller page size for background source status prefetch. */
+export const FEDERATED_PREFETCH_LIMIT = 4;
+
 export const FEDERATED_SOURCE_META: Record<
   FederatedSourceId,
   { label: string; icon: string; group?: "catalogue" }
@@ -187,42 +193,6 @@ function mapMetObject(obj: Record<string, unknown>, index: number): DiscoverResu
   };
 }
 
-function filterArchiveRecords(records: unknown[], query: string, limit: number): DiscoverResult[] {
-  const tokens = query
-    .trim()
-    .toLowerCase()
-    .split(/\s+/)
-    .filter(Boolean);
-  if (!tokens.length) return [];
-
-  const matched: DiscoverResult[] = [];
-  for (const row of records) {
-    if (!row || typeof row !== "object") continue;
-    const rec = row as Record<string, unknown>;
-    const haystack = [
-      rec.title,
-      rec.creator,
-      rec.summary,
-      rec.abstract,
-      rec.collection,
-      rec.institution,
-      ...(Array.isArray(rec.tags) ? rec.tags : []),
-      ...(Array.isArray(rec.themes) ? rec.themes : []),
-    ]
-      .filter(Boolean)
-      .join(" ")
-      .toLowerCase();
-
-    if (!tokens.every((token) => haystack.includes(token))) continue;
-    matched.push({
-      ...normalizeLiveRecord(rec),
-      source: "ARED Archive",
-    });
-    if (matched.length >= limit) break;
-  }
-  return matched;
-}
-
 async function fetchJson(url: string, signal: AbortSignal): Promise<Record<string, unknown>> {
   const res = await fetch(url, {
     signal,
@@ -250,6 +220,22 @@ export type FetchSourceOptions = {
   limit?: number;
 };
 
+/** Run async tasks with limited concurrency. */
+export async function runWithConcurrency<T>(
+  items: T[],
+  concurrency: number,
+  worker: (item: T) => Promise<void>,
+): Promise<void> {
+  let index = 0;
+  const runners = Array.from({ length: Math.min(concurrency, items.length) }, async () => {
+    while (index < items.length) {
+      const current = items[index++];
+      await worker(current);
+    }
+  });
+  await Promise.all(runners);
+}
+
 export async function fetchFederatedSource(
   sourceId: FederatedSourceId,
   options: FetchSourceOptions,
@@ -263,10 +249,16 @@ export async function fetchFederatedSource(
   try {
     switch (sourceId) {
       case "archive": {
-        const json = await fetchJson("/api/records", options.signal);
-        const records = Array.isArray(json.records) ? json.records : [];
-        const data = filterArchiveRecords(records, options.query, 12);
-        return { data, error: null, count: data.length };
+        const json = await fetchJson(
+          `/api/collections/archive-search?q=${encodeURIComponent(options.query)}&limit=${limit}`,
+          options.signal,
+        );
+        const rows = Array.isArray(json.results) ? json.results : [];
+        return {
+          data: rows.map((row) => normalizeLiveRecord(row as Record<string, unknown>)),
+          error: json.error ? String(json.error) : json.ok === false ? "Archive unavailable" : null,
+          count: typeof json.count === "number" ? json.count : rows.length,
+        };
       }
       case "openalex": {
         const json = await fetchJson(

@@ -248,29 +248,32 @@ export default function AfricanArchivesClient() {
           Open African oral histories, photographs, objects, manuscripts, audio and video — linked
           from partner sites. Metadata only; collections open externally.
         </p>
-        <nav className="aa-view-nav" aria-label="Page sections">
-          <button
-            type="button"
-            className={`aa-view-btn${pageView === "browse" ? " is-active" : ""}`}
-            onClick={() => setPageView("browse")}
-          >
-            Browse collections
-          </button>
-          <button
-            type="button"
-            className={`aa-view-btn${pageView === "discover" ? " is-active" : ""}`}
-            onClick={() => setPageView("discover")}
-          >
-            Discover live
-          </button>
-        </nav>
       </section>
 
-      {pageView === "browse" && (
-        <>
-          <section className="aa-filter-band">
-            <div className="aa-filter-inner">
-              <h2 className="aa-band-title">Find a collection</h2>
+      <section className="aa-filter-band">
+        <div className="aa-filter-inner">
+          <div className="aa-find-toolbar">
+            <h2 className="aa-band-title">Find a collection</h2>
+            <nav className="aa-view-nav aa-view-nav--inline" aria-label="Page sections">
+              <button
+                type="button"
+                className={`aa-view-btn${pageView === "browse" ? " is-active" : ""}`}
+                onClick={() => setPageView("browse")}
+              >
+                Browse collections
+              </button>
+              <button
+                type="button"
+                className={`aa-view-btn${pageView === "discover" ? " is-active" : ""}`}
+                onClick={() => setPageView("discover")}
+              >
+                Discover live
+              </button>
+            </nav>
+          </div>
+
+          {pageView === "browse" && (
+            <>
               <input
                 type="search"
                 className="aa-search"
@@ -351,9 +354,12 @@ export default function AfricanArchivesClient() {
                   </button>
                 )}
               </div>
-            </div>
-          </section>
+            </>
+          )}
+        </div>
+      </section>
 
+      {pageView === "browse" && (
           <section className="aa-list-section">
             <div className="aa-list-inner">
               <div className="aa-list-header">
@@ -423,7 +429,6 @@ export default function AfricanArchivesClient() {
               )}
             </div>
           </section>
-        </>
       )}
 
       {pageView === "discover" && <AfricanArchivesDiscover />}
