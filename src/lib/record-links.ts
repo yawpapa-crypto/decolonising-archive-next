@@ -34,6 +34,24 @@ export function recordRouteId(recordId: string) {
 }
 
 export function getRecordHref(item: RecordLinkInput) {
+  const metadata = item.record_metadata ?? item.metadata;
+  const catalogueSlug =
+    metadata && typeof metadata === "object" && !Array.isArray(metadata)
+      ? String((metadata as Record<string, unknown>).collectionSlug ?? "").trim()
+      : "";
+  const recordId =
+    clean(item.record_id) ||
+    clean(item.related_record_id) ||
+    clean(item.id);
+
+  if (catalogueSlug && recordId) {
+    return `/collections/${catalogueSlug}/records/${encodeURIComponent(recordId)}`;
+  }
+
+  if (recordId && /^ARED-GH/i.test(recordId)) {
+    return `/collections/ghana-graphic-design/records/${encodeURIComponent(recordId)}`;
+  }
+
   const external =
     clean(item.record_source_url) ||
     clean(item.source_url) ||
@@ -44,11 +62,6 @@ export function getRecordHref(item: RecordLinkInput) {
     metadataUrl(item.metadata);
 
   if (external) return external;
-
-  const recordId =
-    clean(item.record_id) ||
-    clean(item.related_record_id) ||
-    clean(item.id);
 
   if (recordId) {
     return `/records/${encodeURIComponent(recordRouteId(recordId))}`;

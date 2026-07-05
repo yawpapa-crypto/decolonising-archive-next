@@ -4850,9 +4850,15 @@
   border-top-color: var(--col-line);
 }
 
+.ghana-detail-page--monochrome .ghana-record-rights-banner,
 .ghana-detail-page--monochrome .ghana-record-verification-note {
-  border-left-color: var(--col-ink);
-  background: #f5f5f5;
+  background: var(--col-ink);
+  border-left: 4px solid rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.ghana-detail-page--monochrome .ghana-record-rights-banner strong {
+  color: #fff;
 }
 
 .ghana-detail-page--monochrome .ghana-detail-evidence-note {

@@ -81,7 +81,7 @@ export const TYPE_FILTERS: Array<{
   { value: "all", label: "All" },
   { value: "books", label: "Books" },
   { value: "articles", label: "Articles" },
-  { value: "archive-records", label: "Archive records" },
+  { value: "archive-records", label: "Saved archive records" },
   { value: "images", label: "Images" },
   { value: "audio", label: "Audio" },
   { value: "video", label: "Video" },
@@ -172,6 +172,8 @@ function numericValue(...values: Array<unknown>) {
 
 function sourceFromText(sourceText: string, recordId: string, sourceUrl: string): NormalizedSavedSource {
   const haystack = compactText(`${sourceText} ${recordId} ${sourceUrl}`);
+  if (/^ared-gh/i.test(recordId)) return "archive";
+  if (haystack.includes("ared collection") || haystack.includes("catalogue_record")) return "archive";
   if (haystack.includes("openalex")) return "openalex";
   if (haystack.includes("semantic scholar") || haystack.includes("semanticscholar")) return "semantic-scholar";
   if (haystack.includes("wikidata") || haystack.includes("wikibase")) return "wikidata";
@@ -310,6 +312,7 @@ export function normalizeSavedRecord(
   const normalizedType = typeFromText(
     firstText(
       metadata.normalizedType,
+      metadata.itemType === "catalogue_record" ? metadata.recordTypeLabel : "",
       record.record_type,
       metadata.type,
       metadata.work_type,

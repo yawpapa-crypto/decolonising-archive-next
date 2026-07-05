@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { CatalogueRecord, CatalogueEvidence, CatalogueVerification } from "@/lib/catalogue/types";
+import "@/app/styles/research-actions.css";
 import type { RecordImageInfo } from "@/lib/catalogue/record-display";
 import { recordCardBrief, recordInitial, recordMakerLabel, recordInterpretationDisplay } from "@/lib/catalogue/record-display";
 import {
@@ -7,6 +8,8 @@ import {
   EVIDENCE_STATUS_DESCRIPTIONS,
   evidenceStatusLabel,
 } from "@/lib/catalogue/evidence-status";
+import RecordResearchActions from "@/components/research/RecordResearchActions";
+import { ghanaCatalogueResearchInput } from "@/lib/research/collection-record-research";
 
 type MetaRow = { label: string; value: string };
 
@@ -169,6 +172,7 @@ export default function GhanaCatalogueRecordDetail({
   const sourceFacts = raw?.source_facts || record.description;
   const interpretation = recordInterpretationDisplay(record);
   const brief = recordCardBrief(record);
+  const researchInput = ghanaCatalogueResearchInput(record);
 
   return (
     <main className="ghana-detail-page ghana-detail-page--editorial ghana-detail-page--monochrome">
@@ -188,6 +192,8 @@ export default function GhanaCatalogueRecordDetail({
               <p className="ghana-record-subtitle">{record.visualSystemLabel}</p>
             )}
           </div>
+
+          <RecordResearchActions input={researchInput} variant="bar" />
 
           <p className="ghana-record-evidence-note">
             {EVIDENCE_STATUS_DESCRIPTIONS[record.evidenceStatus]}
@@ -343,6 +349,8 @@ export default function GhanaCatalogueRecordDetail({
           </section>
         </div>
       </div>
+
+      <RecordResearchActions input={researchInput} variant="sticky" />
     </main>
   );
 }

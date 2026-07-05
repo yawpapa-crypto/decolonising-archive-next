@@ -13,6 +13,11 @@ import {
   recordExcerpt,
   recordMakerLabel,
 } from "@/lib/catalogue/record-display";
+import RecordResearchActions from "@/components/research/RecordResearchActions";
+import {
+  ghanaCatalogueResearchInput,
+  GHANA_COLLECTION_SLUG,
+} from "@/lib/research/collection-record-research";
 import {
   GHANA_COLLECTION_FILTER_PILLS,
   GHANA_SUBCOLLECTIONS,
@@ -98,35 +103,38 @@ function CatalogueCard({ record }: { record: CatalogueListRecord }) {
   const collectionNo = record.rawCsvRow?.collection_number;
   const institution = record.institutionOrCollection;
   const maker = recordMakerLabel(record);
+  const researchInput = ghanaCatalogueResearchInput(record);
+  const href = `/collections/${GHANA_COLLECTION_SLUG}/records/${encodeURIComponent(record.id)}`;
 
   return (
-    <Link
-      href={`/collections/ghana-graphic-design/${record.id}`}
-      className="ghana-item-card is-text-card ghana-catalogue-card ghana-catalogue-card--refined"
-      aria-label={`View record: ${record.title}`}
-    >
-      <div className="ghana-catalogue-card-accent" aria-hidden="true" />
-      <CardThumbnail record={record} />
-      <div className="ghana-catalogue-card-header">
-        <span className="ghana-catalogue-card-type">{record.recordType}</span>
-        <EvidenceBadge status={record.evidenceStatus} />
-      </div>
-      <div className="ghana-item-body ghana-catalogue-card-body">
-        <div className="ghana-item-meta">
-          {recordDateLabel(record) || "Date not stated"}
-          {record.locality ? ` · ${record.locality}` : ""}
+    <article className="ghana-item-card is-text-card ghana-catalogue-card ghana-catalogue-card--refined ghana-catalogue-card--with-actions">
+      <Link href={href} className="ghana-catalogue-card-link" aria-label={`View record: ${record.title}`}>
+        <div className="ghana-catalogue-card-accent" aria-hidden="true" />
+        <CardThumbnail record={record} />
+        <div className="ghana-catalogue-card-header">
+          <span className="ghana-catalogue-card-type">{record.recordType}</span>
+          <EvidenceBadge status={record.evidenceStatus} />
         </div>
-        <div className="ghana-item-title">{record.title}</div>
-        {maker && <div className="ghana-item-maker">{maker}</div>}
-        <p className="ghana-item-excerpt">{recordExcerpt(record, 100)}</p>
-        {(institution || collectionNo) && (
-          <div className="ghana-item-source">
-            {[institution, collectionNo].filter(Boolean).join(" · ")}
+        <div className="ghana-item-body ghana-catalogue-card-body">
+          <div className="ghana-item-meta">
+            {recordDateLabel(record) || "Date not stated"}
+            {record.locality ? ` · ${record.locality}` : ""}
           </div>
-        )}
-        <span className="ghana-catalogue-card-cta">View record</span>
+          <div className="ghana-item-title">{record.title}</div>
+          {maker && <div className="ghana-item-maker">{maker}</div>}
+          <p className="ghana-item-excerpt">{recordExcerpt(record, 100)}</p>
+          {(institution || collectionNo) && (
+            <div className="ghana-item-source">
+              {[institution, collectionNo].filter(Boolean).join(" · ")}
+            </div>
+          )}
+          <span className="ghana-catalogue-card-cta">View record</span>
+        </div>
+      </Link>
+      <div className="ghana-catalogue-card-actions" onClick={(e) => e.preventDefault()}>
+        <RecordResearchActions input={researchInput} variant="compact" />
       </div>
-    </Link>
+    </article>
   );
 }
 

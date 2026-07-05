@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import PageShell from "@/src/components/layout/PageShell";
 import GhanaCollectionClient from "./GhanaCollectionClient";
+import "@/app/styles/ghana-collection.css";
+import "@/app/styles/research-actions.css";
 
 /** Prevent stale static HTML when the dev server cache is out of date on OneDrive */
 export const dynamic = "force-dynamic";

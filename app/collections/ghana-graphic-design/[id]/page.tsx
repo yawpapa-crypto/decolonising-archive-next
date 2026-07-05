@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import PageShell from "@/src/components/layout/PageShell";
 import {
@@ -9,15 +9,14 @@ import {
 import { generateItemJsonLd } from "@/lib/data/ghana-rdf";
 import { enrichGhanaItem } from "@/lib/data/ghana-taxonomy-bridge";
 import GhanaLivePanel from "@/app/collections/ghana-graphic-design/GhanaLivePanel";
-import GhanaCatalogueRecordDetail from "@/app/collections/ghana-graphic-design/GhanaCatalogueRecordDetail";
 import {
   catalogueDataExists,
   getCatalogueRecord,
-  getEvidenceForRecord,
-  getVerificationForRecord,
 } from "@/lib/catalogue/store";
-import { resolveServerRecordImage } from "@/lib/catalogue/record-image-server";
+import { GHANA_COLLECTION_SLUG } from "@/lib/research/collection-record-research";
+import { GHANA_COLLECTION_TITLE } from "@/lib/data/ghana-subcollections";
 import "@/app/styles/ghana-collection.css";
+import "@/app/styles/research-actions.css";
 
 export const dynamic = "force-dynamic";
 
@@ -29,9 +28,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const legacy = getGhanaItem(id);
   const title = catalogue?.title ?? legacy?.title;
   if (!title) return { title: "Item not found | ARED" };
+
+  if (catalogue?.publicVisibility) {
+    const canonicalPath = `/collections/${GHANA_COLLECTION_SLUG}/records/${encodeURIComponent(catalogue.id)}`;
+    return {
+      title: `${title} | ${GHANA_COLLECTION_TITLE} | ARED`,
+      description: catalogue.description.slice(0, 160),
+      alternates: { canonical: canonicalPath },
+    };
+  }
+
   return {
     title: `${title} | Ghana Graphic Design | ARED`,
-    description: (catalogue?.description ?? legacy?.description ?? "").slice(0, 160),
+    description: (legacy?.description ?? "").slice(0, 160),
   };
 }
 
@@ -42,20 +51,7 @@ export default async function GhanaItemDetailPage({ params }: Props) {
   const legacyItem = getGhanaItem(id);
 
   if (catalogueRecord?.publicVisibility) {
-    const verification = getVerificationForRecord(id);
-    const evidence = getEvidenceForRecord(id);
-    const imageInfo = resolveServerRecordImage(catalogueRecord);
-
-    return (
-      <PageShell>
-        <GhanaCatalogueRecordDetail
-          record={catalogueRecord}
-          verification={verification}
-          evidence={evidence}
-          imageInfo={imageInfo}
-        />
-      </PageShell>
-    );
+    redirect(`/collections/${GHANA_COLLECTION_SLUG}/records/${encodeURIComponent(catalogueRecord.id)}`);
   }
 
   if (!legacyItem) notFound();
