@@ -18,10 +18,10 @@ export const PUBLIC_COLLECTIONS: PublicCollection[] = [
   {
     id: "ghana-graphic-design",
     slug: "ghana-graphic-design",
-    title: "History of Graphic Design in Ghana",
-    kicker: "Featured collection",
+    title: "History of Graphic Design and Visual Communication in Ghana",
+    kicker: "Major collection",
     description:
-      "Verified museum objects and documented historical entries — adinkra, kente, independence symbols, photography, advertising and contemporary street culture.",
+      "Objects, makers, symbols, print cultures and public images — eight subcollections from Asafo and adinkra to independence graphics, popular signage and digital design.",
     href: "/collections/ghana-graphic-design",
     recordCount: "138 public records",
     imageUrl: "/images/ghana-hero/asafo-flag.svg",

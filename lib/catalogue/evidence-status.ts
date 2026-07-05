@@ -48,4 +48,4 @@ export const CATALOGUE_PUBLIC_EXPLANATION =
   "This catalogue combines verified museum object records with documented historical entries on Ghanaian graphic design and visual culture. Museum objects are checked against accession-level sources. Historical entries cite published accounts, institutions and scholarship — with ARED interpretation clearly labelled.";
 
 export const CATALOGUE_HOMEPAGE_TEXT =
-  "Explore Ghana's graphic design history through verified museum objects and documented historical entries — from adinkra and kente to independence symbols, photography, advertising and contemporary street culture. Each record separates source facts from ARED analysis.";
+  "Objects, makers, symbols, print cultures and public images across Ghanaian history. Browse eight subcollections — from Akan goldweights and Fante Asafo flags to independence symbols, popular signage and digital design. Each record separates source facts from ARED analysis.";

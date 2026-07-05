@@ -83,10 +83,12 @@ export type GhanaArchiveItem = {
 
 export const GHANA_COLLECTION_META = {
   id: "ghana-graphic-design",
-  title: "History of Graphic Design in Ghana",
-  kicker: "Collection",
+  title: "History of Graphic Design and Visual Communication in Ghana",
+  subtitle:
+    "Objects, makers, symbols, print cultures and public images across Ghanaian history.",
+  kicker: "Major collection",
   description:
-    "This collection documents the visual history of graphic design in Ghana through open, Creative Commons, public domain and permission-based sources. It treats graphic design as public visual culture — posters, signs, print media, publishing, stamps, packaging, textile graphics, political communication, hand-painted cinema posters, religious graphics, educational materials, logos, digital media and everyday lettering.",
+    "One authoritative catalogue of Ghanaian graphic and visual communication — organised into eight subcollections from goldweights and Asafo flags through colonial print, national identity, popular signage and digital design. Verified museum objects and documented historical entries, each with cited sources and clearly labelled ARED interpretation.",
   essay_title: "Graphic Design in Ghana: From Public Lettering to Visual Sovereignty",
   essay_excerpt:
     "Ghanaian graphic design history cannot begin with the studio, the agency or the design school alone. It also lives in public lettering, painted signs, cinema posters, newspapers, stamps, state symbols, religious banners, market graphics, textiles, album covers and digital flyers.",

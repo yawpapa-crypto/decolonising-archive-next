@@ -1,4 +1,5 @@
 import type { CatalogueRecord } from "./types";
+import { GHANA_COLLECTION_FILTER_PILLS } from "@/lib/data/ghana-subcollections";
 
 export type RecordImageAccess = "display" | "source_only" | "none";
 
@@ -30,22 +31,12 @@ export const EDITORIAL_IMAGE_OVERRIDES: Record<string, string> = {
     "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Adinkra_cloth.jpg/440px-Adinkra_cloth.jpg",
 };
 
-export const EDITORIAL_CATEGORIES = [
-  { id: "all", label: "ALL RECORDS" },
-  { id: "objects", label: "OBJECTS", recordType: "museum object" },
-  { id: "people", label: "PEOPLE", recordType: "person" },
-  { id: "publications", label: "PUBLICATIONS", recordType: "publication" },
-  { id: "institutions", label: "INSTITUTIONS", recordType: "institution" },
-  { id: "practices", label: "LIVING PRACTICES", recordType: "documented practice" },
-  { id: "asafo", label: "ASAFO", q: "asafo" },
-  { id: "adinkra", label: "ADINKRA", q: "adinkra" },
-  { id: "kente", label: "KENTE", q: "kente" },
-  { id: "goldweights", label: "GOLDWEIGHTS", q: "goldweight" },
-  { id: "state", label: "STATE IDENTITY", visualSystemId: "V5" },
-  { id: "print", label: "PRINT", visualSystemId: "V4" },
-  { id: "popular", label: "POPULAR GRAPHICS", visualSystemId: "V6" },
-  { id: "digital", label: "DIGITAL DESIGN", visualSystemId: "V7" },
-] as const;
+export const EDITORIAL_CATEGORIES = GHANA_COLLECTION_FILTER_PILLS.map((pill) => ({
+  id: pill.id,
+  label: pill.label,
+  ...(pill.q ? { q: pill.q } : {}),
+  ...(pill.visualSystemId ? { visualSystemId: pill.visualSystemId } : {}),
+}));
 
 export function recordDateLabel(record: CatalogueRecord): string {
   const display = record.rawCsvRow?.date_display;

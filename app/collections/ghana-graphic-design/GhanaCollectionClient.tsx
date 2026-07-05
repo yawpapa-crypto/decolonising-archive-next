@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   CATEGORY_ICONS,
@@ -25,8 +25,11 @@ import {
 } from "@/lib/data/ared-master-taxonomy";
 import GhanaLiveDiscover from "@/app/collections/ghana-graphic-design/GhanaLiveDiscover";
 import GhanaCatalogueBrowser from "@/app/collections/ghana-graphic-design/GhanaCatalogueBrowser";
+import GhanaSubcollectionIndex from "@/components/collections/GhanaSubcollectionIndex";
 import { CATALOGUE_HOMEPAGE_TEXT } from "@/lib/catalogue/evidence-status";
 import type { CatalogueStats } from "@/lib/catalogue/types";
+import type { GhanaCollectionFilterId, GhanaSubcollectionId } from "@/lib/data/ghana-subcollections";
+import { GHANA_LAUNCH_PRIORITIES } from "@/lib/data/ghana-subcollections";
 import "@/app/styles/ghana-collection.css";
 
 function EditorialKicker({ children }: { children: React.ReactNode }) {
@@ -554,6 +557,9 @@ export default function GhanaCollectionClient() {
   const [showSuggest, setShowSuggest] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [catalogueStats, setCatalogueStats] = useState<CatalogueStats | null>(null);
+  const [collectionFilter, setCollectionFilter] = useState<GhanaCollectionFilterId>("all");
+  const [activeSubcollection, setActiveSubcollection] = useState<GhanaSubcollectionId | null>(null);
+  const browseRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch("/api/catalogue/stats")
@@ -752,6 +758,7 @@ export default function GhanaCollectionClient() {
             <div className="ghana-hero-copy">
               <EditorialKicker>{meta.kicker}</EditorialKicker>
               <h1 className="ghana-hero-title">{meta.title}</h1>
+              <p className="ghana-hero-subtitle">{meta.subtitle}</p>
               <p className="ghana-hero-desc">{CATALOGUE_HOMEPAGE_TEXT}</p>
               <dl className="ghana-hero-stats" aria-label="Collection statistics">
                 <div className="ghana-stat">
@@ -814,7 +821,29 @@ export default function GhanaCollectionClient() {
           </nav>
 
           {/* ── Browse ─────────────────────────────────────────────────────── */}
-          {activeTab === "browse" && <GhanaCatalogueBrowser />}
+          {activeTab === "browse" && (
+            <>
+              <GhanaSubcollectionIndex
+                activeSubcollection={activeSubcollection}
+                onSelectSubcollection={(sectionId) => {
+                  setActiveSubcollection(sectionId);
+                  setCollectionFilter("all");
+                  browseRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
+              />
+              <div ref={browseRef}>
+                <GhanaCatalogueBrowser
+                  collectionFilter={collectionFilter}
+                  onCollectionFilterChange={(filterId) => {
+                    setCollectionFilter(filterId);
+                    setActiveSubcollection(null);
+                  }}
+                  activeSubcollection={activeSubcollection}
+                  onSubcollectionChange={setActiveSubcollection}
+                />
+              </div>
+            </>
+          )}
 
           {/* ── Timeline ───────────────────────────────────────────────────── */}
           {activeTab === "timeline" && <TimelineTab />}
@@ -904,10 +933,9 @@ export default function GhanaCollectionClient() {
             <div>
               <EditorialKicker>About this collection</EditorialKicker>
               <p className="ghana-about-text">
-                This collection documents how Ghanaians have communicated ideas, shaped identities
-                and influenced visual culture across different eras. It combines verified museum
-                objects with documented historical entries — each with cited sources and clearly
-                labelled ARED interpretation.
+                {meta.description} Launch priority:{" "}
+                {GHANA_LAUNCH_PRIORITIES.slice(0, 4).join(" · ")} — then expanding each section
+                through verified batches toward 150–250 strong public records.
               </p>
             </div>
             <div className="ghana-suggest-box ghana-suggest-box--editorial">

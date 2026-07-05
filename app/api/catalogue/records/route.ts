@@ -28,6 +28,8 @@ export async function GET(request: Request) {
 
   const result = filterCatalogueRecords({
     q: searchParams.get("q") ?? undefined,
+    ghanaFilter: searchParams.get("ghanaFilter") ?? undefined,
+    subcollectionId: searchParams.get("subcollectionId") ?? undefined,
     evidenceStatus: evidenceStatuses?.length === 1 ? evidenceStatuses[0] : evidenceStatuses,
     periodId: searchParams.get("periodId") ?? undefined,
     visualSystemId: searchParams.get("visualSystemId") ?? undefined,

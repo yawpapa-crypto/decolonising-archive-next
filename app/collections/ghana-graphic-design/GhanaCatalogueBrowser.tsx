@@ -13,6 +13,13 @@ import {
   recordExcerpt,
   recordMakerLabel,
 } from "@/lib/catalogue/record-display";
+import {
+  GHANA_COLLECTION_FILTER_PILLS,
+  GHANA_SUBCOLLECTIONS,
+  getSubcollectionByFilter,
+  type GhanaCollectionFilterId,
+  type GhanaSubcollectionId,
+} from "@/lib/data/ghana-subcollections";
 
 type TaxonomyRow = { taxonomyType: string; code: string; label: string };
 
@@ -123,7 +130,17 @@ function CatalogueCard({ record }: { record: CatalogueListRecord }) {
   );
 }
 
-export default function GhanaCatalogueBrowser() {
+export default function GhanaCatalogueBrowser({
+  collectionFilter = "all",
+  onCollectionFilterChange,
+  activeSubcollection = null,
+  onSubcollectionChange,
+}: {
+  collectionFilter?: GhanaCollectionFilterId;
+  onCollectionFilterChange?: (filterId: GhanaCollectionFilterId) => void;
+  activeSubcollection?: GhanaSubcollectionId | null;
+  onSubcollectionChange?: (id: GhanaSubcollectionId | null) => void;
+}) {
   const [items, setItems] = useState<CatalogueListRecord[]>([]);
   const [stats, setStats] = useState<CatalogueStats | null>(null);
   const [taxonomy, setTaxonomy] = useState<TaxonomyRow[]>([]);
@@ -163,6 +180,8 @@ export default function GhanaCatalogueBrowser() {
 
   const activeFilterCount = useMemo(() => {
     let n = 0;
+    if (collectionFilter !== "all") n++;
+    if (activeSubcollection) n++;
     if (evidenceFilter !== "all") n++;
     if (periodFilter) n++;
     if (visualSystemFilter) n++;
@@ -176,6 +195,8 @@ export default function GhanaCatalogueBrowser() {
     if (debouncedSearch.trim()) n++;
     return n;
   }, [
+    collectionFilter,
+    activeSubcollection,
     evidenceFilter,
     periodFilter,
     visualSystemFilter,
@@ -197,6 +218,11 @@ export default function GhanaCatalogueBrowser() {
       params.set("page", String(page));
       params.set("limit", "24");
       params.set("sort", sortBy);
+      if (activeSubcollection) {
+        params.set("subcollectionId", activeSubcollection);
+      } else if (collectionFilter !== "all") {
+        params.set("ghanaFilter", collectionFilter);
+      }
       if (debouncedSearch.trim()) params.set("q", debouncedSearch.trim());
       if (evidenceFilter !== "all") params.set("evidenceStatus", evidenceFilter);
       if (periodFilter) params.set("periodId", periodFilter);
@@ -237,6 +263,8 @@ export default function GhanaCatalogueBrowser() {
     institutionFilter,
     rightsFilter,
     communityFilter,
+    collectionFilter,
+    activeSubcollection,
   ]);
 
   useEffect(() => {
@@ -256,6 +284,8 @@ export default function GhanaCatalogueBrowser() {
   const totalPages = Math.max(1, Math.ceil(total / 24));
 
   const clearFilters = () => {
+    onCollectionFilterChange?.("all");
+    onSubcollectionChange?.(null);
     setSearchQuery("");
     setDebouncedSearch("");
     setEvidenceFilter("all");
@@ -271,8 +301,40 @@ export default function GhanaCatalogueBrowser() {
     setPage(1);
   };
 
+  const activeSection = activeSubcollection
+    ? GHANA_SUBCOLLECTIONS.find((s) => s.id === activeSubcollection)
+    : getSubcollectionByFilter(collectionFilter);
+
   return (
     <div className="ghana-catalogue-browser ghana-catalogue-browser--editorial">
+      <div
+        className="ghana-collection-filter-pills"
+        role="toolbar"
+        aria-label="Browse by subcollection"
+      >
+        {GHANA_COLLECTION_FILTER_PILLS.map((pill) => (
+          <button
+            key={pill.id}
+            type="button"
+            className={`ghana-collection-filter-pill${collectionFilter === pill.id ? " is-active" : ""}`}
+            onClick={() => {
+              onSubcollectionChange?.(null);
+              onCollectionFilterChange?.(pill.id);
+              setPage(1);
+            }}
+          >
+            {pill.label}
+          </button>
+        ))}
+      </div>
+
+      {activeSection && (
+        <div className="ghana-collection-filter-context">
+          <h3 className="ghana-collection-filter-context-title">{activeSection.title}</h3>
+          <p className="ghana-collection-filter-context-desc">{activeSection.summary}</p>
+        </div>
+      )}
+
       <div className="ghana-record-type-pills" role="toolbar" aria-label="Record type">
         {RECORD_TYPE_PILLS.map((pill) => (
           <button

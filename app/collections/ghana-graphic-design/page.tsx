@@ -6,13 +6,13 @@ import GhanaCollectionClient from "./GhanaCollectionClient";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "History of Graphic Design in Ghana | ARED",
+  title: "History of Graphic Design and Visual Communication in Ghana | ARED",
   description:
-    "A Creative Commons and open-source archive tracing Ghanaian visual communication through print, signage, posters, stamps, publishing, packaging, political graphics, hand-painted cinema posters, institutional identities, street graphics, religious graphics, textiles, digital graphics and contemporary design practice.",
+    "Objects, makers, symbols, print cultures and public images across Ghanaian history — one authoritative collection organised into eight subcollections.",
   openGraph: {
-    title: "History of Graphic Design in Ghana",
+    title: "History of Graphic Design and Visual Communication in Ghana",
     description:
-      "An open archive documenting the visual history of graphic design in Ghana — posters, signs, stamps, newspapers, cinema posters, street lettering, album covers and more.",
+      "Akan goldweights, Asafo flags, kente, colonial print, national identity, popular graphics, design education and digital design across Ghanaian history.",
     type: "website",
   },
 };

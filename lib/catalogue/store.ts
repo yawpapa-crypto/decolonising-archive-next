@@ -13,6 +13,12 @@ import type {
 } from "./types";
 import { CATALOGUE_BUILD_ID } from "./types";
 import { parseCsv } from "./csv-parser";
+import {
+  recordMatchesGhanaFilter,
+  recordMatchesSubcollection,
+  type GhanaCollectionFilterId,
+  type GhanaSubcollectionId,
+} from "@/lib/data/ghana-subcollections";
 
 const DATA_DIR = join(process.cwd(), "data", "catalogue");
 
@@ -152,20 +158,33 @@ export function filterCatalogueRecords(params: CatalogueFilterParams): {
   let items = loadCatalogueRecords().filter((r) => r.publicVisibility);
 
   if (params.q?.trim()) {
-    const q = params.q.trim().toLowerCase();
-    items = items.filter(
-      (r) =>
-        r.title.toLowerCase().includes(q) ||
-        r.description.toLowerCase().includes(q) ||
-        (r.creatorOrAuthority?.toLowerCase().includes(q) ?? false) ||
-        (r.region?.toLowerCase().includes(q) ?? false) ||
-        (r.locality?.toLowerCase().includes(q) ?? false) ||
-        (r.institutionOrCollection?.toLowerCase().includes(q) ?? false) ||
-        (r.visualSystemLabel?.toLowerCase().includes(q) ?? false) ||
-        (r.objectOrRecordType?.toLowerCase().includes(q) ?? false) ||
-        (r.sourceName?.toLowerCase().includes(q) ?? false) ||
-        r.tags.some((t) => t.toLowerCase().includes(q)),
-    );
+    const terms = params.q.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    items = items.filter((r) => {
+      const haystack = [
+        r.title,
+        r.description,
+        r.creatorOrAuthority ?? "",
+        r.region ?? "",
+        r.locality ?? "",
+        r.institutionOrCollection ?? "",
+        r.visualSystemLabel ?? "",
+        r.objectOrRecordType ?? "",
+        r.sourceName ?? "",
+        ...r.tags,
+      ]
+        .join(" ")
+        .toLowerCase();
+      if (terms.length === 1) return haystack.includes(terms[0]!);
+      return terms.some((term) => haystack.includes(term));
+    });
+  }
+
+  if (params.subcollectionId) {
+    const sectionId = params.subcollectionId as GhanaSubcollectionId;
+    items = items.filter((r) => recordMatchesSubcollection(r, sectionId));
+  } else if (params.ghanaFilter && params.ghanaFilter !== "all") {
+    const filterId = params.ghanaFilter as GhanaCollectionFilterId;
+    items = items.filter((r) => recordMatchesGhanaFilter(r, filterId));
   }
 
   if (params.evidenceStatus) {

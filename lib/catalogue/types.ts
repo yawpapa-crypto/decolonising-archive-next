@@ -153,6 +153,10 @@ export type CatalogueStats = {
 
 export type CatalogueFilterParams = {
   q?: string;
+  /** Ghana browse filter pill (ASAFO, KENTE, etc.) */
+  ghanaFilter?: string;
+  /** Ghana subcollection section id from the index cards */
+  subcollectionId?: string;
   evidenceStatus?: EvidenceStatus | EvidenceStatus[];
   periodId?: string;
   visualSystemId?: string;
