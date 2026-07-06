@@ -1,0 +1,95 @@
+{
+  "objectID": 15391,
+  "isHighlight": true,
+  "accessionNumber": "1996.4",
+  "accessionYear": "1996",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 3448,
+      "role": "Maker",
+      "name": "Adeline Harris Sears",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500334029",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q29428331",
+      "gender": "Female"
+    }
+  ],
+  "department": "The American Wing",
+  "objectName": "Quilt",
+  "title": "Quilt, Tumbling Blocks with Signatures pattern",
+  "culture": "American",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Adeline Harris Sears",
+  "artistDisplayBio": "1839–1931",
+  "artistSuffix": "",
+  "artistAlphaSort": "Sears, Adeline Harris",
+  "artistNationality": "American",
+  "artistBeginDate": "1839",
+  "artistEndDate": "1931",
+  "artistGender": "Female",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q29428331",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500334029",
+  "objectDate": "begun 1856",
+  "objectBeginDate": 1856,
+  "objectEndDate": 1856,
+  "medium": "Silk",
+  "dimensions": "80 × 77 in. (203.2 × 195.6 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 203.20041,
+        "Width": 195.5804
+      }
+    },
+    {
+      "elementName": "Framed",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 7.62,
+        "Height": 217.8054,
+        "Width": 213.3604
+      }
+    },
+    {
+      "elementName": "Case",
+      "elementDescription": "plexi housing without frame",
+      "elementMeasurements": {
+        "Depth": 5.289561,
+        "Height": 214.63043,
+        "Width": 209.23293
+      }
+    }
+  ],
+  "creditLine": "Purchase, William Cullen Bryant Fellows Gifts, 1996",
+  "geographyType": "Made in",
+  "city": "",
+  "state": "Rhode Island",
+  "county": "",
+  "country": "United States",
+  "region": "New England",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-10-03T04:51:20.327Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/15391",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q83559954",
+  "isTimelineWork": true,
+  "GalleryNumber": ""
+}

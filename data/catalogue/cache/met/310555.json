@@ -1,0 +1,93 @@
+{
+  "objectID": 310555,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.103",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP-23474-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP-23474-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-23474-002.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 223139,
+      "role": "Artist",
+      "name": "Maya artist(s)",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Ornament",
+  "title": "Bird ornament",
+  "culture": "Maya",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Maya artist(s)",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Maya artist(s)",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "600–800 CE",
+  "objectBeginDate": 600,
+  "objectEndDate": 800,
+  "medium": "Shell",
+  "dimensions": "H. 2 1/2 x W. 2 1/2 x D. 1/2 in. (6.4 x 6.4 x 1.3 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 1.27
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 1.27,
+        "Height": 6.35,
+        "Width": 6.35
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Purchase, Mrs. Gertrud A. Mellon Gift, 1963",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Guatemala or Mexico",
+  "region": "Mesoamerica",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Shell-Ornaments",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-05-31T04:50:53.377Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310555",
+  "tags": [
+    {
+      "term": "Birds",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300266506",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q5113"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116406866",
+  "isTimelineWork": false,
+  "GalleryNumber": "360"
+}

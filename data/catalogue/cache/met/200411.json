@@ -1,0 +1,89 @@
+{
+  "objectID": 200411,
+  "isHighlight": false,
+  "accessionNumber": "48.187.452",
+  "accessionYear": "1948",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/ES7797.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/ES7797.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 33576,
+      "role": "Maker",
+      "name": "Claude Héricourt",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500060127",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Snuffbox, painting",
+  "title": "Snuffbox with portrait of a woman",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Claude Héricourt",
+  "artistDisplayBio": "apprenticed 1745, master 1763, active 1785",
+  "artistSuffix": "",
+  "artistAlphaSort": "HÉRICOURT CLAUDE",
+  "artistNationality": "",
+  "artistBeginDate": "1715",
+  "artistEndDate": "1815",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500060127",
+  "objectDate": "1769–70",
+  "objectBeginDate": 1769,
+  "objectEndDate": 1770,
+  "medium": "Gold, heliotrope; ivory",
+  "dimensions": "Overall: 1 9/16 × 3 1/8 × 2 5/8 in. (4 × 7.9 × 6.7 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 6.6675134,
+        "Height": 3.9687579,
+        "Width": 7.9375157
+      }
+    }
+  ],
+  "creditLine": "Bequest of Catherine D. Wentworth, 1948",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Gold and Platinum",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-04-06T04:57:13.99Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/200411",
+  "tags": [
+    {
+      "term": "Portraits",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300015637",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q134307"
+    },
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

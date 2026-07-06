@@ -1,0 +1,83 @@
+{
+  "objectID": 204611,
+  "isHighlight": false,
+  "accessionNumber": "66.17",
+  "accessionYear": "1966",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 34768,
+      "role": "Factory",
+      "name": "Wedgwood and Co.",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500330540",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Vase",
+  "title": "Vase",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Factory",
+  "artistPrefix": "",
+  "artistDisplayName": "Wedgwood and Co.",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Wedgwood and Co.",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500330540",
+  "objectDate": "ca. 1780",
+  "objectBeginDate": 1775,
+  "objectEndDate": 1785,
+  "medium": "Black basalt",
+  "dimensions": "Height (wt. confirmed): 18 in., 20 lb. (45.7 cm, 9.1 kg)",
+  "measurements": [
+    {
+      "elementName": "Height",
+      "elementDescription": "wt. confirmed",
+      "elementMeasurements": {
+        "Height": 45.720093,
+        "Weight": 9.07194
+      }
+    }
+  ],
+  "creditLine": "The Charles E. Sampson Memorial Fund, 1966",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Pottery",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-05-08T04:58:00.107Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/204611",
+  "tags": [
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": true,
+  "GalleryNumber": "099"
+}

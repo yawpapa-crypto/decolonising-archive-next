@@ -1,0 +1,101 @@
+{
+  "objectID": 24806,
+  "isHighlight": false,
+  "accessionNumber": "49.120.13",
+  "accessionYear": "1949",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/aa/original/49.120.13_001june2014.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/aa/web-large/49.120.13_001june2014.jpg",
+  "additionalImages": [],
+  "constituents": null,
+  "department": "Arms and Armor",
+  "objectName": "Halberd",
+  "title": "Halberd of Prince Karl Eusebius of Liechtenstein (1611–1684)",
+  "culture": "German",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "dated 1632",
+  "objectBeginDate": 1632,
+  "objectEndDate": 1632,
+  "medium": "Steel, gold, wood",
+  "dimensions": "L. 90 5/8 in. (230.17 cm); L. of head (excluding straps) 24 1/2 in. (62.23 cm); W. 11 5/16 in. (28.73 cm); Wt. 7 lb. 7 oz. (3374 g)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": "Length of iron (excluding straps)",
+      "elementMeasurements": {
+        "Length": 62.23
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "Length overall",
+      "elementMeasurements": {
+        "Length": 230.17
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "Weight overall",
+      "elementMeasurements": {
+        "Weight": 3.374
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "Weight",
+      "elementMeasurements": {
+        "Weight": 2.013
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "Gr. width",
+      "elementMeasurements": {
+        "Width": 28.73
+      }
+    }
+  ],
+  "creditLine": "Gift of Mrs. Bashford Dean, in memory of Alexander McMillan Welch, 1949",
+  "geographyType": "Country of Origin",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Germany",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Shafted Weapons",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-02-13T04:57:37.953Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/24806",
+  "tags": [
+    {
+      "term": "Coat of Arms",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300126352",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q14659"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116326097",
+  "isTimelineWork": false,
+  "GalleryNumber": "371"
+}

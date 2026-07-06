@@ -1,0 +1,77 @@
+{
+  "objectID": 246685,
+  "isHighlight": false,
+  "accessionNumber": "97.22.7",
+  "accessionYear": "1897",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/gr/original/DP245972.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/gr/web-large/DP245972.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/gr/original/DP20951.jpg",
+    "https://images.metmuseum.org/CRDImages/gr/original/21140.jpg"
+  ],
+  "constituents": null,
+  "department": "Greek and Roman Art",
+  "objectName": "Helmet Attachment; Head of Acheloos",
+  "title": "Bronze helmet attachment",
+  "culture": "Etruscan",
+  "period": "Late Classical",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "late 6th century BCE",
+  "objectBeginDate": -575,
+  "objectEndDate": -500,
+  "medium": "Bronze",
+  "dimensions": "H.: 1 1/4 x 1 9/16 in. (3.2 x 4 cm)",
+  "measurements": [
+    {
+      "elementName": "Height",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 3.1750064,
+        "Width": 3.9687579
+      }
+    }
+  ],
+  "creditLine": "Gift of Henry G. Marquand, 1897",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Bronzes",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/246685",
+  "tags": [
+    {
+      "term": "Satyrs",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300379732",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q163709"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116289444",
+  "isTimelineWork": false,
+  "GalleryNumber": "170"
+}

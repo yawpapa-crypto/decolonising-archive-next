@@ -1,0 +1,101 @@
+{
+  "objectID": 254842,
+  "isHighlight": true,
+  "accessionNumber": "56.11.5, .6",
+  "accessionYear": "1956",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/gr/original/DT5060.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/gr/web-large/DT5060.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/gr/original/DP-42352-007.jpg",
+    "https://images.metmuseum.org/CRDImages/gr/original/DP-42352-006.jpg",
+    "https://images.metmuseum.org/CRDImages/gr/original/DP-42352-005.jpg",
+    "https://images.metmuseum.org/CRDImages/gr/original/DP-42352-004.jpg",
+    "https://images.metmuseum.org/CRDImages/gr/original/DP-42352-003.jpg",
+    "https://images.metmuseum.org/CRDImages/gr/original/DP-42352-002.jpg",
+    "https://images.metmuseum.org/CRDImages/gr/original/DP-42352-001.jpg"
+  ],
+  "constituents": null,
+  "department": "Greek and Roman Art",
+  "objectName": "Bracelet spirals, Triton and Tritoness",
+  "title": "Pair of gold armbands",
+  "culture": "Greek",
+  "period": "Hellenistic",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 200 BCE",
+  "objectBeginDate": -200,
+  "objectEndDate": -200,
+  "medium": "Gold",
+  "dimensions": "Overall: 10 7/16in., 0.4lb. (26.5cm, 0.2kg)\r\nOther (height-triton armband): 9 13/16in. (25cm)\r\nOther (height-tritoness armband): 10 7/16in. (26.5cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": "height-tritoness armband",
+      "elementMeasurements": {
+        "Height": 26.49
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "height-triton armband",
+      "elementMeasurements": {
+        "Height": 24.99
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 26.49,
+        "Weight": 0.1865
+      }
+    }
+  ],
+  "creditLine": "Rogers Fund, 1956",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Gold and Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-04-14T04:58:18.07Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/254842",
+  "tags": [
+    {
+      "term": "Eros",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901000613",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q121973"
+    },
+    {
+      "term": "Triton",
+      "AAT_URL": null,
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q148030"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q29383922",
+  "isTimelineWork": true,
+  "GalleryNumber": "163"
+}

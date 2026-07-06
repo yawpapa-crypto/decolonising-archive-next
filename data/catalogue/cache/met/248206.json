@@ -1,0 +1,92 @@
+{
+  "objectID": 248206,
+  "isHighlight": false,
+  "accessionNumber": "10.110.1",
+  "accessionYear": "1910",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/gr/original/DP155537.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/gr/web-large/DP155537.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/gr/original/DP111330.jpg",
+    "https://images.metmuseum.org/CRDImages/gr/original/DP142591.jpg",
+    "https://images.metmuseum.org/CRDImages/gr/original/DP142592.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 49158,
+      "role": "Artist",
+      "name": "Signed by Gnaios",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500105677",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "Greek and Roman Art",
+  "objectName": "Intaglio",
+  "title": "Carnelian oval set in a 17th–18th century gold ring",
+  "culture": "Roman",
+  "period": "Early Imperial, Augustan",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "Signed by",
+  "artistDisplayName": "Gnaios",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Gnaios",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500105677",
+  "objectDate": "ca. 27 BCE–14 CE",
+  "objectBeginDate": -27,
+  "objectEndDate": 14,
+  "medium": "Carnelian",
+  "dimensions": "3/4 × 5/8 in. (1.9 × 1.6 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 1.9,
+        "Width": 1.6
+      }
+    }
+  ],
+  "creditLine": "Rogers Fund, 1910",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Gems",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-06-16T04:51:27.217Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/248206",
+  "tags": [
+    {
+      "term": "Profiles",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300123319",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q4382010"
+    },
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116291715",
+  "isTimelineWork": false,
+  "GalleryNumber": "163"
+}

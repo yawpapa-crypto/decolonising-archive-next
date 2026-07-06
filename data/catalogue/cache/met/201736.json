@@ -1,0 +1,97 @@
+{
+  "objectID": 201736,
+  "isHighlight": false,
+  "accessionNumber": "54.147.29a, b",
+  "accessionYear": "1954",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/ES4328.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/ES4328.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 36285,
+      "role": "Manufactory",
+      "name": "Vincennes Manufactory",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500055302",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q3287039",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Caster",
+  "title": "Caster (?)",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Manufactory",
+  "artistPrefix": "",
+  "artistDisplayName": "Vincennes Manufactory",
+  "artistDisplayBio": "French, ca. 1740–1756",
+  "artistSuffix": "",
+  "artistAlphaSort": "Vincennes Manufactory",
+  "artistNationality": "French",
+  "artistBeginDate": "1740",
+  "artistEndDate": "1756",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q3287039",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500055302",
+  "objectDate": "ca. 1745–50",
+  "objectBeginDate": 1740,
+  "objectEndDate": 1755,
+  "medium": "Soft-paste porcelain, silver gilt",
+  "dimensions": "Height (with cover): 5 7/16 in. (13.8 cm)",
+  "measurements": [
+    {
+      "elementName": "Height",
+      "elementDescription": "with cover",
+      "elementMeasurements": {
+        "Height": 13.811277
+      }
+    }
+  ],
+  "creditLine": "Gift of R. Thornton Wilson, in memory of Florence Ellsworth Wilson, 1954",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Porcelain",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2021-07-13T04:41:40.21Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/201736",
+  "tags": [
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    },
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    },
+    {
+      "term": "Landscapes",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132294",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q191163"
+    },
+    {
+      "term": "Trees",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132410",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q10884"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

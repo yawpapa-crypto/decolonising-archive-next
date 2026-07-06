@@ -1,0 +1,68 @@
+/* Canvas movement performance — scoped, no permanent will-change on all objects */
+
+.workbench-research-canvas.is-panning .workbench-research-canvas-object,
+.workbench-research-canvas.is-dragging .workbench-research-canvas-object,
+.workbench-research-canvas.is-zooming .workbench-research-canvas-object {
+  transition: none !important;
+}
+
+.workbench-research-canvas.is-dragging .workbench-research-canvas-object:not(.is-selected):not(.is-dragging) {
+  box-shadow: var(--wrc-shadow-sm);
+}
+
+.workbench-research-canvas.is-dragging .workbench-research-canvas-object.is-dragging {
+  will-change: transform;
+}
+
+.workbench-research-canvas-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.workbench-research-canvas-empty-btn {
+  border: 1px solid var(--wrc-border-soft);
+  border-radius: var(--wrc-radius-pill);
+  padding: 8px 14px;
+  background: var(--wrc-paper);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--wrc-ink);
+  cursor: pointer;
+  transition:
+    background 140ms var(--wrc-ease),
+    border-color 140ms var(--wrc-ease);
+}
+
+.workbench-research-canvas-empty-btn:hover:not(:disabled) {
+  background: var(--wrc-lemon);
+  border-color: rgba(47, 45, 56, 0.16);
+}
+
+.workbench-research-canvas-empty-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.workbench-canvas-save-retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 6px;
+  padding: 4px 10px;
+  border: 1px solid rgba(159, 18, 57, 0.25);
+  border-radius: var(--wrc-radius-pill);
+  background: rgba(159, 18, 57, 0.06);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  color: #9f1239;
+  cursor: pointer;
+}
+
+.workbench-canvas-save-retry:hover {
+  background: rgba(159, 18, 57, 0.1);
+}

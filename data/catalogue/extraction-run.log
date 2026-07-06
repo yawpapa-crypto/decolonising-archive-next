@@ -1,0 +1,31 @@
+=== ARED object-level catalogue extraction ===
+Target: 2000 individually documented records
+
+[1/2] Metropolitan Museum of Art…
+(node:17676) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Met search "Ghana": 131 (total unique 131)
+Met search "Akan peoples": 3 (total unique 132)
+Met search "Asante": 129 (total unique 132)
+Met search "Ashanti": 129 (total unique 132)
+Met search "Adinkra": 127 (total unique 132)
+Met search "kente": 149 (total unique 153)
+Met search "Fante": 127 (total unique 153)
+Met search "Asafo": 127 (total unique 153)
+Met search "Gold Coast": 78 (total unique 182)
+Met search "gold weight": 74 (total unique 205)
+Met search "goldweight": 127 (total unique 205)
+Met search "Akan goldweight": 0 (total unique 205)
+Met search "Adinkra cloth": 0 (total unique 205)
+Met search "Asafo flag": 0 (total unique 205)
+Met search "Ewe kente": 1 (total unique 205)
+Met search "Ghana textile": 3 (total unique 205)
+Met search "Ghanaian": 129 (total unique 205)
+Met search "West Africa textile": 1354 (total unique 1519)
+Met search "brass cast Akan": 405 (total unique 1792)
+Met search "lost-wax Akan": 6 (total unique 1792)
+Met search "narrow-strip weaving": 3 (total unique 1793)
+Met search "textile wrapper Ghana": 98 (total unique 1873)
+Met search "memorial head Ghana": 1760 (total unique 3422)
+Met search "nsodie": 128 (total unique 3422)
+Met unique object IDs to fetch: 3422

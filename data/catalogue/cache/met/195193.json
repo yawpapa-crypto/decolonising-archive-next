@@ -1,0 +1,98 @@
+{
+  "objectID": 195193,
+  "isHighlight": false,
+  "accessionNumber": "24.212.19",
+  "accessionYear": "1924",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP-213-002.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP-213-002.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP-213-001.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 164031,
+      "role": "Artist",
+      "name": "Possibly after a model by Francesco Fanelli",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500029197",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q3749954",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Statuette group",
+  "title": "Nessus and Dejanira",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "Possibly after a model by",
+  "artistDisplayName": "Francesco Fanelli",
+  "artistDisplayBio": "Italian, born Florence 1577, active Genoa (1605–30) and England (1632–39)",
+  "artistSuffix": "",
+  "artistAlphaSort": "Fanelli, Francesco",
+  "artistNationality": "Italian",
+  "artistBeginDate": "1608",
+  "artistEndDate": "1665",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q3749954",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500029197",
+  "objectDate": "possibly late 17th century",
+  "objectBeginDate": 1600,
+  "objectEndDate": 1699,
+  "medium": "Bronze",
+  "dimensions": "Overall (confirmed): 10 × 7 5/8 × 3 5/8 in. (25.4 × 19.4 × 9.2 cm)",
+  "measurements": [
+    {
+      "elementName": "Height",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 25.400051
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "confirmed",
+      "elementMeasurements": {
+        "Depth": 9.207519,
+        "Height": 25.400051,
+        "Width": 19.367538
+      }
+    }
+  ],
+  "creditLine": "Gift of Ogden Mills, 1924",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture-Bronze",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/195193",
+  "tags": [
+    {
+      "term": "Female Nudes",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300189568",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q40446"
+    },
+    {
+      "term": "Centaurs",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300379740",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q83203"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

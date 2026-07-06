@@ -1,0 +1,79 @@
+{
+  "objectID": 207428,
+  "isHighlight": false,
+  "accessionNumber": "1983.575.21",
+  "accessionYear": "1983",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/SF1983_575_21_img1.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/SF1983_575_21_img1.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/SF1983_575_21_img2.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/SF1983_575_21_marks.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 35041,
+      "role": "Maker",
+      "name": "possibly Thomas Holland II",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Vinaigrette",
+  "title": "Vinaigrette",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "possibly",
+  "artistDisplayName": "Thomas Holland II",
+  "artistDisplayBio": "British, 1798–1798",
+  "artistSuffix": "",
+  "artistAlphaSort": "Holland Thomas",
+  "artistNationality": "British",
+  "artistBeginDate": "1798",
+  "artistEndDate": "1798",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1799",
+  "objectBeginDate": 1799,
+  "objectEndDate": 1799,
+  "medium": "Silver, silver gilt",
+  "dimensions": "Length: 1 1/4 in. (3.2 cm)",
+  "measurements": [
+    {
+      "elementName": "Length",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 3.1750064
+      }
+    }
+  ],
+  "creditLine": "Gift of Herbert K. Reis, in memory of Rose-Frances K. Reis (Mrs. Ralph A. Reis), 1983",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/207428",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

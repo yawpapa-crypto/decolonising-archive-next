@@ -1,0 +1,93 @@
+{
+  "objectID": 55584,
+  "isHighlight": false,
+  "accessionNumber": "JP3402",
+  "accessionYear": "1960",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DP124583.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DP124583.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 11389,
+      "role": "Artist",
+      "name": "Hishikawa Moronobu",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500118854",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q11620184",
+      "gender": ""
+    }
+  ],
+  "department": "Asian Art",
+  "objectName": "Print",
+  "title": "Street Scene in Yoshiwara",
+  "culture": "Japan",
+  "period": "Edo period (1615–1868)",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Hishikawa Moronobu",
+  "artistDisplayBio": "Japanese, 1618–1694",
+  "artistSuffix": "",
+  "artistAlphaSort": "Hishikawa Moronobu",
+  "artistNationality": "Japanese",
+  "artistBeginDate": "1618",
+  "artistEndDate": "1694",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q11620184",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500118854",
+  "objectDate": "late 17th century",
+  "objectBeginDate": 1667,
+  "objectEndDate": 1694,
+  "medium": "Monochrome woodblock print; ink on paper",
+  "dimensions": "10 3/4 x 15 1/4 in. (27.3 x 38.7 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 27.3,
+        "Width": 38.7
+      }
+    }
+  ],
+  "creditLine": "Bequest of Julia H. Manges, in memory of her husband, Dr. Morris Manges, 1960",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Prints",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-11-06T04:50:53.52Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/55584",
+  "tags": [
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    },
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    },
+    {
+      "term": "Street Scene",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300386103",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q7766995"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

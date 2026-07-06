@@ -1,0 +1,102 @@
+{
+  "objectID": 68302,
+  "isHighlight": false,
+  "accessionNumber": "18.124.10a, b",
+  "accessionYear": "1918",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DP-14150-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DP-14150-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/as/original/DP-14150-002.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-14150-003.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-14150-004.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-14150-005.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-14150-006.jpg"
+  ],
+  "constituents": null,
+  "department": "Asian Art",
+  "objectName": "Tapestry panel",
+  "title": "Birds among flowering branches against clouds",
+  "culture": "China",
+  "period": "Ming dynasty (1368–1644)",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "17th century",
+  "objectBeginDate": 1600,
+  "objectEndDate": 1644,
+  "medium": "Silk tapestry (kesi)",
+  "dimensions": "Overall (a): 51 3/4 x 22 1/4 in. (131.44 x 56.52 cm)\r\nOverall (b): 31 1/2 x 10 1/4 in. (80 x 26 cm)",
+  "measurements": [
+    {
+      "elementName": "Framed",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 155.5753,
+        "Width": 79.3752
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 131.445,
+        "Width": 56.515
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "wrapper (b)",
+      "elementMeasurements": {
+        "Diameter": 4.445,
+        "Height": 80.0102,
+        "Width": 26.0351
+      }
+    }
+  ],
+  "creditLine": "Rogers Fund, 1918",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Textiles-Tapestries",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-11-13T04:51:50.813Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/68302",
+  "tags": [
+    {
+      "term": "Birds",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300266506",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q5113"
+    },
+    {
+      "term": "Flowers",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132399",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q506"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

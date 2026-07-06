@@ -1,0 +1,87 @@
+{
+  "objectID": 205132,
+  "isHighlight": false,
+  "accessionNumber": "69.176",
+  "accessionYear": "1969",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/195976.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/195976.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/195973.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/195975.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/195974.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 35192,
+      "role": "Manufactory",
+      "name": "Popov Manufactory",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500336157",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Figure",
+  "title": "Bolognese Terrier",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Manufactory",
+  "artistPrefix": "",
+  "artistDisplayName": "Popov Manufactory",
+  "artistDisplayBio": "1811–75",
+  "artistSuffix": "",
+  "artistAlphaSort": "Popov Manufactory",
+  "artistNationality": "Russian",
+  "artistBeginDate": "1811",
+  "artistEndDate": "1875",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500336157",
+  "objectDate": "1811–50",
+  "objectBeginDate": 1811,
+  "objectEndDate": 1850,
+  "medium": "Hard-paste porcelain",
+  "dimensions": "8 7/8 × 12 3/8 in. (22.5 × 31.4 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 22.542545,
+        "Length": 31.432564
+      }
+    }
+  ],
+  "creditLine": "The Charles E. Sampson Memorial Fund, 1969",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Porcelain",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2020-09-16T18:35:19.457Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/205132",
+  "tags": [
+    {
+      "term": "Dogs",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300265714",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q144"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

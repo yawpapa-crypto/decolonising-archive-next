@@ -1,0 +1,88 @@
+{
+  "objectID": 57290,
+  "isHighlight": false,
+  "accessionNumber": "56.121.40",
+  "accessionYear": "1956",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DP-25005-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DP-25005-001.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 164560,
+      "role": "Artist",
+      "name": "School of Katsushika Hokusai",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500060426",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q5586",
+      "gender": ""
+    }
+  ],
+  "department": "Asian Art",
+  "objectName": "Painting",
+  "title": "Rochishin Chopping Off the Head of Nio",
+  "culture": "Japan",
+  "period": "Edo period (1615–1868)",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "School of",
+  "artistDisplayName": "Katsushika Hokusai",
+  "artistDisplayBio": "Japanese, Tokyo (Edo) 1760–1849 Tokyo (Edo)",
+  "artistSuffix": "",
+  "artistAlphaSort": "Katsushika Hokusai",
+  "artistNationality": "Japanese",
+  "artistBeginDate": "1760",
+  "artistEndDate": "1849",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q5586",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500060426",
+  "objectDate": "18th–19th century",
+  "objectBeginDate": 1700,
+  "objectEndDate": 1899,
+  "medium": "Ink and color on paper",
+  "dimensions": "10 5/8 x 15 3/8 in. (27 x 39.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 27,
+        "Width": 39.1
+      }
+    }
+  ],
+  "creditLine": "Gift of Annette Young, in memory of her brother, Innis Young, 1956",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Paintings",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-02-28T04:58:01.027Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/57290",
+  "tags": [
+    {
+      "term": "Swords",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300037048",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q12791"
+    },
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q78724948",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

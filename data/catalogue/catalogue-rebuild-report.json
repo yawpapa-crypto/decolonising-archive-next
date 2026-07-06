@@ -1,0 +1,32 @@
+{
+  "rebuiltAt": "2026-07-05T09:32:40.384Z",
+  "legacyRows": 2850,
+  "excludedPlaceholders": 2821,
+  "unresolvedPrivate": 14,
+  "verifiedPublicRecords": 15,
+  "byPeriod": {
+    "Anticolonial and independence visual culture, 1945–1966": 4,
+    "Colonial print and institutional design, 1874–1945": 2,
+    "Post-independence public and popular graphics, 1966–1992": 6,
+    "Democratic, digital and diasporic design, 1992–present": 3
+  },
+  "byVisualSystem": {
+    "Independence and state visual identity": 4,
+    "Memory, proverb and performance": 5,
+    "Cloth, pattern and social identity": 2,
+    "Land, cosmology and authority": 1,
+    "Digital, diasporic and contemporary design": 1,
+    "Print, colonial rule and public culture": 2
+  },
+  "byRegion": {
+    "National": 3,
+    "Eastern Region; Greater Accra": 1,
+    "Greater Accra": 2,
+    "Central Region": 3,
+    "Central Region; international collections": 1,
+    "Central Region; United Kingdom": 1,
+    "Ashanti Region": 3,
+    "Volta Region / Ghana": 1
+  },
+  "message": "Only verified records written to research-catalogue-final.csv"
+}

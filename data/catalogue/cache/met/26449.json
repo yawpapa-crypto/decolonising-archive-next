@@ -1,0 +1,89 @@
+{
+  "objectID": 26449,
+  "isHighlight": false,
+  "accessionNumber": "1972.144.4",
+  "accessionYear": "1972",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/aa/original/LC-1972_144_4-025-2.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/aa/web-large/LC-1972_144_4-025-2.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-1972_144_4-022-2-Edit.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-1972_144_4-030-2.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-1972_144_4-029-2.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-1972_144_4-028-2.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-1972_144_4-027-2.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-1972_144_4-026-2.jpg"
+  ],
+  "constituents": null,
+  "department": "Arms and Armor",
+  "objectName": "Helmet crest",
+  "title": "Helmet Crest for the Burgonet of Sforza Pallavicino (1519–1585)",
+  "culture": "Italian, Milan",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1560",
+  "objectBeginDate": 1535,
+  "objectEndDate": 1585,
+  "medium": "Iron, gold",
+  "dimensions": "7 5/8 x 4 1/16 x 6 1/2 in. (19.4 x 10.3 x 16.5 cm); Wt. 1 lb. 8 oz. (675 g)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": "Weight",
+      "elementMeasurements": {
+        "Weight": 0.678
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "H x W x L",
+      "elementMeasurements": {
+        "Height": 19.3675,
+        "Length": 16.51,
+        "Width": 10.3188
+      }
+    }
+  ],
+  "creditLine": "Gift of Mrs. George Henry Warren, in memory of her husband, 1972",
+  "geographyType": "Country of Origin",
+  "city": "Milan",
+  "state": "",
+  "county": "",
+  "country": "Italy",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Helmet Crests",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-20T04:50:39.43Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/26449",
+  "tags": [
+    {
+      "term": "Mythical Creatures",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300375725",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q2239243"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116321531",
+  "isTimelineWork": false,
+  "GalleryNumber": "374"
+}

@@ -1,0 +1,362 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import RichTextEditor from '@/src/components/admin/RichTextEditor'
+
+type HomeContent = {
+  eyebrow: string
+  heading: string
+  intro: string
+  featuredTitle: string
+  collectionsTitle: string
+  themesTitle: string
+}
+
+type AboutContent = {
+  eyebrow: string
+  title: string
+  lead: string
+  body: string
+  missionTitle: string
+  missionBody: string
+  contactTitle: string
+  contactBody: string
+}
+
+type SiteContent = {
+  home: HomeContent
+  about: AboutContent
+}
+
+const defaultContent: SiteContent = {
+  home: {
+    eyebrow: 'Decolonising Archive',
+    heading: 'The archive of decolonising knowledge',
+    intro:
+      'Books, oral histories, artefacts, images, textiles, posters, manuscripts, architectural documentation, and cultural records across Africa, the diaspora, and the Global South.',
+    featuredTitle: 'Featured Records',
+    collectionsTitle: 'Collections',
+    themesTitle: 'Browse by Knowledge Area',
+  },
+  about: {
+    eyebrow: 'About',
+    title: 'About this archive',
+    lead: 'A working archive of decolonising knowledge across Africa, the diaspora, and the Global South.',
+    body:
+      'This archive brings together records, theories, visual culture, oral traditions, and institutional pathways that support the recovery and organisation of decolonising knowledge.',
+    missionTitle: 'Mission',
+    missionBody:
+      'To build an accessible, evolving archive that supports research, teaching, cultural memory, and public knowledge.',
+    contactTitle: 'Contact',
+    contactBody:
+      'For rights, corrections, collaborations, or archival enquiries, please contact the archive administrator.',
+  },
+}
+
+export default function AdminPagesPage() {
+  const [page, setPage] = useState<'home' | 'about'>('home')
+  const [content, setContent] = useState<SiteContent>(defaultContent)
+  const [originalContent, setOriginalContent] = useState<SiteContent | null>(null)
+  const [status, setStatus] = useState('')
+
+  const hasChanges =
+    originalContent !== null && JSON.stringify(content) !== JSON.stringify(originalContent)
+
+  useEffect(() => {
+    async function loadContent() {
+      try {
+        const response = await fetch('/api/site-content', { cache: 'no-store' })
+        const data = await response.json()
+        if (data?.ok && data?.content) {
+          const mergedContent: SiteContent = {
+            ...defaultContent,
+            ...data.content,
+            home: {
+              ...defaultContent.home,
+              ...(data.content.home || {}),
+            },
+            about: {
+              ...defaultContent.about,
+              ...(data.content.about || {}),
+            },
+          }
+          setContent(mergedContent)
+          setOriginalContent(mergedContent)
+        }
+      } catch (error) {
+        console.error('Failed to load page content:', error)
+      }
+    }
+
+    loadContent()
+  }, [])
+
+  function updateHomeField<K extends keyof HomeContent>(field: K, value: HomeContent[K]) {
+    setContent((current) => ({
+      ...current,
+      home: { ...current.home, [field]: value },
+    }))
+  }
+
+  function updateAboutField<K extends keyof AboutContent>(field: K, value: AboutContent[K]) {
+    setContent((current) => ({
+      ...current,
+      about: { ...current.about, [field]: value },
+    }))
+  }
+
+  function handleDiscard() {
+    if (!originalContent) return
+    setContent(originalContent)
+    setStatus('Changes discarded.')
+    window.setTimeout(() => setStatus(''), 1500)
+  }
+
+  async function handleSave() {
+    setStatus('Saving...')
+    try {
+      const response = await fetch('/api/site-content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(content),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok || !data?.ok) {
+        throw new Error('Save failed')
+      }
+
+      setOriginalContent(content)
+      setStatus('Saved')
+      window.setTimeout(() => setStatus(''), 2000)
+    } catch (error) {
+      console.error(error)
+      setStatus('Save failed')
+    }
+  }
+
+  return (
+    <div className="admin-editor">
+      <div className="admin-header">
+        <div>
+          <p className="admin-kicker">Pages</p>
+          <h1>Edit front-end pages</h1>
+          <p className="admin-subtext">
+            Update key text, page sections, and editorial content for the public-facing site.
+          </p>
+        </div>
+
+        <div className="admin-actions">
+          <a href="/admin" className="admin-button admin-button-secondary">
+            Back to dashboard
+          </a>
+          <button
+            className="admin-button admin-button-secondary"
+            type="button"
+            onClick={handleDiscard}
+            disabled={!hasChanges}
+          >
+            Discard
+          </button>
+          <button className="admin-button" type="button" onClick={handleSave}>
+            Save changes
+          </button>
+        </div>
+      </div>
+
+      {status ? <p className="admin-save-status">{status}</p> : null}
+
+      <div className="admin-editor-grid">
+        <section className="admin-form-panel">
+          <div className="admin-form-section">
+            <div className="admin-panel-label">Page target</div>
+            <label className="admin-field">
+              <span>Page</span>
+              <select
+  value={page}
+  onChange={(e) => setPage(e.target.value as 'home' | 'about')}
+>
+                <option value="home">Homepage</option>
+                <option value="about">About</option>
+                <option value="privacy" disabled>Privacy Policy</option>
+                <option value="terms" disabled>Terms of Use</option>
+                <option value="copyright" disabled>Copyright &amp; Permissions</option>
+                <option value="takedown" disabled>Takedown / Rights Contact</option>
+              </select>
+            </label>
+          </div>
+
+          {page === 'home' && (
+            <>
+              <div className="admin-form-section">
+                <div className="admin-panel-label">Hero content</div>
+
+                <label className="admin-field">
+                  <span>Eyebrow</span>
+                  <input
+                    type="text"
+                    value={content.home.eyebrow}
+                    onChange={(e) => updateHomeField('eyebrow', e.target.value)}
+                  />
+                </label>
+
+                <label className="admin-field">
+                  <span>Main heading</span>
+                  <input
+                    type="text"
+                    value={content.home.heading}
+                    onChange={(e) => updateHomeField('heading', e.target.value)}
+                  />
+                </label>
+
+                <label className="admin-field">
+                  <span>Intro text</span>
+                  <textarea
+                    rows={6}
+                    value={content.home.intro}
+                    onChange={(e) => updateHomeField('intro', e.target.value)}
+                  />
+                </label>
+              </div>
+
+              <div className="admin-form-section">
+                <div className="admin-panel-label">Section settings</div>
+
+                <label className="admin-field">
+                  <span>Featured section title</span>
+                  <input
+                    type="text"
+                    value={content.home.featuredTitle}
+                    onChange={(e) => updateHomeField('featuredTitle', e.target.value)}
+                  />
+                </label>
+
+                <label className="admin-field">
+                  <span>Collections section title</span>
+                  <input
+                    type="text"
+                    value={content.home.collectionsTitle}
+                    onChange={(e) => updateHomeField('collectionsTitle', e.target.value)}
+                  />
+                </label>
+
+                <label className="admin-field">
+                  <span>Knowledge Areas section title</span>
+                  <input
+                    type="text"
+                    value={content.home.themesTitle}
+                    onChange={(e) => updateHomeField('themesTitle', e.target.value)}
+                  />
+                </label>
+              </div>
+            </>
+          )}
+
+          {page === 'about' && (
+            <div className="admin-form-section">
+              <div className="admin-panel-label">About page</div>
+
+              <label className="admin-field">
+                <span>Eyebrow</span>
+                <input
+                  type="text"
+                  value={content.about.eyebrow}
+                  onChange={(e) => updateAboutField('eyebrow', e.target.value)}
+                />
+              </label>
+
+              <label className="admin-field">
+                <span>Title</span>
+                <input
+                  type="text"
+                  value={content.about.title}
+                  onChange={(e) => updateAboutField('title', e.target.value)}
+                />
+              </label>
+
+              <label className="admin-field">
+                <span>Lead</span>
+                <textarea
+                  rows={3}
+                  value={content.about.lead}
+                  onChange={(e) => updateAboutField('lead', e.target.value)}
+                />
+              </label>
+
+              <label className="admin-field">
+                <span>Main body</span>
+                <RichTextEditor
+                  value={content.about.body}
+                  onChange={(value) => updateAboutField('body', value)}
+                />
+              </label>
+
+              <label className="admin-field">
+                <span>Mission title</span>
+                <input
+                  type="text"
+                  value={content.about.missionTitle}
+                  onChange={(e) => updateAboutField('missionTitle', e.target.value)}
+                />
+              </label>
+
+              <label className="admin-field">
+                <span>Mission body</span>
+                <RichTextEditor
+                  value={content.about.missionBody}
+                  onChange={(value) => updateAboutField('missionBody', value)}
+                />
+              </label>
+
+              <label className="admin-field">
+                <span>Contact title</span>
+                <input
+                  type="text"
+                  value={content.about.contactTitle}
+                  onChange={(e) => updateAboutField('contactTitle', e.target.value)}
+                />
+              </label>
+
+              <label className="admin-field">
+                <span>Contact body</span>
+                <RichTextEditor
+                  value={content.about.contactBody}
+                  onChange={(value) => updateAboutField('contactBody', value)}
+                />
+              </label>
+            </div>
+          )}
+        </section>
+
+        <aside className="admin-preview-panel">
+          <div className="admin-panel-label">Preview</div>
+
+          {page === 'home' ? (
+            <div className="admin-preview-card">
+              <p className="admin-preview-eyebrow">{content.home.eyebrow}</p>
+              <h2>{content.home.heading}</h2>
+              <p>{content.home.intro}</p>
+              <div className="admin-preview-meta">
+                <span>{content.home.featuredTitle}</span>
+                <span>{content.home.collectionsTitle}</span>
+                <span>{content.home.themesTitle}</span>
+              </div>
+            </div>
+          ) : (
+            <div className="admin-preview-card">
+              <p className="admin-preview-eyebrow">{content.about.eyebrow}</p>
+              <h2>{content.about.title}</h2>
+              <p>{content.about.lead}</p>
+              <p>{content.about.body}</p>
+              <div className="admin-preview-meta">
+                <span>{content.about.missionTitle}</span>
+                <span>{content.about.contactTitle}</span>
+              </div>
+            </div>
+          )}
+        </aside>
+      </div>
+    </div>
+  )
+}

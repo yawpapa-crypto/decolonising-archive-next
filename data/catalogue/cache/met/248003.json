@@ -1,0 +1,77 @@
+{
+  "objectID": 248003,
+  "isHighlight": false,
+  "accessionNumber": "07.286.127",
+  "accessionYear": "1907",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/gr/original/DP-14287-017.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/gr/web-large/DP-14287-017.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/gr/original/DP-14287-018.jpg"
+  ],
+  "constituents": null,
+  "department": "Greek and Roman Art",
+  "objectName": "Mirror",
+  "title": "Silver mirror",
+  "culture": "Roman",
+  "period": "Early Imperial",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1st century CE",
+  "objectBeginDate": 1,
+  "objectEndDate": 99,
+  "medium": "Silver",
+  "dimensions": "Overall: 8 1/16 x 4 3/4in. (20.4 x 12.1cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 12.12,
+        "Length": 20.4
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Weight": 0.192
+      }
+    }
+  ],
+  "creditLine": "Rogers Fund, 1907",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Gold and Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-06-16T04:51:27.217Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/248003",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116402392",
+  "isTimelineWork": false,
+  "GalleryNumber": "166"
+}

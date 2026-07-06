@@ -1,0 +1,101 @@
+{
+  "objectID": 310619,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.170",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP338094.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP338094.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP338092.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP338093.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP338095.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP338096.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP338097.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP338098.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP338099.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP338100.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DT10191.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 224092,
+      "role": "Artist",
+      "name": "Chimú artist(s)",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Vessel",
+  "title": "Stirrup-spout bottle with palace scene",
+  "culture": "Chimú",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Chimú artist(s)",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Chimú artist(s)",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1000–1470 CE",
+  "objectBeginDate": 1000,
+  "objectEndDate": 1470,
+  "medium": "Silver",
+  "dimensions": "H. 9 1/4 x W. 4 3/8 x D. 6 1/2 in. (23.5 x 11.1 x 16.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Width": 11.13
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 16.51,
+        "Height": 23.495,
+        "Width": 11.13
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of Nelson A. Rockefeller, 1969",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Peru",
+  "region": "North Coast",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metal-Containers",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-06-04T04:51:25.263Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310619",
+  "tags": [
+    {
+      "term": "Human Figures",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300404114",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q5937779"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": true,
+  "GalleryNumber": "361"
+}

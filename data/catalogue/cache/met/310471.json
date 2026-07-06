@@ -1,0 +1,93 @@
+{
+  "objectID": 310471,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.15",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP104810.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP104810.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/VS1978_412_15AA.JPG",
+    "https://images.metmuseum.org/CRDImages/ao/original/vs1978_412_15a.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/vs1978_412_15c.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DT10166.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/vs1978_412_15d.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/vs1978_412_15.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/vs1978_412_15b.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 223090,
+      "role": "Artist",
+      "name": "Classic Veracruz artist(s)",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Yoke",
+  "title": "Frog yoke",
+  "culture": "Veracruz",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Classic Veracruz artist(s)",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Classic Veracruz artist(s)",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "600-900 CE",
+  "objectBeginDate": 600,
+  "objectEndDate": 1000,
+  "medium": "Greenstone, pigment (probably hematite)",
+  "dimensions": "H. 5 x W. 14 7/8 x D. 15 3/4 in. (12.7 x 37.8 x 40 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 40.005,
+        "Height": 12.7,
+        "Width": 37.8
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 12.7
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of Nelson A. Rockefeller, 1963",
+  "geographyType": "",
+  "city": "",
+  "state": "Veracruz",
+  "county": "",
+  "country": "Mexico",
+  "region": "Mesoamerica",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Stone-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-08-08T04:50:27.24Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310471",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q96912176",
+  "isTimelineWork": true,
+  "GalleryNumber": "360"
+}

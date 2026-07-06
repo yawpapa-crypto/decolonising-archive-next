@@ -1,0 +1,92 @@
+{
+  "objectID": 206606,
+  "isHighlight": false,
+  "accessionNumber": "1977.175a–c",
+  "accessionYear": "1977",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/216261.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/216261.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/268081.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/265082(2).jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/ES4676.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/265081.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/ES4677.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/ES2796.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/ES2797.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 34007,
+      "role": "Maker",
+      "name": "Jacques-Nicolas Roettiers",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500031436",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q6120343",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Dish with cover and liner",
+  "title": "Dish with cover and liner",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Jacques-Nicolas Roettiers",
+  "artistDisplayBio": "1736–1788, master 1765, retired 1777",
+  "artistSuffix": "",
+  "artistAlphaSort": "Roettiers Jacques-Nicolas",
+  "artistNationality": "",
+  "artistBeginDate": "1736",
+  "artistEndDate": "1788",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q6120343",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500031436",
+  "objectDate": "1774–76",
+  "objectBeginDate": 1774,
+  "objectEndDate": 1776,
+  "medium": "Silver",
+  "dimensions": "Overall (dish with cover .175a, b): 7 × 12 1/2 in. (17.8 × 31.8 cm);\r\nDiameter (liner .175c): 9 7/8 in. (25.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Diameter",
+      "elementDescription": "liner .175c",
+      "elementMeasurements": {
+        "Diameter": 25.08255
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "dish with cover .175a, b",
+      "elementMeasurements": {
+        "Height": 17.780035,
+        "Width": 31.750063
+      }
+    }
+  ],
+  "creditLine": "Anonymous Gift, in memory of Edward Levinus Clarkson, 1977",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/206606",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

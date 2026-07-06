@@ -1,0 +1,95 @@
+{
+  "objectID": 312002,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.1571",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP-23826-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP-23826-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-23826-002.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 224354,
+      "role": "Artist",
+      "name": "Rapa Nui artist",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Paddle",
+  "title": "Rapa (dance paddle)",
+  "culture": "Rapa Nui people",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Rapa Nui artist",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Rapa Nui artist",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "early 19th century",
+  "objectBeginDate": 1800,
+  "objectEndDate": 1850,
+  "medium": "Wood",
+  "dimensions": "H. 28 1/4 × W. 6 1/4 × D. 5/8 in. (71.8 × 15.9 × 1.6 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 1.27
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 71.755,
+        "Width": 15.54
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 1.5875032,
+        "Height": 71.75514,
+        "Width": 15.875031
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of Mrs.Gertrud A. Mellon, 1972",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Chile",
+  "region": "Rapa Nui (Easter Island)",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Wood-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-03-27T04:56:00.513Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/312002",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q97384306",
+  "isTimelineWork": true,
+  "GalleryNumber": "352"
+}

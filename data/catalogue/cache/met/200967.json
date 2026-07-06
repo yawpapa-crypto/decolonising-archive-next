@@ -1,0 +1,83 @@
+{
+  "objectID": 200967,
+  "isHighlight": false,
+  "accessionNumber": "50.211.284",
+  "accessionYear": "1950",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/149633.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/149633.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 38228,
+      "role": "Factory",
+      "name": "Saint-Cloud factory",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500055297",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q7400585",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Snuffbox",
+  "title": "Snuffbox",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Factory",
+  "artistPrefix": "",
+  "artistDisplayName": "Saint-Cloud factory",
+  "artistDisplayBio": "French, mid-1690s–1766",
+  "artistSuffix": "",
+  "artistAlphaSort": "Saint-Cloud factory",
+  "artistNationality": "French",
+  "artistBeginDate": "1693",
+  "artistEndDate": "1766",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q7400585",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500055297",
+  "objectDate": "1738–44",
+  "objectBeginDate": 1738,
+  "objectEndDate": 1744,
+  "medium": "Soft-paste porcelain, silver",
+  "dimensions": "1 1/2 × 3 1/8 in. (3.8 × 7.9 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 3.8,
+        "Length": 7.9375157
+      }
+    }
+  ],
+  "creditLine": "Gift of R. Thornton Wilson, in memory of Florence Ellsworth Wilson, 1950",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Porcelain",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2022-08-11T04:54:09.553Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/200967",
+  "tags": [
+    {
+      "term": "Flowers",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132399",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q506"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

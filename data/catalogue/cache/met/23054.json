@@ -1,0 +1,80 @@
+{
+  "objectID": 23054,
+  "isHighlight": false,
+  "accessionNumber": "29.17",
+  "accessionYear": "1929",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/aa/original/DP110185.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/aa/web-large/DP110185.jpg",
+  "additionalImages": [],
+  "constituents": null,
+  "department": "Arms and Armor",
+  "objectName": "Close helmet",
+  "title": "Close Helmet",
+  "culture": "Italian, Milan or Brescia",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1550",
+  "objectBeginDate": 1525,
+  "objectEndDate": 1575,
+  "medium": "Steel, gold, silver",
+  "dimensions": "H. 11 3/4 in. (29.9 cm); W. 14 in. (35.6 cm); D. 14 in. (35.6 cm); Wt. 6 lb. 14 oz. (3128 g)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": "Gr. width",
+      "elementMeasurements": {
+        "Width": 35.56
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "Height",
+      "elementMeasurements": {
+        "Height": 29.85
+      }
+    }
+  ],
+  "creditLine": "Fletcher Fund, 1929",
+  "geographyType": "Country of Origin",
+  "city": "Milan or Brescia",
+  "state": "",
+  "county": "",
+  "country": "Italy",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Helmets",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-20T04:50:39.43Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/23054",
+  "tags": [
+    {
+      "term": "Griffins",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300379594",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q130223"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116322499",
+  "isTimelineWork": false,
+  "GalleryNumber": "374"
+}

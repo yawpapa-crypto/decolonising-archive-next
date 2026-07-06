@@ -1,0 +1,81 @@
+{
+  "objectID": 4538,
+  "isHighlight": false,
+  "accessionNumber": "1996.366",
+  "accessionYear": "1996",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ad/original/DT4498.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ad/web-large/DT4498.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ad/original/1996.366.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/ADA3509.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 1337,
+      "role": "Maker",
+      "name": "Attributed to Charles-Honoré Lannuier",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500256814",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q5074741",
+      "gender": ""
+    }
+  ],
+  "department": "The American Wing",
+  "objectName": "Side chair",
+  "title": "Side chair",
+  "culture": "American",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "Attributed to",
+  "artistDisplayName": "Charles-Honoré Lannuier",
+  "artistDisplayBio": "France 1779–1819 New York",
+  "artistSuffix": "",
+  "artistAlphaSort": "Lannuier, Charles-Honoré",
+  "artistNationality": "American",
+  "artistBeginDate": "1779",
+  "artistEndDate": "1819",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q5074741",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500256814",
+  "objectDate": "1815–19",
+  "objectBeginDate": 1815,
+  "objectEndDate": 1819,
+  "medium": "Mahogany, mahogany veneer, gilded gesso, brass with maple",
+  "dimensions": "33 3/8 x 18 x 19 1/4 in. (84.8 x 45.7 x 48.9 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 48.9,
+        "Height": 84.8,
+        "Width": 45.7201
+      }
+    }
+  ],
+  "creditLine": "Purchase, The Sylmaris Collection, Gift of George Coe Graves, by exchange; and Bequest of Flora E. Whiting, Gift of Mr. and Mrs. William A. Moore, and Gift of Mrs. Russell Sage, by exchange, 1996",
+  "geographyType": "Made in",
+  "city": "New York",
+  "state": "New York",
+  "county": "",
+  "country": "United States",
+  "region": "Mid-Atlantic",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-30T04:54:21.21Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/4538",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116366687",
+  "isTimelineWork": false,
+  "GalleryNumber": "726"
+}

@@ -1,0 +1,108 @@
+{
+  "objectID": 200907,
+  "isHighlight": false,
+  "accessionNumber": "50.211.217",
+  "accessionYear": "1950",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP169241.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP169241.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP169237.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP169238.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP169239.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP169240.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP253209.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 37076,
+      "role": "Manufactory",
+      "name": "Höchst Manufactory",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500331057",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q97105166",
+      "gender": ""
+    },
+    {
+      "constituentID": 37957,
+      "role": "Modeler",
+      "name": "attributed to Johann Peter Melchior",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500012843",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q1695799",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Group",
+  "title": "The Chinese Emperor",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Manufactory",
+  "artistPrefix": "",
+  "artistDisplayName": "Höchst Manufactory",
+  "artistDisplayBio": "German, 1746–1796",
+  "artistSuffix": "",
+  "artistAlphaSort": "Höchst Manufactory",
+  "artistNationality": "German",
+  "artistBeginDate": "1746",
+  "artistEndDate": "1796",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q97105166",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500331057",
+  "objectDate": "ca. 1766",
+  "objectBeginDate": 1761,
+  "objectEndDate": 1771,
+  "medium": "Hard-paste porcelain decorated in polychrome enamels, gold",
+  "dimensions": "Overall (confirmed): 15 11/16 x 13 1/16 x 8 9/16 in. (39.8 x 33.2 x 21.7 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "confirmed",
+      "elementMeasurements": {
+        "Depth": 21.748793,
+        "Height": 39.84633,
+        "Width": 33.178818
+      }
+    }
+  ],
+  "creditLine": "Gift of R. Thornton Wilson, in memory of Florence Ellsworth Wilson, 1950",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Porcelain",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-08-23T04:50:45.557Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/200907",
+  "tags": [
+    {
+      "term": "Boys",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300247598",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q3010"
+    },
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    },
+    {
+      "term": "Dogs",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300265714",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q144"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q110268733",
+  "isTimelineWork": true,
+  "GalleryNumber": ""
+}

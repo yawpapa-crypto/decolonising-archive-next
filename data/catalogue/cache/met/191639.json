@@ -1,0 +1,94 @@
+{
+  "objectID": 191639,
+  "isHighlight": false,
+  "accessionNumber": "11.38.2",
+  "accessionYear": "1911",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP-97-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP-97-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP-97-002.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 161722,
+      "role": "Artist",
+      "name": "Probably workshop of Andrea Briosco, called Riccio",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500025246",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q283580",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Oil lamp",
+  "title": "Oil Lamp in the Form of a Sphinx",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "Probably workshop of",
+  "artistDisplayName": "Andrea Briosco, called Riccio",
+  "artistDisplayBio": "Italian, Trent 1470–1532 Padua",
+  "artistSuffix": "",
+  "artistAlphaSort": "Briosco, Andrea, called Riccio",
+  "artistNationality": "Italian",
+  "artistBeginDate": "1470",
+  "artistEndDate": "1532",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q283580",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500025246",
+  "objectDate": "mid-16th century",
+  "objectBeginDate": 1525,
+  "objectEndDate": 1575,
+  "medium": "Bronze",
+  "dimensions": "confirmed: 4 7/8 × 2 3/8 × 5 3/4 in., 1.9 lb. (12.4 × 6 × 14.6 cm, 0.9 kg)",
+  "measurements": [
+    {
+      "elementName": "Height",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 12.3825245
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "confirmed",
+      "elementMeasurements": {
+        "Depth": 14.605029,
+        "Height": 12.3825245,
+        "Weight": 0.86183435,
+        "Width": 6.032512
+      }
+    }
+  ],
+  "creditLine": "Rogers Fund, 1911",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture-Bronze",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/191639",
+  "tags": [
+    {
+      "term": "Sphinx",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300375739",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q151480"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

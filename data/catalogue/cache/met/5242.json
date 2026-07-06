@@ -1,0 +1,85 @@
+{
+  "objectID": 5242,
+  "isHighlight": false,
+  "accessionNumber": "Inst.68.8.69",
+  "accessionYear": "1968",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ad/original/DP232788.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ad/web-large/DP232788.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ad/original/ADA6270.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 1131,
+      "role": "Retailer",
+      "name": "Henry Kellam Hancock",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The American Wing",
+  "objectName": "Appliqué",
+  "title": "Swans and Fountain Appliqué",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Retailer",
+  "artistPrefix": "",
+  "artistDisplayName": "Henry Kellam Hancock",
+  "artistDisplayBio": "1816–1851",
+  "artistSuffix": "",
+  "artistAlphaSort": "Hancock, Henry Kellam",
+  "artistNationality": "",
+  "artistBeginDate": "1816",
+  "artistEndDate": "1851",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1810–30",
+  "objectBeginDate": 1805,
+  "objectEndDate": 1835,
+  "medium": "Cast brass, mercury, gold",
+  "dimensions": "9 3/4 x 2 1/8 in. (24.8 x 5.4 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 24.765,
+        "Width": 5.4
+      }
+    }
+  ],
+  "creditLine": "Gift of Mrs. Edward Hunting Smith, 1968",
+  "geographyType": "Possibly made in",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "France",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-03-31T09:41:00.23Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/5242",
+  "tags": [
+    {
+      "term": "Swans",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250103",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q34384"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116365807",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

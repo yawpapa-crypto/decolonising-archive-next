@@ -1,0 +1,98 @@
+{
+  "objectID": 83575,
+  "isHighlight": false,
+  "accessionNumber": "1976.370.2a–c",
+  "accessionYear": "1976",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 20184,
+      "role": "Design House",
+      "name": "House of Chanel",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500329589",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q218115",
+      "gender": ""
+    },
+    {
+      "constituentID": 161765,
+      "role": "Designer",
+      "name": "Gabrielle Chanel",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500072500",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q45661",
+      "gender": "Female"
+    }
+  ],
+  "department": "Costume Institute",
+  "objectName": "Suit",
+  "title": "Suit",
+  "culture": "French",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Design House",
+  "artistPrefix": "",
+  "artistDisplayName": "House of Chanel",
+  "artistDisplayBio": "French, founded 1910",
+  "artistSuffix": "",
+  "artistAlphaSort": "Chanel, House of",
+  "artistNationality": "French",
+  "artistBeginDate": "1910",
+  "artistEndDate": "9999",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q218115",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500329589",
+  "objectDate": "ca. 1957",
+  "objectBeginDate": 1956,
+  "objectEndDate": 1958,
+  "medium": "wool",
+  "dimensions": "",
+  "measurements": [
+    {
+      "elementName": "Length at CB",
+      "elementDescription": "c",
+      "elementMeasurements": {
+        "Length": 44.4501
+      }
+    },
+    {
+      "elementName": "Length at CB",
+      "elementDescription": "b",
+      "elementMeasurements": {
+        "Length": 58.4201
+      }
+    },
+    {
+      "elementName": "Length at CB",
+      "elementDescription": "a",
+      "elementMeasurements": {
+        "Length": 55.8801
+      }
+    }
+  ],
+  "creditLine": "Gift of Mrs. Stephane Groueff, 1976",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/83575",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

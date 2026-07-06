@@ -1,0 +1,138 @@
+/**
+ * Production layout — grid shell (no overlapping absolute chrome).
+ */
+
+.workbench-research-canvas {
+  --wrc-z-stage: 1;
+  --wrc-z-lines: 2;
+  --wrc-z-objects: 3;
+  --wrc-z-selection: 4;
+  --wrc-z-chrome: 20;
+  --wrc-z-menu: 30;
+  --wrc-z-dock: 26;
+  --wrc-z-fab: 24;
+  display: grid;
+  grid-template-columns: calc(var(--wrc-toolbar-width) + 14px) minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-areas:
+    "rail chrome"
+    "rail stage";
+}
+
+.workbench-research-canvas.has-inspector-panel {
+  grid-template-columns: calc(var(--wrc-toolbar-width) + 14px) minmax(0, 1fr);
+}
+
+.workbench-research-canvas-toolbar {
+  grid-area: rail;
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+  align-self: start;
+  justify-self: start;
+  margin: 12px 0 12px 14px;
+  max-height: calc(100vh - 24px);
+  z-index: calc(var(--wrc-z-chrome) + 2);
+}
+
+.workbench-research-canvas-chrome {
+  grid-area: chrome;
+  position: relative;
+  z-index: var(--wrc-z-chrome);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 12px 12px 0 0;
+  box-sizing: border-box;
+}
+
+.workbench-research-canvas-chrome .workbench-canvas-project-header,
+.workbench-research-canvas-chrome .workbench-research-canvas-topbar {
+  width: 100%;
+  max-width: 100%;
+}
+
+.workbench-research-canvas.has-inspector-panel .workbench-research-canvas-chrome {
+  padding-right: calc(var(--wrc-inspector-width) + 8px);
+}
+
+.workbench-research-canvas.has-collapsed-panel .workbench-research-canvas-chrome {
+  padding-right: calc(var(--wrc-panel-rail-width) + 8px);
+}
+
+.workbench-research-canvas.has-hidden-panel .workbench-research-canvas-chrome {
+  padding-right: 8px;
+}
+
+.workbench-canvas-project-header,
+.workbench-research-canvas-topbar {
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  width: 100%;
+  max-width: none;
+}
+
+.workbench-canvas-project-header {
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.workbench-research-canvas-topbar {
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.workbench-research-canvas-stage-wrap {
+  grid-area: stage;
+  position: relative;
+  z-index: var(--wrc-z-stage);
+  min-height: 0;
+  min-width: 0;
+}
+
+.workbench-research-canvas-inspector,
+.workbench-canvas-panel-rail,
+.workbench-canvas-panel-reopen {
+  position: absolute;
+  z-index: var(--wrc-z-chrome);
+}
+
+.workbench-research-canvas.has-inspector-panel .workbench-research-canvas-inspector {
+  top: 12px;
+  right: 12px;
+  bottom: 12px;
+}
+
+.workbench-research-canvas-menu-backdrop {
+  z-index: calc(var(--wrc-z-menu) - 1);
+}
+
+.workbench-research-canvas-menu {
+  z-index: var(--wrc-z-menu);
+}
+
+.workbench-canvas-minidock {
+  z-index: var(--wrc-z-dock);
+}
+
+.workbench-canvas-floating-add {
+  z-index: var(--wrc-z-fab);
+}
+
+.workbench-research-canvas.is-focus-mode .workbench-canvas-minidock {
+  display: inline-flex;
+}
+
+.workbench-research-canvas:not(.is-focus-mode) .workbench-canvas-minidock {
+  display: none;
+}
+
+.workbench-research-canvas.is-focus-mode .workbench-research-canvas-chrome,
+.workbench-research-canvas.is-focus-mode .workbench-research-canvas-toolbar {
+  opacity: 0;
+  pointer-events: none;
+}

@@ -1,0 +1,87 @@
+{
+  "objectID": 206295,
+  "isHighlight": false,
+  "accessionNumber": "1974.378.1",
+  "accessionYear": "1974",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/204368.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/204368.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/204369.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 34368,
+      "role": "Silversmith",
+      "name": "Silver made by Martin-Guillaume Biennais",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500061154",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q1694164",
+      "gender": ""
+    },
+    {
+      "constituentID": 34532,
+      "role": "Maker",
+      "name": "Cutlery made by Pierre-Benoît Lorillon",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Stand",
+  "title": "Stand (part of a dining service)",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Silversmith",
+  "artistPrefix": "Silver made by",
+  "artistDisplayName": "Martin-Guillaume Biennais",
+  "artistDisplayBio": "French, 1764–1843, active ca. 1796–1819",
+  "artistSuffix": "",
+  "artistAlphaSort": "Biennais, Martin-Guillaume",
+  "artistNationality": "French",
+  "artistBeginDate": "1764",
+  "artistEndDate": "1843",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q1694164",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500061154",
+  "objectDate": "ca. 1805",
+  "objectBeginDate": 1800,
+  "objectEndDate": 1810,
+  "medium": "Thuya wood, silver gilt",
+  "dimensions": "16 1/2 × 19 in. (41.9 × 48.3 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 41.910084,
+        "Width": 48.260098
+      }
+    }
+  ],
+  "creditLine": "Gift of Audrey B. Love, in memory of her husband, C. Ruxton Love Jr., 1974",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/206295",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

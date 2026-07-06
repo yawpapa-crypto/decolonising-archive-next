@@ -1,0 +1,95 @@
+{
+  "objectID": 13612,
+  "isHighlight": false,
+  "accessionNumber": "61.48.2",
+  "accessionYear": "1961",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ad/original/DT270074.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ad/web-large/DT270074.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ad/original/AR304.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/172125.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/RT626A.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/RT626B.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/SC44378.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/SC44383.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/SC44380.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/RT626D.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/RT626C.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/212632.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/ADA2939.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 3089,
+      "role": "Maker",
+      "name": "Ruth Culver Coleman",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": "Female"
+    }
+  ],
+  "department": "The American Wing",
+  "objectName": "Bed hangings",
+  "title": "Embroidered bed hangings",
+  "culture": "American",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Ruth Culver Coleman",
+  "artistDisplayBio": "died 1801",
+  "artistSuffix": "",
+  "artistAlphaSort": "Coleman, Ruth Culver",
+  "artistNationality": "American",
+  "artistBeginDate": "1701",
+  "artistEndDate": "1801",
+  "artistGender": "Female",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1760–75",
+  "objectBeginDate": 1757,
+  "objectEndDate": 1775,
+  "medium": "Linen embroidered with wool",
+  "dimensions": "99 x 85 in. (251.5 x 215.9 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 251.5,
+        "Width": 215.9004
+      }
+    }
+  ],
+  "creditLine": "Sansbury-Mills Fund, 1961",
+  "geographyType": "Probably made in",
+  "city": "Sag Harbor",
+  "state": "New York",
+  "county": "",
+  "country": "United States",
+  "region": "Mid-Atlantic",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-30T04:54:21.21Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/13612",
+  "tags": [
+    {
+      "term": "Flowers",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132399",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q506"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

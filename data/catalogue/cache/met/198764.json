@@ -1,0 +1,106 @@
+{
+  "objectID": 198764,
+  "isHighlight": false,
+  "accessionNumber": "41.100.242",
+  "accessionYear": "1941",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP246605.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP246605.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP248119.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP248120.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP248117.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 33593,
+      "role": "Artist",
+      "name": "Cristoforo Stati (Cristofano da Bracciano)",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500002498",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q3697719",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Statue",
+  "title": "Orpheus",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Cristoforo Stati (Cristofano da Bracciano)",
+  "artistDisplayBio": "Italian, 1556–1619",
+  "artistSuffix": "",
+  "artistAlphaSort": "Stati Cristoforo",
+  "artistNationality": "Italian",
+  "artistBeginDate": "1556",
+  "artistEndDate": "1619",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q3697719",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500002498",
+  "objectDate": "1600–1601",
+  "objectBeginDate": 1600,
+  "objectEndDate": 1601,
+  "medium": "Marble",
+  "dimensions": "Overall (confirmed): 77 1/8 × 38 × 23 7/8 in., 775 lb. (195.9 × 96.5 × 60.6 cm, 351.5 kg)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "confirmed",
+      "elementMeasurements": {
+        "Depth": 60.64262,
+        "Height": 195.89789,
+        "Weight": 351.5377,
+        "Width": 96.520195
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "historic dimensions, superceded",
+      "elementMeasurements": {
+        "Height": 194.3
+      }
+    }
+  ],
+  "creditLine": "Gift of George Blumenthal, 1941",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-03-21T04:54:46.133Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/198764",
+  "tags": [
+    {
+      "term": "Male Nudes",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300189568",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q40446"
+    },
+    {
+      "term": "Violins",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300042215",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8355"
+    },
+    {
+      "term": "Orpheus",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901000392",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q174353"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q19357201",
+  "isTimelineWork": false,
+  "GalleryNumber": "534"
+}

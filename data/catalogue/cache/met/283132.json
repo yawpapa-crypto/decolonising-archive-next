@@ -1,0 +1,91 @@
+{
+  "objectID": 283132,
+  "isHighlight": false,
+  "accessionNumber": "2005.100.51",
+  "accessionYear": "2005",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ph/original/DP150942.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ph/web-large/DP150942.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 56762,
+      "role": "Artist",
+      "name": "Léon Gérard",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500037007",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q79459650",
+      "gender": ""
+    }
+  ],
+  "department": "Photographs",
+  "objectName": "Photograph",
+  "title": "[Copy of the head of Christ from Leonardo da Vinci's “The Last Supper”]",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Léon Gérard",
+  "artistDisplayBio": "French, 1817–1896",
+  "artistSuffix": "",
+  "artistAlphaSort": "Gérard, Léon",
+  "artistNationality": "French",
+  "artistBeginDate": "1817",
+  "artistEndDate": "1896",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q79459650",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500037007",
+  "objectDate": "1857–61",
+  "objectBeginDate": 1857,
+  "objectEndDate": 1861,
+  "medium": "Albumen silver print from paper negative",
+  "dimensions": "Image: 36.3 x 26.6 cm (14 5/16 x 10 1/2 in.)\r\nMount: 59.2 x 42.6 cm (23 5/16 x 16 3/4 in.)",
+  "measurements": [
+    {
+      "elementName": "Mount",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 59.2,
+        "Width": 42.6
+      }
+    },
+    {
+      "elementName": "Image",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 36.3,
+        "Width": 26.6
+      }
+    }
+  ],
+  "creditLine": "Gilman Collection, Purchase, Denise and Andrew Saul Gift, 2005",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Photographs",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-03-20T04:55:14.207Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/283132",
+  "tags": [
+    {
+      "term": "Christ",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901000087",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q642420"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q97009616",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

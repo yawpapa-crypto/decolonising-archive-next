@@ -1,0 +1,87 @@
+{
+  "objectID": 195572,
+  "isHighlight": false,
+  "accessionNumber": "26.267.1",
+  "accessionYear": "1926",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/66021.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/66021.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 33238,
+      "role": "Maker",
+      "name": "Watchmaker: Charles Oudin",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Watch",
+  "title": "Watch",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "Watchmaker:",
+  "artistDisplayName": "Charles Oudin",
+  "artistDisplayBio": "French, 1768–1840 Paris",
+  "artistSuffix": "",
+  "artistAlphaSort": "Oudin Charles",
+  "artistNationality": "French",
+  "artistBeginDate": "1768",
+  "artistEndDate": "1840",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1822–38",
+  "objectBeginDate": 1822,
+  "objectEndDate": 1838,
+  "medium": "Gold, enamel",
+  "dimensions": "Diameter: 1 5/8 in. (4.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Diameter",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 4.127508
+      }
+    }
+  ],
+  "creditLine": "Anonymous Gift, in memory of Lady May Fletcher-Moulton, 1926",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Horology",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/195572",
+  "tags": [
+    {
+      "term": "Flowers",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132399",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q506"
+    },
+    {
+      "term": "Leaves",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300011892",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q33971"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

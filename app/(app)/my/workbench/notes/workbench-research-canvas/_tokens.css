@@ -1,0 +1,47 @@
+/* Milanote-inspired design tokens — scoped to research canvas */
+
+.workbench-canvas-immersive,
+.workbench-research-canvas {
+  --wrc-lemon: #dfff2f;
+  --wrc-coral: #ff6b4a;
+  --wrc-green: #54c78a;
+  --wrc-sky: #8ec5ff;
+  --wrc-pink: #ffd6df;
+  --wrc-yellow: #fff5a6;
+  --wrc-lavender: #ddd6ff;
+  --wrc-ink: #2f2d38;
+  --wrc-muted: #72757e;
+  --wrc-muted-soft: rgba(114, 117, 126, 0.72);
+  --wrc-paper: #ffffff;
+  --wrc-canvas: #f6f3ec;
+  --wrc-canvas-deep: #ebe6da;
+  --wrc-panel: rgba(255, 255, 255, 0.92);
+  --wrc-panel-strong: rgba(255, 255, 255, 0.97);
+  --wrc-border: rgba(47, 45, 56, 0.12);
+  --wrc-border-soft: rgba(47, 45, 56, 0.08);
+  --wrc-toolbar-width: 88px;
+  --wrc-chrome-gap: 10px;
+  --wrc-header-height: 52px;
+  --wrc-inspector-width: clamp(300px, 21vw, 360px);
+  --wrc-panel-rail-width: 52px;
+  --wrc-topbar-height: 52px;
+  --wrc-radius-sm: 10px;
+  --wrc-radius-md: 16px;
+  --wrc-radius-lg: 22px;
+  --wrc-radius-xl: 28px;
+  --wrc-radius-pill: 999px;
+  --wrc-shadow-sm: 0 2px 8px rgba(47, 45, 56, 0.06), 0 8px 24px rgba(47, 45, 56, 0.05);
+  --wrc-shadow-md: 0 6px 20px rgba(47, 45, 56, 0.08), 0 18px 40px rgba(47, 45, 56, 0.06);
+  --wrc-shadow-lg: 0 12px 32px rgba(47, 45, 56, 0.1), 0 28px 56px rgba(47, 45, 56, 0.08);
+  --wrc-shadow-tool: 0 14px 40px rgba(47, 45, 56, 0.1);
+  --wrc-font-ui: 13px;
+  --wrc-font-label: 11px;
+  --wrc-font-title: 16px;
+  --wrc-font-body: 14px;
+  --wrc-font-hint: 12px;
+  --wrc-line-body: 1.55;
+  --wrc-line-tight: 1.3;
+  --wrc-tool-size: 46px;
+  --wrc-sticky-fill: linear-gradient(155deg, #fffce8 0%, #fff5a6 100%);
+  --wrc-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}

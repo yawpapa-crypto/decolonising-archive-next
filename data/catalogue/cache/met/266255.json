@@ -1,0 +1,96 @@
+{
+  "objectID": 266255,
+  "isHighlight": false,
+  "accessionNumber": "1990.1074.2",
+  "accessionYear": "1990",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ph/original/DP295247.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ph/web-large/DP295247.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 54935,
+      "role": "Artist",
+      "name": "Julia Margaret Cameron",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500118804",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q230120",
+      "gender": "Female"
+    }
+  ],
+  "department": "Photographs",
+  "objectName": "Photograph",
+  "title": "Beatrice",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Julia Margaret Cameron",
+  "artistDisplayBio": "British (born India), Calcutta 1815–1879 Kalutara, Ceylon",
+  "artistSuffix": "",
+  "artistAlphaSort": "Cameron, Julia Margaret",
+  "artistNationality": "British, born India",
+  "artistBeginDate": "1815",
+  "artistEndDate": "1879",
+  "artistGender": "Female",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q230120",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500118804",
+  "objectDate": "1866",
+  "objectBeginDate": 1866,
+  "objectEndDate": 1866,
+  "medium": "Albumen silver print from glass negative",
+  "dimensions": "34.6 x 26.3 cm. (13  5/8  x 10  3/6  in.)",
+  "measurements": [
+    {
+      "elementName": "Mount",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 57.9,
+        "Width": 46.3
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 34.6,
+        "Width": 26.3
+      }
+    }
+  ],
+  "creditLine": "Bequest of James David Nelson, in memory of Samuel J. Wagstaff Jr., 1988",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Photographs",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/266255",
+  "tags": [
+    {
+      "term": "Portraits",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300015637",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q134307"
+    },
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q96181588",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

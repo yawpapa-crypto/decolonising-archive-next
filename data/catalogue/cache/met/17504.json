@@ -1,0 +1,110 @@
+{
+  "objectID": 17504,
+  "isHighlight": false,
+  "accessionNumber": "2005.495",
+  "accessionYear": "2005",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ad/original/DP-44510-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ad/web-large/DP-44510-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ad/original/DP119589.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/DP-44510-002.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 162542,
+      "role": "Artist",
+      "name": "Louis C. Tiffany",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500030415",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q312950",
+      "gender": ""
+    },
+    {
+      "constituentID": 233602,
+      "role": "Designer",
+      "name": "Julia Munson",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    },
+    {
+      "constituentID": 162540,
+      "role": "Artist",
+      "name": "Tiffany Glass and Decorating Company",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500331512",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The American Wing",
+  "objectName": "Drawing",
+  "title": "Design for Enamel \"Plum\" Bowl",
+  "culture": "American",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Louis C. Tiffany",
+  "artistDisplayBio": "American, New York 1848–1933 New York",
+  "artistSuffix": "",
+  "artistAlphaSort": "Tiffany, Louis C.",
+  "artistNationality": "American",
+  "artistBeginDate": "1848",
+  "artistEndDate": "1933",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q312950",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500030415",
+  "objectDate": "1898–99",
+  "objectBeginDate": 1898,
+  "objectEndDate": 1899,
+  "medium": "Watercolor and graphite on paper",
+  "dimensions": "11 7/16 × 15 15/16 in. (29.1 × 40.5 cm)\r\nFramed (AW B): 16 1/4 × 21 1/4 in. (41.3 × 54 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 29.051308,
+        "Width": 40.48133
+      }
+    },
+    {
+      "elementName": "Framed",
+      "elementDescription": "AW B",
+      "elementMeasurements": {
+        "Height": 41.27508,
+        "Width": 53.97511
+      }
+    }
+  ],
+  "creditLine": "Gift of Drs. Bruce Barnes and Joseph Cunningham, in memory of Catherine Hoover Voorsanger, 2005",
+  "geographyType": "Country of Origin",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "USA",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-06-24T04:50:22.173Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/17504",
+  "tags": [
+    {
+      "term": "Fruit",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300011868",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q1364"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q83561955",
+  "isTimelineWork": true,
+  "GalleryNumber": ""
+}

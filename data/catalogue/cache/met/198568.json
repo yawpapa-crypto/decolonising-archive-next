@@ -1,0 +1,95 @@
+{
+  "objectID": 198568,
+  "isHighlight": false,
+  "accessionNumber": "40.14.1",
+  "accessionYear": "1940",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP-217-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP-217-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP-217-002.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 163601,
+      "role": "Artist",
+      "name": "After a model by Giambologna",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500016387",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q220136",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Statuette",
+  "title": "Bull",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "After a model by",
+  "artistDisplayName": "Giambologna",
+  "artistDisplayBio": "Netherlandish, Douai 1529–1608 Florence",
+  "artistSuffix": "",
+  "artistAlphaSort": "Giambologna",
+  "artistNationality": "Netherlandish",
+  "artistBeginDate": "1529",
+  "artistEndDate": "1608",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q220136",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500016387",
+  "objectDate": "18th–19th century",
+  "objectBeginDate": 1700,
+  "objectEndDate": 1899,
+  "medium": "Bronze",
+  "dimensions": "Overall (confirmed): 7 1/8 × 10 × 3 1/8 in. (18.1 × 25.4 × 7.9 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 26.035051,
+        "Weight": 3.6287763,
+        "Width": 25.400051
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "confirmed",
+      "elementMeasurements": {
+        "Depth": 7.9375157,
+        "Height": 18.097536,
+        "Width": 25.400051
+      }
+    }
+  ],
+  "creditLine": "Rogers Fund, 1940",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture-Bronze",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/198568",
+  "tags": [
+    {
+      "term": "Bulls",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250117",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q693690"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

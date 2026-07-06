@@ -1,0 +1,93 @@
+{
+  "objectID": 10914,
+  "isHighlight": false,
+  "accessionNumber": "1974.324",
+  "accessionYear": "1974",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 161903,
+      "role": "Artist",
+      "name": "Daniel Chester French",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500009434",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q720910",
+      "gender": ""
+    },
+    {
+      "constituentID": 228017,
+      "role": "Founder",
+      "name": "Cast by John Williams",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The American Wing",
+  "objectName": "Bust",
+  "title": "Study for the Head of The Melvin Memorial",
+  "culture": "American",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Daniel Chester French",
+  "artistDisplayBio": "American, Exeter, New Hampshire 1850–1931 Stockbridge, Massachusetts",
+  "artistSuffix": "",
+  "artistAlphaSort": "French, Daniel Chester",
+  "artistNationality": "American",
+  "artistBeginDate": "1850",
+  "artistEndDate": "1931",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q720910",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500009434",
+  "objectDate": "1907; cast before 1914",
+  "objectBeginDate": 1907,
+  "objectEndDate": 1913,
+  "medium": "Bronze",
+  "dimensions": "18 x 10 3/8 x 11 3/4 in. (45.7 x 26.4 x 29.8 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 29.8451,
+        "Height": 45.7,
+        "Weight": 12.24712,
+        "Width": 26.4
+      }
+    }
+  ],
+  "creditLine": "Purchase, Erving Wolf Foundation Gift, in memory of Diane R. Wolf, 1974",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-03-31T09:41:00.23Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/10914",
+  "tags": [
+    {
+      "term": "Heads",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300375054",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q3409626"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q83560180",
+  "isTimelineWork": true,
+  "GalleryNumber": ""
+}

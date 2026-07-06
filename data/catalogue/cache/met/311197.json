@@ -1,0 +1,92 @@
+{
+  "objectID": 311197,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.755a, b",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP-23213-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP-23213-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-23213-002.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-23213-007.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-23213-006 .jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-23213-003.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-23213-005.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-23213-004.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 222225,
+      "role": "Artist",
+      "name": "Māori artist",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Box",
+  "title": "Papahou (treasure box)",
+  "culture": "Maori people",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Māori artist",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Māori artist",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "18th century",
+  "objectBeginDate": 1700,
+  "objectEndDate": 1800,
+  "medium": "Wood, shell (pāua)",
+  "dimensions": "H. 3 1/4 in. × W. 4 in. × D. 17 1/2 in. (8.3 × 10.2 × 44.5 cm)\r\nH. 5 1/2 in. w/mount",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 8.89
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 44.45009,
+        "Height": 8.255016,
+        "Width": 10.16002
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Purchase, Nelson A. Rockefeller Gift, 1960",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Aotearoa New Zealand",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "Bay of Plenty region",
+  "classification": "Wood-Containers",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-01-30T04:53:27.33Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/311197",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": "352"
+}

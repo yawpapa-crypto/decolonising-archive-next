@@ -1,0 +1,82 @@
+{
+  "objectID": 195603,
+  "isHighlight": false,
+  "accessionNumber": "26.267.33",
+  "accessionYear": "1926",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/66553.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/66553.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 34779,
+      "role": "Maker",
+      "name": "Style of Bognard",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Watch",
+  "title": "Watch",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "Style of",
+  "artistDisplayName": "Bognard",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "BOGNARD",
+  "artistNationality": "",
+  "artistBeginDate": "1800",
+  "artistEndDate": "1900",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "mid-19th century",
+  "objectBeginDate": 1830,
+  "objectEndDate": 1865,
+  "medium": "Gold",
+  "dimensions": "Diameter: 1 3/4 in. (4.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Diameter",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 4.483109
+      }
+    }
+  ],
+  "creditLine": "Anonymous Gift, in memory of Lady May Fletcher-Moulton, 1926",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Horology",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2021-04-30T11:13:27.41Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/195603",
+  "tags": [
+    {
+      "term": "Leaves",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300011892",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q33971"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

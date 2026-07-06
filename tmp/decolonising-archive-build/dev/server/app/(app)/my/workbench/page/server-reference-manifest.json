@@ -1,0 +1,89 @@
+{
+  "node": {
+    "4028dc515a6903ab1f7dac843f2655ed9e091203ba": {
+      "workers": {
+        "app/(app)/my/workbench/page": {
+          "moduleId": "[project]/.next-internal/server/app/(app)/my/workbench/page/actions.js { ACTIONS_MODULE0 => \"[project]/lib/workbench-inline-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "createWorkbenchProjectInline",
+          "filename": "lib/workbench-inline-actions.ts"
+        }
+      },
+      "exportedName": "createWorkbenchProjectInline",
+      "filename": "lib/workbench-inline-actions.ts"
+    },
+    "4061af14e7c6d211fa0517dfc7b2abbe00128d307a": {
+      "workers": {
+        "app/(app)/my/workbench/page": {
+          "moduleId": "[project]/.next-internal/server/app/(app)/my/workbench/page/actions.js { ACTIONS_MODULE0 => \"[project]/lib/workbench-inline-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "createWorkbenchTaskInline",
+          "filename": "lib/workbench-inline-actions.ts"
+        }
+      },
+      "exportedName": "createWorkbenchTaskInline",
+      "filename": "lib/workbench-inline-actions.ts"
+    },
+    "4014621881f5729b2bf4c2fc71deac7dd31cf6ced2": {
+      "workers": {
+        "app/(app)/my/workbench/page": {
+          "moduleId": "[project]/.next-internal/server/app/(app)/my/workbench/page/actions.js { ACTIONS_MODULE0 => \"[project]/lib/workbench-inline-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "deleteWorkbenchProjectInline",
+          "filename": "lib/workbench-inline-actions.ts"
+        }
+      },
+      "exportedName": "deleteWorkbenchProjectInline",
+      "filename": "lib/workbench-inline-actions.ts"
+    },
+    "403e4ef07ce76eba7536cccf25318febcd337a6d81": {
+      "workers": {
+        "app/(app)/my/workbench/page": {
+          "moduleId": "[project]/.next-internal/server/app/(app)/my/workbench/page/actions.js { ACTIONS_MODULE0 => \"[project]/lib/workbench-inline-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "deleteWorkbenchTaskInline",
+          "filename": "lib/workbench-inline-actions.ts"
+        }
+      },
+      "exportedName": "deleteWorkbenchTaskInline",
+      "filename": "lib/workbench-inline-actions.ts"
+    },
+    "40a9d65323c41b3056c5006dd4f7e15fcb7c3d9880": {
+      "workers": {
+        "app/(app)/my/workbench/page": {
+          "moduleId": "[project]/.next-internal/server/app/(app)/my/workbench/page/actions.js { ACTIONS_MODULE0 => \"[project]/lib/workbench-inline-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "patchWorkbenchTask",
+          "filename": "lib/workbench-inline-actions.ts"
+        }
+      },
+      "exportedName": "patchWorkbenchTask",
+      "filename": "lib/workbench-inline-actions.ts"
+    },
+    "4007a8be0557f58213f646f86a57650e4800d4c5b9": {
+      "workers": {
+        "app/(app)/my/workbench/page": {
+          "moduleId": "[project]/.next-internal/server/app/(app)/my/workbench/page/actions.js { ACTIONS_MODULE0 => \"[project]/lib/workbench-inline-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "renameWorkbenchProjectInline",
+          "filename": "lib/workbench-inline-actions.ts"
+        }
+      },
+      "exportedName": "renameWorkbenchProjectInline",
+      "filename": "lib/workbench-inline-actions.ts"
+    },
+    "409431cd9ece738c42ad9c21d6f4bda23519f0e2cb": {
+      "workers": {
+        "app/(app)/my/workbench/page": {
+          "moduleId": "[project]/.next-internal/server/app/(app)/my/workbench/page/actions.js { ACTIONS_MODULE0 => \"[project]/lib/workbench-inline-actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "updateWorkbenchProjectInline",
+          "filename": "lib/workbench-inline-actions.ts"
+        }
+      },
+      "exportedName": "updateWorkbenchProjectInline",
+      "filename": "lib/workbench-inline-actions.ts"
+    }
+  },
+  "edge": {}
+}

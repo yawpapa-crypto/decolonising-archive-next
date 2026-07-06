@@ -1,0 +1,132 @@
+{
+  "objectID": 53221,
+  "isHighlight": false,
+  "accessionNumber": "2015.300.64a, b",
+  "accessionYear": "2015",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DP361146.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DP361146.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/as/original/DP361148.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP361139.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP361147.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 12490,
+      "role": "Artist",
+      "name": "Shikibu Terutada",
+      "constituentULAN_URL": "(not assigned)",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q11487047",
+      "gender": ""
+    }
+  ],
+  "department": "Asian Art",
+  "objectName": "Hanging scrolls",
+  "title": "Birds and Flowers of Summer and Autumn",
+  "culture": "Japan",
+  "period": "Muromachi period (1392–1573)",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Shikibu Terutada",
+  "artistDisplayBio": "Japanese, active mid–16th century",
+  "artistSuffix": "",
+  "artistAlphaSort": "Shikibu Terutada",
+  "artistNationality": "Japanese",
+  "artistBeginDate": "1534",
+  "artistEndDate": "1566",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q11487047",
+  "artistULAN_URL": "(not assigned)",
+  "objectDate": "mid-16th century",
+  "objectBeginDate": 1534,
+  "objectEndDate": 1566,
+  "medium": "Pair of hanging scrolls; ink and color on paper",
+  "dimensions": "Image (a): 37 11/16 × 17 5/8 in. (95.8 × 44.8 cm)\r\nOverall with mounting (a): 74 7/16 × 23 3/8 in. (189 × 59.3 cm)\r\nOverall with knobs (a): 74 7/16 × 25 3/16 in. (189 × 64 cm)\r\nImage (b): 37 11/16 × 17 5/8 in. (95.8 × 44.8 cm)\r\nOverall with mounting (b): 74 5/8 × 23 3/8 in. (189.5 × 59.3 cm)\r\nOverall with knobs (b): 74 5/8 × 25 3/16 in. (189.5 × 64 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall with mounting",
+      "elementDescription": "a",
+      "elementMeasurements": {
+        "Height": 189,
+        "Width": 59.3
+      }
+    },
+    {
+      "elementName": "Image",
+      "elementDescription": "a",
+      "elementMeasurements": {
+        "Height": 95.8,
+        "Width": 44.76759
+      }
+    },
+    {
+      "elementName": "Overall with knobs",
+      "elementDescription": "b",
+      "elementMeasurements": {
+        "Height": 189.5,
+        "Width": 64
+      }
+    },
+    {
+      "elementName": "Overall with mounting",
+      "elementDescription": "b",
+      "elementMeasurements": {
+        "Height": 189.5,
+        "Width": 59.3
+      }
+    },
+    {
+      "elementName": "Image",
+      "elementDescription": "b",
+      "elementMeasurements": {
+        "Height": 95.8,
+        "Width": 44.8
+      }
+    },
+    {
+      "elementName": "Overall with knobs",
+      "elementDescription": "a",
+      "elementMeasurements": {
+        "Height": 189,
+        "Width": 64
+      }
+    }
+  ],
+  "creditLine": "Mary Griggs Burke Collection, Gift of the Mary and Jackson Burke Foundation, 2015",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Paintings",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-05-27T04:55:05.427Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/53221",
+  "tags": [
+    {
+      "term": "Birds",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300266506",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q5113"
+    },
+    {
+      "term": "Flowers",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132399",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q506"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q44460941",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

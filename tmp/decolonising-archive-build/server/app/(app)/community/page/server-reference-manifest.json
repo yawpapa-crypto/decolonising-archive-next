@@ -1,0 +1,17 @@
+{
+  "node": {
+    "40d8cd25de95eae3843cb095cc1b8bdc2009ce1ab4": {
+      "workers": {
+        "app/(app)/community/page": {
+          "moduleId": 65661,
+          "async": false,
+          "exportedName": "createCommunityContribution",
+          "filename": "app/(app)/community/actions.ts"
+        }
+      },
+      "exportedName": "createCommunityContribution",
+      "filename": "app/(app)/community/actions.ts"
+    }
+  },
+  "edge": {}
+}

@@ -1,0 +1,87 @@
+{
+  "objectID": 195613,
+  "isHighlight": false,
+  "accessionNumber": "26.267.43",
+  "accessionYear": "1926",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/66561.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/66561.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 33070,
+      "role": "Maker",
+      "name": "Watchmaker: Bolviller",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Watch",
+  "title": "Watch",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "Watchmaker:",
+  "artistDisplayName": "Bolviller",
+  "artistDisplayBio": "active Paris",
+  "artistSuffix": "",
+  "artistAlphaSort": "Bolviller",
+  "artistNationality": "",
+  "artistBeginDate": "1800",
+  "artistEndDate": "1900",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1840",
+  "objectBeginDate": 1835,
+  "objectEndDate": 1845,
+  "medium": "Gold, enamel",
+  "dimensions": "Diameter: 1 1/2 in. (3.8 cm)",
+  "measurements": [
+    {
+      "elementName": "Diameter",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 3.8100076
+      }
+    }
+  ],
+  "creditLine": "Anonymous Gift, in memory of Lady May Fletcher-Moulton, 1926",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Horology",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2021-04-30T11:13:27.41Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/195613",
+  "tags": [
+    {
+      "term": "Girls",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300247581",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q3031"
+    },
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

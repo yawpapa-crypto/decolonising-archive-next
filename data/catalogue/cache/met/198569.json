@@ -1,0 +1,97 @@
+{
+  "objectID": 198569,
+  "isHighlight": false,
+  "accessionNumber": "40.14.2a, b",
+  "accessionYear": "1940",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP-261-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP-261-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP-261-002.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP-261-003.jpg"
+  ],
+  "constituents": null,
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Bust",
+  "title": "Bust of Christ",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "late 16th century",
+  "objectBeginDate": 1585,
+  "objectEndDate": 1599,
+  "medium": "Bronze",
+  "dimensions": "Overall Bust .a confirmed: 9 1/2 × 5 1/2 × 4 1/8 in. (24.1 × 14 × 10.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Height",
+      "elementDescription": "Tube .b",
+      "elementMeasurements": {
+        "Height": 12.3825245
+      }
+    },
+    {
+      "elementName": "Height",
+      "elementDescription": "Bust .a",
+      "elementMeasurements": {
+        "Height": 24.130049
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "Overall Bust .a confirmed",
+      "elementMeasurements": {
+        "Depth": 10.477521,
+        "Height": 24.130049,
+        "Width": 13.970028
+      }
+    }
+  ],
+  "creditLine": "Rogers Fund, 1940",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture-Bronze",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/198569",
+  "tags": [
+    {
+      "term": "Portraits",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300015637",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q134307"
+    },
+    {
+      "term": "Christ",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901000087",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q642420"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116308170",
+  "isTimelineWork": false,
+  "GalleryNumber": "536"
+}

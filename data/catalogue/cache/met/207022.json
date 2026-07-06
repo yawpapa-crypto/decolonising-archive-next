@@ -1,0 +1,82 @@
+{
+  "objectID": 207022,
+  "isHighlight": false,
+  "accessionNumber": "1982.60.118, .119",
+  "accessionYear": "1982",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/232628.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/232628.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/232629.jpg"
+  ],
+  "constituents": null,
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Statuette",
+  "title": "Two Landsknechts",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "mid-16th century",
+  "objectBeginDate": 1530,
+  "objectEndDate": 1565,
+  "medium": "Bronze, with natural brown patina, and remains of black lacquer",
+  "dimensions": "Height (.118): 8 3/8 in. (21.3 cm); Height (.119): 9 3/8 in. (23.8 cm)",
+  "measurements": [
+    {
+      "elementName": "Height",
+      "elementDescription": ".119",
+      "elementMeasurements": {
+        "Height": 23.812548
+      }
+    },
+    {
+      "elementName": "Height",
+      "elementDescription": ".118",
+      "elementMeasurements": {
+        "Height": 21.272543
+      }
+    }
+  ],
+  "creditLine": "The Jack and Belle Linsky Collection, 1982",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture-Bronze",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2023-02-07T04:46:51.34Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/207022",
+  "tags": [
+    {
+      "term": "Soldiers",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300185678",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q4991371"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116307573",
+  "isTimelineWork": false,
+  "GalleryNumber": "537"
+}

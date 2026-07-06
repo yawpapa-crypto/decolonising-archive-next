@@ -1,0 +1,100 @@
+{
+  "objectID": 196403,
+  "isHighlight": false,
+  "accessionNumber": "29.52.14",
+  "accessionYear": "1929",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP340878.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP340878.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP347610.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP347613.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP347616.jpg"
+  ],
+  "constituents": null,
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Automaton clock",
+  "title": "Automaton clock in the form of an eagle",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1630",
+  "objectBeginDate": 1625,
+  "objectEndDate": 1635,
+  "medium": "Case: gilded brass on base of ebony and ebony veneered on fruitwood; Movement: brass and iron",
+  "dimensions": "Overall: 13 1/4 × 9 1/8 × 7 5/8 in. (33.7 × 23.2 × 19.4 cm); Width of back plate: 5 1/8 in. (13 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "historic dimensions superseded",
+      "elementMeasurements": {
+        "Depth": 20.00254,
+        "Height": 33.020065,
+        "Width": 20.00254
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 19.367538,
+        "Height": 33.655067,
+        "Width": 23.177546
+      }
+    },
+    {
+      "elementName": "Width",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Width": 13
+      }
+    }
+  ],
+  "creditLine": "Gift of Mrs. Simon Guggenheim, 1929",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Horology",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-11-21T10:05:27.96Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/196403",
+  "tags": [
+    {
+      "term": "Eagles",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250049",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q2092297"
+    },
+    {
+      "term": "Snakes",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250870",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q2102"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

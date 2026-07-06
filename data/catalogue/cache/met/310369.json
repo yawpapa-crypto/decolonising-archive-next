@@ -1,0 +1,95 @@
+{
+  "objectID": 310369,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.353",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP231462.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP231462.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP234567.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP234568.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP231463.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 219152,
+      "role": "Artist",
+      "name": "Akan artist",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Head",
+  "title": "Female ntiri (memorial head)",
+  "culture": "Akan",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Akan artist",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Akan artist",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "17th century (?)",
+  "objectBeginDate": 1600,
+  "objectEndDate": 1700,
+  "medium": "Terracotta, applied coating",
+  "dimensions": "H. 11 5/8 × W. 6 3/4 × D. 6 3/4 in. (29.5 × 17.1 × 17.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 17.145035,
+        "Height": 29.52756,
+        "Width": 17.145035
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "without mount",
+      "elementMeasurements": {
+        "Height": 28.892557
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of Nelson A. Rockefeller, 1964",
+  "geographyType": "",
+  "city": "Fomena (?)",
+  "state": "",
+  "county": "",
+  "country": "Ghana",
+  "region": "Adanse traditional area",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-03-19T04:55:24.63Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310369",
+  "tags": [
+    {
+      "term": "Heads",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300375054",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q3409626"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": "341"
+}

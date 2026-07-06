@@ -1,0 +1,109 @@
+{
+  "objectID": 201731,
+  "isHighlight": false,
+  "accessionNumber": "54.147.23",
+  "accessionYear": "1954",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP-20001-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP-20001-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP-20001-003.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP-20001-004.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP-20001-002.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 164856,
+      "role": "Manufactory",
+      "name": "Sèvres Manufactory",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500054661",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q653307",
+      "gender": ""
+    },
+    {
+      "constituentID": 33680,
+      "role": "Modeler",
+      "name": "After a model by Etienne-Maurice Falconet",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500115285",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q289246",
+      "gender": ""
+    },
+    {
+      "constituentID": 161703,
+      "role": "Artist",
+      "name": "After a drawing by François Boucher",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500032143",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q180932",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Group",
+  "title": "The Schoolmistress",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Manufactory",
+  "artistPrefix": "",
+  "artistDisplayName": "Sèvres Manufactory",
+  "artistDisplayBio": "French, 1740–present",
+  "artistSuffix": "",
+  "artistAlphaSort": "Sèvres Manufactory",
+  "artistNationality": "French",
+  "artistBeginDate": "1740",
+  "artistEndDate": "9999",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q653307",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500054661",
+  "objectDate": "ca. 1762",
+  "objectBeginDate": 1757,
+  "objectEndDate": 1767,
+  "medium": "Soft-paste biscuit porcelain",
+  "dimensions": "confirmed: 8 3/8 × 7 × 5 9/16 in. (21.3 × 17.8 × 14.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "confirmed",
+      "elementMeasurements": {
+        "Depth": 14.128778,
+        "Height": 21.272543,
+        "Width": 17.780035
+      }
+    }
+  ],
+  "creditLine": "Gift of R. Thornton Wilson, in memory of Florence Ellsworth Wilson, 1954",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Porcelain",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-07-24T04:50:20.827Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/201731",
+  "tags": [
+    {
+      "term": "Children",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025945",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q7569"
+    },
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116399568",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

@@ -1,0 +1,96 @@
+{
+  "objectID": 72801,
+  "isHighlight": false,
+  "accessionNumber": "2005.509.30",
+  "accessionYear": "2005",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 12315,
+      "role": "Artist",
+      "name": "Wang Xuetao",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500125696",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q52157058",
+      "gender": ""
+    }
+  ],
+  "department": "Asian Art",
+  "objectName": "Album leaf",
+  "title": "Mantises Fighting on Bamboo",
+  "culture": "China",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Wang Xuetao",
+  "artistDisplayBio": "Chinese, 1903–1982",
+  "artistSuffix": "",
+  "artistAlphaSort": "Wang Xuetao",
+  "artistNationality": "Chinese",
+  "artistBeginDate": "1903",
+  "artistEndDate": "1982",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q52157058",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500125696",
+  "objectDate": "20th century",
+  "objectBeginDate": 1903,
+  "objectEndDate": 1982,
+  "medium": "Album leaf; ink and color on paper",
+  "dimensions": "Image: 13 3/8 x 17 5/8 in. (34 x 44.8 cm)\r\nOverall with rollers: 53 1/8 x 26 9/16 in. (135 x 67.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall with knobs",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 135,
+        "Width": 67.5
+      }
+    },
+    {
+      "elementName": "Image",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 34,
+        "Width": 44.8
+      }
+    }
+  ],
+  "creditLine": "The Lin Yutang Family Collection, Gift of Richard M. Lai, Jill Lai Miller, and Larry C. Lai, in memory of Taiyi Lin Lai, 2005",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Paintings",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/72801",
+  "tags": [
+    {
+      "term": "Insects",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300310470",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q1390"
+    },
+    {
+      "term": "Bamboo",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300311500",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q670887"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q126147372",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

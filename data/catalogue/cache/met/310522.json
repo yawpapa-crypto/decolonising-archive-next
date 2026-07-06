@@ -1,0 +1,87 @@
+{
+  "objectID": 310522,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.70",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP-24352-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP-24352-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-24352-005.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-24352-006.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-24352-002.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-24352-004.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-24352-003.jpg"
+  ],
+  "constituents": null,
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Bottle",
+  "title": "Stirrup-spout bottle with confronting figures",
+  "culture": "Moche",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "500–800 CE",
+  "objectBeginDate": 500,
+  "objectEndDate": 800,
+  "medium": "Ceramic, slip",
+  "dimensions": "H. 9 x Diam. 6 1/2 in. (22.9 x 16.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 22.86
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "with handle",
+      "elementMeasurements": {
+        "Diameter": 16.51
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 15.24
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Purchase, Nelson A. Rockefeller Gift, 1961",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Peru",
+  "region": "North Coast",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Containers",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-20T04:50:39.43Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310522",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": true,
+  "GalleryNumber": ""
+}

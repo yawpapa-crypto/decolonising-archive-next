@@ -1,0 +1,113 @@
+{
+  "objectID": 59669,
+  "isHighlight": true,
+  "accessionNumber": "2007.329",
+  "accessionYear": "2007",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DP156184.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DP156184.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/as/original/DP156181.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP156182.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DT2620.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 37502,
+      "role": "Artist",
+      "name": "Unidentified artist",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "Asian Art",
+  "objectName": "Hanging scroll",
+  "title": "Portrait of Shun'oku Myōha",
+  "culture": "Japan",
+  "period": "Nanbokuchō period (1336–92)",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Unidentified artist",
+  "artistDisplayBio": "",
+  "artistSuffix": "Japanese",
+  "artistAlphaSort": "Unidentified artist",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1383",
+  "objectBeginDate": 1373,
+  "objectEndDate": 1393,
+  "medium": "Hanging scroll; ink, color, and gold on silk",
+  "dimensions": "Image: 45 5/8 × 20 1/2 in. (115.9 × 52.1 cm)\r\nOverall: 79 × 29 3/4 in. (200.7 × 75.6 cm)\r\nOverall with knobs: 79 × 31 5/8 in. (200.7 × 80.3 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 200.6604,
+        "Width": 75.56515
+      }
+    },
+    {
+      "elementName": "Image",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 115.88773,
+        "Width": 52.0701
+      }
+    },
+    {
+      "elementName": "Overall with knobs",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 200.6604,
+        "Width": 80.32766
+      }
+    }
+  ],
+  "creditLine": "Gift of Sylvan Barnet and William Burto, 2007",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Paintings",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-23T04:54:48.75Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/59669",
+  "tags": [
+    {
+      "term": "Poetry",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300055931",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q482"
+    },
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    },
+    {
+      "term": "Portraits",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300015637",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q134307"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q29383362",
+  "isTimelineWork": true,
+  "GalleryNumber": ""
+}

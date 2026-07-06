@@ -1,0 +1,88 @@
+{
+  "objectID": 187996,
+  "isHighlight": false,
+  "accessionNumber": "95.14.1a, b",
+  "accessionYear": "1895",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/43161.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/43161.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 34533,
+      "role": "Maker",
+      "name": "Pierre Charles Mané",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Box",
+  "title": "Box",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Pierre Charles Mané",
+  "artistDisplayBio": "master 1777; active 1793",
+  "artistSuffix": "",
+  "artistAlphaSort": "MANÉ PIERRE CHARLES",
+  "artistNationality": "",
+  "artistBeginDate": "1777",
+  "artistEndDate": "1793",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1787–88",
+  "objectBeginDate": 1787,
+  "objectEndDate": 1788,
+  "medium": "Gold",
+  "dimensions": "Overall: 7/8 × 2 1/2 in. (2.2 × 6.4 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 2.2225044,
+        "Width": 6.350013
+      }
+    }
+  ],
+  "creditLine": "The Moses Lazarus Collection, Gift of Josephine and Sarah Lazarus, in memory of their father, 1888-95",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Gold and Platinum",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-05-24T04:50:23.96Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/187996",
+  "tags": [
+    {
+      "term": "Musical Instruments",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300041620",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q34379"
+    },
+    {
+      "term": "Dogs",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300265714",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q144"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

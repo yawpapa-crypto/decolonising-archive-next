@@ -1,0 +1,93 @@
+{
+  "objectID": 285121,
+  "isHighlight": false,
+  "accessionNumber": "2003.161",
+  "accessionYear": "2003",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 163031,
+      "role": "Artist",
+      "name": "Malick Sidibé",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500125335",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q781717",
+      "gender": ""
+    }
+  ],
+  "department": "Photographs",
+  "objectName": "Photograph",
+  "title": "Baptême chez Jafuna",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Malick Sidibé",
+  "artistDisplayBio": "Malian, Soloba 1936–2016 Bamako",
+  "artistSuffix": "",
+  "artistAlphaSort": "Sidibé, Malick",
+  "artistNationality": "Malian",
+  "artistBeginDate": "1936",
+  "artistEndDate": "2016-04-14",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q781717",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500125335",
+  "objectDate": "ca. 1968",
+  "objectBeginDate": 1966,
+  "objectEndDate": 1970,
+  "medium": "Gelatin silver print",
+  "dimensions": "49.8 x 36.8 cm (19 5/8 x 14 1/2 in.)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 49.8476,
+        "Width": 36.8301
+      }
+    }
+  ],
+  "creditLine": "Purchase, The Horace W. Goldsmith Foundation Gift, through Joyce and Robert Menschel, 2003",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Photographs",
+  "rightsAndReproduction": "© Estate of Malick Sidibé",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/285121",
+  "tags": [
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    },
+    {
+      "term": "Portraits",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300015637",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q134307"
+    },
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q61876946",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

@@ -1,0 +1,78 @@
+{
+  "objectID": 38127,
+  "isHighlight": true,
+  "accessionNumber": "1991.421",
+  "accessionYear": "1991",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/22r3_61B.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/22r3_61B.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/as/original/DP314864.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP310500.jpg"
+  ],
+  "constituents": null,
+  "department": "Asian Art",
+  "objectName": "Figure",
+  "title": "Shiva as Mrityunjaya, the Conquerer of Death",
+  "culture": "Bangladesh or India (Bengal)",
+  "period": "Pala period",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "12th century",
+  "objectBeginDate": 1100,
+  "objectEndDate": 1199,
+  "medium": "Black stone",
+  "dimensions": "H. 38 in. (96.5 cm); W. 20 in. (50.8 cm); D. 7 1/2 in. (19.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 19.1,
+        "Height": 96.52,
+        "Width": 50.8
+      }
+    }
+  ],
+  "creditLine": "Gift of Florence and Herbert Irving, in memory of Alice Boney, 1991",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-06-03T04:56:30.59Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/38127",
+  "tags": [
+    {
+      "term": "Shiva",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901000021",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q11378"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q83562067",
+  "isTimelineWork": true,
+  "GalleryNumber": "238"
+}

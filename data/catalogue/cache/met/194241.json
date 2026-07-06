@@ -1,0 +1,104 @@
+{
+  "objectID": 194241,
+  "isHighlight": false,
+  "accessionNumber": "17.190.1736a–c",
+  "accessionYear": "1917",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP246604.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP246604.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 163122,
+      "role": "Artist",
+      "name": "Andrea Bregno",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500020750",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q493515",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Relief and pilasters",
+  "title": "Saint Andrew",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Andrea Bregno",
+  "artistDisplayBio": "Italian, Osteno 1418–1503 Rome",
+  "artistSuffix": "",
+  "artistAlphaSort": "Bregno, Andrea",
+  "artistNationality": "Italian",
+  "artistBeginDate": "1418",
+  "artistEndDate": "1503",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q493515",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500020750",
+  "objectDate": "1491",
+  "objectBeginDate": 1491,
+  "objectEndDate": 1491,
+  "medium": "Marble",
+  "dimensions": "Overall, assembled (confirmed): H. 47 1/8 x W. 31 3/4 x D. 6 3/4 in., 439lb. (119.7 x 80.6 x 17.1 cm, 199.1291kg);\r\nWeight, central panel: 271lb. (122.9248kg);\r\nWeight, each pilaster: 84 lb. (38.1022kg)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Weight": 122.9248
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Weight": 38.10215
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "confirmed",
+      "elementMeasurements": {
+        "Depth": 17.145035,
+        "Height": 119.7,
+        "Weight": 199.1291,
+        "Width": 80.6
+      }
+    }
+  ],
+  "creditLine": "Gift of J. Pierpont Morgan, 1917",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/194241",
+  "tags": [
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    },
+    {
+      "term": "Saints",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300150555",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q43115"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116374118",
+  "isTimelineWork": false,
+  "GalleryNumber": "500"
+}

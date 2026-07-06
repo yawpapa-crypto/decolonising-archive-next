@@ -1,0 +1,1647 @@
+@import "./tokens.css";
+
+/* ═══════════════════════════════════════════════════════════════════
+   1. Page shell — flat white, one content rail (1080px)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.workbench-notes-page-premium {
+  background: #ffffff !important;
+  color: #111111;
+  font-family: var(--archive-ui-font);
+}
+
+.workbench-notes-page-premium .workbench-notes-figma-shell,
+.workbench-notes-page-premium .workbench-notes-view {
+  background: #ffffff;
+}
+
+/* Neutralise legacy workbench.css premium grid (list column / borders) */
+.workbench-notes-page-premium .workbench-notes-layout-premium.workbench-notes-layout--editor-only {
+  display: block !important;
+  width: 100% !important;
+  max-width: var(--notes-content-max) !important;
+  min-height: 0 !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.workbench-notes-page-premium .workbench-notes-list-panel,
+.workbench-notes-page-premium .workbench-notes-resizer {
+  display: none !important;
+}
+
+.workbench-notes-page-premium .workbench-note-editor-shell {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  background: #ffffff !important;
+}
+
+/* Shared content width: header + workspace stack */
+.workbench-notes-page-premium .workbench-notes-header,
+.workbench-notes-page-premium .workbench-editorial-workspace {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--notes-content-max);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   2. Header
+   ═══════════════════════════════════════════════════════════════════ */
+
+.workbench-notes-page-premium .workbench-notes-header {
+  margin-bottom: 0 !important;
+  padding: 20px 0 16px !important;
+  border: 0 !important;
+  background: #ffffff !important;
+}
+
+.workbench-notes-page-premium .workbench-notes-page-header__top {
+  align-items: flex-start !important;
+}
+
+.workbench-notes-page-premium .workbench-notes-eyebrow {
+  margin: 0 0 6px !important;
+  color: #6b6b66 !important;
+  font-size: 11px !important;
+  font-weight: 650 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+.workbench-notes-page-premium .workbench-notes-heading-block h1 {
+  margin: 0 0 6px !important;
+  color: #111111 !important;
+  font-size: 28px !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+}
+
+.workbench-notes-page-premium .workbench-notes-heading-block > p {
+  margin: 0 !important;
+  color: #6b6b66 !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  max-width: 42rem !important;
+}
+
+/* Metadata row in header hidden when editorial bar is active */
+.workbench-notes-page-premium.workbench-editorial-reading .workbench-notes-header-meta-row {
+  display: none !important;
+}
+
+.workbench-notes-page-premium .workbench-notes-new-button {
+  min-width: auto !important;
+  height: 32px !important;
+  padding: 0 14px !important;
+  border: 1px solid var(--notes-border-subtle) !important;
+  background: #ffffff !important;
+  color: #111111 !important;
+  box-shadow: none !important;
+}
+
+.workbench-notes-page-premium .workbench-note-mode-button.is-active {
+  background: var(--notes-focus) !important;
+  border-color: #111111 !important;
+  color: #111111 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   3. Floating notes menu (hamburger) + popover
+   ═══════════════════════════════════════════════════════════════════ */
+
+.workbench-notes-page-premium .workbench-floating-notes-menu {
+  position: fixed;
+  top: 96px;
+  left: 244px;
+  z-index: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+}
+
+.workbench-notes-page-premium .workbench-floating-notes-menu:hover {
+  background: #f7f7f7;
+  border-color: #dfff35;
+}
+
+.workbench-notes-page-premium .workbench-notes-popover {
+  position: fixed;
+  top: 136px;
+  left: 244px;
+  z-index: 510;
+  display: flex;
+  flex-direction: column;
+  width: min(340px, calc(100vw - var(--workbench-sidebar-width, 180px) - 48px));
+  max-height: calc(100vh - 152px);
+  overflow: hidden;
+  border: 1px solid var(--notes-border-subtle);
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 16px 48px rgba(17, 17, 17, 0.12);
+}
+
+.workbench-notes-page-premium .workbench-notes-popover__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  height: 44px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--notes-border-subtle);
+  background: #ffffff;
+}
+
+.workbench-notes-page-premium .workbench-notes-popover__header strong {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #111111;
+}
+
+.workbench-notes-page-premium .workbench-notes-popover__close {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--notes-border-subtle);
+  border-radius: 6px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.workbench-notes-page-premium .workbench-notes-popover__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  background: #ffffff;
+}
+
+.workbench-notes-page-premium .workbench-note-list-search {
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-bottom: 1px solid var(--notes-border-subtle);
+  background: #ffffff;
+  font-size: 13px;
+}
+
+.workbench-notes-page-premium .workbench-notes-list-count {
+  margin: 0;
+  padding: 6px 12px;
+  color: #6b6b66;
+  font-size: 11px;
+}
+
+.workbench-notes-page-premium .workbench-note-list-item__main:hover,
+.workbench-notes-page-premium .workbench-note-list-item.is-active .workbench-note-list-item__main {
+  background: var(--notes-hover) !important;
+}
+
+.workbench-notes-page-premium .workbench-note-active-strip {
+  background: var(--notes-focus) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   4. Editorial workspace — white shells, no grid inspector column
+   ═══════════════════════════════════════════════════════════════════ */
+
+.workbench-notes-page-premium .workbench-editorial-workspace {
+  background: #ffffff;
+}
+
+.workbench-notes-page-premium .workbench-doc-metadata-bar,
+.workbench-notes-page-premium .workbench-note-menu-bar,
+.workbench-notes-page-premium .workbench-figma-formatting-bar {
+  width: 100%;
+  max-width: var(--notes-content-max);
+  margin-left: auto;
+  margin-right: auto;
+  background: #ffffff !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.workbench-notes-page-premium .workbench-doc-metadata-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 0 8px;
+}
+
+.workbench-notes-page-premium .workbench-doc-metadata-bar__select {
+  height: 32px;
+  border: 1px solid var(--notes-border-subtle);
+  border-radius: 6px;
+  background: #ffffff;
+  font-size: 13px;
+}
+
+.workbench-notes-page-premium .workbench-note-menu-bar {
+  min-height: 32px;
+  padding: 4px 0;
+  font-size: 13px;
+}
+
+.workbench-notes-page-premium .workbench-figma-formatting-bar {
+  padding: 2px 0 8px;
+}
+
+.workbench-notes-page-premium .workbench-figma-formatting-bar .workbench-editor-toolbar {
+  min-height: 36px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.workbench-notes-page-premium .workbench-editor-button {
+  min-height: 30px !important;
+  padding: 0 8px !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #111111 !important;
+  font-size: 12px !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+}
+
+.workbench-notes-page-premium .workbench-editor-button:hover {
+  background: var(--notes-hover) !important;
+}
+
+.workbench-notes-page-premium .workbench-editor-button.is-active {
+  background: #eeeeee !important;
+}
+
+.workbench-notes-page-premium .workbench-button-cite {
+  background: var(--notes-focus) !important;
+  font-weight: 600 !important;
+}
+
+/* Editor column — bounded height, centred document */
+.workbench-notes-page-premium .workbench-editorial-main {
+  display: block;
+  width: 100%;
+  min-height: 720px;
+  border: 0 !important;
+  background: #ffffff !important;
+}
+
+.workbench-notes-page-premium .workbench-editorial-main.has-inspector,
+.workbench-notes-page-premium .workbench-editorial-main.inspector-closed {
+  grid-template-columns: none;
+}
+
+.workbench-notes-page-premium .workbench-editorial-editor-column {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 0;
+  padding: 8px 0 32px;
+  background: #ffffff !important;
+}
+
+.workbench-notes-page-premium .workbench-reading-surface-host,
+.workbench-notes-page-premium .workbench-reading-surface-host--paginated {
+  width: 100%;
+  padding: 0;
+  background: #ffffff !important;
+  overflow: visible;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   5. Document page
+   ═══════════════════════════════════════════════════════════════════ */
+
+.workbench-notes-page-premium .workbench-reading-page {
+  width: min(760px, 100%);
+  margin: 0 auto;
+  padding: 56px 64px;
+  min-height: 680px;
+  border: 0 !important;
+  box-shadow: none !important;
+  background: #ffffff !important;
+  font-family: var(--archive-doc-font);
+}
+
+.workbench-notes-page-premium .workbench-reading-title {
+  width: 100%;
+  margin: 0 0 28px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #111111;
+  font-family: var(--archive-ui-font);
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1.15;
+}
+
+.workbench-notes-page-premium .workbench-reading-page__folio {
+  position: absolute;
+  right: 20px;
+  bottom: 16px;
+  color: #9a9a94;
+  font-size: 11px;
+}
+
+.workbench-notes-page-premium .workbench-rich-editor-shell,
+.workbench-notes-page-premium .workbench-rich-editor-wrap {
+  border: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.workbench-notes-page-premium .workbench-rich-editor {
+  color: #181713;
+  font-family: var(--archive-doc-font);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.workbench-notes-page-premium .workbench-rich-editor .ProseMirror {
+  min-height: 400px;
+  outline: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   6. Research Inspector — floating palette
+   ═══════════════════════════════════════════════════════════════════ */
+
+.workbench-notes-page-premium .workbench-inspector-shell,
+.workbench-notes-page-premium .workbench-floating-inspector-panel {
+  position: fixed;
+  top: 112px;
+  right: 32px;
+  z-index: 480;
+  display: flex;
+  flex-direction: column;
+  width: min(370px, calc(100vw - 64px));
+  max-height: calc(100vh - 132px);
+  overflow: hidden;
+  border: 1px solid #e7e7e7;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.08);
+}
+
+.workbench-notes-page-premium .workbench-inspector-shell__topbar,
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  gap: 12px;
+  height: 44px;
+  padding: 0 14px;
+  border-bottom: 1px solid #eeeeee;
+  background: #ffffff;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle:active,
+.workbench-notes-page-premium .workbench-inspector-shell__topbar:active {
+  cursor: grabbing;
+}
+
+.workbench-notes-page-premium .workbench-inspector-shell__title,
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle span {
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #737373;
+}
+
+.workbench-notes-page-premium .workbench-inspector-shell__close,
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle button {
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid #e6e6e6;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.workbench-notes-page-premium .workbench-inspector-shell__close:hover,
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle button:hover {
+  background: #f7f7f7;
+  border-color: #dfff35;
+}
+
+.workbench-notes-page-premium .workbench-inspector-shell .workbench-research-inspector,
+.workbench-notes-page-premium .workbench-floating-inspector-panel .workbench-research-inspector,
+.workbench-notes-page-premium .workbench-research-inspector {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  max-height: none;
+  overflow: hidden;
+  border: 0;
+  background: #ffffff;
+  color: #111111;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__header {
+  display: none !important;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  flex-shrink: 0;
+  background: #ffffff;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__tab {
+  height: 42px;
+  margin: 0;
+  padding: 0 8px;
+  border: 0;
+  border-right: 0;
+  border-bottom: 2px solid transparent;
+  background: #ffffff !important;
+  color: #111111 !important;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: none !important;
+  border-radius: 0;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__tab:hover {
+  background: #ffffff !important;
+  color: #111111 !important;
+  box-shadow: none !important;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__tab.is-active {
+  background: #ffffff !important;
+  color: #111111 !important;
+  border-bottom-color: #dfff35;
+  box-shadow: none !important;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__body {
+  flex: 1;
+  min-height: 0;
+  padding: 16px;
+  overflow-y: auto;
+  background: #ffffff;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__field-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 14px;
+  color: #737373;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__style-select {
+  flex: 1;
+  min-width: 0;
+  max-width: 168px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 12px;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__btn,
+.workbench-notes-page-premium .workbench-research-inspector__btn--cite,
+.workbench-notes-page-premium .workbench-research-inspector__btn--full {
+  height: 32px;
+  min-height: 32px;
+  padding: 0 14px;
+  border: 1px solid #e6e6e6;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__btn--cite,
+.workbench-notes-page-premium .workbench-research-inspector__btn--cite.workbench-research-inspector__btn--full {
+  width: auto;
+  margin-top: 12px;
+  border-color: #dfff35;
+  background: #f7fbe8;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__btn--cite:hover {
+  background: #f0f8d4;
+  border-color: #dfff35;
+}
+
+.workbench-notes-page-premium .workbench-inspector-source-card {
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border: 1px solid #eeeeee;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.workbench-notes-page-premium .workbench-inspector-source-card h3 {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #111111;
+}
+
+.workbench-notes-page-premium .workbench-inspector-source-card p {
+  margin: 0 0 10px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #737373;
+}
+
+.workbench-notes-page-premium .workbench-inspector-source-card__tag {
+  display: inline-flex;
+  margin-bottom: 10px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #f7f7f7;
+  color: #737373;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.workbench-notes-page-premium .workbench-inspector-source-card__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.workbench-notes-page-premium .workbench-inspector-source-card__actions button {
+  flex: 1;
+  height: 30px;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid #e6e6e6;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.workbench-notes-page-premium .workbench-inspector-source-card__actions button:hover {
+  background: #f7f7f7;
+  border-color: #dfff35;
+}
+
+.workbench-notes-page-premium .workbench-inspector-source-card__actions .is-cite {
+  border-color: #dfff35;
+  background: #f7fbe8;
+}
+
+.workbench-notes-page-premium .workbench-inspector-source-card__actions .is-cite:hover {
+  background: #f0f8d4;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__outline button {
+  width: 100%;
+  padding: 6px 0;
+  border: 0;
+  background: transparent;
+  color: #111111;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__outline button:hover {
+  color: #737373;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__empty,
+.workbench-notes-page-premium .workbench-research-inspector__linked-count,
+.workbench-notes-page-premium .workbench-research-inspector__section-label {
+  color: #737373;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__citations code {
+  font-size: 12px;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-menu {
+  position: fixed;
+  top: 96px;
+  right: 32px;
+  z-index: 470;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-menu:hover {
+  background: #f7f7f7;
+  border-color: #dfff35;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   7. Footer
+   ═══════════════════════════════════════════════════════════════════ */
+
+.workbench-notes-page-premium ~ footer,
+.workbench-shell:has(.workbench-notes-page-premium) footer,
+.workbench-shell:has(.workbench-notes-page-premium) .site-footer {
+  background: #ffffff !important;
+  border-top: 1px solid var(--notes-border-subtle) !important;
+  padding-top: 20px !important;
+  padding-bottom: 20px !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   8. Responsive
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1100px) {
+  .workbench-notes-page-premium {
+    --workbench-sidebar-width: 0px;
+  }
+
+  .workbench-notes-page-premium .workbench-floating-notes-menu {
+    left: 16px;
+    top: 88px;
+  }
+
+  .workbench-notes-page-premium .workbench-notes-popover {
+    left: 16px;
+    top: 128px;
+    width: min(340px, calc(100vw - 32px));
+  }
+
+  .workbench-notes-page-premium .workbench-inspector-shell,
+  .workbench-notes-page-premium .workbench-floating-inspector-panel {
+    right: 16px;
+    top: 104px;
+    width: min(370px, calc(100vw - 32px));
+  }
+
+  .workbench-notes-page-premium .workbench-floating-inspector-menu {
+    right: 16px;
+    top: 88px;
+  }
+
+  .workbench-notes-page-premium .workbench-reading-page {
+    padding: 40px 28px;
+  }
+}
+
+@media (max-width: 720px) {
+  .workbench-notes-page-premium .workbench-notes-header,
+  .workbench-notes-page-premium .workbench-editorial-workspace {
+    max-width: 100%;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .workbench-notes-page-premium .workbench-reading-page {
+    padding: 32px 20px;
+    min-height: 520px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   9. Focus — notes page only
+   ═══════════════════════════════════════════════════════════════════ */
+
+.workbench-notes-page-premium :is(button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--notes-focus);
+  outline-offset: 2px;
+}
+
+/* Neutralise editorial.css layer (loaded earlier) — keep notes page white/flat */
+.workbench-notes-page-premium .workbench-editorial-reading,
+.workbench-notes-page-premium .workbench-editorial-reading .workbench-editorial-workspace,
+.workbench-notes-page-premium .workbench-editorial-reading .workbench-editorial-main,
+.workbench-notes-page-premium .workbench-editorial-reading .workbench-editorial-editor-column,
+.workbench-notes-page-premium .workbench-editorial-reading .workbench-reading-surface-host,
+.workbench-notes-page-premium .workbench-editorial-reading .workbench-reading-page {
+  background: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.workbench-notes-page-premium .workbench-editorial-reading .workbench-editorial-main {
+  display: block !important;
+  min-height: 720px !important;
+  max-height: none !important;
+  grid-template-columns: none !important;
+}
+
+.workbench-notes-page-premium .workbench-editorial-reading .workbench-reading-page {
+  width: min(760px, 100%) !important;
+  min-height: 680px !important;
+  padding: 56px 64px !important;
+}
+
+/* Protect global workbench sidebar icons (not notes-scoped bleed) */
+.workbench-sidebar svg,
+.workbench-nav svg {
+  display: inline-flex;
+  width: 1em;
+  height: 1em;
+  opacity: 1;
+  visibility: visible;
+  flex-shrink: 0;
+}
+
+/* =========================================================
+   TARGETED UI FIX: NOTES MENU + FLOATING INSPECTOR
+   Fixes crude hamburger and inspector chrome
+========================================================= */
+
+/* Small, quiet notes hamburger. Do not overlap title. */
+.workbench-notes-page-premium .workbench-floating-notes-menu {
+  position: fixed !important;
+  top: 112px !important;
+  left: 248px !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  padding: 0 !important;
+  border-radius: 8px !important;
+  border: 1px solid #e6e6e6 !important;
+  background: #ffffff !important;
+  color: #111111 !important;
+  font-size: 15px !important;
+  line-height: 1 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 600 !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-notes-menu:hover {
+  background: #f7f7f7 !important;
+  border-color: #dfff35 !important;
+}
+
+/* Stop older toggle styles from creating the huge crude box */
+.workbench-notes-page-premium .workbench-floating-notes-toggle {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  padding: 0 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Floating inspector polished panel */
+.workbench-notes-page-premium .workbench-floating-inspector-panel {
+  border: 1px solid #e7e7e7 !important;
+  border-radius: 14px !important;
+  background: #ffffff !important;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.08) !important;
+  overflow: hidden !important;
+  width: min(380px, calc(100vw - 48px)) !important;
+}
+
+/* Inspector drag handle */
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle {
+  height: 44px !important;
+  padding: 0 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  cursor: grab !important;
+  border-bottom: 1px solid #eeeeee !important;
+  background: #ffffff !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle:active {
+  cursor: grabbing !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle span {
+  font-size: 11px !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+  color: #737373 !important;
+  font-weight: 650 !important;
+}
+
+/* Refined close button */
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle button,
+.workbench-notes-page-premium .workbench-research-inspector__close,
+.workbench-notes-page-premium .workbench-inspector-shell__close {
+  height: 28px !important;
+  min-height: 28px !important;
+  padding: 0 10px !important;
+  border-radius: 999px !important;
+  border: 1px solid #e6e6e6 !important;
+  background: #ffffff !important;
+  color: #111111 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  box-shadow: none !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle button:hover,
+.workbench-notes-page-premium .workbench-research-inspector__close:hover,
+.workbench-notes-page-premium .workbench-inspector-shell__close:hover {
+  background: #f7f7f7 !important;
+  border-color: #dfff35 !important;
+}
+
+/* Hide duplicate inspector title if floating handle already has title */
+.workbench-notes-page-premium .workbench-research-inspector__header {
+  display: none !important;
+}
+
+/* Cleaner tabs */
+.workbench-notes-page-premium .workbench-research-inspector__tabs {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  background: #ffffff !important;
+  border-bottom: 1px solid #eeeeee !important;
+  box-shadow: none !important;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__tab {
+  height: 42px !important;
+  border: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  background: #ffffff !important;
+  color: #111111 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__tab:hover {
+  background: #f7f7f7 !important;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__tab.is-active,
+.workbench-notes-page-premium .workbench-research-inspector__tab[aria-selected="true"] {
+  background: #ffffff !important;
+  color: #111111 !important;
+  border-bottom-color: #dfff35 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
+/* Inspector body */
+.workbench-notes-page-premium .workbench-research-inspector__body {
+  padding: 16px !important;
+  background: #ffffff !important;
+}
+
+/* Citation controls inside inspector */
+.workbench-notes-page-premium .workbench-research-inspector__body label,
+.workbench-notes-page-premium .workbench-research-inspector__body .workbench-muted {
+  color: #737373 !important;
+  font-size: 13px !important;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__body select {
+  height: 32px !important;
+  border: 1px solid #e2e2e2 !important;
+  border-radius: 6px !important;
+  background: #ffffff !important;
+  color: #111111 !important;
+  font-size: 13px !important;
+  padding: 0 28px 0 10px !important;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__body button:not(.workbench-research-inspector__tab) {
+  min-height: 32px !important;
+  border-radius: 8px !important;
+  border: 1px solid #e2e2e2 !important;
+  background: #ffffff !important;
+  color: #111111 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__body button:not(.workbench-research-inspector__tab):hover {
+  background: #f7f7f7 !important;
+  border-color: #dfff35 !important;
+}
+
+/* Source/citation cards refined */
+.workbench-notes-page-premium .workbench-inspector-source-card {
+  border: 1px solid #e7e7e7 !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.workbench-notes-page-premium .workbench-inspector-source-card__tag {
+  background: #f1f1f1 !important;
+  color: #111111 !important;
+  border-radius: 999px !important;
+}
+
+/* Cite button accent only */
+.workbench-notes-page-premium .workbench-inspector-source-card__actions .is-cite,
+.workbench-notes-page-premium .workbench-inspector-source-card__cite {
+  background: #dfff35 !important;
+  color: #111111 !important;
+  border-color: #dfff35 !important;
+}
+
+
+/* =========================================================
+   TARGETED UI FIX: NOTES MENU + FLOATING INSPECTOR
+   Fixes crude hamburger and inspector chrome
+========================================================= */
+
+/* Small, quiet notes hamburger. Do not overlap title. */
+.workbench-notes-page-premium .workbench-floating-notes-menu {
+  position: fixed !important;
+  top: 112px !important;
+  left: 248px !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  padding: 0 !important;
+  border-radius: 8px !important;
+  border: 1px solid #e6e6e6 !important;
+  background: #ffffff !important;
+  color: #111111 !important;
+  font-size: 15px !important;
+  line-height: 1 !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 600 !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-notes-menu:hover {
+  background: #f7f7f7 !important;
+  border-color: #dfff35 !important;
+}
+
+/* Stop older toggle styles from creating the huge crude box */
+.workbench-notes-page-premium .workbench-floating-notes-toggle {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  padding: 0 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Floating inspector polished panel */
+.workbench-notes-page-premium .workbench-floating-inspector-panel {
+  border: 1px solid #e7e7e7 !important;
+  border-radius: 14px !important;
+  background: #ffffff !important;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.08) !important;
+  overflow: hidden !important;
+  width: min(380px, calc(100vw - 48px)) !important;
+}
+
+/* Inspector drag handle */
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle {
+  height: 44px !important;
+  padding: 0 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  cursor: grab !important;
+  border-bottom: 1px solid #eeeeee !important;
+  background: #ffffff !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle:active {
+  cursor: grabbing !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle span {
+  font-size: 11px !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+  color: #737373 !important;
+  font-weight: 650 !important;
+}
+
+/* Refined close button */
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle button,
+.workbench-notes-page-premium .workbench-research-inspector__close,
+.workbench-notes-page-premium .workbench-inspector-shell__close {
+  height: 28px !important;
+  min-height: 28px !important;
+  padding: 0 10px !important;
+  border-radius: 999px !important;
+  border: 1px solid #e6e6e6 !important;
+  background: #ffffff !important;
+  color: #111111 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  box-shadow: none !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle button:hover,
+.workbench-notes-page-premium .workbench-research-inspector__close:hover,
+.workbench-notes-page-premium .workbench-inspector-shell__close:hover {
+  background: #f7f7f7 !important;
+  border-color: #dfff35 !important;
+}
+
+/* Hide duplicate inspector title if floating handle already has title */
+.workbench-notes-page-premium .workbench-research-inspector__header {
+  display: none !important;
+}
+
+/* Cleaner tabs */
+.workbench-notes-page-premium .workbench-research-inspector__tabs {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  background: #ffffff !important;
+  border-bottom: 1px solid #eeeeee !important;
+  box-shadow: none !important;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__tab {
+  height: 42px !important;
+  border: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  background: #ffffff !important;
+  color: #111111 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__tab:hover {
+  background: #f7f7f7 !important;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__tab.is-active,
+.workbench-notes-page-premium .workbench-research-inspector__tab[aria-selected="true"] {
+  background: #ffffff !important;
+  color: #111111 !important;
+  border-bottom-color: #dfff35 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
+/* Inspector body */
+.workbench-notes-page-premium .workbench-research-inspector__body {
+  padding: 16px !important;
+  background: #ffffff !important;
+}
+
+/* Citation controls inside inspector */
+.workbench-notes-page-premium .workbench-research-inspector__body label,
+.workbench-notes-page-premium .workbench-research-inspector__body .workbench-muted {
+  color: #737373 !important;
+  font-size: 13px !important;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__body select {
+  height: 32px !important;
+  border: 1px solid #e2e2e2 !important;
+  border-radius: 6px !important;
+  background: #ffffff !important;
+  color: #111111 !important;
+  font-size: 13px !important;
+  padding: 0 28px 0 10px !important;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__body button:not(.workbench-research-inspector__tab) {
+  min-height: 32px !important;
+  border-radius: 8px !important;
+  border: 1px solid #e2e2e2 !important;
+  background: #ffffff !important;
+  color: #111111 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+
+.workbench-notes-page-premium .workbench-research-inspector__body button:not(.workbench-research-inspector__tab):hover {
+  background: #f7f7f7 !important;
+  border-color: #dfff35 !important;
+}
+
+/* Source/citation cards refined */
+.workbench-notes-page-premium .workbench-inspector-source-card {
+  border: 1px solid #e7e7e7 !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.workbench-notes-page-premium .workbench-inspector-source-card__tag {
+  background: #f1f1f1 !important;
+  color: #111111 !important;
+  border-radius: 999px !important;
+}
+
+/* Cite button accent only */
+.workbench-notes-page-premium .workbench-inspector-source-card__actions .is-cite,
+.workbench-notes-page-premium .workbench-inspector-source-card__cite {
+  background: #dfff35 !important;
+  color: #111111 !important;
+  border-color: #dfff35 !important;
+}
+
+
+/* TEMP: hide misplaced floating notes hamburger */
+.workbench-notes-page-premium .workbench-floating-notes-menu,
+.workbench-notes-page-premium .workbench-floating-notes-toggle {
+  display: none !important;
+}
+
+
+/* Restore notes hamburger in left gutter, away from content */
+.workbench-notes-page-premium .workbench-floating-notes-menu {
+  display: inline-flex !important;
+  position: fixed !important;
+  top: 132px !important;
+  left: 158px !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  padding: 0 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid #e5e5e5 !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  color: #111111 !important;
+  box-shadow: none !important;
+  z-index: 700 !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-notes-menu:hover {
+  background: #f7f7f7 !important;
+  border-color: #dfff35 !important;
+}
+
+
+/* Final draggable notes menu position fix */
+.workbench-notes-page-premium .workbench-floating-notes-menu {
+  position: fixed !important;
+  left: var(--notes-menu-x, 150px) !important;
+  top: var(--notes-menu-y, 132px) !important;
+  cursor: grab !important;
+  touch-action: none !important;
+  user-select: none !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-notes-menu:active {
+  cursor: grabbing !important;
+}
+
+
+/* Active dark green notes hamburger */
+.workbench-notes-page-premium .workbench-floating-notes-menu {
+  background: #0f3d2e !important;
+  border-color: #0f3d2e !important;
+  color: #ffffff !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-notes-menu:hover {
+  background: #14543f !important;
+  border-color: #dfff35 !important;
+  color: #ffffff !important;
+}
+
+
+/* Larger glowing active notes hamburger */
+.workbench-notes-page-premium .workbench-floating-notes-menu {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  border-radius: 14px !important;
+  font-size: 20px !important;
+  background: #0f3d2e !important;
+  border-color: #0f3d2e !important;
+  color: #ffffff !important;
+  box-shadow:
+    0 0 0 3px rgba(223, 255, 53, 0.28),
+    0 0 22px rgba(15, 61, 46, 0.38),
+    0 14px 34px rgba(15, 61, 46, 0.28) !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-notes-menu:hover {
+  background: #14543f !important;
+  border-color: #dfff35 !important;
+  box-shadow:
+    0 0 0 4px rgba(223, 255, 53, 0.36),
+    0 0 30px rgba(223, 255, 53, 0.38),
+    0 18px 42px rgba(15, 61, 46, 0.34) !important;
+}
+
+
+/* =========================================================
+   GLOWING FLOATING ACTION BUTTONS + HELP TOOLTIPS
+   Notes + Research Inspector
+========================================================= */
+
+.workbench-notes-page-premium .workbench-floating-notes-menu,
+.workbench-notes-page-premium .workbench-floating-inspector-menu {
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  min-height: 52px !important;
+  border-radius: 16px !important;
+  border: 2px solid #dfff35 !important;
+  background: #0f3d2e !important;
+  color: #ffffff !important;
+  font-size: 22px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow:
+    0 0 0 4px rgba(223, 255, 53, 0.34),
+    0 0 28px rgba(223, 255, 53, 0.55),
+    0 18px 48px rgba(15, 61, 46, 0.38) !important;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-notes-menu:hover,
+.workbench-notes-page-premium .workbench-floating-inspector-menu:hover {
+  background: #14543f !important;
+  transform: translateY(-2px) scale(1.04) !important;
+  box-shadow:
+    0 0 0 5px rgba(223, 255, 53, 0.42),
+    0 0 42px rgba(223, 255, 53, 0.72),
+    0 22px 58px rgba(15, 61, 46, 0.44) !important;
+}
+
+/* Tooltip shell */
+.workbench-notes-page-premium .workbench-floating-notes-menu::after,
+.workbench-notes-page-premium .workbench-floating-inspector-menu::after {
+  position: absolute;
+  left: calc(100% + 14px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-4px);
+  width: 230px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #111816;
+  color: #ffffff;
+  font-size: 13px;
+  line-height: 1.45;
+  text-align: left;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24);
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease,
+    visibility 140ms ease;
+  z-index: 900;
+}
+
+/* Tooltip arrow */
+.workbench-notes-page-premium .workbench-floating-notes-menu::before,
+.workbench-notes-page-premium .workbench-floating-inspector-menu::before {
+  content: "";
+  position: absolute;
+  left: calc(100% + 6px);
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 8px 8px 8px 0;
+  border-style: solid;
+  border-color: transparent #111816 transparent transparent;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 140ms ease, visibility 140ms ease;
+  z-index: 901;
+}
+
+.workbench-notes-page-premium .workbench-floating-notes-menu:hover::after,
+.workbench-notes-page-premium .workbench-floating-notes-menu:hover::before,
+.workbench-notes-page-premium .workbench-floating-inspector-menu:hover::after,
+.workbench-notes-page-premium .workbench-floating-inspector-menu:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Tooltip content */
+.workbench-notes-page-premium .workbench-floating-notes-menu::after {
+  content: "Notes\\AOpen, search, and manage your research notes.";
+  white-space: pre-line;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-menu::after {
+  content: "Research Inspector\\AAnalyse sources, citations, outline, and linked research context.";
+  white-space: pre-line;
+}
+
+/* Keep inspector launcher visible and styled */
+.workbench-notes-page-premium .workbench-floating-inspector-menu {
+  position: fixed !important;
+  top: 150px !important;
+  right: 28px !important;
+  z-index: 700 !important;
+}
+
+/* Notes launcher still uses draggable CSS variables */
+.workbench-notes-page-premium .workbench-floating-notes-menu {
+  position: fixed !important;
+  left: var(--notes-menu-x, 150px) !important;
+  top: var(--notes-menu-y, 132px) !important;
+  z-index: 700 !important;
+}
+
+
+/* Draggable Research Inspector position */
+.workbench-notes-page-premium .workbench-floating-inspector-panel {
+  position: fixed !important;
+  left: var(--inspector-x, calc(100vw - 420px)) !important;
+  top: var(--inspector-y, 132px) !important;
+  right: auto !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle {
+  cursor: grab !important;
+  touch-action: none !important;
+  user-select: none !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle:active {
+  cursor: grabbing !important;
+}
+
+
+/* Fix floating inspector close + internal scroll */
+.workbench-notes-page-premium .workbench-floating-inspector-panel {
+  max-height: calc(100vh - 96px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-panel .workbench-research-inspector {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle {
+  flex: 0 0 auto !important;
+}
+
+
+/* Fix inspector dragging zone */
+.workbench-notes-page-premium .workbench-floating-inspector-panel__drag-zone {
+  flex: 1 1 auto !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  cursor: grab !important;
+  touch-action: none !important;
+  user-select: none !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-panel__drag-zone:active {
+  cursor: grabbing !important;
+}
+
+/* Inspector launcher tooltip should open left so it does not get cut off */
+.workbench-notes-page-premium .workbench-floating-inspector-menu::after {
+  left: auto !important;
+  right: calc(100% + 14px) !important;
+  top: 50% !important;
+  transform: translateY(-50%) translateX(4px) !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-menu::before {
+  left: auto !important;
+  right: calc(100% + 6px) !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  border-width: 8px 0 8px 8px !important;
+  border-color: transparent transparent transparent #111816 !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-menu:hover::after {
+  transform: translateY(-50%) translateX(0) !important;
+}
+
+
+/* Make the full inspector handle draggable, except close button */
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle {
+  cursor: grab !important;
+  touch-action: none !important;
+  user-select: none !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle:active {
+  cursor: grabbing !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle button {
+  cursor: pointer !important;
+  touch-action: auto !important;
+}
+
+/* Move inspector launcher inward so tooltip/panel does not get cut off */
+.workbench-notes-page-premium .workbench-floating-inspector-menu {
+  right: 92px !important;
+}
+
+/* Force opened inspector panel to stay inside viewport */
+.workbench-notes-page-premium .workbench-floating-inspector-panel {
+  left: auto !important;
+  right: 92px !important;
+  top: 132px !important;
+  width: 380px !important;
+  max-width: calc(100vw - 140px) !important;
+  max-height: calc(100vh - 160px) !important;
+  overflow: hidden !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-panel .workbench-research-inspector {
+  overflow-y: auto !important;
+  max-height: calc(100vh - 220px) !important;
+}
+
+/* Tooltip opens to the left and stays visible */
+.workbench-notes-page-premium .workbench-floating-inspector-menu::after {
+  left: auto !important;
+  right: calc(100% + 14px) !important;
+  max-width: 240px !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-menu::before {
+  left: auto !important;
+  right: calc(100% + 6px) !important;
+}
+
+
+/* Restore actual draggable inspector movement */
+.workbench-notes-page-premium .workbench-floating-inspector-panel {
+  left: var(--inspector-x, calc(100vw - 420px)) !important;
+  top: var(--inspector-y, 132px) !important;
+  right: auto !important;
+}
+
+
+/* =========================================================
+   FINAL INSPECTOR STABILITY PATCH
+   Draggable + not cut off + scrollable body
+========================================================= */
+
+.workbench-notes-page-premium .workbench-floating-inspector-panel {
+  position: fixed !important;
+  left: min(
+    max(var(--inspector-x, calc(100vw - 440px)), 16px),
+    calc(100vw - 400px)
+  ) !important;
+  top: min(
+    max(var(--inspector-y, 132px), 72px),
+    calc(100vh - 160px)
+  ) !important;
+  right: auto !important;
+  width: min(380px, calc(100vw - 32px)) !important;
+  max-height: calc(100vh - 96px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  z-index: 900 !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle {
+  flex: 0 0 48px !important;
+  height: 48px !important;
+  cursor: grab !important;
+  touch-action: none !important;
+  user-select: none !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle:active {
+  cursor: grabbing !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-panel__handle button {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-panel .workbench-research-inspector {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-menu {
+  right: 96px !important;
+  left: auto !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-menu::after {
+  left: auto !important;
+  right: calc(100% + 14px) !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-menu::before {
+  left: auto !important;
+  right: calc(100% + 6px) !important;
+}
+
+
+/* Final inspector open-position and whole-panel drag fix */
+.workbench-notes-page-premium .workbench-floating-inspector-panel {
+  left: clamp(24px, var(--inspector-x, calc(100vw - 460px)), calc(100vw - 420px)) !important;
+  top: clamp(88px, var(--inspector-y, 132px), calc(100vh - 160px)) !important;
+  right: auto !important;
+  width: 380px !important;
+  max-width: calc(100vw - 48px) !important;
+  cursor: grab !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-panel:active {
+  cursor: grabbing !important;
+}
+
+.workbench-notes-page-premium .workbench-floating-inspector-panel button,
+.workbench-notes-page-premium .workbench-floating-inspector-panel input,
+.workbench-notes-page-premium .workbench-floating-inspector-panel select,
+.workbench-notes-page-premium .workbench-floating-inspector-panel textarea,
+.workbench-notes-page-premium .workbench-floating-inspector-panel a {
+  cursor: pointer !important;
+}
+

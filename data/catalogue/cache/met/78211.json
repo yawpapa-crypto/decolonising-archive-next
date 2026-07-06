@@ -1,0 +1,100 @@
+{
+  "objectID": 78211,
+  "isHighlight": false,
+  "accessionNumber": "2013.114",
+  "accessionYear": "2013",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DP326750.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DP326750.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/as/original/DP326751.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP326752.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP326753.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP326748.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 37502,
+      "role": "Artist",
+      "name": "Unidentified artist",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "Asian Art",
+  "objectName": "Hanging scroll remounted on a panel",
+  "title": "Embroidery of a Thousand-Armed Kannon",
+  "culture": "Japan",
+  "period": "Muromachi period (1392–1573)",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Unidentified artist",
+  "artistDisplayBio": "",
+  "artistSuffix": "Japanese",
+  "artistAlphaSort": "Unidentified artist",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "probably late 15th–early 16th century",
+  "objectBeginDate": 1467,
+  "objectEndDate": 1533,
+  "medium": "Hanging scroll remounted on a panel; embroidered silk appliquéed to cotton backing",
+  "dimensions": "Overall: 76 3/4 x 31 1/8 in. (195 x 79 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 195,
+        "Width": 79
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "figure from top of mandorla to base of clouds",
+      "elementMeasurements": {
+        "Height": 76.8
+      }
+    }
+  ],
+  "creditLine": "Purchase, Sue Cassidy Clark Gift, in memory of Terry Satsuki Milhaupt, 2013",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Textiles-Embroidered",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-02T04:52:41.85Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/78211",
+  "tags": [
+    {
+      "term": "Buddhism",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300073738",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q748"
+    },
+    {
+      "term": "Bodhisattvas",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300264360",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q178149"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

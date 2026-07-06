@@ -1,0 +1,86 @@
+{
+  "objectID": 313257,
+  "isHighlight": false,
+  "accessionNumber": "1979.206.1064",
+  "accessionYear": "1979",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP-26296-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP-26296-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-26296-002.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 223081,
+      "role": "Artist",
+      "name": "Chiriquí artist(s)",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Pendant",
+  "title": "Crocodile-head figure pendant",
+  "culture": "Chiriqui",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Chiriquí artist(s)",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Chiriquí artist(s)",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "700–1550 CE",
+  "objectBeginDate": 700,
+  "objectEndDate": 1550,
+  "medium": "Gold (cast alloy), pyrite inlay, hematite",
+  "dimensions": "H. 6 x W. 4 1/8 x D. 2 in. (15.2 x 10.5 x 5.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 5.08,
+        "Height": 15.24,
+        "Width": 10.46
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Bequest of Nelson A. Rockefeller, 1979",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Costa Rica",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metal-Ornaments",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-06-05T04:55:53.757Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/313257",
+  "tags": [
+    {
+      "term": "Crocodiles",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250293",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q2535664"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": "010"
+}

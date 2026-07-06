@@ -1,0 +1,86 @@
+{
+  "objectID": 27194,
+  "isHighlight": false,
+  "accessionNumber": "29.158.619a, b",
+  "accessionYear": "1929",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/aa/original/DP108832.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/aa/web-large/DP108832.jpg",
+  "additionalImages": [],
+  "constituents": null,
+  "department": "Arms and Armor",
+  "objectName": "Pair of ear guards from a shaffron (Horse's head defense)",
+  "title": "Pair of Ear Guards from a Shaffron (Horse's Head Defense)",
+  "culture": "German, probably Augsburg",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1525–30",
+  "objectBeginDate": 1500,
+  "objectEndDate": 1555,
+  "medium": "Steel",
+  "dimensions": "29.158.619a; H. 7 5/8 in. (19.4 cm); W. 6 in. (15.2 cm); Wt. 4 oz. (105 g); 29.158.619b; H. 7 3/4 in. (19.7 cm); W. 5 3/4 in. (14.6 cm); Wt. 4 oz. (123 g)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": "29.158.619a",
+      "elementMeasurements": {
+        "Height": 10.8,
+        "Length": 18.415,
+        "Weight": 0.1048,
+        "Width": 11.7475
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "29.158.619b",
+      "elementMeasurements": {
+        "Height": 10.8,
+        "Length": 18.415,
+        "Weight": 0.1229,
+        "Width": 12.065
+      }
+    }
+  ],
+  "creditLine": "Bashford Dean Memorial Collection, Funds from various donors, 1929",
+  "geographyType": "Country of Origin",
+  "city": "probably Augsburg",
+  "state": "",
+  "county": "",
+  "country": "Germany",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Equestrian Equipment-Shaffrons",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/27194",
+  "tags": [
+    {
+      "term": "Dolphins",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250159",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q7369"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

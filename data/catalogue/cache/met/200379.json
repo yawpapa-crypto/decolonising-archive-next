@@ -1,0 +1,83 @@
+{
+  "objectID": 200379,
+  "isHighlight": false,
+  "accessionNumber": "48.187.420",
+  "accessionYear": "1948",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/LC-48_187_420-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/LC-48_187_420-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/LC-48_187_420-002.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/SF48_187_420_img3.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/SF48_187_420_img2.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/SF48_187_420.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 33599,
+      "role": "Maker",
+      "name": "Daniel Govaers (or Gouers)",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500084427",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Snuffbox",
+  "title": "Snuffbox",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Daniel Govaers (or Gouers)",
+  "artistDisplayBio": "French, master 1717, active 1736",
+  "artistSuffix": "",
+  "artistAlphaSort": "Govaers, Daniel",
+  "artistNationality": "French",
+  "artistBeginDate": "1681",
+  "artistEndDate": "1766",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500084427",
+  "objectDate": "1733–34",
+  "objectBeginDate": 1733,
+  "objectEndDate": 1734,
+  "medium": "Gold, rubies, diamonds",
+  "dimensions": "Overall: 7/8 × 2 3/4 × 2 in. (2.2 × 7 × 5.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 5.08001,
+        "Height": 2.2225044,
+        "Width": 6.985014
+      }
+    }
+  ],
+  "creditLine": "Bequest of Catherine D. Wentworth, 1948",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Gold and Platinum",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-02-24T04:58:17.317Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/200379",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116240782",
+  "isTimelineWork": false,
+  "GalleryNumber": "545"
+}

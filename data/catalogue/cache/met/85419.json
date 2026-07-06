@@ -1,0 +1,111 @@
+{
+  "objectID": 85419,
+  "isHighlight": false,
+  "accessionNumber": "C.I.51.48.4a, b",
+  "accessionYear": "1951",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 162261,
+      "role": "Designer",
+      "name": "Paul Poiret",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500061001",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q631884",
+      "gender": ""
+    }
+  ],
+  "department": "Costume Institute",
+  "objectName": "Evening dress",
+  "title": "Evening dress",
+  "culture": "French",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Designer",
+  "artistPrefix": "",
+  "artistDisplayName": "Paul Poiret",
+  "artistDisplayBio": "French, Paris 1879–1944 Paris",
+  "artistSuffix": "",
+  "artistAlphaSort": "Poiret, Paul",
+  "artistNationality": "French",
+  "artistBeginDate": "1879",
+  "artistEndDate": "1944",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q631884",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500061001",
+  "objectDate": "ca. 1925",
+  "objectBeginDate": 1920,
+  "objectEndDate": 1930,
+  "medium": "metallic, simulated pearls",
+  "dimensions": "",
+  "measurements": [
+    {
+      "elementName": "Width",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Width": 137.1603
+      }
+    },
+    {
+      "elementName": "Length at CF",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 99.0602
+      }
+    },
+    {
+      "elementName": "Length at CB",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 88.9002
+      }
+    },
+    {
+      "elementName": "Width",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Width": 388.6208
+      }
+    },
+    {
+      "elementName": "Length at CF",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 104.1402
+      }
+    },
+    {
+      "elementName": "Length at CB",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 111.7602
+      }
+    }
+  ],
+  "creditLine": "Gift of Mrs. Robert L. Dodge, 1951",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/85419",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

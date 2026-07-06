@@ -1,0 +1,103 @@
+{
+  "objectID": 238822,
+  "isHighlight": false,
+  "accessionNumber": "2011.415",
+  "accessionYear": "2011",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 46812,
+      "role": "Modeler",
+      "name": "Emmanuel Hannaux",
+      "constituentULAN_URL": "(not assigned)",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q1338276",
+      "gender": ""
+    },
+    {
+      "constituentID": 46882,
+      "role": "Manufacturer",
+      "name": "Emile Muller and Co.",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Relief",
+  "title": "Head of Mercury",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Modeler",
+  "artistPrefix": "",
+  "artistDisplayName": "Emmanuel Hannaux",
+  "artistDisplayBio": "French, Metz 1855–1934",
+  "artistSuffix": "",
+  "artistAlphaSort": "Hannaux, Emmanuel",
+  "artistNationality": "French",
+  "artistBeginDate": "1855",
+  "artistEndDate": "1934",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q1338276",
+  "artistULAN_URL": "(not assigned)",
+  "objectDate": "ca. 1895",
+  "objectBeginDate": 1890,
+  "objectEndDate": 1900,
+  "medium": "Glazed stoneware",
+  "dimensions": "Overall (irregular diameter, confirmed): 16 1/2 x 16 1/2 x 8 1/2 in., 26.4lb. (41.9 x 41.9 x 21.6 cm, 11.975kg)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "irregular diameter, confirmed",
+      "elementMeasurements": {
+        "Depth": 21.590044,
+        "Height": 41.910084,
+        "Weight": 11.974961,
+        "Width": 41.910084
+      }
+    }
+  ],
+  "creditLine": "Purchase, Friends of European Sculpture and Decorative Arts Gifts, The Charles E. Sampson Memorial Fund, funds from various donors, and Rogers Fund, 2011",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Pottery",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/238822",
+  "tags": [
+    {
+      "term": "Heads",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300375054",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q3409626"
+    },
+    {
+      "term": "Portraits",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300015637",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q134307"
+    },
+    {
+      "term": "Mercury",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901001345",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q1150"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116401372",
+  "isTimelineWork": false,
+  "GalleryNumber": "556"
+}

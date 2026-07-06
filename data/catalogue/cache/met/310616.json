@@ -1,0 +1,93 @@
+{
+  "objectID": 310616,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.167",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DT10189.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DT10189.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/1978.412.167(20160504XR)001crop.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 224092,
+      "role": "Artist",
+      "name": "Chimú artist(s)",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Vessel",
+  "title": "Double-chambered vessel with monkey",
+  "culture": "Chimú",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Chimú artist(s)",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Chimú artist(s)",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1350–1470 CE",
+  "objectBeginDate": 1350,
+  "objectEndDate": 1470,
+  "medium": "Silver",
+  "dimensions": "H. 5 1/4 x W. 3 5/8 x D. 5 1/2 in. (13.3 x 9.3 x 14 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Width": 9.25
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 13.97,
+        "Height": 13.335,
+        "Width": 9.25
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of Nelson A. Rockefeller, 1969",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Peru",
+  "region": "North Coast",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metal-Containers",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-05-31T04:50:53.377Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310616",
+  "tags": [
+    {
+      "term": "Monkeys",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250028",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q1367"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": "361"
+}

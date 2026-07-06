@@ -1,0 +1,91 @@
+{
+  "objectID": 9358,
+  "isHighlight": false,
+  "accessionNumber": "1981.432.5",
+  "accessionYear": "1981",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 1686,
+      "role": "Maker",
+      "name": "Newcomb Pottery",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500332673",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q7017622",
+      "gender": ""
+    },
+    {
+      "constituentID": 2254,
+      "role": "Decorator",
+      "name": "Sadie Agnes Estelle Irvine",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500034287",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q7397924",
+      "gender": "Female"
+    }
+  ],
+  "department": "The American Wing",
+  "objectName": "Vase",
+  "title": "Vase",
+  "culture": "American",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Newcomb Pottery",
+  "artistDisplayBio": "1894–1940",
+  "artistSuffix": "",
+  "artistAlphaSort": "Newcomb Pottery",
+  "artistNationality": "American",
+  "artistBeginDate": "1894",
+  "artistEndDate": "1940",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q7017622",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500332673",
+  "objectDate": "1922",
+  "objectBeginDate": 1922,
+  "objectEndDate": 1922,
+  "medium": "Painted and glazed earthenware",
+  "dimensions": "H. 11 in. (27.9 cm); Diam. 5 1/2 in. (14 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 13.97,
+        "Height": 27.9401
+      }
+    }
+  ],
+  "creditLine": "Gift of Florence I. Balasny-Barnes, in memory of her husband, Erik Barnes, 1981",
+  "geographyType": "Made in",
+  "city": "New Orleans",
+  "state": "Louisiana",
+  "county": "",
+  "country": "United States",
+  "region": "Southern",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-03-31T09:41:00.23Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/9358",
+  "tags": [
+    {
+      "term": "Trees",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132410",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q10884"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q98224441",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

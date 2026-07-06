@@ -1,0 +1,79 @@
+{
+  "objectID": 207456,
+  "isHighlight": false,
+  "accessionNumber": "1983.575.49",
+  "accessionYear": "1983",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/SF1983_575_49_img1.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/SF1983_575_49_img1.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/SF1983_575_49_img2.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/SF1983_575_49_marks.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 35040,
+      "role": "Maker",
+      "name": "Gervase Wheeler",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Vinaigrette",
+  "title": "Vinaigrette",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Gervase Wheeler",
+  "artistDisplayBio": "British, registered in 1831",
+  "artistSuffix": "",
+  "artistAlphaSort": "Wheeler Gervaise",
+  "artistNationality": "British",
+  "artistBeginDate": "1831",
+  "artistEndDate": "1875",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1829",
+  "objectBeginDate": 1829,
+  "objectEndDate": 1829,
+  "medium": "Silver",
+  "dimensions": "Length: 1 in. (2.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Length",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 2.540005
+      }
+    }
+  ],
+  "creditLine": "Gift of Herbert K. Reis, in memory of Rose-Frances K. Reis (Mrs. Ralph A. Reis), 1983",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T13:58:49.523Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/207456",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

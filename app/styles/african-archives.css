@@ -1,0 +1,820 @@
+/* African & Global Archives — Mammoth Murals–inspired editorial layout */
+
+.aa-page {
+  background: #fff;
+  min-height: 100vh;
+}
+
+/* ── Hero (yellow block) ─────────────────────────────────────────────────── */
+
+.aa-hero {
+  background: #f5e642;
+  padding: 2rem 1.5rem 3rem;
+  border-bottom: 4px solid #111;
+}
+
+.aa-crumb {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(17, 17, 17, 0.55);
+  margin-bottom: 1.5rem;
+}
+
+.aa-crumb a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.aa-crumb a:hover {
+  color: #111;
+}
+
+.aa-hero-kicker {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #111;
+  margin: 0 0 1rem;
+}
+
+.aa-hero-title {
+  font-size: clamp(2.5rem, 10vw, 6.5rem);
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: #111;
+  margin: 0 0 1.25rem;
+  max-width: 12ch;
+}
+
+.aa-hero-lead {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(17, 17, 17, 0.78);
+  max-width: 46ch;
+  margin: 0;
+}
+
+/* ── Filter band (blue) ──────────────────────────────────────────────────── */
+
+.aa-filter-band {
+  background: #7ec8e3;
+  border-bottom: 4px solid #111;
+  padding: 2rem 1.5rem;
+}
+
+.aa-filter-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.aa-band-title {
+  font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: #111;
+  margin: 0 0 1.25rem;
+}
+
+.aa-search {
+  width: 100%;
+  max-width: 520px;
+  padding: 0.75rem 1rem;
+  border: 3px solid #111;
+  border-radius: 0;
+  font: inherit;
+  font-size: 0.95rem;
+  background: #fff;
+  margin-bottom: 1.25rem;
+}
+
+.aa-search:focus {
+  outline: 2px solid #111;
+  outline-offset: 2px;
+}
+
+.aa-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.aa-filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(17, 17, 17, 0.65);
+}
+
+.aa-filters select {
+  padding: 0.45rem 0.65rem;
+  border: 2px solid #111;
+  border-radius: 0;
+  font: inherit;
+  font-size: 0.85rem;
+  background: #fff;
+  min-width: 120px;
+}
+
+.aa-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(17, 17, 17, 0.65);
+}
+
+.aa-clear {
+  border: none;
+  background: none;
+  font: inherit;
+  font-weight: 800;
+  text-decoration: underline;
+  cursor: pointer;
+  color: #111;
+  padding: 0;
+}
+
+/* ── Collection list (numbered rows) ───────────────────────────────────────── */
+
+.aa-list-section {
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.aa-list-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.aa-list-heading {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: #111;
+  margin: 0 0 0.75rem;
+}
+
+.aa-list-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.25rem 2rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #111;
+}
+
+.aa-list-header .aa-disclaimer {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.aa-layout-toggle {
+  display: inline-flex;
+  flex-shrink: 0;
+  border: 2px solid #111;
+}
+
+.aa-layout-btn {
+  padding: 0.5rem 0.85rem;
+  border: none;
+  background: #fff;
+  font: inherit;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: rgba(17, 17, 17, 0.55);
+}
+
+.aa-layout-btn + .aa-layout-btn {
+  border-left: 2px solid #111;
+}
+
+.aa-layout-btn.is-active {
+  background: #111;
+  color: #fff;
+}
+
+.aa-disclaimer {
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: rgba(17, 17, 17, 0.6);
+  max-width: 58ch;
+  margin: 0 0 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #111;
+}
+
+.aa-collection-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+
+.aa-grid-card {
+  border: 2px solid #111;
+  background: #fff;
+  min-height: 100%;
+}
+
+.aa-grid-card-link {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.aa-grid-card-link:hover .aa-grid-cta {
+  text-decoration: underline;
+}
+
+.aa-grid-thumb {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.aa-grid-card.is-aodl .aa-grid-thumb {
+  background: #8b5e34;
+}
+
+.aa-grid-card.is-smithsonian .aa-grid-thumb {
+  background: #0077a3;
+}
+
+.aa-grid-monogram {
+  font-size: clamp(2rem, 6vw, 2.75rem);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.aa-grid-num {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  opacity: 0.65;
+}
+
+.aa-grid-body {
+  padding: 0.85rem 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1;
+}
+
+.aa-grid-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.75rem;
+}
+
+.aa-grid-source {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.aa-grid-card.is-aodl .aa-grid-source {
+  color: #8b5e34;
+}
+
+.aa-grid-card.is-smithsonian .aa-grid-source {
+  color: #0077a3;
+}
+
+.aa-grid-place {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(17, 17, 17, 0.45);
+}
+
+.aa-grid-title {
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: #111;
+}
+
+.aa-grid-platform {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(17, 17, 17, 0.5);
+  margin: 0;
+}
+
+.aa-grid-desc {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: rgba(17, 17, 17, 0.68);
+  margin: 0;
+  flex: 1;
+}
+
+.aa-grid-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.25rem;
+}
+
+.aa-grid-tags span {
+  font-size: 0.6rem;
+  font-weight: 650;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.4rem;
+  border: 1px solid rgba(17, 17, 17, 0.15);
+  color: rgba(17, 17, 17, 0.5);
+}
+
+.aa-grid-cta {
+  margin-top: 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #111;
+}
+
+.aa-collection-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.aa-collection-row {
+  display: grid;
+  grid-template-columns: 3rem 1fr auto;
+  gap: 1.25rem 1.5rem;
+  align-items: start;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid #111;
+}
+
+.aa-row-num {
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: rgba(17, 17, 17, 0.25);
+  line-height: 1;
+  padding-top: 0.15rem;
+}
+
+.aa-row-body {
+  min-width: 0;
+}
+
+.aa-row-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.35rem;
+}
+
+.aa-row-source {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.aa-collection-row.is-aodl .aa-row-source {
+  color: #8b5e34;
+}
+
+.aa-collection-row.is-smithsonian .aa-row-source {
+  color: #0077a3;
+}
+
+.aa-row-place {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(17, 17, 17, 0.45);
+}
+
+.aa-row-title {
+  font-size: clamp(1.1rem, 2vw, 1.45rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0 0 0.35rem;
+  color: #111;
+}
+
+.aa-row-platform {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(17, 17, 17, 0.5);
+  margin: 0 0 0.5rem;
+}
+
+.aa-row-desc {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: rgba(17, 17, 17, 0.72);
+  margin: 0 0 0.65rem;
+  max-width: 62ch;
+}
+
+.aa-row-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.aa-row-tags span {
+  font-size: 0.65rem;
+  font-weight: 650;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.45rem;
+  border: 1px solid rgba(17, 17, 17, 0.15);
+  color: rgba(17, 17, 17, 0.55);
+}
+
+.aa-row-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.65rem;
+  flex-shrink: 0;
+}
+
+.aa-row-thumb {
+  width: 88px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  color: #fff;
+}
+
+.aa-collection-row.is-aodl .aa-row-thumb {
+  background: #8b5e34;
+}
+
+.aa-collection-row.is-smithsonian .aa-row-thumb {
+  background: #0077a3;
+}
+
+.aa-row-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 0.85rem;
+  background: #111;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.12s;
+}
+
+.aa-row-cta:hover {
+  background: #333;
+}
+
+.aa-empty {
+  padding: 3rem 1rem;
+  text-align: center;
+  font-size: 0.95rem;
+  color: rgba(17, 17, 17, 0.55);
+  border: 2px dashed rgba(17, 17, 17, 0.2);
+}
+
+@media (max-width: 720px) {
+  .aa-collection-row {
+    grid-template-columns: 2.5rem 1fr;
+    grid-template-rows: auto auto;
+  }
+
+  .aa-row-side {
+    grid-column: 2;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .aa-row-thumb {
+    width: 64px;
+    height: 44px;
+    font-size: 0.85rem;
+  }
+}
+
+/* ── Legacy class aliases (used elsewhere in app) ────────────────────────── */
+
+.african-archives-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.aodl-open-btn,
+.smithsonian-open-btn {
+  display: inline-flex;
+  padding: 0.55rem 0.85rem;
+  border-radius: 0;
+  font-weight: 700;
+  text-decoration: none;
+  color: #fff;
+}
+
+.aodl-open-btn {
+  background: #8b5e34;
+}
+
+.smithsonian-open-btn {
+  background: #0077a3;
+}
+
+.aodl-badge,
+.smithsonian-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.aodl-badge {
+  color: #8b5e34;
+}
+
+.smithsonian-badge {
+  color: #0077a3;
+}
+
+.aodl-tag,
+.aodl-tag.is-media {
+  font-size: 0.74rem;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid rgba(17, 17, 17, 0.12);
+}
+
+.aodl-host-note,
+.record-card-aodl-disclaimer,
+.record-card-smithsonian-disclaimer {
+  font-size: 0.78rem;
+  color: #78716c;
+}
+
+/* ── Browse / Discover view switch ───────────────────────────────────────── */
+
+.aa-view-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.75rem;
+}
+
+.aa-view-btn {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.625rem 1rem;
+  border: 2px solid #111;
+  background: transparent;
+  color: #111;
+  cursor: pointer;
+}
+
+.aa-view-btn.is-active {
+  background: #111;
+  color: #fff;
+}
+
+.aa-meta-note {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(17, 17, 17, 0.55);
+}
+
+/* ── Live discover ─────────────────────────────────────────────────────────── */
+
+.aa-discover {
+  padding: 2.5rem 1.5rem 4rem;
+  border-top: 4px solid #111;
+}
+
+.aa-disc-search {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1.25rem 0 1rem;
+}
+
+.aa-disc-search input {
+  flex: 1 1 220px;
+  min-width: 0;
+  padding: 0.75rem 1rem;
+  border: 2px solid #111;
+  font: inherit;
+  font-size: 0.9375rem;
+}
+
+.aa-disc-search button {
+  padding: 0.75rem 1.25rem;
+  border: 2px solid #111;
+  background: #111;
+  color: #fff;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.aa-disc-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 0.72rem;
+}
+
+.aa-disc-pill {
+  padding: 0.25rem 0.55rem;
+  border: 1px solid rgba(17, 17, 17, 0.2);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.aa-disc-pill.is-ok {
+  border-color: #111;
+}
+
+.aa-disc-pill.is-error {
+  opacity: 0.55;
+}
+
+.aa-disc-total {
+  color: rgba(17, 17, 17, 0.6);
+}
+
+.aa-disc-total--line {
+  flex: 1 1 100%;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: #111;
+}
+
+.aa-disc-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0;
+  border-bottom: 2px solid #111;
+  margin-bottom: 1.25rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.aa-disc-tab {
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: rgba(17, 17, 17, 0.55);
+}
+
+.aa-disc-tab.is-active {
+  background: #f5e642;
+  color: #111;
+}
+
+.aa-disc-message {
+  padding: 2rem 0;
+  color: rgba(17, 17, 17, 0.65);
+  font-size: 0.9375rem;
+  max-width: 52ch;
+}
+
+.aa-disc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.aa-disc-card {
+  border: 2px solid #111;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.aa-disc-thumb {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  border-bottom: 1px solid rgba(17, 17, 17, 0.1);
+}
+
+.aa-disc-body {
+  padding: 0.85rem 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+}
+
+.aa-disc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: rgba(17, 17, 17, 0.45);
+}
+
+.aa-disc-title {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.aa-disc-creator {
+  font-size: 0.8125rem;
+  color: rgba(17, 17, 17, 0.6);
+  margin: 0;
+}
+
+.aa-disc-summary {
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: rgba(17, 17, 17, 0.65);
+  margin: 0;
+  flex: 1;
+}
+
+.aa-disc-link {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #111;
+  text-decoration: none;
+  margin-top: 0.35rem;
+}
+
+.aa-disc-link:hover {
+  text-decoration: underline;
+}
+

@@ -1,0 +1,196 @@
+/* Collections hub — bold editorial index (Mammoth Murals–inspired blocks) */
+
+.collections-hub {
+  background: #fff;
+  min-height: 100vh;
+}
+
+.collections-hub-hero {
+  background: #f5e642;
+  padding: 3rem 1.5rem 3.5rem;
+  border-bottom: 4px solid #111;
+}
+
+.collections-hub-hero-kicker {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #111;
+  margin: 0 0 1rem;
+}
+
+.collections-hub-hero-title {
+  font-size: clamp(3rem, 12vw, 7.5rem);
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: #111;
+  margin: 0 0 1.25rem;
+  max-width: 10ch;
+}
+
+.collections-hub-hero-desc {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: rgba(17, 17, 17, 0.78);
+  max-width: 52ch;
+  margin: 0;
+}
+
+.collections-hub-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 3rem;
+}
+
+.collections-hub-section--blue {
+  background: #7ec8e3;
+  max-width: none;
+  padding-left: max(1.5rem, calc((100vw - 1200px) / 2 + 1.5rem));
+  padding-right: max(1.5rem, calc((100vw - 1200px) / 2 + 1.5rem));
+  border-top: 4px solid #111;
+}
+
+.collections-hub-section-title {
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: #111;
+  margin: 0 0 1.75rem;
+}
+
+.collections-hub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.collections-hub-grid--featured {
+  grid-template-columns: 1fr;
+  max-width: 720px;
+}
+
+.collections-hub-card {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 0;
+  background: #fff;
+  border: 3px solid #111;
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.collections-hub-card--large {
+  grid-template-columns: minmax(200px, 42%) 1fr;
+}
+
+.collections-hub-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 8px 8px 0 #111;
+}
+
+.collections-hub-card-image {
+  position: relative;
+  background: #111;
+  min-height: 140px;
+}
+
+.collections-hub-card--large .collections-hub-card-image {
+  min-height: 220px;
+}
+
+.collections-hub-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  min-height: inherit;
+}
+
+.collections-hub-card-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.58rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
+  line-height: 1.25;
+}
+
+.collections-hub-card-body {
+  padding: 1rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  border-left: 4px solid var(--collection-accent, #111);
+}
+
+.collections-hub-card-kicker {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--collection-accent, #111);
+}
+
+.collections-hub-card-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: #111;
+}
+
+.collections-hub-card--large .collections-hub-card-title {
+  font-size: clamp(1.25rem, 2.5vw, 1.65rem);
+}
+
+.collections-hub-card-desc {
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: rgba(17, 17, 17, 0.72);
+  margin: 0;
+  flex: 1;
+}
+
+.collections-hub-card-stat {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(17, 17, 17, 0.55);
+}
+
+.collections-hub-card-cta {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #111;
+  margin-top: 0.35rem;
+}
+
+@media (max-width: 640px) {
+  .collections-hub-card,
+  .collections-hub-card--large {
+    grid-template-columns: 1fr;
+  }
+
+  .collections-hub-card-image {
+    min-height: 160px;
+  }
+
+  .collections-hub-card-body {
+    border-left: none;
+    border-top: 4px solid var(--collection-accent, #111);
+  }
+}

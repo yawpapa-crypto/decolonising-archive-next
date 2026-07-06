@@ -1,0 +1,3 @@
+{
+  "/(app)/admin/invite/[token]/page": "app/(app)/admin/invite/[token]/page.js"
+}

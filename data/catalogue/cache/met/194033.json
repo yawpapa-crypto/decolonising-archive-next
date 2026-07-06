@@ -1,0 +1,97 @@
+{
+  "objectID": 194033,
+  "isHighlight": false,
+  "accessionNumber": "17.190.1440a, b",
+  "accessionYear": "1917",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP350908.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP350908.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP349140.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP350909.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 34184,
+      "role": "Maker",
+      "name": "Watchmaker: John Champion",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Pair-case quarter-repeating watch",
+  "title": "Pair-case quarter-repeating watch",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "Watchmaker:",
+  "artistDisplayName": "John Champion",
+  "artistDisplayBio": "British, 1730–1779",
+  "artistSuffix": "",
+  "artistAlphaSort": "Champion, John",
+  "artistNationality": "British",
+  "artistBeginDate": "1730",
+  "artistEndDate": "1780",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1770–72",
+  "objectBeginDate": 1765,
+  "objectEndDate": 1777,
+  "medium": "Outer case: glass and gold set with diamonds, pearls, emeralds, and rubies; Inner case: gold; Dial: white enamel with black painted Chinese characters and blued steel hands; Movement: gilded brass and partly blued steel",
+  "dimensions": "Overall (outer case, confirmed): 1 13/16 × 1 13/16 × 7/8 in. (4.6 × 4.6 × 2.2 cm);\r\nOverall (watch, with bail, confirmed): 2 3/8 × 1 9/16 × 7/8 in. (6.1 × 3.9 × 2.3 cm);\r\nDiameter (back plate): 1 1/8 in. (2.9 cm)",
+  "measurements": [
+    {
+      "elementName": "Diameter",
+      "elementDescription": "back plate",
+      "elementMeasurements": {
+        "Diameter": 2.8575058
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "watch, with bail, confirmed",
+      "elementMeasurements": {
+        "Depth": 2.2860045,
+        "Height": 6.096012,
+        "Width": 3.937008
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "outer case, confirmed",
+      "elementMeasurements": {
+        "Depth": 2.1590042,
+        "Height": 4.6228094,
+        "Width": 4.6228094
+      }
+    }
+  ],
+  "creditLine": "Gift of J. Pierpont Morgan, 1917",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Horology",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-11-21T10:05:27.96Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/194033",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116310544",
+  "isTimelineWork": false,
+  "GalleryNumber": "512"
+}

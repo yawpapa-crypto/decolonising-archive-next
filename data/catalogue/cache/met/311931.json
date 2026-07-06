@@ -1,0 +1,98 @@
+{
+  "objectID": 311931,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.1491",
+  "accessionYear": "1978",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 235771,
+      "role": "Artist",
+      "name": "Buka Island artist",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Paddle",
+  "title": "Kokorra (ceremonial paddle)",
+  "culture": "Bougainville Island",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Buka Island artist",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Buka Island artist",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "late 19th–early 20th century",
+  "objectBeginDate": 1870,
+  "objectEndDate": 1930,
+  "medium": "Wood, paint",
+  "dimensions": "H. 66 3/4 × W. 6 1/2 × D. 1 in. (169.5 × 16.5 × 2.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 2.54
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 2.540005,
+        "Height": 169.54533,
+        "Width": 16.510033
+      }
+    },
+    {
+      "elementName": "Height",
+      "elementDescription": "with mount",
+      "elementMeasurements": {
+        "Height": 214.63043
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Purchase, Nelson A. Rockefeller Gift, 1966",
+  "geographyType": "",
+  "city": "",
+  "state": "Bougainville Province",
+  "county": "",
+  "country": "Papua New Guinea",
+  "region": "Bougainville Island",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Wood-Implements",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-01-27T04:52:24.46Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/311931",
+  "tags": [
+    {
+      "term": "Human Figures",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300404114",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q5937779"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": true,
+  "GalleryNumber": "353"
+}

@@ -1,0 +1,82 @@
+{
+  "objectID": 39728,
+  "isHighlight": false,
+  "accessionNumber": "66.174b",
+  "accessionYear": "1966",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DT4780.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DT4780.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/as/original/RT671A.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/RT671B.jpg"
+  ],
+  "constituents": null,
+  "department": "Asian Art",
+  "objectName": "Scroll wrapper",
+  "title": "Scroll Cover with Birds and Flowers",
+  "culture": "China",
+  "period": "Song dynasty (960–1279)",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "12th century",
+  "objectBeginDate": 1100,
+  "objectEndDate": 1199,
+  "medium": "Silk and metal thread tapestry (kesi)",
+  "dimensions": "Overall: 8 11/16 x 13 3/8 in. (22 x 34 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 22,
+        "Width": 34
+      }
+    }
+  ],
+  "creditLine": "Purchase, Bequest of Dorothy Graham Bennett, 1966",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Textiles-Tapestries",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-17T15:16:35.4Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/39728",
+  "tags": [
+    {
+      "term": "Birds",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300266506",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q5113"
+    },
+    {
+      "term": "Flowers",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132399",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q506"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

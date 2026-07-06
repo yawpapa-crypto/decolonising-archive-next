@@ -1,0 +1,148 @@
+{
+  "objectID": 23084,
+  "isHighlight": false,
+  "accessionNumber": "29.150.3b–p",
+  "accessionYear": "1929",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/aa/original/DP288753.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/aa/web-large/DP288753.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/aa/original/DP296548.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/DP296547.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/DP296543.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/DP296549.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/DP296544.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/DP296545.jpg",
+    "https://images.metmuseum.org/CRDImages/aa/original/DP296546.jpg"
+  ],
+  "constituents": null,
+  "department": "Arms and Armor",
+  "objectName": "Portions of a field armor",
+  "title": "Portions of a Field Armor",
+  "culture": "German, probably Augsburg",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "dated 1524",
+  "objectBeginDate": 1524,
+  "objectEndDate": 1524,
+  "medium": "Steel, leather",
+  "dimensions": "H. as mounted 29 3/4 in. (75.57 cm); Wt. 28 lb. (12.7 kg); breastplate (c): 14 3/4 × 14 3/4 × 7 11/16 in. (37.5 × 37.5 × 19.5 cm); Wt. 6 lb. 14 oz. (3112 g); tassets (d): 10 1/4 × 19 5/16 × 7 3/8 in. (26 × 49 × 18.7 cm); Wt. 3 lb. 3 oz. (1445 g); backplate (e): 15 9/16 × 14 15/16 × 9 1/4 in. (39.5 × 38 × 23.5 cm); Wt. 5 lb. 3 oz. (2340 g); culet (f): 5 7/8 × 18 5/16 × 12 3/16 in. (15 × 46.5 × 31 cm); Wt. 2 lb. 8 oz. (1141 g); right pauldron (g): 10 13/16 × 10 13/16 × 7 13/16 in. (27.5 × 27.5 × 19.8 cm); Wt. 2 lb. 7 oz. (1110 g); left pauldron (h): 11 5/8 × 11 5/16 × 8 9/16 in. (29.5 × 28.8 × 21.8 cm); Wt. 2 lb. 12 oz. (1251 g); vambrace (i): 20 × 6 × 9 1/2 in. (50.8 × 15.2 × 24.1 cm); Wt. 2 lb. 9 oz. (1165 g); vambrace (j): 20 × 5 1/2 × 9 in. (50.8 × 14 × 22.9 cm); Wt. 2 lb. 8 oz. (1136 g)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "e- backplate",
+      "elementMeasurements": {
+        "Depth": 23.5,
+        "Height": 39.5,
+        "Weight": 2.34,
+        "Width": 38
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "d- tassets",
+      "elementMeasurements": {
+        "Depth": 18.7,
+        "Height": 26,
+        "Weight": 1.445,
+        "Width": 49
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "c- breastplate",
+      "elementMeasurements": {
+        "Depth": 19.5,
+        "Height": 37.5,
+        "Weight": 3.112,
+        "Width": 37.5
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "j- vambrace",
+      "elementMeasurements": {
+        "Depth": 22.860046,
+        "Height": 50.800102,
+        "Weight": 1.136,
+        "Width": 13.970028
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "i- vambrace",
+      "elementMeasurements": {
+        "Depth": 24.130049,
+        "Height": 50.800102,
+        "Weight": 1.165,
+        "Width": 15.24003
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "h- pauldron",
+      "elementMeasurements": {
+        "Depth": 21.8,
+        "Height": 29.5,
+        "Weight": 1.251,
+        "Width": 28.8
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "g- pauldron",
+      "elementMeasurements": {
+        "Depth": 19.8,
+        "Height": 27.5,
+        "Weight": 1.11,
+        "Width": 27.5
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "f- culet",
+      "elementMeasurements": {
+        "Depth": 31,
+        "Height": 15,
+        "Weight": 1.141,
+        "Width": 46.5
+      }
+    }
+  ],
+  "creditLine": "Bashford Dean Memorial Collection, Bequest of Bashford Dean, 1928",
+  "geographyType": "Country of Origin",
+  "city": "probably Augsburg",
+  "state": "",
+  "county": "",
+  "country": "Germany",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Armor for Man",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-02-04T04:58:06.107Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/23084",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

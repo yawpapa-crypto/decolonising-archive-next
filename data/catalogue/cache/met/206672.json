@@ -1,0 +1,90 @@
+{
+  "objectID": 206672,
+  "isHighlight": false,
+  "accessionNumber": "1977.216.59a, b",
+  "accessionYear": "1977",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/ES5948.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/ES5948.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/ES2819.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 35091,
+      "role": "Factory",
+      "name": "Chantilly",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500055294",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q3398119",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Porringer with cover",
+  "title": "Porringer with cover (Écuelle)",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Factory",
+  "artistPrefix": "",
+  "artistDisplayName": "Chantilly",
+  "artistDisplayBio": "French",
+  "artistSuffix": "",
+  "artistAlphaSort": "Chantilly",
+  "artistNationality": "French",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q3398119",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500055294",
+  "objectDate": "1732–38",
+  "objectBeginDate": 1732,
+  "objectEndDate": 1738,
+  "medium": "Soft-paste porcelain, silver",
+  "dimensions": "Overall (with cover and handles): 4 15/16 × 7 1/8 in. (12.5 × 18.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "with cover and handles",
+      "elementMeasurements": {
+        "Height": 12.541275,
+        "Width": 18.097536
+      }
+    }
+  ],
+  "creditLine": "Bequest of R. Thornton Wilson, in memory of his wife, Florence Ellsworth Wilson, 1977",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Porcelain",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2021-07-13T04:41:40.21Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/206672",
+  "tags": [
+    {
+      "term": "Human Figures",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300404114",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q5937779"
+    },
+    {
+      "term": "Animals",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300249525",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q729"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

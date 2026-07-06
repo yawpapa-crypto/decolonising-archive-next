@@ -1,0 +1,85 @@
+{
+  "objectID": 195599,
+  "isHighlight": false,
+  "accessionNumber": "26.267.29",
+  "accessionYear": "1926",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/66548.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/66548.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP336530.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 165594,
+      "role": "Maker",
+      "name": "Watchmaker: Mermod Frères",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500524501",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Watch",
+  "title": "Watch",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "Watchmaker:",
+  "artistDisplayName": "Mermod Frères",
+  "artistDisplayBio": "Swiss, active late 19th century",
+  "artistSuffix": "",
+  "artistAlphaSort": "Mermod Frères",
+  "artistNationality": "Swiss",
+  "artistBeginDate": "1875",
+  "artistEndDate": "1899",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500524501",
+  "objectDate": "ca. 1840–55",
+  "objectBeginDate": 1835,
+  "objectEndDate": 1860,
+  "medium": "Gold, enamel, jewels",
+  "dimensions": "Diameter: 1 3/4 in. (4.4 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 0.13
+      }
+    },
+    {
+      "elementName": "Diameter",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 4.4450088
+      }
+    }
+  ],
+  "creditLine": "Anonymous Gift, in memory of Lady May Fletcher-Moulton, 1926",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Horology",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/195599",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

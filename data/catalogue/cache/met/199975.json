@@ -1,0 +1,106 @@
+{
+  "objectID": 199975,
+  "isHighlight": false,
+  "accessionNumber": "48.174.92a–p, aa–pp, q, r, rr, xa–xp, xaa–xpp",
+  "accessionYear": "1948",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 39601,
+      "role": "Designer",
+      "name": "Max Esser",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500058430",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q1627017",
+      "gender": ""
+    },
+    {
+      "constituentID": 39603,
+      "role": "Maker",
+      "name": "Figures cast by Richard Barth",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    },
+    {
+      "constituentID": 39602,
+      "role": "Enameler",
+      "name": "Chessboard enameled by Frieda Bastanier",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": "Female"
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Chess set",
+  "title": "Astronomical chess set",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Designer",
+  "artistPrefix": "",
+  "artistDisplayName": "Max Esser",
+  "artistDisplayBio": "German, Barth 1885–1945 Berlin",
+  "artistSuffix": "",
+  "artistAlphaSort": "Esser Max",
+  "artistNationality": "German",
+  "artistBeginDate": "1885",
+  "artistEndDate": "1945",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q1627017",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500058430",
+  "objectDate": "1932",
+  "objectBeginDate": 1932,
+  "objectEndDate": 1932,
+  "medium": "Silver, silver-gilt, ivory, ebony, marble, plaster, brass, beeswax, enamel",
+  "dimensions": "Overall: 4 1/4 × 35 1/4 × 31 1/2 in., 68 lb. (10.8 × 89.5 × 80 cm, 30.8 kg)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 80.01016,
+        "Height": 10.795022,
+        "Weight": 30.844597,
+        "Width": 89.53518
+      }
+    }
+  ],
+  "creditLine": "Gift of Gustavus A. Pfeiffer, 1948",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Chess Sets",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-08-06T04:50:55.473Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/199975",
+  "tags": [
+    {
+      "term": "Astronomy",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300054534",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q333"
+    },
+    {
+      "term": "Games",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300069657",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q11410"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

@@ -1,0 +1,81 @@
+{
+  "objectID": 49470,
+  "isHighlight": false,
+  "accessionNumber": "1986.267.61",
+  "accessionYear": "1986",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DP-14880-002.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DP-14880-002.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/as/original/DP-14880-001.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-14880-003.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-14880-004.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 12199,
+      "role": "Artist",
+      "name": "Wang Li",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "Asian Art",
+  "objectName": "Hanging scroll",
+  "title": "Cat",
+  "culture": "China",
+  "period": "Qing dynasty (1644–1911)",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Wang Li",
+  "artistDisplayBio": "Chinese, 1813–1879",
+  "artistSuffix": "",
+  "artistAlphaSort": "Wang Li",
+  "artistNationality": "Chinese",
+  "artistBeginDate": "1813",
+  "artistEndDate": "1879",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "",
+  "objectBeginDate": 1813,
+  "objectEndDate": 1879,
+  "medium": "Hanging scroll; ink and color on paper",
+  "dimensions": "47 3/8 x 15 5/8 in. (120.3 x 39.7 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 120.3,
+        "Width": 39.7
+      }
+    }
+  ],
+  "creditLine": "Gift of Robert Hatfield Ellsworth, in memory of La Ferne Hatfield Ellsworth, 1986",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Paintings",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-11-13T04:51:50.813Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/49470",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q78822552",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

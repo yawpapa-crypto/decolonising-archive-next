@@ -1,0 +1,109 @@
+{
+  "objectID": 7105,
+  "isHighlight": false,
+  "accessionNumber": "1980.497.6",
+  "accessionYear": "1980",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 162541,
+      "role": "Maker",
+      "name": "Tiffany Studios",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500331813",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q19587243",
+      "gender": ""
+    }
+  ],
+  "department": "The American Wing",
+  "objectName": "Copper sheet",
+  "title": "Sample copper sheet from Tiffany Studios",
+  "culture": "American",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Tiffany Studios",
+  "artistDisplayBio": "1902–32",
+  "artistSuffix": "",
+  "artistAlphaSort": "Tiffany Studios",
+  "artistNationality": "",
+  "artistBeginDate": "1902",
+  "artistEndDate": "1932",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q19587243",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500331813",
+  "objectDate": "1900–1907",
+  "objectBeginDate": 1900,
+  "objectEndDate": 1907,
+  "medium": "Copper",
+  "dimensions": "1980.497.6a: 18 3/4 x 7 1/4 in. (47.6 x 18.4 cm)\r\n1980.497.6b: 17 5/8 x 7 in. (44.8 x 17.8 cm)\r\n1980.497.6d: 15 1/4 x 3/16 in. (38.7 x 0.4 cm)\r\n1980.497.6f: 11 3/4 x 3/16 in. (29.8 x 0.4 cm)\r\n1980.497.6g: 15 1/4 x 3/16 in. (38.7 x 0.4 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "Copper Strip 1980.497.6d",
+      "elementMeasurements": {
+        "Height": 38.7351,
+        "Width": 0.3969
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "Burnished copper sheet 1980.497.6b",
+      "elementMeasurements": {
+        "Height": 44.7676,
+        "Width": 17.78
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "Copper sheet 1980.497.6a",
+      "elementMeasurements": {
+        "Height": 47.6251,
+        "Width": 18.415
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "Copper strip 1980.497.6g",
+      "elementMeasurements": {
+        "Height": 38.7351,
+        "Width": 0.3969
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "Copper strip 1980.497.6f",
+      "elementMeasurements": {
+        "Height": 29.8451,
+        "Width": 0.3969
+      }
+    }
+  ],
+  "creditLine": "Gift of Fred and Nancylee Dikeman, in memory of his father, John Dikeman, 1980",
+  "geographyType": "Made in",
+  "city": "New York",
+  "state": "New York",
+  "county": "",
+  "country": "United States",
+  "region": "Mid-Atlantic",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-03-31T09:41:00.23Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/7105",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116370159",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

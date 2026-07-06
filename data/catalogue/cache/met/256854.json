@@ -1,0 +1,80 @@
+{
+  "objectID": 256854,
+  "isHighlight": false,
+  "accessionNumber": "1997.111",
+  "accessionYear": "1997",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/gr/original/DP119234.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/gr/web-large/DP119234.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/gr/original/DP119235.jpg"
+  ],
+  "constituents": null,
+  "department": "Greek and Roman Art",
+  "objectName": "Volute-krater, fragmentary",
+  "title": "Marble fragment of a volute krater",
+  "culture": "Roman",
+  "period": "Imperial",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1st–2nd century CE",
+  "objectBeginDate": 1,
+  "objectEndDate": 199,
+  "medium": "Marble",
+  "dimensions": "H. 11 1/4 in. (28.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 28.5
+      }
+    }
+  ],
+  "creditLine": "Purchase, David L. Klein Jr. Memorial Foundation Inc. and Nicholas S. Zoullas Gifts, 1997",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Stone Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-06-16T04:51:27.217Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/256854",
+  "tags": [
+    {
+      "term": "Heads",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300375054",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q3409626"
+    },
+    {
+      "term": "Dionysus",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901001029",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q41680"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116282805",
+  "isTimelineWork": false,
+  "GalleryNumber": "166"
+}

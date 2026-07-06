@@ -1,0 +1,78 @@
+{
+  "objectID": 212169,
+  "isHighlight": false,
+  "accessionNumber": "00.19.68",
+  "accessionYear": "1900",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/72802list.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/72802list.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/72802.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 199883,
+      "role": "Maker",
+      "name": "Saunders &amp; Shepherd",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Souvenir spoon",
+  "title": "Souvenir spoon with profile head of Queen Victoria and finial in form of St. Paul's Cathedral",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Saunders & Shepherd",
+  "artistDisplayBio": "British, 1869–present",
+  "artistSuffix": "",
+  "artistAlphaSort": "Saunders & Shepherd",
+  "artistNationality": "British",
+  "artistBeginDate": "1869",
+  "artistEndDate": "9999",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1897–98",
+  "objectBeginDate": 1897,
+  "objectEndDate": 1898,
+  "medium": "Silver, parcel-gilt",
+  "dimensions": "Length: 4 3/4 in. (12.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Length",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 12.065024
+      }
+    }
+  ],
+  "creditLine": "Gift of Sir William H. Redding, in memory of his wife, 1900",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2023-03-01T04:48:17.327Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/212169",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

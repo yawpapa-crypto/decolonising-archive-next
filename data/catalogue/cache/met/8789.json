@@ -1,0 +1,95 @@
+{
+  "objectID": 8789,
+  "isHighlight": false,
+  "accessionNumber": "66.52.2",
+  "accessionYear": "1966",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ad/original/DP-14591-015.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ad/web-large/DP-14591-015.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ad/original/DP-14591-016.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/DP-14591-017.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/DP-14591-093.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/DT5105.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/238809.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 162539,
+      "role": "Maker",
+      "name": "Tiffany &amp; Co.",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500330306",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q1066858",
+      "gender": ""
+    }
+  ],
+  "department": "The American Wing",
+  "objectName": "Tray",
+  "title": "Tray",
+  "culture": "American",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Tiffany & Co.",
+  "artistDisplayBio": "American, New York, NY, 1837–present",
+  "artistSuffix": "",
+  "artistAlphaSort": "Tiffany & Co.",
+  "artistNationality": "American",
+  "artistBeginDate": "1837",
+  "artistEndDate": "9999",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q1066858",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500330306",
+  "objectDate": "1879–80",
+  "objectBeginDate": 1876,
+  "objectEndDate": 1880,
+  "medium": "Silver, copper, brass, gold-copper alloy, and copper-platinum-iron alloy",
+  "dimensions": "9 1/8 × 7/8 in., 544.3g (23.2 × 2.2 cm, 17.5 oz.)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 2.2225044,
+        "Diameter": 23.1775,
+        "Weight": 0.5443
+      }
+    }
+  ],
+  "creditLine": "Rogers Fund, 1966",
+  "geographyType": "Made in",
+  "city": "New York",
+  "state": "New York",
+  "county": "",
+  "country": "United States",
+  "region": "Mid-Atlantic",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-05-16T04:55:07.937Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/8789",
+  "tags": [
+    {
+      "term": "Frogs",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250018",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q3116510"
+    },
+    {
+      "term": "Insects",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300310470",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q1390"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q83560109",
+  "isTimelineWork": true,
+  "GalleryNumber": "706"
+}

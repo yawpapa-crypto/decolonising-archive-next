@@ -1,0 +1,3 @@
+{
+  "/(app)/api/core-search/route": "app/(app)/api/core-search/route.js"
+}

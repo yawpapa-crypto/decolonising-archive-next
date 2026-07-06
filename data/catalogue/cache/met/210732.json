@@ -1,0 +1,92 @@
+{
+  "objectID": 210732,
+  "isHighlight": false,
+  "accessionNumber": "1973.176.34a, b–.38a, b",
+  "accessionYear": "1973",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/SF1973_176_1-48_img1.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/SF1973_176_1-48_img1.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 39733,
+      "role": "Maker",
+      "name": "F. P., London",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Jars",
+  "title": "Five jars",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "F. P., London",
+  "artistDisplayBio": "ca. 1875",
+  "artistSuffix": "",
+  "artistAlphaSort": "P. F.",
+  "artistNationality": "",
+  "artistBeginDate": "1875",
+  "artistEndDate": "1875",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1874–75",
+  "objectBeginDate": 1874,
+  "objectEndDate": 1875,
+  "medium": "Silver gilt, glass",
+  "dimensions": ".34,.35) Each: 1 3/4 x 4 1/16 in. (4.4 x 10.3 cm);\r\n.36) H. 1 11/16 in. (4.3 cm);\r\n.37,.38) Each: 1 5/8 x 2 13/16 in. (4.1 x 7.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": "37+38",
+      "elementMeasurements": {
+        "Height": 4.1,
+        "Length": 7.1
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": ".36",
+      "elementMeasurements": {
+        "Height": 4.3
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 4.4,
+        "Width": 10.3
+      }
+    }
+  ],
+  "creditLine": "Gift of Madame Lilliana Teruzzi, in memory of her mother, 1973",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/210732",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

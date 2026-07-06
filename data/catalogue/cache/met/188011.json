@@ -1,0 +1,89 @@
+{
+  "objectID": 188011,
+  "isHighlight": false,
+  "accessionNumber": "95.14.32",
+  "accessionYear": "1895",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/43192.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/43192.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 37972,
+      "role": "Maker",
+      "name": "Friedrich Fyrwald",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Snuffbox",
+  "title": "Snuffbox",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Friedrich Fyrwald",
+  "artistDisplayBio": "master 1786, died 1813/14",
+  "artistSuffix": "",
+  "artistAlphaSort": "Fyrwald Friedrich",
+  "artistNationality": "",
+  "artistBeginDate": "1713",
+  "artistEndDate": "1814",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1790",
+  "objectBeginDate": 1790,
+  "objectEndDate": 1790,
+  "medium": "Gold, enamel, pearls",
+  "dimensions": "Overall: 7/8 × 3 1/2 × 2 in. (2.2 × 8.9 × 5.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 5.08001,
+        "Height": 2.2225044,
+        "Width": 8.8900175
+      }
+    }
+  ],
+  "creditLine": "The Moses Lazarus Collection, Gift of Josephine and Sarah Lazarus, in memory of their father, 1888-95",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Gold and Platinum",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2020-09-16T18:35:19.457Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/188011",
+  "tags": [
+    {
+      "term": "Portraits",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300015637",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q134307"
+    },
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

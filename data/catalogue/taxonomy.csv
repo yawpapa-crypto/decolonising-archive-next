@@ -1,0 +1,14 @@
+﻿taxonomy_type,code,label,definition,build_id
+historical_period,P1,Visual systems before colonial rule,Overlapping historical filter; records may be linked across periods.,2026-07-05-taxonomy-v1
+historical_period,P2,"Coastal contact and transcultural exchange, c. 1471–1874",Overlapping historical filter; records may be linked across periods.,2026-07-05-taxonomy-v1
+historical_period,P3,"Colonial print and institutional design, 1874–1945",Overlapping historical filter; records may be linked across periods.,2026-07-05-taxonomy-v1
+historical_period,P4,"Anticolonial and independence visual culture, 1945–1966",Overlapping historical filter; records may be linked across periods.,2026-07-05-taxonomy-v1
+historical_period,P5,"Post-independence public and popular graphics, 1966–1992",Overlapping historical filter; records may be linked across periods.,2026-07-05-taxonomy-v1
+historical_period,P6,"Democratic, digital and diasporic design, 1992–present",Overlapping historical filter; records may be linked across periods.,2026-07-05-taxonomy-v1
+visual_system,V1,"Land, cosmology and authority","Research spine for grouping objects, makers, practices, institutions and records.",2026-07-05-taxonomy-v1
+visual_system,V2,"Memory, proverb and performance","Research spine for grouping objects, makers, practices, institutions and records.",2026-07-05-taxonomy-v1
+visual_system,V3,"Cloth, pattern and social identity","Research spine for grouping objects, makers, practices, institutions and records.",2026-07-05-taxonomy-v1
+visual_system,V4,"Print, colonial rule and public culture","Research spine for grouping objects, makers, practices, institutions and records.",2026-07-05-taxonomy-v1
+visual_system,V5,Independence and state visual identity,"Research spine for grouping objects, makers, practices, institutions and records.",2026-07-05-taxonomy-v1
+visual_system,V6,Popular and everyday graphics,"Research spine for grouping objects, makers, practices, institutions and records.",2026-07-05-taxonomy-v1
+visual_system,V7,"Digital, diasporic and contemporary design","Research spine for grouping objects, makers, practices, institutions and records.",2026-07-05-taxonomy-v1

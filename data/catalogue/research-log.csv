@@ -1,0 +1,3 @@
+institution,search_terms,pages_examined,records_extracted,records_rejected,duplicates_merged,inaccessible,notes,timestamp
+Metropolitan Museum of Art,Ghana; Akan; Adinkra; kente; Fante; Asafo; goldweight; West Africa textile; etc.,514,53,1219,0,-758,Object-level extraction from Met Collection API with Ghana relevance filter.,2026-07-05T10:31:39.800Z
+Cleveland Museum of Art,culture=Ghana,1,35,0,0,0,Open Access API,2026-07-05T10:31:41.984Z

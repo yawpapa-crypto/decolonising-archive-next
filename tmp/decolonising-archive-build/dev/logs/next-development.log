@@ -1,0 +1,5 @@
+{"timestamp":"00:00:00.598","source":"Server","level":"LOG","message":""}
+{"timestamp":"00:00:02.875","source":"Browser","level":"INFO","message":"%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"}
+{"timestamp":"00:00:02.963","source":"Browser","level":"LOG","message":"%c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit"}
+{"timestamp":"00:00:02.963","source":"Browser","level":"LOG","message":"%c[Vercel Web Analytics]%c [view] http://localhost:3000/my/workbench color: rgb(120, 120, 120) color: inherit {\"o\":\"http://localhost:3000/my/workbench\",\"sdkn\":\"@vercel/analytics/react\",\"sdkv\":\"2.0.1\",\"sv\":\"0.1.3\",\"ts\":1778800297452} /_vercel/insights/view"}
+{"timestamp":"00:00:02.963","source":"Browser","level":"LOG","message":"%c[Vercel Speed Insights]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit"}

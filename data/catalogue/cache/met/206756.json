@@ -1,0 +1,99 @@
+{
+  "objectID": 206756,
+  "isHighlight": false,
+  "accessionNumber": "1978.516.5",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP-464-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP-464-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP-464-002.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP-464-003.jpg"
+  ],
+  "constituents": null,
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Statuette group",
+  "title": "Virgin and child with angels",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1630",
+  "objectBeginDate": 1625,
+  "objectEndDate": 1635,
+  "medium": "Bronze, on a later gilt base",
+  "dimensions": "Overall without base confirmed: 8 1/4 × 3 5/8 × 2 7/8 in. (21 × 9.2 × 7.3 cm)",
+  "measurements": [
+    {
+      "elementName": "Height",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 20.955042
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "with base confirmed",
+      "elementMeasurements": {
+        "Depth": 6.985014,
+        "Height": 22.860046,
+        "Width": 9.84252
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "Overall without base confirmed",
+      "elementMeasurements": {
+        "Depth": 7.3025146,
+        "Height": 20.955042,
+        "Width": 9.207519
+      }
+    }
+  ],
+  "creditLine": "Gift of Mrs. Howard J. Sachs and Mr. Peter G. Sachs, in memory of Miss Edith L. Sachs, 1978",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture-Bronze",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/206756",
+  "tags": [
+    {
+      "term": "Angels",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300379004",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q235113"
+    },
+    {
+      "term": "Madonna and Child",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901000052",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q9309699"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

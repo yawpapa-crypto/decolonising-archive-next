@@ -1,0 +1,84 @@
+{
+  "objectID": 236773,
+  "isHighlight": false,
+  "accessionNumber": "2010.8",
+  "accessionYear": "2010",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP224152.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP224152.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 45788,
+      "role": "Artist",
+      "name": "Jürgen Kriebel",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Relief",
+  "title": "Madonna and Child",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Jürgen Kriebel",
+  "artistDisplayBio": "1580/90 –1645",
+  "artistSuffix": "",
+  "artistAlphaSort": "Jürgen Kriebel",
+  "artistNationality": "",
+  "artistBeginDate": "1580",
+  "artistEndDate": "1645",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1620–25",
+  "objectBeginDate": 1615,
+  "objectEndDate": 1630,
+  "medium": "Ivory",
+  "dimensions": "Overall (confirmed): 5 × 3 7/8 × 1 3/8 in. (12.7 × 9.8 × 3.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "confirmed",
+      "elementMeasurements": {
+        "Depth": 3.492507,
+        "Height": 12.700026,
+        "Width": 9.84252
+      }
+    }
+  ],
+  "creditLine": "Purchase, Friends of European Sculpture and Decorative Arts Gifts, H. Rodes and Patricia Hart Gift, Ruth and Victoria Blumka Fund, and Gifts in memory of Olga Raggio, 2010",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Natural Substances-Ivory",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/236773",
+  "tags": [
+    {
+      "term": "Madonna and Child",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901000052",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q9309699"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": "520"
+}

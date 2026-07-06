@@ -1,0 +1,95 @@
+{
+  "objectID": 16450,
+  "isHighlight": false,
+  "accessionNumber": "1999.6",
+  "accessionYear": "1999",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ad/original/DT4353.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ad/web-large/DT4353.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ad/original/DP169102.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 3310,
+      "role": "Artist",
+      "name": "Attributed to Mrs. Moses B. Russell (Clarissa Peters)",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500372708",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q22669548",
+      "gender": "Female"
+    }
+  ],
+  "department": "The American Wing",
+  "objectName": "Painting, miniature",
+  "title": "Baby with Rattle and Dog",
+  "culture": "American",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "Attributed to",
+  "artistDisplayName": "Mrs. Moses B. Russell (Clarissa Peters)",
+  "artistDisplayBio": "1809–1854",
+  "artistSuffix": "",
+  "artistAlphaSort": "Russell, Clarissa Peters",
+  "artistNationality": "American",
+  "artistBeginDate": "1809",
+  "artistEndDate": "1854",
+  "artistGender": "Female",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q22669548",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500372708",
+  "objectDate": "1842",
+  "objectBeginDate": 1842,
+  "objectEndDate": 1842,
+  "medium": "Watercolor and gouache on ivory",
+  "dimensions": "4 1/2 x 3 1/2 in. (11.4 x 8.9 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 11.4,
+        "Width": 8.9
+      }
+    }
+  ],
+  "creditLine": "Purchase, The Overbrook Foundation, Robert and Bobbie Falk Philanthropic Fund, and Lois and Arthur Stainman Philanthropic Fund Gifts, 1999",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-30T04:54:21.21Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/16450",
+  "tags": [
+    {
+      "term": "Infants",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300189561",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q998"
+    },
+    {
+      "term": "Dogs",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300265714",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q144"
+    },
+    {
+      "term": "Rattles",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300041933",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q7295963"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q19924098",
+  "isTimelineWork": true,
+  "GalleryNumber": ""
+}

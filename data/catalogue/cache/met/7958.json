@@ -1,0 +1,78 @@
+{
+  "objectID": 7958,
+  "isHighlight": false,
+  "accessionNumber": "41.34.20a, b",
+  "accessionYear": "1941",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ad/original/123900.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ad/web-large/123900.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ad/original/124764.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 1564,
+      "role": "Maker",
+      "name": "Thomas Danforth, III",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The American Wing",
+  "objectName": "Sugar bowl",
+  "title": "Sugar Bowl",
+  "culture": "American",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Thomas Danforth, III",
+  "artistDisplayBio": "1756–1840",
+  "artistSuffix": "",
+  "artistAlphaSort": "Danforth, III Thomas",
+  "artistNationality": "American",
+  "artistBeginDate": "1756",
+  "artistEndDate": "1840",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1777–90",
+  "objectBeginDate": 1777,
+  "objectEndDate": 1790,
+  "medium": "Pewter",
+  "dimensions": "H. 3 7/8 in. (9.8 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 9.8425
+      }
+    }
+  ],
+  "creditLine": "Gift of Mrs. J. Insley Blair, in memory of her husband, 1941",
+  "geographyType": "Possibly made in",
+  "city": "Wethersfeild",
+  "state": "Connecticut",
+  "county": "",
+  "country": "United States",
+  "region": "New England",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2023-02-07T04:46:51.34Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/7958",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116343558",
+  "isTimelineWork": false,
+  "GalleryNumber": "704"
+}

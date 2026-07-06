@@ -1,0 +1,100 @@
+{
+  "objectID": 255531,
+  "isHighlight": false,
+  "accessionNumber": "1974.11.4",
+  "accessionYear": "1974",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/gr/original/DP-17385-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/gr/web-large/DP-17385-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/gr/original/DP-17385-002.jpg",
+    "https://images.metmuseum.org/CRDImages/gr/original/DP-17385-003.jpg",
+    "https://images.metmuseum.org/CRDImages/gr/original/DP-17385-004.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 49228,
+      "role": "Artist",
+      "name": "Attributed to an artist near the Andokides Painter",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500030596",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q492239",
+      "gender": ""
+    }
+  ],
+  "department": "Greek and Roman Art",
+  "objectName": "Oinochoe",
+  "title": "Terracotta oinochoe (jug)",
+  "culture": "Greek, Attic",
+  "period": "Archaic",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "Attributed to an artist near the",
+  "artistDisplayName": "Andokides Painter",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Andokides Painter",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q492239",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500030596",
+  "objectDate": "ca. 530 BCE",
+  "objectBeginDate": -530,
+  "objectEndDate": -530,
+  "medium": "Terracotta",
+  "dimensions": "H. 9 7/16 in. (23.9 cm)\r\ngreatest diameter  5 3/8 in. (13.6 cm)\r\ndiameter of foot  3 1/16 in. (7.8 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": "Greatest Diameter",
+      "elementMeasurements": {
+        "Diameter": 13.59
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 23.9
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "diameter of foot",
+      "elementMeasurements": {
+        "Diameter": 7.75
+      }
+    }
+  ],
+  "creditLine": "Purchase, Arthur Darby Nock Bequest, in memory of Gisela M. A. Richter, 1974",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Vases",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-10-24T04:51:05.727Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/255531",
+  "tags": [
+    {
+      "term": "Centaurs",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300379740",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q83203"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116405946",
+  "isTimelineWork": false,
+  "GalleryNumber": "157"
+}

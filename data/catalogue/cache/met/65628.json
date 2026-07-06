@@ -1,0 +1,121 @@
+{
+  "objectID": 65628,
+  "isHighlight": false,
+  "accessionNumber": "2015.784.7",
+  "accessionYear": "2015",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DP-13189-002_crd.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DP-13189-002_crd.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/as/original/DP-13189-001.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-13189-002.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-13189-003.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-13189-004.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-13189-005.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-13189-006.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-13189-007.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-13189-008.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-13189-009.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-13189-010.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-13189-011.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-13189-012.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-13189-013.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-13189-014.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP-13189-015.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 17133,
+      "role": "Artist",
+      "name": "Various artists",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500461412",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "Asian Art",
+  "objectName": "Album leaves",
+  "title": "Album of painting and calligraphy for Maoshu",
+  "culture": "China",
+  "period": "Qing dynasty (1644–1911)",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Various artists",
+  "artistDisplayBio": "",
+  "artistSuffix": ", Chinese,17th century",
+  "artistAlphaSort": "Various artists",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500461412",
+  "objectDate": "1666–80",
+  "objectBeginDate": 1666,
+  "objectEndDate": 1680,
+  "medium": "Album of fourteen paintings and facing pages of calligraphy; ink and color on paper",
+  "dimensions": "Image (each leaf, various image sizes): 13 3/4 × 11 1/8 in. (34.9 × 28.3 cm)\r\nEach double leaf: 13 3/4 × 22 1/4 in. (34.9 × 56.5 cm)\r\nAlbum: 13 3/4 × 11 1/8 × 1 1/4 in. (34.9 × 28.3 × 3.2 cm)",
+  "measurements": [
+    {
+      "elementName": "Image",
+      "elementDescription": "each leaf, various image sizes",
+      "elementMeasurements": {
+        "Height": 34.92507,
+        "Width": 28.257557
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "album",
+      "elementMeasurements": {
+        "Depth": 3.1750064,
+        "Height": 34.92507,
+        "Width": 28.257557
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "each double leaf",
+      "elementMeasurements": {
+        "Height": 34.92507,
+        "Width": 56.515114
+      }
+    }
+  ],
+  "creditLine": "Gift of Julia and John Curtis, 2015",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Paintings",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-06-25T04:56:42.87Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/65628",
+  "tags": [
+    {
+      "term": "Landscapes",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132294",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q191163"
+    },
+    {
+      "term": "Calligraphy",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300266660",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q12681"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q78715520",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

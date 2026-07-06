@@ -1,0 +1,113 @@
+{
+  "objectID": 196531,
+  "isHighlight": false,
+  "accessionNumber": "29.180.2",
+  "accessionYear": "1929",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP346441.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP346441.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/DP109793.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP109794.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP351249.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/DP351248.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 34082,
+      "role": "Maker",
+      "name": "Clockmaker: Jean-André Lepaute",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500296582",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q913240",
+      "gender": ""
+    },
+    {
+      "constituentID": 37109,
+      "role": "Maker",
+      "name": "Clockmaker: Jean-Baptiste Lepaute",
+      "constituentULAN_URL": "(not assigned)",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q1685342",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Mantel clock",
+  "title": "Mantel clock (\"Pendule Uranie\")",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "Clockmaker:",
+  "artistDisplayName": "Jean-André Lepaute",
+  "artistDisplayBio": "French, 1720–1789",
+  "artistSuffix": "",
+  "artistAlphaSort": "Lepaute, Jean-André",
+  "artistNationality": "French",
+  "artistBeginDate": "1720",
+  "artistEndDate": "1789",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q913240",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500296582",
+  "objectDate": "ca. 1764–70",
+  "objectBeginDate": 1759,
+  "objectEndDate": 1775,
+  "medium": "Case: patinated bronze and gilded bronze; Dial: white enamel; Movement: brass and steel",
+  "dimensions": "Overall (confirmed): 28 × 20 1/2 × 10 1/2 in., 110 lb. (71.1 × 52.1 × 26.7 cm, 49.9 kg)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "confirmed",
+      "elementMeasurements": {
+        "Depth": 26.670053,
+        "Height": 71.12014,
+        "Weight": 49.89567,
+        "Width": 52.070103
+      }
+    }
+  ],
+  "creditLine": "Bequest of Ogden Mills, 1929",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Horology",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-11-21T10:05:27.96Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/196531",
+  "tags": [
+    {
+      "term": "Birds",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300266506",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q5113"
+    },
+    {
+      "term": "Books",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300028051",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q571"
+    },
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    },
+    {
+      "term": "Angels",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300379004",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q235113"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

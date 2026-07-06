@@ -1,0 +1,115 @@
+{
+  "objectID": 283245,
+  "isHighlight": false,
+  "accessionNumber": "2005.100.119",
+  "accessionYear": "2005",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ph/original/DP158928.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ph/web-large/DP158928.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ph/original/DP206675.jpg",
+    "https://images.metmuseum.org/CRDImages/ph/original/DP206684.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 55615,
+      "role": "Artist",
+      "name": "Pierre-Louis Pierson",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500005033",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q3383295",
+      "gender": ""
+    },
+    {
+      "constituentID": 41092,
+      "role": "Person in Photograph",
+      "name": "Countess Virginia Oldoini Verasis di Castiglione",
+      "constituentULAN_URL": "(not assigned)",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q276035",
+      "gender": ""
+    }
+  ],
+  "department": "Photographs",
+  "objectName": "Photograph",
+  "title": "The Gaze",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Pierre-Louis Pierson",
+  "artistDisplayBio": "French, 1822–1913",
+  "artistSuffix": "",
+  "artistAlphaSort": "Pierson, Pierre-Louis",
+  "artistNationality": "French",
+  "artistBeginDate": "1822",
+  "artistEndDate": "1913",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q3383295",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500005033",
+  "objectDate": "1856–57",
+  "objectBeginDate": 1856,
+  "objectEndDate": 1857,
+  "medium": "Albumen silver print from glass negative",
+  "dimensions": "Image: 9 x 6.6 cm (3 9/16 x 2 5/8 in.)\r\nMount: 12.9 x 9.1 cm (5 1/16 x 3 9/16 in.)\r\nMat: 21.9 x 15.9 cm (8 5/8 x 6 1/4 in.)",
+  "measurements": [
+    {
+      "elementName": "Mat",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 21.9075,
+        "Width": 15.875
+      }
+    },
+    {
+      "elementName": "Mount",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 12.9,
+        "Width": 9.1
+      }
+    },
+    {
+      "elementName": "Image",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 9,
+        "Width": 6.6
+      }
+    }
+  ],
+  "creditLine": "Gilman Collection, Gift of The Howard Gilman Foundation, 2005",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Photographs",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-03-20T04:55:14.207Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/283245",
+  "tags": [
+    {
+      "term": "Portraits",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300015637",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q134307"
+    },
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

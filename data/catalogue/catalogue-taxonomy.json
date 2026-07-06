@@ -1,0 +1,93 @@
+[
+  {
+    "taxonomyType": "historical_period",
+    "code": "P1",
+    "label": "Visual systems before colonial rule",
+    "definition": "Overlapping historical filter; records may be linked across periods.",
+    "buildId": "2026-07-05-taxonomy-v1"
+  },
+  {
+    "taxonomyType": "historical_period",
+    "code": "P2",
+    "label": "Coastal contact and transcultural exchange, c. 1471–1874",
+    "definition": "Overlapping historical filter; records may be linked across periods.",
+    "buildId": "2026-07-05-taxonomy-v1"
+  },
+  {
+    "taxonomyType": "historical_period",
+    "code": "P3",
+    "label": "Colonial print and institutional design, 1874–1945",
+    "definition": "Overlapping historical filter; records may be linked across periods.",
+    "buildId": "2026-07-05-taxonomy-v1"
+  },
+  {
+    "taxonomyType": "historical_period",
+    "code": "P4",
+    "label": "Anticolonial and independence visual culture, 1945–1966",
+    "definition": "Overlapping historical filter; records may be linked across periods.",
+    "buildId": "2026-07-05-taxonomy-v1"
+  },
+  {
+    "taxonomyType": "historical_period",
+    "code": "P5",
+    "label": "Post-independence public and popular graphics, 1966–1992",
+    "definition": "Overlapping historical filter; records may be linked across periods.",
+    "buildId": "2026-07-05-taxonomy-v1"
+  },
+  {
+    "taxonomyType": "historical_period",
+    "code": "P6",
+    "label": "Democratic, digital and diasporic design, 1992–present",
+    "definition": "Overlapping historical filter; records may be linked across periods.",
+    "buildId": "2026-07-05-taxonomy-v1"
+  },
+  {
+    "taxonomyType": "visual_system",
+    "code": "V1",
+    "label": "Land, cosmology and authority",
+    "definition": "Research spine for grouping objects, makers, practices, institutions and records.",
+    "buildId": "2026-07-05-taxonomy-v1"
+  },
+  {
+    "taxonomyType": "visual_system",
+    "code": "V2",
+    "label": "Memory, proverb and performance",
+    "definition": "Research spine for grouping objects, makers, practices, institutions and records.",
+    "buildId": "2026-07-05-taxonomy-v1"
+  },
+  {
+    "taxonomyType": "visual_system",
+    "code": "V3",
+    "label": "Cloth, pattern and social identity",
+    "definition": "Research spine for grouping objects, makers, practices, institutions and records.",
+    "buildId": "2026-07-05-taxonomy-v1"
+  },
+  {
+    "taxonomyType": "visual_system",
+    "code": "V4",
+    "label": "Print, colonial rule and public culture",
+    "definition": "Research spine for grouping objects, makers, practices, institutions and records.",
+    "buildId": "2026-07-05-taxonomy-v1"
+  },
+  {
+    "taxonomyType": "visual_system",
+    "code": "V5",
+    "label": "Independence and state visual identity",
+    "definition": "Research spine for grouping objects, makers, practices, institutions and records.",
+    "buildId": "2026-07-05-taxonomy-v1"
+  },
+  {
+    "taxonomyType": "visual_system",
+    "code": "V6",
+    "label": "Popular and everyday graphics",
+    "definition": "Research spine for grouping objects, makers, practices, institutions and records.",
+    "buildId": "2026-07-05-taxonomy-v1"
+  },
+  {
+    "taxonomyType": "visual_system",
+    "code": "V7",
+    "label": "Digital, diasporic and contemporary design",
+    "definition": "Research spine for grouping objects, makers, practices, institutions and records.",
+    "buildId": "2026-07-05-taxonomy-v1"
+  }
+]

@@ -1,0 +1,3 @@
+{
+  "/(app)/community/reading-lists/[id]/page": "app/(app)/community/reading-lists/[id]/page.js"
+}

@@ -1,0 +1,82 @@
+{
+  "objectID": 199373,
+  "isHighlight": false,
+  "accessionNumber": "43.100.63",
+  "accessionYear": "1943",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/ES6531.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/ES6531.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 35211,
+      "role": "Manufactory",
+      "name": "Imperial Porcelain Manufactory, St. Petersburg",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500331504",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q1303887",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Figure",
+  "title": "Tatar",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Manufactory",
+  "artistPrefix": "",
+  "artistDisplayName": "Imperial Porcelain Manufactory, St. Petersburg",
+  "artistDisplayBio": "Russian, 1744–present",
+  "artistSuffix": "",
+  "artistAlphaSort": "Imperial Porcelain Manufactory, St. Petersburg",
+  "artistNationality": "Russian",
+  "artistBeginDate": "1744",
+  "artistEndDate": "9999",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q1303887",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500331504",
+  "objectDate": "ca. 1760–70",
+  "objectBeginDate": 1755,
+  "objectEndDate": 1775,
+  "medium": "Hard-paste porcelain",
+  "dimensions": "Height: 7 3/16 in. (18.3 cm)",
+  "measurements": [
+    {
+      "elementName": "Height",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 18.256287
+      }
+    }
+  ],
+  "creditLine": "Gift of R. Thornton Wilson, in memory of Florence Ellsworth Wilson, 1943",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Porcelain",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2024-07-02T04:53:35.71Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/199373",
+  "tags": [
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

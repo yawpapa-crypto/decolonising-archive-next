@@ -1,0 +1,89 @@
+{
+  "objectID": 22857,
+  "isHighlight": false,
+  "accessionNumber": "22.148",
+  "accessionYear": "1922",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/aa/original/LC-22_148-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/aa/web-large/LC-22_148-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/aa/original/LC-22_148-002.jpg"
+  ],
+  "constituents": null,
+  "department": "Arms and Armor",
+  "objectName": "Standing shield",
+  "title": "Standing Shield",
+  "culture": "German, Erfurt",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1385–87",
+  "objectBeginDate": 1385,
+  "objectEndDate": 1387,
+  "medium": "Wood, leather, gesso, silver foil, gold lacquer, polychromy, iron",
+  "dimensions": "H. 69 1/2 in. (176.53 cm); W. 32 1/2 in. (82.55 cm); Wt. 50 lb. (22.68 kg)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": "Weight",
+      "elementMeasurements": {
+        "Weight": 22.68
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "Width",
+      "elementMeasurements": {
+        "Width": 82.55
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "Height",
+      "elementMeasurements": {
+        "Height": 176.53
+      }
+    }
+  ],
+  "creditLine": "Fletcher Fund, 1922",
+  "geographyType": "Country of Origin",
+  "city": "Erfurt",
+  "state": "",
+  "county": "",
+  "country": "Germany",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Shields",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/22857",
+  "tags": [
+    {
+      "term": "Coat of Arms",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300126352",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q14659"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116394186",
+  "isTimelineWork": false,
+  "GalleryNumber": "373"
+}

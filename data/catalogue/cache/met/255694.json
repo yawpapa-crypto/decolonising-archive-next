@@ -1,0 +1,87 @@
+{
+  "objectID": 255694,
+  "isHighlight": false,
+  "accessionNumber": "1980.303.2",
+  "accessionYear": "1980",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/gr/original/DP282115.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/gr/web-large/DP282115.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/gr/original/DP282116.jpg",
+    "https://images.metmuseum.org/CRDImages/gr/original/DP271785.jpg",
+    "https://images.metmuseum.org/CRDImages/gr/original/224206.jpg"
+  ],
+  "constituents": null,
+  "department": "Greek and Roman Art",
+  "objectName": "Head of Apollo",
+  "title": "Marble head of Apollo with fragment of his hand",
+  "culture": "Roman",
+  "period": "Imperial",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1st or 2nd century CE",
+  "objectBeginDate": 1,
+  "objectEndDate": 200,
+  "medium": "Marble",
+  "dimensions": "H. 6 3/4 in. (17.2 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 17.15
+      }
+    }
+  ],
+  "creditLine": "Gift of Louise Crane, in memory of her mother, Mrs. W. Murray Crane, 1980",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Stone Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-10-09T04:51:37.793Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/255694",
+  "tags": [
+    {
+      "term": "Hands",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300310193",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q33767"
+    },
+    {
+      "term": "Heads",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300375054",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q3409626"
+    },
+    {
+      "term": "Apollo",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901000109",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q37340"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116282845",
+  "isTimelineWork": false,
+  "GalleryNumber": "162"
+}

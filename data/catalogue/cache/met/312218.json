@@ -1,0 +1,84 @@
+{
+  "objectID": 312218,
+  "isHighlight": false,
+  "accessionNumber": "1979.206.47",
+  "accessionYear": "1979",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 232744,
+      "role": "Artist",
+      "name": "Northern Tussian or Siemu blacksmith",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Mask",
+  "title": "Kablé (buffalo helmet mask)",
+  "culture": "Northern Tussian or Siemu",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Northern Tussian or Siemu blacksmith",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Northern Tussian or Siemu blacksmith",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "19th–first quarter 20th century",
+  "objectBeginDate": 1800,
+  "objectEndDate": 1930,
+  "medium": "Ceiba(?) wood, cane, fiber",
+  "dimensions": "H. 27 1/2 x W. 14 3/4 x D. 11 7/8in. (69.9 x 37.5 x 30.2cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 30.18,
+        "Height": 69.85,
+        "Width": 37.47
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Bequest of Nelson A. Rockefeller, 1979",
+  "geographyType": "",
+  "city": "",
+  "state": "Province du Kénédougou",
+  "county": "",
+  "country": "western Burkina Faso",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Wood-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-20T04:50:39.43Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/312218",
+  "tags": [
+    {
+      "term": "Buffalos",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250108",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q82728"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": "341"
+}

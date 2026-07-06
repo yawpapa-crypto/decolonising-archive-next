@@ -1,0 +1,17 @@
+{
+  "node": {
+    "40497f6276e4d6da2e7e2d378f298a144026e87afa": {
+      "workers": {
+        "app/(admin)/admin/invites/page": {
+          "moduleId": 22757,
+          "async": false,
+          "exportedName": "createAdminInvite",
+          "filename": "app/(admin)/admin/invites/actions.ts"
+        }
+      },
+      "exportedName": "createAdminInvite",
+      "filename": "app/(admin)/admin/invites/actions.ts"
+    }
+  },
+  "edge": {}
+}

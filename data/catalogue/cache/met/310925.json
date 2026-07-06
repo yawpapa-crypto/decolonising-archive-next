@@ -1,0 +1,96 @@
+{
+  "objectID": 310925,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.463",
+  "accessionYear": "1978",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 63420,
+      "role": "Artist",
+      "name": "Oba of Otobi",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Headdress",
+  "title": "Headdress: Snakes and Heads (Idire)",
+  "culture": "Okpoto-Idoma peoples",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Oba of Otobi",
+  "artistDisplayBio": "ca. 1900–ca. 1970, Lower Benue River region, Nigeria",
+  "artistSuffix": "",
+  "artistAlphaSort": "Oba of Otobi",
+  "artistNationality": "",
+  "artistBeginDate": "1900",
+  "artistEndDate": "1970",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1955",
+  "objectBeginDate": 1955,
+  "objectEndDate": 1955,
+  "medium": "Wood, pigment",
+  "dimensions": "H. 18 11/16 x W. 7 1/2 x D. 13 in. (47.5 x 19.1 x 33 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Width": 19.05
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 33.02,
+        "Height": 47.5456,
+        "Width": 19.05
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of Mr. and Mrs. Raymond Wielgus, 1962",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Nigeria",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "Benue River Valley region",
+  "classification": "Wood-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-01-10T04:49:19.703Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310925",
+  "tags": [
+    {
+      "term": "Heads",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300375054",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q3409626"
+    },
+    {
+      "term": "Snakes",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250870",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q2102"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

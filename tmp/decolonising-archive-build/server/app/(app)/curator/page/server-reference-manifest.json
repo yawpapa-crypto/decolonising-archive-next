@@ -1,0 +1,161 @@
+{
+  "node": {
+    "4009083dff9c7e4a7290aecf408446fa29c67b8f56": {
+      "workers": {
+        "app/(app)/curator/page": {
+          "moduleId": 41167,
+          "async": false,
+          "exportedName": "deleteArchiveNote",
+          "filename": "app/(app)/curator/actions.ts"
+        }
+      },
+      "exportedName": "deleteArchiveNote",
+      "filename": "app/(app)/curator/actions.ts"
+    },
+    "403c61ce2d18ab16c82696210896c87a4495bb7d83": {
+      "workers": {
+        "app/(app)/curator/page": {
+          "moduleId": 41167,
+          "async": false,
+          "exportedName": "createDossier",
+          "filename": "app/(app)/curator/actions.ts"
+        }
+      },
+      "exportedName": "createDossier",
+      "filename": "app/(app)/curator/actions.ts"
+    },
+    "403cc2f41c8522fa60542792443b3cc424c65b3fe2": {
+      "workers": {
+        "app/(app)/curator/page": {
+          "moduleId": 41167,
+          "async": false,
+          "exportedName": "deletePathway",
+          "filename": "app/(app)/curator/actions.ts"
+        }
+      },
+      "exportedName": "deletePathway",
+      "filename": "app/(app)/curator/actions.ts"
+    },
+    "406c9c4590a4be62829829aa07f4ff772d839db1c7": {
+      "workers": {
+        "app/(app)/curator/page": {
+          "moduleId": 41167,
+          "async": false,
+          "exportedName": "updatePathway",
+          "filename": "app/(app)/curator/actions.ts"
+        }
+      },
+      "exportedName": "updatePathway",
+      "filename": "app/(app)/curator/actions.ts"
+    },
+    "4079ae4afe440652363ad22de0eac64dfe2060883e": {
+      "workers": {
+        "app/(app)/curator/page": {
+          "moduleId": 41167,
+          "async": false,
+          "exportedName": "updateFeaturedRecord",
+          "filename": "app/(app)/curator/actions.ts"
+        }
+      },
+      "exportedName": "updateFeaturedRecord",
+      "filename": "app/(app)/curator/actions.ts"
+    },
+    "409d97ced98700d0cde3c9f30e90ba78f30c970069": {
+      "workers": {
+        "app/(app)/curator/page": {
+          "moduleId": 41167,
+          "async": false,
+          "exportedName": "updateArchiveNote",
+          "filename": "app/(app)/curator/actions.ts"
+        }
+      },
+      "exportedName": "updateArchiveNote",
+      "filename": "app/(app)/curator/actions.ts"
+    },
+    "409f2beee14bab83e322edffcaabaa1532ccb06ef9": {
+      "workers": {
+        "app/(app)/curator/page": {
+          "moduleId": 41167,
+          "async": false,
+          "exportedName": "featureRecord",
+          "filename": "app/(app)/curator/actions.ts"
+        }
+      },
+      "exportedName": "featureRecord",
+      "filename": "app/(app)/curator/actions.ts"
+    },
+    "40a68e3cbe9aeb905ba81aa779836f104024646e4a": {
+      "workers": {
+        "app/(app)/curator/page": {
+          "moduleId": 41167,
+          "async": false,
+          "exportedName": "createArchiveNote",
+          "filename": "app/(app)/curator/actions.ts"
+        }
+      },
+      "exportedName": "createArchiveNote",
+      "filename": "app/(app)/curator/actions.ts"
+    },
+    "40ab89fa7ca374ec0a065388f413185e2013c85648": {
+      "workers": {
+        "app/(app)/curator/page": {
+          "moduleId": 41167,
+          "async": false,
+          "exportedName": "createPathway",
+          "filename": "app/(app)/curator/actions.ts"
+        }
+      },
+      "exportedName": "createPathway",
+      "filename": "app/(app)/curator/actions.ts"
+    },
+    "40b78185f4669f61c82771adee3006500976bb8922": {
+      "workers": {
+        "app/(app)/curator/page": {
+          "moduleId": 41167,
+          "async": false,
+          "exportedName": "updateSubmissionReview",
+          "filename": "app/(app)/curator/actions.ts"
+        }
+      },
+      "exportedName": "updateSubmissionReview",
+      "filename": "app/(app)/curator/actions.ts"
+    },
+    "40bbd54d1ba2d9a2d0dc3ef012c437aac8a0b3e3dc": {
+      "workers": {
+        "app/(app)/curator/page": {
+          "moduleId": 41167,
+          "async": false,
+          "exportedName": "deleteDossier",
+          "filename": "app/(app)/curator/actions.ts"
+        }
+      },
+      "exportedName": "deleteDossier",
+      "filename": "app/(app)/curator/actions.ts"
+    },
+    "40d5410a1fd14e67d5ce3444f32c34f0bdb32824bf": {
+      "workers": {
+        "app/(app)/curator/page": {
+          "moduleId": 41167,
+          "async": false,
+          "exportedName": "updateDossier",
+          "filename": "app/(app)/curator/actions.ts"
+        }
+      },
+      "exportedName": "updateDossier",
+      "filename": "app/(app)/curator/actions.ts"
+    },
+    "40fc8fed392263d688bb19a84aee74326640ae27e7": {
+      "workers": {
+        "app/(app)/curator/page": {
+          "moduleId": 41167,
+          "async": false,
+          "exportedName": "deleteFeaturedRecord",
+          "filename": "app/(app)/curator/actions.ts"
+        }
+      },
+      "exportedName": "deleteFeaturedRecord",
+      "filename": "app/(app)/curator/actions.ts"
+    }
+  },
+  "edge": {}
+}

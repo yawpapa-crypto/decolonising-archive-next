@@ -1,0 +1,92 @@
+{
+  "objectID": 236747,
+  "isHighlight": false,
+  "accessionNumber": "2009.263a–c",
+  "accessionYear": "2009",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DP228589.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DP228589.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/SF2009_263ab_img4.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/SF2009_263ab_marks.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/SF2009_263c_mark1.jpg",
+    "https://images.metmuseum.org/CRDImages/es/original/SF2009_263c_mark2.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 45789,
+      "role": "Goldsmith",
+      "name": "Bernhard Heinrich Weyhe",
+      "constituentULAN_URL": "(not assigned)",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q94499666",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Tureen and stand",
+  "title": "Tureen and stand",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Goldsmith",
+  "artistPrefix": "",
+  "artistDisplayName": "Bernhard Heinrich Weyhe",
+  "artistDisplayBio": "German, 1702–1782",
+  "artistSuffix": "",
+  "artistAlphaSort": "Weyhe, Bernhard Heinrich",
+  "artistNationality": "German",
+  "artistBeginDate": "1702",
+  "artistEndDate": "1782",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q94499666",
+  "artistULAN_URL": "(not assigned)",
+  "objectDate": "1769–71",
+  "objectBeginDate": 1769,
+  "objectEndDate": 1771,
+  "medium": "Silver, silver gilt",
+  "dimensions": "Tureen Overall (confirmed): 10 3/4 x 18 x 8 3/8 in.  (27.3 x 45.7 x 21.3 cm); Stand Overall (confirmed): 21 x 12 5/8 in. (53.3 x 32.1 cm); Overall weight (non-confirmed): 8.5 lbs. (3850 g)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 21.272543,
+        "Height": 27.305054,
+        "Weight": 3.85,
+        "Width": 45.720093
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 32.067566,
+        "Width": 53.340107
+      }
+    }
+  ],
+  "creditLine": "Wrightsman Fund, 2009",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Silver",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-11-21T10:05:27.96Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/236747",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

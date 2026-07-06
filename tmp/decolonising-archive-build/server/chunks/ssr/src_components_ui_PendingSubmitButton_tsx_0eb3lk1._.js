@@ -1,0 +1,3 @@
+module.exports=[71495,a=>{"use strict";var b=a.i(87924),c=a.i(35112);a.s(["default",0,function({children:a,pendingLabel:d,className:e,disabled:f,...g}){let{pending:h}=(0,c.useFormStatus)();return(0,b.jsx)("button",{...g,type:"submit",className:["pending-submit-button",e].filter(Boolean).join(" "),disabled:!!(h||f),"aria-busy":!!h||void 0,"data-pending":h?"true":void 0,children:h?(0,b.jsxs)("span",{className:"pending-submit-button__row",children:[(0,b.jsx)("span",{className:"pending-submit-button__spinner","aria-hidden":!0}),(0,b.jsx)("span",{children:d})]}):a})}])}];
+
+//# sourceMappingURL=src_components_ui_PendingSubmitButton_tsx_0eb3lk1._.js.map

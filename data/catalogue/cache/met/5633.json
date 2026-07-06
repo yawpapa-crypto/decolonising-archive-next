@@ -1,0 +1,90 @@
+{
+  "objectID": 5633,
+  "isHighlight": false,
+  "accessionNumber": "53.181a, b",
+  "accessionYear": "1953",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ad/original/DP109805.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ad/web-large/DP109805.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ad/original/156526.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/156527.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/185916.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/185917.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/185918.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 1337,
+      "role": "Maker",
+      "name": "Charles-Honoré Lannuier",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500256814",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q5074741",
+      "gender": ""
+    }
+  ],
+  "department": "The American Wing",
+  "objectName": "Pier table",
+  "title": "Pier table",
+  "culture": "American",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Charles-Honoré Lannuier",
+  "artistDisplayBio": "France 1779–1819 New York",
+  "artistSuffix": "",
+  "artistAlphaSort": "Lannuier, Charles-Honoré",
+  "artistNationality": "American",
+  "artistBeginDate": "1779",
+  "artistEndDate": "1819",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q5074741",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500256814",
+  "objectDate": "1815–19",
+  "objectBeginDate": 1815,
+  "objectEndDate": 1819,
+  "medium": "Rosewood veneer, gilded gesso, brass, white metal, marble, glass with mahogany, ash, white pine, yellow poplar",
+  "dimensions": "36 x 49 1/2 x 22 in. (91.4 x 125.7 x 55.9 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 55.8801,
+        "Height": 91.4,
+        "Width": 125.7
+      }
+    }
+  ],
+  "creditLine": "Rogers Fund, 1953",
+  "geographyType": "Made in",
+  "city": "New York",
+  "state": "New York",
+  "county": "",
+  "country": "United States",
+  "region": "Mid-Atlantic",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-30T04:54:21.21Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/5633",
+  "tags": [
+    {
+      "term": "Caryatids",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300001583",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q208120"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116363728",
+  "isTimelineWork": true,
+  "GalleryNumber": "726"
+}

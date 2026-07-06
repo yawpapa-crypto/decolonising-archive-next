@@ -1,0 +1,84 @@
+{
+  "objectID": 198076,
+  "isHighlight": false,
+  "accessionNumber": "38.50.36a, b",
+  "accessionYear": "1938",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/SF38_50_36_img1.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/SF38_50_36_img1.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/SF38_50_36_img2.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 34375,
+      "role": "Artist",
+      "name": "Mathieu Coiny fils",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Étui",
+  "title": "Étui",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Mathieu Coiny fils",
+  "artistDisplayBio": "born 1723, master 1755, recorded 1788",
+  "artistSuffix": "",
+  "artistAlphaSort": "Coiny Mathieu",
+  "artistNationality": "",
+  "artistBeginDate": "1723",
+  "artistEndDate": "1823",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1771–72",
+  "objectBeginDate": 1771,
+  "objectEndDate": 1772,
+  "medium": "Gold",
+  "dimensions": "Length: 4 1/2 in. (11.4 cm)",
+  "measurements": [
+    {
+      "elementName": "Length",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 11.430023
+      }
+    }
+  ],
+  "creditLine": "Bequest of Kate Read Blacque, in memory of her husband, Valentine Alexander Blacque, 1937",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Gold and Platinum",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2024-03-29T10:36:46.263Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/198076",
+  "tags": [
+    {
+      "term": "Flowers",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132399",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q506"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

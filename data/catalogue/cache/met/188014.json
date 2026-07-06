@@ -1,0 +1,79 @@
+{
+  "objectID": 188014,
+  "isHighlight": false,
+  "accessionNumber": "95.14.42a, b",
+  "accessionYear": "1895",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/ES5966.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/ES5966.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/ES111.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 37938,
+      "role": "Maker",
+      "name": "Toussaint-François Pillieux",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Étui",
+  "title": "Étui",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Toussaint-François Pillieux",
+  "artistDisplayBio": "master in March 1786; active 1806",
+  "artistSuffix": "",
+  "artistAlphaSort": "Pillieux Toussaint-François",
+  "artistNationality": "",
+  "artistBeginDate": "1786",
+  "artistEndDate": "1806",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1785–86",
+  "objectBeginDate": 1785,
+  "objectEndDate": 1786,
+  "medium": "Gold, enamel",
+  "dimensions": "5 × 7/8 in. (12.7 × 2.2 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 12.700026,
+        "Width": 2.2225044
+      }
+    }
+  ],
+  "creditLine": "The Moses Lazarus Collection, Gift of Josephine and Sarah Lazarus, in memory of their father, 1888-95",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metalwork-Gold and Platinum",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2024-03-29T10:36:46.263Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/188014",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

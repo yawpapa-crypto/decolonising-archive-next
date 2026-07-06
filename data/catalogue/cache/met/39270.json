@@ -1,0 +1,87 @@
+{
+  "objectID": 39270,
+  "isHighlight": false,
+  "accessionNumber": "48.30.15",
+  "accessionYear": "1948",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DP170170.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DP170170.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/as/original/DP170168.jpg"
+  ],
+  "constituents": null,
+  "department": "Asian Art",
+  "objectName": "Shrine",
+  "title": "Bodhisattva  Avalokiteshvara (Guanyin)",
+  "culture": "Tibet",
+  "period": "Qing dynasty (1644–1911), Qianlong period (1736–95)",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "",
+  "objectBeginDate": 1736,
+  "objectEndDate": 1795,
+  "medium": "Leaded brass with pigment, lost-wax cast",
+  "dimensions": "H. 12 5/8 in. (32.1 cm); W. 3 5/8 in. (9.2 cm); D. 3 1/4 in. (9.3 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 8.255,
+        "Height": 32.0676,
+        "Width": 9.2075
+      }
+    }
+  ],
+  "creditLine": "Bequest of Kate Read Blacque, in memory of her husband, Valentine Alexander Blacque, by exchange, 1948",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/39270",
+  "tags": [
+    {
+      "term": "Buddhism",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300073738",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q748"
+    },
+    {
+      "term": "Avalokiteshvara",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901000085",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q193849"
+    },
+    {
+      "term": "Bodhisattvas",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300264360",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q178149"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

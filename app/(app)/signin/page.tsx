@@ -1,0 +1,119 @@
+// Sign-in page — email/password, OAuth, optional newsletter opt-in.
+
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import AuthPageShell from "@/components/auth/AuthPageShell";
+import AuthShell from "@/components/auth/AuthShell";
+import { getCurrentUser } from "@/src/lib/auth";
+import { requestPasswordReset, signInWithPassword } from "./actions";
+import OAuthButtons from "./OAuthButtons";
+import "@/app/styles/auth-pages.css";
+
+type SearchParams = Promise<{
+  next?: string;
+  error?: string;
+  updated?: string;
+  sent?: string;
+  resetSent?: string;
+  email?: string;
+}>;
+
+export default async function SignInPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const sp = await searchParams;
+  const next = sp.next ?? "/workspace";
+
+  const user = await getCurrentUser();
+  if (user) redirect(next);
+
+  return (
+    <AuthPageShell>
+      <AuthShell mode="signin">
+        <div className="auth-card">
+          <p className="auth-eyebrow">Decolonising Archive</p>
+          <h1 className="auth-title">Sign in</h1>
+          <p className="auth-sub">
+            Members get bookmarks, saved searches, and reading lists across the archive.
+            Curator and admin tools are unlocked by an admin.
+          </p>
+
+          {sp.error ? <p className="auth-error">{sp.error}</p> : null}
+          {sp.updated ? <p className="auth-notice">{sp.updated}</p> : null}
+          {sp.sent ? (
+            <p className="auth-notice">
+              We sent a sign-in link to <strong>{sp.email ?? "your email"}</strong>.
+            </p>
+          ) : null}
+          {sp.resetSent ? (
+            <p className="auth-notice">
+              We sent a password reset link to <strong>{sp.email ?? "your email"}</strong>.
+            </p>
+          ) : null}
+
+          <form action={signInWithPassword} className="auth-form">
+            <input type="hidden" name="next" value={next} />
+            <label className="auth-field">
+              <span>Email</span>
+              <input type="email" name="email" autoComplete="email" required />
+            </label>
+            <label className="auth-field">
+              <span>Password</span>
+              <input
+                type="password"
+                name="password"
+                autoComplete="current-password"
+                required
+                minLength={8}
+              />
+            </label>
+            <label className="auth-optin">
+              <input type="checkbox" name="newsletter_opt_in" />
+              <span className="auth-optin-copy">
+                <strong>Join our email list</strong>
+                <small>Occasional updates on collections, tools, and community features.</small>
+              </span>
+            </label>
+            <button type="submit" className="auth-submit">
+              Sign in
+            </button>
+          </form>
+
+          <details className="auth-recovery">
+            <summary>Forgot your password?</summary>
+            <form action={requestPasswordReset} className="auth-form">
+              <input type="hidden" name="statusPath" value="/signin" />
+              <label className="auth-field">
+                <span>Email for password reset</span>
+                <input
+                  type="email"
+                  name="email"
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                  required
+                />
+              </label>
+              <button type="submit" className="auth-submit auth-submit-secondary">
+                Send reset link
+              </button>
+            </form>
+          </details>
+
+          <div className="auth-divider"><span>or</span></div>
+
+          <OAuthButtons next={next} />
+
+          <p className="auth-footer">
+            New here?{" "}
+            <Link href={`/signup?next=${encodeURIComponent(next)}`}>
+              Create a Member account
+            </Link>
+            .
+          </p>
+        </div>
+      </AuthShell>
+    </AuthPageShell>
+  );
+}

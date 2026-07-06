@@ -1,0 +1,92 @@
+{
+  "objectID": 206710,
+  "isHighlight": false,
+  "accessionNumber": "1978.1",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/DT10078.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/DT10078.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 34515,
+      "role": "Artist",
+      "name": "Pierre Julien",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500019744",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q3385653",
+      "gender": ""
+    }
+  ],
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Bust",
+  "title": "Bust of a Girl Veiled and Crowned with Flowers",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Pierre Julien",
+  "artistDisplayBio": "French, St-Paulien, near Le Puy-en-Velay 1731–1804 Paris",
+  "artistSuffix": "",
+  "artistAlphaSort": "Julien, Pierre",
+  "artistNationality": "French",
+  "artistBeginDate": "1731",
+  "artistEndDate": "1804",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q3385653",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500019744",
+  "objectDate": "ca. 1779",
+  "objectBeginDate": 1774,
+  "objectEndDate": 1784,
+  "medium": "Terracotta2014",
+  "dimensions": "Overall (without socle): 18 × 12 1/2 × 11 in. (45.7 × 31.8 × 27.9 cm); Socle: 5 x 6 1/2 in. (12.7 x 16.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Pedestal",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 16.51,
+        "Height": 12.7
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "without socle",
+      "elementMeasurements": {
+        "Depth": 27.9401,
+        "Height": 45.7201,
+        "Width": 31.7501
+      }
+    }
+  ],
+  "creditLine": "Purchase, C. Michael Paul Gift, 1978",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-06-04T04:55:34.617Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/206710",
+  "tags": [
+    {
+      "term": "Girls",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300247581",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q3031"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

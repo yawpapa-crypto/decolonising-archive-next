@@ -1,0 +1,84 @@
+{
+  "objectID": 310924,
+  "isHighlight": false,
+  "accessionNumber": "1978.412.462",
+  "accessionYear": "1978",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 63420,
+      "role": "Artist",
+      "name": "Oba of Otobi",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Headdress",
+  "title": "Eku (crocodile) dance crest",
+  "culture": "Okpoto peoples, Idoma group",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Oba of Otobi",
+  "artistDisplayBio": "ca. 1900–ca. 1970, Lower Benue River region, Nigeria",
+  "artistSuffix": "",
+  "artistAlphaSort": "Oba of Otobi",
+  "artistNationality": "",
+  "artistBeginDate": "1900",
+  "artistEndDate": "1970",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1955",
+  "objectBeginDate": 1955,
+  "objectEndDate": 1955,
+  "medium": "Wood, pigment, rattan",
+  "dimensions": "H. 19 1/2 × W. 8 1/4 × D. 27 5/8 in. (49.5 × 21 × 70.2 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 70.16764,
+        "Height": 49.530098,
+        "Width": 20.96
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of Mr. and Mrs. Raymond Wielgus, 1962",
+  "geographyType": "",
+  "city": "Akpa or Upu village",
+  "state": "",
+  "county": "",
+  "country": "Nigeria",
+  "region": "Benue River Valley region",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Wood-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-10-04T04:51:17.007Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310924",
+  "tags": [
+    {
+      "term": "Crocodiles",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250293",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q2535664"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": "343"
+}

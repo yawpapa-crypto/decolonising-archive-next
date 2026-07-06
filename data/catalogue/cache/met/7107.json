@@ -1,0 +1,91 @@
+{
+  "objectID": 7107,
+  "isHighlight": false,
+  "accessionNumber": "1980.497.5",
+  "accessionYear": "1980",
+  "isPublicDomain": false,
+  "primaryImage": "",
+  "primaryImageSmall": "",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 162541,
+      "role": "Maker",
+      "name": "Tiffany Studios",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500331813",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q19587243",
+      "gender": ""
+    }
+  ],
+  "department": "The American Wing",
+  "objectName": "Pattern",
+  "title": "Cartoon for a \"Tulip\" Lampshade and associated parts",
+  "culture": "American",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "",
+  "artistDisplayName": "Tiffany Studios",
+  "artistDisplayBio": "1902–32",
+  "artistSuffix": "",
+  "artistAlphaSort": "Tiffany Studios",
+  "artistNationality": "",
+  "artistBeginDate": "1902",
+  "artistEndDate": "1932",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q19587243",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500331813",
+  "objectDate": "ca. 1906",
+  "objectBeginDate": 1901,
+  "objectEndDate": 1911,
+  "medium": "Watercolor on textile; metal; glass",
+  "dimensions": "Linen shade 1980.497.5a: 10 15/16 × 16 7/16 in. (27.8 × 41.8 cm)\r\nSoldered stained glass fragment 1980.497.5b: 9 9/16 × 5 1/2 in. (24.3 × 14 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": "Linen shade 1980.497.5a",
+      "elementMeasurements": {
+        "Height": 27.781305,
+        "Width": 41.751335
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "Soldered stained glass fragment 1980.497.5b",
+      "elementMeasurements": {
+        "Height": 24.2888,
+        "Width": 13.97
+      }
+    }
+  ],
+  "creditLine": "Gift of Fred and Nancylee Dikeman, in memory of his father, John Dikeman, 1980",
+  "geographyType": "Made in",
+  "city": "New York",
+  "state": "New York",
+  "county": "",
+  "country": "United States",
+  "region": "Mid-Atlantic",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2026-06-24T04:50:22.173Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/7107",
+  "tags": [
+    {
+      "term": "Tulips",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300379705",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q30345409"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

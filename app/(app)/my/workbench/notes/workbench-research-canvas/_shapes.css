@@ -1,0 +1,122 @@
+/* Premium vector shapes + connectors (Figma / Milanote quality) */
+
+.workbench-research-canvas-object.is-shape {
+  display: block;
+  background: transparent !important;
+  border-color: transparent !important;
+  border-width: 0 !important;
+  box-shadow: none !important;
+  overflow: visible;
+}
+
+.workbench-research-canvas-object.is-shape:hover:not(.is-selected):not(.is-dragging) {
+  box-shadow: none;
+  border-color: transparent;
+}
+
+.workbench-research-canvas-object.is-shape.is-shape-minimal {
+  filter: drop-shadow(0 2px 6px rgba(47, 45, 56, 0.07)) drop-shadow(0 10px 22px rgba(47, 45, 56, 0.06));
+}
+
+.workbench-research-canvas-object.is-shape:not(.is-shape-minimal) {
+  filter: drop-shadow(0 2px 8px rgba(47, 45, 56, 0.08)) drop-shadow(0 14px 28px rgba(47, 45, 56, 0.07));
+}
+
+.workbench-research-canvas-object.is-shape.is-dragging {
+  filter: drop-shadow(0 8px 24px rgba(47, 45, 56, 0.14));
+}
+
+.workbench-research-canvas-object.is-shape.is-selected {
+  filter: drop-shadow(0 4px 14px rgba(47, 45, 56, 0.1))
+    drop-shadow(0 0 0 2px rgba(223, 255, 47, 0.55));
+}
+
+.workbench-research-canvas-shape__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.workbench-research-canvas-shape__geom {
+  transition: stroke-width 120ms var(--wrc-ease);
+}
+
+.workbench-research-canvas-shape__label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  box-sizing: border-box;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.workbench-research-canvas-shape__label input {
+  width: 100%;
+  max-width: 100%;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--wrc-ink);
+  text-align: center;
+  outline: none;
+  pointer-events: auto;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.workbench-research-canvas-shape__label input::placeholder {
+  color: var(--wrc-muted-soft);
+  font-weight: 500;
+}
+
+/* Lines, arrows, connectors */
+
+.workbench-research-canvas-line-stroke {
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  transition:
+    stroke 160ms var(--wrc-ease),
+    stroke-width 160ms var(--wrc-ease),
+    filter 160ms var(--wrc-ease);
+}
+
+.workbench-research-canvas-line.is-hovered .workbench-research-canvas-line-stroke {
+  stroke: rgba(47, 45, 56, 0.62);
+  filter: drop-shadow(0 0 6px rgba(223, 255, 47, 0.5));
+}
+
+.workbench-research-canvas-line.is-selected .workbench-research-canvas-line-stroke {
+  stroke: var(--wrc-ink);
+  stroke-width: 2.75;
+  filter: drop-shadow(0 0 8px rgba(223, 255, 47, 0.55));
+}
+
+.workbench-research-canvas-line.is-preview .workbench-research-canvas-line-stroke {
+  stroke: rgba(47, 45, 56, 0.32);
+  stroke-dasharray: 6 5;
+}
+
+.workbench-research-canvas-line.is-connector .workbench-research-canvas-line-stroke {
+  stroke-linecap: round;
+}
+
+.workbench-research-canvas-line-handle {
+  fill: var(--wrc-paper);
+  stroke: var(--wrc-ink);
+  stroke-width: 1.75;
+  filter: drop-shadow(0 2px 6px rgba(47, 45, 56, 0.12));
+}
+
+.workbench-research-canvas-line-handle:hover {
+  fill: var(--wrc-lemon);
+}

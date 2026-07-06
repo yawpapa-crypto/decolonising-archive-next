@@ -1,0 +1,351 @@
+/**
+ * Canvas inspector property panel — form controls only.
+ * Scoped under .workbench-research-canvas; does not affect Document/Board.
+ */
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-panel-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+  padding-bottom: 32px;
+  scrollbar-gutter: stable;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-research-canvas-inspector-head {
+  margin-bottom: 10px;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-research-canvas-inspector-tabs {
+  gap: 8px;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-research-canvas-inspector-tab {
+  min-height: 40px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid transparent;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-research-canvas-inspector-tab:not(.is-active) {
+  background: rgba(47, 45, 56, 0.05);
+  border-color: rgba(47, 45, 56, 0.06);
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-research-canvas-inspector-tab.is-active {
+  background: var(--wrc-lemon);
+  color: var(--wrc-ink);
+  border-color: rgba(47, 45, 56, 0.12);
+  box-shadow: none;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-research-canvas-inspector-icon-btn {
+  width: 40px;
+  height: 40px;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-research-canvas-inspector-section {
+  gap: 0;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-research-canvas-inspector-section-title {
+  margin: 0 0 12px;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-field {
+  margin-bottom: 18px;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-field:last-child {
+  margin-bottom: 0;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-label,
+.workbench-research-canvas .workbench-canvas-inspector .workbench-research-canvas-field-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--wrc-muted);
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-field-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-field-label-row .workbench-canvas-label {
+  margin-bottom: 0;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-value-pill {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border-radius: var(--wrc-radius-pill);
+  background: rgba(47, 45, 56, 0.06);
+  border: 1px solid rgba(47, 45, 56, 0.08);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--wrc-ink);
+}
+
+/* Text, number, textarea */
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-input {
+  width: 100%;
+  box-sizing: border-box;
+  height: 42px;
+  border-radius: 14px;
+  border: 1px solid rgba(47, 45, 56, 0.14);
+  padding: 0 12px;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.35;
+  background: #fff;
+  color: var(--wrc-ink);
+  appearance: none;
+  transition:
+    border-color 140ms var(--wrc-ease),
+    box-shadow 140ms var(--wrc-ease);
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-input:focus-visible {
+  outline: none;
+  border-color: rgba(47, 45, 56, 0.28);
+  box-shadow: 0 0 0 3px rgba(223, 255, 47, 0.35);
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-input.is-textarea {
+  height: auto;
+  min-height: 88px;
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector input[type="number"].workbench-canvas-input::-webkit-outer-spin-button,
+.workbench-research-canvas .workbench-canvas-inspector input[type="number"].workbench-canvas-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector input[type="number"].workbench-canvas-input {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+/* Colour control */
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-color-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding: 0 10px 0 8px;
+  border-radius: 14px;
+  border: 1px solid rgba(47, 45, 56, 0.14);
+  background: #fff;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-color-control__swatch-btn {
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  line-height: 0;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-color-control__swatch-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-color-control__swatch {
+  display: block;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid rgba(47, 45, 56, 0.2);
+  background-color: var(--swatch-color, #fff);
+  background-image:
+    linear-gradient(45deg, #e8e8ec 25%, transparent 25%),
+    linear-gradient(-45deg, #e8e8ec 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #e8e8ec 75%),
+    linear-gradient(-45deg, transparent 75%, #e8e8ec 75%);
+  background-size: 8px 8px;
+  background-position:
+    0 0,
+    0 4px,
+    4px -4px,
+    -4px 0;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-color-control__hex {
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(47, 45, 56, 0.04);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-color-control__hex:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(223, 255, 47, 0.45);
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-color-control__picker {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-swatches {
+  margin-bottom: 10px;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  border: 1px solid rgba(47, 45, 56, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-swatch.is-active {
+  outline: 2px solid var(--wrc-ink);
+  outline-offset: 2px;
+}
+
+/* Range sliders */
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-range-wrap {
+  padding: 2px 0;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-range-wrap.is-opacity {
+  padding: 6px 8px;
+  border-radius: 12px;
+  background:
+    linear-gradient(90deg, transparent, rgba(47, 45, 56, 0.55)),
+    repeating-conic-gradient(#e8e8ec 0% 25%, #fff 0% 50%) 50% / 10px 10px;
+  border: 1px solid rgba(47, 45, 56, 0.1);
+}
+
+.workbench-research-canvas .workbench-canvas-inspector input[type="range"].workbench-canvas-range {
+  width: 100%;
+  height: 32px;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector input[type="range"].workbench-canvas-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector input[type="range"].workbench-canvas-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(36, 36, 42, 0.14);
+}
+
+.workbench-research-canvas .workbench-canvas-inspector input[type="range"].workbench-canvas-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  margin-top: -6px;
+  border-radius: 999px;
+  background: var(--wrc-lemon, #dfff2f);
+  border: 2px solid #111318;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+
+.workbench-research-canvas .workbench-canvas-inspector input[type="range"].workbench-canvas-range::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(36, 36, 42, 0.14);
+}
+
+.workbench-research-canvas .workbench-canvas-inspector input[type="range"].workbench-canvas-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #111318;
+  border-radius: 999px;
+  background: var(--wrc-lemon, #dfff2f);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+
+/* Segmented align / options */
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-segmented {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+  gap: 6px;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-segmented-btn {
+  min-height: 40px;
+  padding: 0 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(47, 45, 56, 0.12);
+  background: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--wrc-muted);
+  cursor: pointer;
+  transition:
+    background 140ms var(--wrc-ease),
+    border-color 140ms var(--wrc-ease),
+    color 140ms var(--wrc-ease);
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-segmented-btn:hover:not(:disabled):not(.is-active) {
+  border-color: rgba(47, 45, 56, 0.2);
+  color: var(--wrc-ink);
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-segmented-btn.is-active {
+  background: rgba(223, 255, 47, 0.55);
+  color: var(--wrc-ink);
+  border-color: rgba(47, 45, 56, 0.18);
+  box-shadow: none;
+}
+
+/* Layers */
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-layer-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.workbench-research-canvas .workbench-canvas-inspector .workbench-canvas-layer-actions .workbench-research-canvas-btn {
+  min-height: 40px;
+  font-size: 12px;
+}
+
+/* Hide legacy raw colour bar in inspect tab */
+.workbench-research-canvas .workbench-canvas-inspector .workbench-research-canvas-color-input {
+  display: none;
+}
