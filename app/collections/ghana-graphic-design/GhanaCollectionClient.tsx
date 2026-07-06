@@ -114,15 +114,42 @@ const DATE_BUCKET_LABELS: Record<string, string> = {
 
 function SuggestModal({ onClose }: { onClose: () => void }) {
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState({ title: "", source: "", url: "", notes: "", email: "" });
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitting(true);
+    setError(null);
+
+    try {
+      const res = await fetch("/api/collections/suggest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          title: form.title,
+          source: form.source,
+          url: form.url || undefined,
+          notes: form.notes || undefined,
+          submitterEmail: form.email || undefined,
+          collectionSlug: "ghana-graphic-design",
+        }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.ok) {
+        throw new Error(json.error || "Could not submit suggestion");
+      }
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not submit suggestion");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -206,12 +233,13 @@ function SuggestModal({ onClose }: { onClose: () => void }) {
                   onChange={handleChange}
                 />
               </div>
+              {error && <p className="ghana-suggest-error">{error}</p>}
               <div className="ghana-suggest-actions">
-                <button type="button" className="ghana-suggest-cancel" onClick={onClose}>
+                <button type="button" className="ghana-suggest-cancel" onClick={onClose} disabled={submitting}>
                   Cancel
                 </button>
-                <button type="submit" className="ghana-suggest-submit">
-                  Submit suggestion →
+                <button type="submit" className="ghana-suggest-submit" disabled={submitting}>
+                  {submitting ? "Sending…" : "Submit suggestion →"}
                 </button>
               </div>
             </form>

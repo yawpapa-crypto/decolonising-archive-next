@@ -6,6 +6,7 @@ import {
   createAdminNotification,
   sendAdminEmail,
 } from "@/lib/admin-notifications";
+import { createAdminClient } from "@/src/lib/supabase/admin";
 
 const CURATOR_EMAIL =
   process.env.COLLECTION_CURATOR_EMAIL?.trim() || "papayawofosu@gmail.com";
@@ -58,7 +59,8 @@ export async function submitCollectionSuggestion(
     user?.email ? `Account: ${user.email}` : null,
   ].filter(Boolean);
 
-  const { error } = await supabase.from("source_requests").insert({
+  const admin = createAdminClient();
+  const { error } = await admin.from("source_requests").insert({
     user_id: user?.id ?? null,
     title,
     source_url: url,
