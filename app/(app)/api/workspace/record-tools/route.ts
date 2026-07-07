@@ -88,16 +88,20 @@ function buildRecordSnapshot(
 
   const sourceUrl =
     firstText(
+      incomingRecord.record_source_url,
+      incomingRecord.recordUrl,
+      incomingRecord.href,
+      body.recordUrl,
+      recordUrl,
+      incomingMetadata.canonicalUrl,
+      incomingMetadata.record_source_url,
+      incomingMetadata.recordUrl,
+      incomingMetadata.href,
       incomingRecord.url,
       incomingRecord.source_url,
       incomingRecord.sourceUrl,
-      incomingRecord.recordUrl,
-      incomingRecord.href,
-      incomingRecord.record_source_url,
       incomingMetadata.url,
       incomingMetadata.source_url,
-      body.recordUrl,
-      recordUrl,
     ) || null;
 
   const type =
@@ -263,6 +267,7 @@ export async function GET(request: NextRequest) {
       role: profile.role,
     },
     bookmark: bookmarkResult.data ?? null,
+    bookmarked: Boolean(bookmarkResult.data),
     readingLists: readingListsResult.data ?? [],
     submissions: submissionsResult.data ?? [],
   });

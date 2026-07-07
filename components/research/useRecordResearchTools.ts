@@ -56,7 +56,7 @@ export function useRecordResearchTools(input: CollectionRecordResearchInput) {
 
       setSession({
         authenticated: true,
-        bookmarked: Boolean(recordJson.bookmarked),
+        bookmarked: Boolean(recordJson.bookmarked ?? recordJson.bookmark),
         readingLists: Array.isArray(recordJson.readingLists)
           ? recordJson.readingLists.map((list: { id: string; title: string }) => ({
               id: list.id,
@@ -143,7 +143,7 @@ export function useRecordResearchTools(input: CollectionRecordResearchInput) {
     setMessage(null);
     const wasBookmarked = session.bookmarked;
     try {
-      const result = await postAction({ action: "bookmark" });
+      const result = await postAction({ action: "bookmark", bookmarked: !wasBookmarked });
       if (result.auth) {
         requireAuth({ action: "bookmark" });
         return;
