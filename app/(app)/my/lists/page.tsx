@@ -12,6 +12,7 @@ import {
 } from "./ReadingListDeleteForms";
 import {
   getMemberWorkspaceData,
+  visibleReadingLists,
   workspaceRecordTitle,
 } from "@/src/lib/member-workspace";
 import { getRecordHref, isExternalHref } from "@/src/lib/record-links";
@@ -22,6 +23,11 @@ import PendingSubmitButton from "@/src/components/ui/PendingSubmitButton";
 export default async function MyListsPage() {
   const { profile, readingLists, readingListItems, recordsById } =
     await getMemberWorkspaceData("/my/lists");
+  const displayReadingLists = visibleReadingLists(readingLists, readingListItems);
+  const visibleReadingListIds = new Set(displayReadingLists.map((list) => list.id));
+  const displayReadingListItems = readingListItems.filter((item) =>
+    visibleReadingListIds.has(item.reading_list_id),
+  );
   const roleLabel =
     profile.role === "admin"
       ? "ADMIN"
@@ -60,8 +66,8 @@ export default async function MyListsPage() {
 
         <section className="workspace-export-panel admin-surface member-dashboard-card">
           <ReadingListExportAllActions
-            listCount={readingLists.length}
-            recordCount={readingListItems.length}
+            listCount={displayReadingLists.length}
+            recordCount={displayReadingListItems.length}
           />
           <div className="reading-list-export-note">
             <strong>Citation note:</strong> Exports use available archive metadata to generate APA 7-style citations. Please check titles, authors, dates, and source details against the original record before formal submission or publication.
@@ -71,8 +77,8 @@ export default async function MyListsPage() {
         <ReadingListToolbar />
 
         <section className="workspace-grid member-lists-grid" data-reading-lists-grid>
-          {readingLists.length ? (
-            readingLists.map((list) => {
+          {displayReadingLists.length ? (
+            displayReadingLists.map((list) => {
               const items = readingListItems.filter(
                 (item) => item.reading_list_id === list.id,
               );

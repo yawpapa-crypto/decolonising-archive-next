@@ -13,6 +13,11 @@ import {
   safeExportFilename,
   type CitationRecord,
 } from '@/lib/citations'
+import {
+  visibleReadingLists,
+  type ReadingListItemRow,
+  type ReadingListRow,
+} from '@/src/lib/member-workspace'
 
 export const runtime = 'nodejs'
 
@@ -212,7 +217,12 @@ async function getAllReadingListsData() {
     itemsByListId.get(readingListId)?.push(record)
   }
 
-  const bundles = readingLists.map((list) => ({
+  const visibleLists = visibleReadingLists(
+    readingLists as unknown as ReadingListRow[],
+    (listItems ?? []) as unknown as Pick<ReadingListItemRow, 'reading_list_id' | 'record_id'>[],
+  ) as unknown as ReadingList[]
+
+  const bundles = visibleLists.map((list) => ({
     list,
     records: itemsByListId.get(list.id) ?? [],
   }))
