@@ -109,8 +109,8 @@ export default async function MyListsPage() {
                   data-record-count={items.length}
                   data-created-at={createdAt}
                 >
-                  <div className="workspace-tile-head">
-                    <div>
+                  <div className="workspace-tile-head reading-list-card-header">
+                    <div className="reading-list-card-summary">
                       <h2>{list.title}</h2>
                       <div className="workspace-reading-list-meta">
                         <span>
@@ -124,10 +124,10 @@ export default async function MyListsPage() {
                         </p>
                       ) : null}
                     </div>
-                    <div className="reading-list-card-actions">
+                    <div className="reading-list-card-actions" aria-label={`Actions for ${list.title}`}>
                       <Link
                         href={`/community?readingListId=${encodeURIComponent(list.id)}#share`}
-                        className="admin-button admin-button-secondary"
+                        className="admin-button admin-button-secondary reading-list-primary-action"
                       >
                         Publish to Community
                       </Link>
@@ -138,36 +138,41 @@ export default async function MyListsPage() {
                       <DeleteReadingListForm listId={list.id} />
                     </div>
                   </div>
-                  <form action={updateReadingList} className="workspace-form workspace-form-compact">
-                    <input type="hidden" name="id" value={list.id} />
-                    <label>
-                      <span>Title</span>
-                      <input name="title" defaultValue={list.title} required />
-                    </label>
-                    <label>
-                      <span>Description</span>
-                      <input name="description" defaultValue={list.description ?? ""} />
-                    </label>
-                    <label className="workspace-check">
-                      <input
-                        type="checkbox"
-                        name="is_public"
-                        defaultChecked={list.is_public}
-                      />
-                      <span>Public</span>
-                    </label>
-                    <input type="hidden" name="redirectTo" value="/my/lists" />
-                    <PendingSubmitButton
-                      className="admin-button admin-button-secondary"
-                      pendingLabel="Saving…"
-                    >
-                      Save list
-                    </PendingSubmitButton>
-                  </form>
+                  <details className="reading-list-edit-panel">
+                    <summary>Edit details</summary>
+                    <form action={updateReadingList} className="workspace-form workspace-form-compact reading-list-edit-form">
+                      <input type="hidden" name="id" value={list.id} />
+                      <label>
+                        <span>Title</span>
+                        <input name="title" defaultValue={list.title} required />
+                      </label>
+                      <label>
+                        <span>Description</span>
+                        <input name="description" defaultValue={list.description ?? ""} />
+                      </label>
+                      <label className="workspace-check">
+                        <input
+                          type="checkbox"
+                          name="is_public"
+                          defaultChecked={list.is_public}
+                        />
+                        <span>Public</span>
+                      </label>
+                      <input type="hidden" name="redirectTo" value="/my/lists" />
+                      <PendingSubmitButton
+                        className="admin-button admin-button-secondary"
+                        pendingLabel="Saving…"
+                      >
+                        Save list
+                      </PendingSubmitButton>
+                    </form>
+                  </details>
 
-                  <ReadingListExportActions listId={list.id} listTitle={list.title} />
+                  <div className="reading-list-card-utility-row">
+                    <ReadingListExportActions listId={list.id} listTitle={list.title} />
+                  </div>
                   <ReadingListCitationPreview listId={list.id} listTitle={list.title} />
-                  <div className="workspace-list">
+                  <div className="workspace-list reading-list-records-list">
                     {items.length ? (
                       items.map((item) => (
                         <div className="workspace-list-item" key={item.id}>

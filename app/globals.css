@@ -14428,6 +14428,298 @@ button.workspace-link-danger:hover {
   padding: 1.05rem 0;
 }
 
+/* Reading list cards: clean collection-card treatment */
+.member-lists-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+  gap: 1.15rem;
+}
+
+.member-lists-grid .workspace-reading-list-card {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1rem, 2.5vw, 1.45rem);
+  border: 1px solid rgba(17, 17, 17, 0.1);
+  border-radius: 22px;
+  background: linear-gradient(180deg, #fff 0%, #fff 72%, #fbfaf7 100%);
+  box-shadow: 0 14px 36px rgba(17, 17, 17, 0.055);
+}
+
+.member-lists-grid .workspace-reading-list-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 42px rgba(17, 17, 17, 0.075);
+}
+
+.member-lists-grid .reading-list-card-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.95rem;
+  align-items: start;
+  padding: 0;
+  border: 0;
+  margin: 0;
+}
+
+.member-lists-grid .reading-list-card-summary {
+  min-width: 0;
+}
+
+.member-lists-grid .workspace-reading-list-card h2 {
+  margin: 0;
+  color: #111;
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  line-height: 1.16;
+  font-weight: 830;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.member-lists-grid .workspace-reading-list-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 0.85rem;
+  color: rgba(17, 17, 17, 0.58);
+  font-size: 0.92rem;
+}
+
+.member-lists-grid .workspace-reading-list-meta .member-dashboard-pill {
+  min-height: 1.8rem;
+  padding: 0.25rem 0.72rem;
+  border: 1px solid rgba(17, 17, 17, 0.12);
+  background: #fff;
+  color: rgba(17, 17, 17, 0.66);
+  font-size: 0.72rem;
+  font-weight: 820;
+  letter-spacing: 0.09em;
+}
+
+.member-lists-grid .workspace-reading-list-description {
+  margin: 0.8rem 0 0;
+  color: rgba(17, 17, 17, 0.62);
+  font-size: 0.98rem;
+  line-height: 1.45;
+}
+
+.member-lists-grid .reading-list-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+  padding-top: 0.95rem;
+  border-top: 1px solid rgba(17, 17, 17, 0.08);
+}
+
+.member-lists-grid .reading-list-card-actions form {
+  display: contents;
+}
+
+.member-lists-grid .reading-list-card-actions a,
+.member-lists-grid .reading-list-card-actions button,
+.member-lists-grid .reading-list-export-actions a,
+.member-lists-grid .reading-list-export-actions button,
+.member-lists-grid .reading-list-preview-toggle,
+.member-lists-grid .reading-list-edit-panel > summary {
+  min-height: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.42rem;
+  padding: 0.5rem 0.78rem;
+  border: 1px solid rgba(17, 17, 17, 0.12);
+  border-radius: 999px;
+  background: #fff;
+  color: #111;
+  box-shadow: none;
+  font-size: 0.82rem;
+  font-weight: 760;
+  line-height: 1;
+  text-decoration: none;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.member-lists-grid .reading-list-card-actions a:hover,
+.member-lists-grid .reading-list-card-actions button:hover,
+.member-lists-grid .reading-list-export-actions a:hover,
+.member-lists-grid .reading-list-export-actions button:hover,
+.member-lists-grid .reading-list-preview-toggle:hover,
+.member-lists-grid .reading-list-edit-panel > summary:hover {
+  border-color: rgba(17, 17, 17, 0.28);
+  background: #f6f6f3;
+  transform: translateY(-1px);
+}
+
+.member-lists-grid .reading-list-card-actions .reading-list-primary-action {
+  border-color: #111;
+  background: #111;
+  color: #fff;
+}
+
+.member-lists-grid .reading-list-card-actions .reading-list-primary-action:hover {
+  background: #2a2a27;
+  color: #fff;
+}
+
+.member-lists-grid .reading-list-card-actions .workspace-link-danger {
+  border-color: rgba(160, 28, 58, 0.2);
+  color: #9d1938;
+  background: #fff;
+}
+
+.member-lists-grid .reading-list-card-actions .workspace-link-danger:hover {
+  border-color: rgba(160, 28, 58, 0.38);
+  background: #fff5f7;
+}
+
+.member-lists-grid .reading-list-edit-panel {
+  border-top: 1px solid rgba(17, 17, 17, 0.08);
+  padding-top: 0.95rem;
+}
+
+.member-lists-grid .reading-list-edit-panel > summary {
+  width: fit-content;
+  cursor: pointer;
+  list-style: none;
+}
+
+.member-lists-grid .reading-list-edit-panel > summary::-webkit-details-marker {
+  display: none;
+}
+
+.member-lists-grid .reading-list-edit-panel > summary::before {
+  content: "+";
+  font-weight: 850;
+}
+
+.member-lists-grid .reading-list-edit-panel[open] > summary::before {
+  content: "−";
+}
+
+.member-lists-grid .reading-list-edit-form {
+  margin-top: 0.85rem;
+  padding: 0.9rem;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  border-radius: 16px;
+  background: rgba(246, 246, 243, 0.78);
+}
+
+.member-lists-grid .reading-list-edit-form label > span,
+.member-lists-grid .reading-list-edit-form .workspace-check span {
+  color: rgba(17, 17, 17, 0.56);
+  font-size: 0.68rem;
+  font-weight: 820;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.member-lists-grid .workspace-reading-list-card input,
+.member-lists-grid .workspace-reading-list-card select,
+.member-lists-grid .workspace-reading-list-card textarea {
+  min-height: 2.45rem;
+  border-color: rgba(17, 17, 17, 0.11);
+  border-radius: 12px;
+  font-size: 0.95rem;
+}
+
+.member-lists-grid .reading-list-edit-form .admin-button {
+  min-height: 2.55rem;
+  border-radius: 12px;
+  background: #111;
+  color: #fff;
+}
+
+.member-lists-grid .reading-list-card-utility-row,
+.member-lists-grid .reading-list-citation-preview,
+.member-lists-grid .reading-list-records-list {
+  padding-top: 0.95rem;
+  border-top: 1px solid rgba(17, 17, 17, 0.08);
+}
+
+.member-lists-grid .reading-list-export-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.48rem;
+}
+
+.member-lists-grid .reading-list-preview-toggle {
+  width: fit-content;
+}
+
+.member-lists-grid .reading-list-preview-panel {
+  margin-top: 0.75rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(17, 17, 17, 0.09);
+  border-radius: 16px;
+  background: #fff;
+}
+
+.member-lists-grid .reading-list-preview-panel ol {
+  padding-left: 1.15rem;
+}
+
+.member-lists-grid .reading-list-preview-panel li {
+  color: rgba(17, 17, 17, 0.72);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.member-lists-grid .reading-list-preview-note {
+  color: rgba(17, 17, 17, 0.52);
+  font-size: 0.82rem;
+}
+
+.member-lists-grid .reading-list-records-list {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.member-lists-grid .reading-list-records-list > .workspace-list-item {
+  padding: 0.75rem 0;
+  border-top: 0;
+  border-bottom: 1px solid rgba(17, 17, 17, 0.07);
+}
+
+.member-lists-grid .reading-list-records-list > .workspace-list-item:last-child {
+  border-bottom: 0;
+}
+
+.member-lists-grid .reading-list-record-title {
+  color: #111;
+  font-size: 0.95rem;
+  line-height: 1.32;
+}
+
+.member-lists-grid .reading-list-item-actions {
+  gap: 0.45rem;
+  margin-top: 0.55rem;
+}
+
+.member-lists-grid .reading-list-record-actions-primary .workspace-link,
+.member-lists-grid .reading-list-record-actions-primary .workspace-copy-link,
+.member-lists-grid .reading-list-item-actions form button.workspace-link-danger {
+  min-height: 2rem;
+  padding: 0.38rem 0.62rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+}
+
+@media (min-width: 780px) {
+  .member-lists-grid .reading-list-card-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .member-lists-grid .reading-list-card-actions {
+    justify-content: flex-end;
+    border-top: 0;
+    padding-top: 0;
+    max-width: 20rem;
+  }
+}
+
 /* —— Community shared reading list: record row actions —— */
 .community-button-disabled {
   opacity: 0.55;
