@@ -390,20 +390,20 @@ export default function NavbarClient({
                     </span>
                   </div>
                   <Link
-                    href="/workspace"
-                    className="nav-avatar-link"
-                    role="menuitem"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Member workspace
-                  </Link>
-                  <Link
                     href="/my/workbench"
                     className="nav-avatar-link"
                     role="menuitem"
                     onClick={() => setMenuOpen(false)}
                   >
                     Archive Workbench
+                  </Link>
+                  <Link
+                    href="/workspace"
+                    className="nav-avatar-link"
+                    role="menuitem"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Member workspace
                   </Link>
                   {isCuratorOrAbove ? (
                     <Link
