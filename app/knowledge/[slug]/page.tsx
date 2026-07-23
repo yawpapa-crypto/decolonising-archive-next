@@ -112,10 +112,15 @@ export default async function KnowledgeRecordPage({ params }: PageProps) {
               <p>{record.sourceNote}</p>
               <div className="knowledge-source-list">
                 {sources.map((source) => (
-                  <Link key={source.slug} href={`/sources/${source.slug}`}>
+                  <a
+                    key={source.slug}
+                    href={source.url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     <strong>{source.title}</strong>
                     <span>{source.type}</span>
-                  </Link>
+                  </a>
                 ))}
               </div>
               {record.sourceUrl ? (
