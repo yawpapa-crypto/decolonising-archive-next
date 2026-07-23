@@ -192,6 +192,15 @@
   letter-spacing: -0.035em;
 }
 
+.knowledge-search-panel__head h2.knowledge-heading--compact,
+.knowledge-browse-section__head h2.knowledge-heading--compact,
+.knowledge-section__head h2.knowledge-heading--compact {
+  max-width: 620px;
+  font-size: clamp(15px, 1.45vw, 20px);
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+
 .knowledge-search-panel__head > span,
 .knowledge-browse-section__head > a {
   flex: 0 0 auto;

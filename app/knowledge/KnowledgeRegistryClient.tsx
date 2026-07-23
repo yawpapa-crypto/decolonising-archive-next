@@ -124,7 +124,9 @@ export default function KnowledgeRegistryClient({
         <div className="knowledge-search-panel__head">
           <div>
             <p className="knowledge-kicker">Search the registry</p>
-            <h2>Find knowledge systems by place, practice, language or source.</h2>
+            <h2 className="knowledge-heading--compact">
+              Find knowledge systems by place, practice, language or source.
+            </h2>
           </div>
           <span>{filteredRecords.length} matching records</span>
         </div>
@@ -176,7 +178,9 @@ export default function KnowledgeRegistryClient({
         <div className="knowledge-browse-section__head">
           <div>
             <p className="knowledge-kicker">Browse pathways</p>
-            <h2>Explore the registry from multiple entry points.</h2>
+            <h2 className="knowledge-heading--compact">
+              Explore the registry from multiple entry points.
+            </h2>
           </div>
           <Link href="/knowledge/map">Open map</Link>
         </div>
@@ -209,7 +213,9 @@ export default function KnowledgeRegistryClient({
         <div className="knowledge-section__head">
           <div>
             <p className="knowledge-kicker">Featured records</p>
-            <h2>Start with reviewed public summaries</h2>
+            <h2 className="knowledge-heading--compact">
+              Start with reviewed public summaries
+            </h2>
           </div>
           <Link href="/knowledge/map">Open map view</Link>
         </div>
