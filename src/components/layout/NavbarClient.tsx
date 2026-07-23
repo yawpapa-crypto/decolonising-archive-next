@@ -241,6 +241,9 @@ export default function NavbarClient({
           >
             Library
           </a>
+          <Link href="/knowledge" className="nav-link">
+            Global Knowledge Systems
+          </Link>
           <Link href="/collections" className="nav-link">
             Collections
           </Link>
@@ -489,6 +492,9 @@ export default function NavbarClient({
         >
           Library
         </a>
+        <Link href="/knowledge" className="nav-link" onClick={handleNavClick}>
+          Global Knowledge Systems
+        </Link>
         <Link href="/collections" className="nav-link" onClick={handleNavClick}>
           Collections
         </Link>

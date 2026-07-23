@@ -4694,72 +4694,27 @@ const LIVE_SOURCE_ADAPTERS = [
     async search(query, options = {}) {
       const offset = Number(options.offset || 0);
       const rows = Number(options.limit || DISCOVERY_PAGE_SIZE);
-      // NOTE: `language` is NOT a valid Crossref `select` field — including it
-      // makes the API reject the entire request with 400. (Authoritative list:
-      // https://github.com/fabiobatalha/crossrefapi -> Works.FIELDS_SELECT.)
-      // We rely on `mapLanguageCode(item.language)` falling back to "" when
-      // the field is absent in the response.
-      // `mailto` puts us in Crossref's "polite pool" (priority routing /
-      // fewer 429s); harmless if you change the address.
-      const json = await fetchJsonWithTimeout(`https://api.crossref.org/works?rows=${rows}&offset=${offset}&query.bibliographic=${encodeURIComponent(query)}&select=DOI,title,author,issued,abstract,URL,container-title,type,subject,publisher,license,link&mailto=archive@ared.design`, {headers:{Accept:"application/json"}}, 9000);
-      const rawItems = json?.message?.items && Array.isArray(json.message.items) ? json.message.items : [];
-      const items = rawItems;
-      const total = Number(json?.message?.["total-results"] || 0);
-      const mapped = items.map((item, index) => {
-        const authors = Array.isArray(item.author) ? item.author.map(person => [person.given, person.family].filter(Boolean).join(" ").trim()).filter(Boolean) : [];
-        const title = Array.isArray(item.title) ? item.title[0] : (item.title || "Untitled record");
-        const abstract = stripJats(item.abstract || "");
-        const licenceUrl = item.license?.[0]?.URL || item.license?.[0]?.url || "";
-        const pdfLink = (item.link || []).find(link => /pdf/i.test(`${link["content-type"] || ""} ${link.URL || ""}`))?.URL || "";
-        const htmlLink = (item.link || []).find(link => /html/i.test(`${link["content-type"] || ""} ${link.URL || ""}`))?.URL || "";
-        return normalizeLiveRecord({
-          id:`live-crossref-${slugify((item.DOI || title) + "-" + index)}`,
-          title,
-          creator: authors.join(", ") || "Unknown creator",
-          summary: abstract ? abstract.slice(0, 320) : `${Array.isArray(item["container-title"]) && item["container-title"][0] ? item["container-title"][0] : "Scholarly record"} surfaced via external metadata search.`,
-          abstract,
-          description:[
-            Array.isArray(item.subject) && item.subject.length ? `Subjects: ${item.subject.slice(0, 6).join(", ")}.` : "",
-            item.publisher ? `Publisher: ${item.publisher}.` : ""
-          ].filter(Boolean),
-          period: item.issued?.["date-parts"]?.[0]?.[0] ? String(item.issued["date-parts"][0][0]) : "",
-          type: mapCrossrefType(item.type),
-          cat:"Research & scholarly metadata",
-          region: inferRegionFromText([title, ...(item.subject || [])].join(" ")),
-          country: inferCountryFromText([title, ...(item.subject || [])].join(" ")),
-          collection:"Crossref external discovery",
-          institution: Array.isArray(item["container-title"]) ? item["container-title"][0] : "Crossref",
-          source:"Crossref",
-          sourceUrl: item.URL || (item.DOI ? `https://doi.org/${item.DOI}` : `https://search.crossref.org/?q=${encodeURIComponent(query)}`),
-          licence_url: licenceUrl,
-          pdf_url: pdfLink,
-          html_url: htmlLink,
-          sourceActionLabel:"Open source record",
-          externalLinks: item.DOI ? [{label:"DOI", url:`https://doi.org/${item.DOI}`}] : [],
-          language: uniqueValues([mapLanguageCode(item.language)]),
-          tags: uniqueValues(item.subject || []),
-          concepts: inferConceptsFromText([title, ...(item.subject || [])].join(" ")),
-          themes: inferThemesFromText([title, ...(item.subject || [])].join(" ")),
-          images: [],
-          rights:"External source rights apply",
-          provenance:"External metadata pulled from Crossref.",
-          citation: buildSimpleCitation(title, authors.join(", ") || "Unknown creator", item.issued?.["date-parts"]?.[0]?.[0] || "", "Crossref"),
-          notes:["External-source scholarly metadata. Some abstracts are shortened for display."],
-          recordIdentifier: item.DOI || "",
-          archiveIdentifier: item.DOI ? `DOI:${item.DOI}` : `CR-${index}`,
-          resultMode:"live",
-          trustScore:0.89,
-          liveSourceHint:"crossref"
-        });
-      });
-      const nextOffset = total > offset + mapped.length ? offset + mapped.length : null;
+      const response = await fetchWithTimeout(
+        `/api/search/crossref?q=${encodeURIComponent(query)}&limit=${rows}&offset=${offset}`,
+        { headers: { Accept: "application/json" } },
+        12000,
+      );
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.ok === false) {
+        return {
+          items: [],
+          error: data?.error?.message || data?.error || `Crossref search failed (${response.status})`,
+          meta: { count: null, nextOffset: null, nextCursor: null, displayedCount: 0 },
+        };
+      }
+      const mapped = Array.isArray(data.results) ? data.results.map(item => normalizeLiveRecord(item)) : [];
       return {
         items: mapped,
         meta: {
-          count: total || null,
-          nextOffset,
+          count: data.count ?? null,
+          nextOffset: data.hasMore ? data.nextOffset : null,
           nextCursor: null,
-          displayedCount: mapped.length,
+          displayedCount: data.displayedCount ?? mapped.length,
         },
       };
     }
