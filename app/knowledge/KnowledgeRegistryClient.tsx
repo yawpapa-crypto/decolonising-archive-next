@@ -121,64 +121,88 @@ export default function KnowledgeRegistryClient({
       </section>
 
       <section className="knowledge-search-panel" aria-label="Search knowledge systems">
-        <label htmlFor="knowledge-search">Search the registry</label>
-        <div className="knowledge-search-panel__row">
-          <input
-            id="knowledge-search"
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search by system, community, language, region, category..."
-          />
-          <select
-            value={region}
-            onChange={(event) => setRegion(event.target.value)}
-            aria-label="Filter by region"
-          >
-            <option value="all">All regions</option>
-            {KNOWLEDGE_REGIONS.map((item) => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
-          <select
-            value={category}
-            onChange={(event) => setCategory(event.target.value)}
-            aria-label="Filter by category"
-          >
-            <option value="all">All categories</option>
-            {KNOWLEDGE_CATEGORIES.map((item) => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
+        <div className="knowledge-search-panel__head">
+          <div>
+            <p className="knowledge-kicker">Search the registry</p>
+            <h2>Find knowledge systems by place, practice, language or source.</h2>
+          </div>
+          <span>{filteredRecords.length} matching records</span>
+        </div>
+        <div className="knowledge-search-card">
+          <label className="knowledge-search-field" htmlFor="knowledge-search">
+            <span>Search</span>
+            <input
+              id="knowledge-search"
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Try weaving, navigation, Akan, ceremony, Ghana..."
+            />
+          </label>
+          <label className="knowledge-filter-field">
+            <span>Region</span>
+            <select
+              value={region}
+              onChange={(event) => setRegion(event.target.value)}
+              aria-label="Filter by region"
+            >
+              <option value="all">All regions</option>
+              {KNOWLEDGE_REGIONS.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="knowledge-filter-field">
+            <span>Category</span>
+            <select
+              value={category}
+              onChange={(event) => setCategory(event.target.value)}
+              aria-label="Filter by category"
+            >
+              <option value="all">All categories</option>
+              {KNOWLEDGE_CATEGORIES.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
       </section>
 
-      <section className="knowledge-browse-grid" aria-label="Browse registry">
-        <BrowsePanel title="Regions" href="/knowledge/regions" items={getBrowseIndex("regions")} />
+      <section className="knowledge-browse-section" aria-label="Browse registry">
+        <div className="knowledge-browse-section__head">
+          <div>
+            <p className="knowledge-kicker">Browse pathways</p>
+            <h2>Explore the registry from multiple entry points.</h2>
+          </div>
+          <Link href="/knowledge/map">Open map</Link>
+        </div>
+        <div className="knowledge-browse-grid">
+          <BrowsePanel title="Regions" href="/knowledge/regions" items={getBrowseIndex("regions").slice(0, 8)} />
         <BrowsePanel
           title="Communities"
           href="/knowledge/communities"
-          items={getBrowseIndex("communities").slice(0, 8)}
+          items={getBrowseIndex("communities").slice(0, 7)}
         />
         <BrowsePanel
           title="Languages"
           href="/knowledge/languages"
-          items={getBrowseIndex("languages").slice(0, 8)}
+          items={getBrowseIndex("languages").slice(0, 7)}
         />
         <BrowsePanel
           title="Categories"
           href="/knowledge/categories"
-          items={getBrowseIndex("categories").slice(0, 8)}
+          items={getBrowseIndex("categories").slice(0, 7)}
         />
         <BrowsePanel
           title="Relationships"
           href="/knowledge/relationships"
           items={sourceTypes}
         />
+        </div>
       </section>
 
       <section className="knowledge-section">
@@ -386,8 +410,11 @@ function BrowsePanel({
 }) {
   return (
     <section className="knowledge-browse-panel">
-      <h2>{title}</h2>
-      <div>
+      <div className="knowledge-browse-panel__head">
+        <h3>{title}</h3>
+        <Link href={href}>View all</Link>
+      </div>
+      <div className="knowledge-browse-panel__items">
         {items.map((item) => (
           <Link key={item.slug} href={`${href}/${item.slug}`}>
             <span>{item.label}</span>
