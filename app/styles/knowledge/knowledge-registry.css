@@ -410,6 +410,7 @@
 .knowledge-source-card {
   display: flex;
   flex-direction: column;
+  min-width: 0;
   min-height: 300px;
   border: 1px solid rgba(18, 17, 15, 0.14);
   border-radius: 18px;
@@ -439,15 +440,20 @@
 .knowledge-list-row h3,
 .knowledge-source-card h3 {
   margin: 22px 0 10px;
-  font-size: 25px;
-  line-height: 1.05;
-  letter-spacing: -0.035em;
+  max-width: 100%;
+  font-size: clamp(20px, 1.65vw, 24px);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 .knowledge-card h3 a,
 .knowledge-list-row h3 a,
 .knowledge-source-card h3 a {
   text-decoration: none;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 .knowledge-card > p,
@@ -462,6 +468,7 @@
   margin-bottom: 10px !important;
   font-weight: 800;
   color: rgba(18, 17, 15, 0.56) !important;
+  overflow-wrap: anywhere;
 }
 
 .knowledge-card__meta,
