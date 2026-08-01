@@ -1,0 +1,249 @@
+{
+  "generatedAt": "2026-07-08T07:25:09.505Z",
+  "totalRecords": 138,
+  "provenanceEstimate": {
+    "source_supplied_pct": 62,
+    "ared_added_pct": 24,
+    "inferred_pct": 9,
+    "awaiting_review_pct": 5
+  },
+  "fields": [
+    {
+      "field": "id",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "buildId",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "importStatus",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "publicationState",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "title",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "recordType",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "periodId",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "periodLabel",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "dateStart",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "dateEnd",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "visualSystemId",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "visualSystemLabel",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "region",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "locality",
+      "presentPct": 20.29,
+      "missingPct": 79.71
+    },
+    {
+      "field": "communityOrCulture",
+      "presentPct": 68.84,
+      "missingPct": 31.16
+    },
+    {
+      "field": "creatorOrAuthority",
+      "presentPct": 70.29,
+      "missingPct": 29.71
+    },
+    {
+      "field": "creatorRole",
+      "presentPct": 70.29,
+      "missingPct": 29.71
+    },
+    {
+      "field": "institutionOrCollection",
+      "presentPct": 74.64,
+      "missingPct": 25.36
+    },
+    {
+      "field": "objectOrRecordType",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "mediumOrFormat",
+      "presentPct": 88.41,
+      "missingPct": 11.59
+    },
+    {
+      "field": "language",
+      "presentPct": 0,
+      "missingPct": 100
+    },
+    {
+      "field": "description",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "historicalSignificance",
+      "presentPct": 2.17,
+      "missingPct": 97.83
+    },
+    {
+      "field": "sourceName",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "sourceUrl",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "secondarySourceUrl",
+      "presentPct": 0.72,
+      "missingPct": 99.28
+    },
+    {
+      "field": "sourceType",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "rightsStatus",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "rightsNote",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "researchPriority",
+      "presentPct": 0,
+      "missingPct": 100
+    },
+    {
+      "field": "researchQuestion",
+      "presentPct": 33.33,
+      "missingPct": 66.67
+    },
+    {
+      "field": "provenanceOrCustodyNote",
+      "presentPct": 63.77,
+      "missingPct": 36.23
+    },
+    {
+      "field": "communityAuthorityRequired",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "linkedRecordIds",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "tags",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "currentResearchArea",
+      "presentPct": 0,
+      "missingPct": 100
+    },
+    {
+      "field": "whatRemainsToBeEstablished",
+      "presentPct": 33.33,
+      "missingPct": 66.67
+    },
+    {
+      "field": "publicVisibility",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "evidenceStatus",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "rawCsvRow",
+      "presentPct": 100,
+      "missingPct": 0
+    },
+    {
+      "field": "importedAt",
+      "presentPct": 100,
+      "missingPct": 0
+    }
+  ],
+  "duplicatedFieldHints": [
+    [
+      "sourceName",
+      "institutionOrCollection"
+    ],
+    [
+      "visualSystemLabel",
+      "knowledgeArea"
+    ],
+    [
+      "description",
+      "historicalSignificance"
+    ]
+  ],
+  "inconsistentFieldNames": [
+    [
+      "creatorOrAuthority",
+      "creator"
+    ],
+    [
+      "institutionOrCollection",
+      "sourceName"
+    ],
+    [
+      "objectOrRecordType",
+      "recordType"
+    ],
+    [
+      "communityOrCulture",
+      "community"
+    ]
+  ]
+}

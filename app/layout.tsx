@@ -10,6 +10,7 @@ import {
 } from "next/font/google";
 import AuthHashHandler from "@/src/components/auth/AuthHashHandler";
 import PlatformActivityTracker from "@/src/components/analytics/PlatformActivityTracker";
+import WebVitalsReporter from "@/src/components/analytics/WebVitalsReporter";
 import AncestralAcknowledgementDialog from "@/src/components/site/AncestralAcknowledgement";
 import ArchiveGuidePanel from "@/src/components/archive-guide/ArchiveGuidePanel";
 import BrowserEventRejectionGuard from "@/src/components/site/BrowserEventRejectionGuard";
@@ -56,6 +57,7 @@ export default function RootLayout({
         {children}
         <ArchiveGuidePanel />
         <AncestralAcknowledgementDialog />
+        <WebVitalsReporter />
         <Analytics />
         <SpeedInsights />
       </body>

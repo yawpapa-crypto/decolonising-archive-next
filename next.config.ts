@@ -13,6 +13,23 @@ const nextConfig: NextConfig = {
     }
     return config;
   },
+  async headers() {
+    return [
+      {
+        source: "/assets/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+      {
+        source: "/api/kgo/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=1800, s-maxage=3600" },
+          { key: "Access-Control-Allow-Origin", value: "*" },
+        ],
+      },
+    ];
+  },
 };
 
 export default withSecurityHeaders(nextConfig);

@@ -1,14 +1,14 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/src/lib/supabase/client";
 
+type SupabaseBrowserClient = ReturnType<typeof createClient>;
+
 export default function ResetPasswordPage() {
   const router = useRouter();
-  const supabase = useMemo(() => createClient(), []);
+  const [supabase, setSupabase] = useState<SupabaseBrowserClient | null>(null);
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -17,6 +17,11 @@ export default function ResetPasswordPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
+    setSupabase(createClient());
+  }, []);
+
+  useEffect(() => {
+    if (!supabase) return;
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event) => {
@@ -30,7 +35,7 @@ export default function ResetPasswordPage() {
     });
 
     return () => subscription.unsubscribe();
-  }, [supabase.auth]);
+  }, [supabase]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -46,17 +51,28 @@ export default function ResetPasswordPage() {
       return;
     }
 
+    if (!supabase) {
+      setMessage("Authentication is still loading. Please try again.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     const { error } = await supabase.auth.updateUser({ password });
 
-    setIsSubmitting(false);
-
     if (error) {
+      setIsSubmitting(false);
       setMessage(error.message);
       return;
     }
 
+    await fetch("/api/ared-field/sync-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password }),
+    }).catch(() => undefined);
+
+    setIsSubmitting(false);
     setMessage("Password updated. Redirecting to admin sign in...");
     setTimeout(() => router.push("/admin/signin"), 1200);
   }

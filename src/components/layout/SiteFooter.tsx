@@ -10,6 +10,12 @@ const NAV_GROUPS = [
     links: [
       { href: "/library", label: "Library" },
       { href: "/sources", label: "Sources" },
+      { href: "/knowledge", label: "Knowledge systems" },
+      { href: "/knowledge-areas", label: "Knowledge areas" },
+      { href: "/communities", label: "Communities" },
+      { href: "/explore", label: "Explore hubs" },
+      { href: "/how-ared-classifies-records", label: "How ARED classifies records" },
+      { href: "/llms.txt", label: "llms.txt" },
       { href: "/about", label: "About" },
       { href: "/changelog", label: "Changelog" },
     ],

@@ -1,0 +1,217 @@
+{
+  "knowledge": {
+    "african-philosophy": {
+      "wikidata": "Q385370",
+      "gettyAat": null,
+      "wikipedia": "https://en.wikipedia.org/wiki/African_philosophy"
+    },
+    "architecture-and-space": {
+      "wikidata": "Q12271",
+      "wikipedia": "https://en.wikipedia.org/wiki/Architecture"
+    },
+    "craft-and-making": {
+      "wikidata": "Q2207288",
+      "wikipedia": "https://en.wikipedia.org/wiki/Craft"
+    },
+    "decolonial-theory": {
+      "wikidata": "Q5242598",
+      "wikipedia": "https://en.wikipedia.org/wiki/Decoloniality"
+    },
+    "design-history": {
+      "wikidata": "Q1148580",
+      "wikipedia": "https://en.wikipedia.org/wiki/Design_history"
+    },
+    "education-and-pedagogy": {
+      "wikidata": "Q8434",
+      "wikipedia": "https://en.wikipedia.org/wiki/Education"
+    },
+    "environmental-knowledge": {
+      "wikidata": "Q18619",
+      "wikipedia": "https://en.wikipedia.org/wiki/Traditional_ecological_knowledge"
+    },
+    "epistemology": {
+      "wikidata": "Q9471",
+      "wikipedia": "https://en.wikipedia.org/wiki/Epistemology"
+    },
+    "food-systems": {
+      "wikidata": "Q2958465",
+      "wikipedia": "https://en.wikipedia.org/wiki/Food_system"
+    },
+    "gender-and-feminist-thought": {
+      "wikidata": "Q7252",
+      "wikipedia": "https://en.wikipedia.org/wiki/Feminism"
+    },
+    "governance-and-civic-life": {
+      "wikidata": "Q7188",
+      "wikipedia": "https://en.wikipedia.org/wiki/Governance"
+    },
+    "indigenous-knowledge-systems": {
+      "wikidata": "Q1143013",
+      "wikipedia": "https://en.wikipedia.org/wiki/Traditional_knowledge"
+    },
+    "informal-economies": {
+      "wikidata": "Q974661",
+      "wikipedia": "https://en.wikipedia.org/wiki/Informal_economy"
+    },
+    "language-and-writing-systems": {
+      "wikidata": "Q8192",
+      "wikipedia": "https://en.wikipedia.org/wiki/Writing_system"
+    },
+    "material-culture": {
+      "wikidata": "Q214092",
+      "wikipedia": "https://en.wikipedia.org/wiki/Material_culture"
+    },
+    "music-and-performance": {
+      "wikidata": "Q638",
+      "wikipedia": "https://en.wikipedia.org/wiki/Music_of_Africa"
+    },
+    "oral-tradition": {
+      "wikidata": "Q209815",
+      "wikipedia": "https://en.wikipedia.org/wiki/Oral_tradition"
+    },
+    "political-thought": {
+      "wikidata": "Q179805",
+      "wikipedia": "https://en.wikipedia.org/wiki/Political_philosophy"
+    },
+    "spiritual-practice": {
+      "wikidata": "Q9174",
+      "wikipedia": "https://en.wikipedia.org/wiki/Religion_in_Africa"
+    },
+    "textile-knowledge": {
+      "wikidata": "Q28823",
+      "wikipedia": "https://en.wikipedia.org/wiki/Textile"
+    },
+    "visual-culture": {
+      "wikidata": "Q1891661",
+      "wikipedia": "https://en.wikipedia.org/wiki/Visual_culture"
+    }
+  },
+  "community": {
+    "akan": { "wikidata": "Q417058", "wikipedia": "https://en.wikipedia.org/wiki/Akan_people" },
+    "asante": { "wikidata": "Q189225", "wikipedia": "https://en.wikipedia.org/wiki/Ashanti_people" },
+    "yoruba": { "wikidata": "Q190168", "wikipedia": "https://en.wikipedia.org/wiki/Yoruba_people" },
+    "igbo": { "wikidata": "Q244157", "wikipedia": "https://en.wikipedia.org/wiki/Igbo_people" },
+    "hausa": { "wikidata": "Q33938", "wikipedia": "https://en.wikipedia.org/wiki/Hausa_people" },
+    "oromo": { "wikidata": "Q240119", "wikipedia": "https://en.wikipedia.org/wiki/Oromo_people" },
+    "zulu": { "wikidata": "Q129962", "wikipedia": "https://en.wikipedia.org/wiki/Zulu_people" },
+    "xhosa": { "wikidata": "Q204481", "wikipedia": "https://en.wikipedia.org/wiki/Xhosa_people" },
+    "ewe": { "wikidata": "Q2744292", "wikipedia": "https://en.wikipedia.org/wiki/Ewe_people" },
+    "mande": { "wikidata": "Q461652", "wikipedia": "https://en.wikipedia.org/wiki/Mand%C3%A9_peoples" },
+    "tuareg-amazigh": { "wikidata": "Q45912", "wikipedia": "https://en.wikipedia.org/wiki/Tuareg_people" },
+    "swahili-coast-communities": { "wikidata": "Q45791", "wikipedia": "https://en.wikipedia.org/wiki/Swahili_people" }
+  },
+  "language": {
+    "english": { "wikidata": "Q1860", "wikipedia": "https://en.wikipedia.org/wiki/English_language" },
+    "french": { "wikidata": "Q150", "wikipedia": "https://en.wikipedia.org/wiki/French_language" },
+    "arabic": { "wikidata": "Q13955", "wikipedia": "https://en.wikipedia.org/wiki/Arabic" },
+    "portuguese": { "wikidata": "Q5146", "wikipedia": "https://en.wikipedia.org/wiki/Portuguese_language" },
+    "yoruba": { "wikidata": "Q34311", "wikipedia": "https://en.wikipedia.org/wiki/Yoruba_language" },
+    "hausa": { "wikidata": "Q56475", "wikipedia": "https://en.wikipedia.org/wiki/Hausa_language" },
+    "swahili": { "wikidata": "Q7838", "wikipedia": "https://en.wikipedia.org/wiki/Swahili_language" },
+    "akan-twi": { "wikidata": "Q28026", "wikipedia": "https://en.wikipedia.org/wiki/Akan_language" },
+    "amharic": { "wikidata": "Q28244", "wikipedia": "https://en.wikipedia.org/wiki/Amharic" }
+  },
+  "region": {
+    "africa-wide-pan-african": { "wikidata": "Q15", "wikipedia": "https://en.wikipedia.org/wiki/Africa" },
+    "north-africa": { "wikidata": "Q27381", "wikipedia": "https://en.wikipedia.org/wiki/North_Africa" },
+    "west-africa": { "wikidata": "Q4412", "wikipedia": "https://en.wikipedia.org/wiki/West_Africa" },
+    "central-africa": { "wikidata": "Q27433", "wikipedia": "https://en.wikipedia.org/wiki/Central_Africa" },
+    "east-africa": { "wikidata": "Q27407", "wikipedia": "https://en.wikipedia.org/wiki/East_Africa" },
+    "southern-africa": { "wikidata": "Q27394", "wikipedia": "https://en.wikipedia.org/wiki/Southern_Africa" },
+    "sahel": { "wikidata": "Q6602", "wikipedia": "https://en.wikipedia.org/wiki/Sahel" },
+    "african-diaspora": { "wikidata": "Q385001", "wikipedia": "https://en.wikipedia.org/wiki/African_diaspora" },
+    "global-comparative": { "wikidata": "Q16502", "wikipedia": "https://en.wikipedia.org/wiki/World" }
+  },
+  "country": {
+    "ghana": { "wikidata": "Q117", "geonames": "2300660", "wikipedia": "https://en.wikipedia.org/wiki/Ghana" },
+    "nigeria": { "wikidata": "Q1033", "geonames": "2328926", "wikipedia": "https://en.wikipedia.org/wiki/Nigeria" },
+    "kenya": { "wikidata": "Q114", "geonames": "192950", "wikipedia": "https://en.wikipedia.org/wiki/Kenya" },
+    "south-africa": { "wikidata": "Q258", "geonames": "953987", "wikipedia": "https://en.wikipedia.org/wiki/South_Africa" },
+    "egypt": { "wikidata": "Q79", "geonames": "357994", "wikipedia": "https://en.wikipedia.org/wiki/Egypt" },
+    "ethiopia": { "wikidata": "Q115", "geonames": "337996", "wikipedia": "https://en.wikipedia.org/wiki/Ethiopia" },
+    "senegal": { "wikidata": "Q1041", "geonames": "2245662", "wikipedia": "https://en.wikipedia.org/wiki/Senegal" },
+    "mali": { "wikidata": "Q912", "geonames": "2453866", "wikipedia": "https://en.wikipedia.org/wiki/Mali" },
+    "morocco": { "wikidata": "Q1028", "geonames": "2542007", "wikipedia": "https://en.wikipedia.org/wiki/Morocco" },
+    "tunisia": { "wikidata": "Q948", "geonames": "2464461", "wikipedia": "https://en.wikipedia.org/wiki/Tunisia" },
+    "algeria": { "wikidata": "Q262", "geonames": "2589581", "wikipedia": "https://en.wikipedia.org/wiki/Algeria" },
+    "uganda": { "wikidata": "Q1036", "geonames": "226074", "wikipedia": "https://en.wikipedia.org/wiki/Uganda" },
+    "tanzania": { "wikidata": "Q924", "geonames": "149590", "wikipedia": "https://en.wikipedia.org/wiki/Tanzania" },
+    "zimbabwe": { "wikidata": "Q954", "geonames": "878675", "wikipedia": "https://en.wikipedia.org/wiki/Zimbabwe" },
+    "botswana": { "wikidata": "Q963", "geonames": "933860", "wikipedia": "https://en.wikipedia.org/wiki/Botswana" },
+    "namibia": { "wikidata": "Q1030", "geonames": "3355338", "wikipedia": "https://en.wikipedia.org/wiki/Namibia" },
+    "mozambique": { "wikidata": "Q1029", "geonames": "1036973", "wikipedia": "https://en.wikipedia.org/wiki/Mozambique" },
+    "cameroon": { "wikidata": "Q1009", "geonames": "2233387", "wikipedia": "https://en.wikipedia.org/wiki/Cameroon" },
+    "cote-divoire": { "wikidata": "Q1008", "geonames": "2287781", "wikipedia": "https://en.wikipedia.org/wiki/Ivory_Coast" },
+    "benin": { "wikidata": "Q962", "geonames": "2395170", "wikipedia": "https://en.wikipedia.org/wiki/Benin" },
+    "togo": { "wikidata": "Q945", "geonames": "2363686", "wikipedia": "https://en.wikipedia.org/wiki/Togo" },
+    "burkina-faso": { "wikidata": "Q965", "geonames": "2361809", "wikipedia": "https://en.wikipedia.org/wiki/Burkina_Faso" },
+    "rwanda": { "wikidata": "Q1037", "geonames": "49518", "wikipedia": "https://en.wikipedia.org/wiki/Rwanda" },
+    "sudan": { "wikidata": "Q1049", "geonames": "366755", "wikipedia": "https://en.wikipedia.org/wiki/Sudan" },
+    "somalia": { "wikidata": "Q1045", "geonames": "51537", "wikipedia": "https://en.wikipedia.org/wiki/Somalia" },
+    "libya": { "wikidata": "Q1016", "geonames": "2215636", "wikipedia": "https://en.wikipedia.org/wiki/Libya" },
+    "drc": { "wikidata": "Q974", "geonames": "203312", "wikipedia": "https://en.wikipedia.org/wiki/Democratic_Republic_of_the_Congo" },
+    "democratic-republic-of-the-congo": { "wikidata": "Q974", "geonames": "203312", "wikipedia": "https://en.wikipedia.org/wiki/Democratic_Republic_of_the_Congo" },
+    "australia": { "wikidata": "Q408", "geonames": "2077456", "wikipedia": "https://en.wikipedia.org/wiki/Australia" },
+    "canada": { "wikidata": "Q16", "geonames": "6251999", "wikipedia": "https://en.wikipedia.org/wiki/Canada" },
+    "mexico": { "wikidata": "Q96", "geonames": "3996063", "wikipedia": "https://en.wikipedia.org/wiki/Mexico" },
+    "peru": { "wikidata": "Q419", "geonames": "3932488", "wikipedia": "https://en.wikipedia.org/wiki/Peru" },
+    "brazil": { "wikidata": "Q155", "geonames": "3469034", "wikipedia": "https://en.wikipedia.org/wiki/Brazil" },
+    "united-states": { "wikidata": "Q30", "geonames": "6252001", "wikipedia": "https://en.wikipedia.org/wiki/United_States" },
+    "united-kingdom": { "wikidata": "Q145", "geonames": "2635167", "wikipedia": "https://en.wikipedia.org/wiki/United_Kingdom" },
+    "france": { "wikidata": "Q142", "geonames": "3017382", "wikipedia": "https://en.wikipedia.org/wiki/France" },
+    "india": { "wikidata": "Q668", "geonames": "1269750", "wikipedia": "https://en.wikipedia.org/wiki/India" },
+    "jamaica": { "wikidata": "Q766", "geonames": "3489940", "wikipedia": "https://en.wikipedia.org/wiki/Jamaica" },
+    "trinidad-and-tobago": { "wikidata": "Q754", "geonames": "3573591", "wikipedia": "https://en.wikipedia.org/wiki/Trinidad_and_Tobago" },
+    "haiti": { "wikidata": "Q790", "geonames": "3723988", "wikipedia": "https://en.wikipedia.org/wiki/Haiti" }
+  },
+  "source": {
+    "unesco": {
+      "wikidata": "Q7809",
+      "ror": "https://ror.org/04h4z8k05",
+      "wikipedia": "https://en.wikipedia.org/wiki/UNESCO"
+    },
+    "british-library": {
+      "wikidata": "Q23308",
+      "ror": "https://ror.org/05dhe8b71",
+      "wikipedia": "https://en.wikipedia.org/wiki/British_Library"
+    },
+    "library-of-congress": {
+      "wikidata": "Q131454",
+      "ror": "https://ror.org/013cjyk83",
+      "wikipedia": "https://en.wikipedia.org/wiki/Library_of_Congress"
+    },
+    "europeana": {
+      "wikidata": "Q234110",
+      "wikipedia": "https://en.wikipedia.org/wiki/Europeana"
+    },
+    "smithsonian": {
+      "wikidata": "Q131626",
+      "ror": "https://ror.org/01pp06c15",
+      "wikipedia": "https://en.wikipedia.org/wiki/Smithsonian_Institution"
+    },
+    "metropolitan-museum-of-art": {
+      "wikidata": "Q160236",
+      "ror": "https://ror.org/00r7xxj18",
+      "wikipedia": "https://en.wikipedia.org/wiki/Metropolitan_Museum_of_Art"
+    },
+    "openalex": {
+      "wikidata": "Q107507571",
+      "wikipedia": "https://en.wikipedia.org/wiki/OpenAlex"
+    },
+    "wikidata": {
+      "wikidata": "Q2013",
+      "wikipedia": "https://www.wikidata.org/"
+    },
+    "crossref": {
+      "wikidata": "Q5188229",
+      "ror": "https://ror.org/02twcfp32",
+      "wikipedia": "https://en.wikipedia.org/wiki/Crossref"
+    }
+  },
+  "people": {
+    "kwame-nkrumah": {
+      "wikidata": "Q8588",
+      "wikipedia": "https://en.wikipedia.org/wiki/Kwame_Nkrumah"
+    }
+  }
+}

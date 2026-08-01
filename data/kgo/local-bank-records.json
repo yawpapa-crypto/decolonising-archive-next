@@ -1,0 +1,552 @@
+[
+  {
+    "id": "l001",
+    "title": "Kente Cloth and the Architecture of Akan Identity",
+    "type": "Textile",
+    "creator": "Asante Weavers, Bonwire",
+    "region": "West Africa",
+    "country": "Ghana",
+    "community": "Akan / Ashanti",
+    "period": "18th–21st c.",
+    "concepts": [
+      "visual sovereignty",
+      "cultural memory",
+      "indigenous epistemologies"
+    ],
+    "summary": "Kente is not merely decorative cloth. Each named pattern encodes cosmology, genealogy, and social ethics — a visual text within the Akan world.",
+    "tags": [
+      "kente",
+      "Ashanti",
+      "Ghana",
+      "textile",
+      "Akan"
+    ],
+    "rights": "Community Custodianship",
+    "provenance": "Bonwire, Ashanti Region, Ghana.",
+    "source": "Local Bank",
+    "cat": "Material Culture"
+  },
+  {
+    "id": "l002",
+    "title": "The Wretched of the Earth",
+    "type": "Book",
+    "creator": "Frantz Fanon",
+    "region": "North Africa / Diaspora",
+    "country": "Algeria / Martinique",
+    "community": "Algerian independence movement",
+    "period": "1961",
+    "concepts": [
+      "decolonisation",
+      "anti-colonial theory",
+      "liberation"
+    ],
+    "summary": "Fanon's foundational text on the psychology and politics of colonialism and decolonisation. Indispensable to decolonial thought.",
+    "tags": [
+      "Fanon",
+      "Algeria",
+      "decolonisation",
+      "political theory"
+    ],
+    "rights": "Rights Reserved",
+    "provenance": "Francois Maspero, Paris, 1961.",
+    "source": "Local Bank",
+    "cat": "Books & Texts"
+  },
+  {
+    "id": "l003",
+    "title": "Decolonising Design in Africa",
+    "type": "Book",
+    "creator": "Yaw Ofosu-Asare",
+    "region": "Africa / Global",
+    "country": "Ghana / Australia",
+    "community": "Design studies",
+    "period": "2024",
+    "concepts": [
+      "decolonial design",
+      "African design pedagogy",
+      "Sankofa methodology"
+    ],
+    "summary": "Maps the epistemological stakes of design education across the African continent through Sankofa methodology and decolonial critique.",
+    "tags": [
+      "design",
+      "Africa",
+      "decolonisation",
+      "pedagogy",
+      "Sankofa"
+    ],
+    "rights": "Rights Reserved",
+    "provenance": "Routledge, 2024.",
+    "source": "Local Bank",
+    "cat": "Books & Texts"
+  },
+  {
+    "id": "l004",
+    "title": "African Design Futures",
+    "type": "Book",
+    "creator": "Yaw Ofosu-Asare",
+    "region": "Africa / Global",
+    "country": "Ghana / Australia",
+    "community": "Design studies",
+    "period": "2024",
+    "concepts": [
+      "African design futures",
+      "decolonial pedagogy",
+      "spatial practice"
+    ],
+    "summary": "A programmatic framework for reimagining African design practice, pedagogy, and spatial production beyond colonial inheritance.",
+    "tags": [
+      "design",
+      "Africa",
+      "futures",
+      "pedagogy",
+      "spatial justice"
+    ],
+    "rights": "Rights Reserved",
+    "provenance": "Palgrave Macmillan, 2024.",
+    "source": "Local Bank",
+    "cat": "Books & Texts"
+  },
+  {
+    "id": "l005",
+    "title": "Yoruba Ifa Oral Corpus",
+    "type": "Oral History",
+    "creator": "Yoruba Babalawo tradition",
+    "region": "West Africa",
+    "country": "Nigeria / Benin / Cuba / Brazil",
+    "community": "Yoruba",
+    "period": "Pre-colonial — present",
+    "concepts": [
+      "indigenous epistemologies",
+      "oral knowledge systems",
+      "diasporic knowledge"
+    ],
+    "summary": "One of the world's most extensive oral knowledge archives — a comprehensive cosmological, philosophical, and ethical system transmitted through Babalawo lineages.",
+    "tags": [
+      "Yoruba",
+      "Nigeria",
+      "oral history",
+      "Ifa",
+      "indigenous knowledge"
+    ],
+    "rights": "Community Custodianship",
+    "provenance": "UNESCO Intangible Cultural Heritage.",
+    "source": "Local Bank",
+    "cat": "Oral Histories"
+  },
+  {
+    "id": "l006",
+    "title": "Benin Bronzes: A Documentation Record",
+    "type": "Artefact",
+    "creator": "Edo craftspeople, Benin City",
+    "region": "West Africa",
+    "country": "Nigeria",
+    "community": "Edo / Benin Kingdom",
+    "period": "13th–19th c.",
+    "concepts": [
+      "visual sovereignty",
+      "cultural memory",
+      "repatriation",
+      "archival recovery"
+    ],
+    "summary": "Among the most technically sophisticated metal artworks ever produced. Looted by British forces in 1897, thousands remain scattered across European and North American institutions.",
+    "tags": [
+      "Benin",
+      "Nigeria",
+      "bronze",
+      "repatriation",
+      "colonial plunder",
+      "Edo"
+    ],
+    "rights": "Community Custodianship — held externally",
+    "provenance": "Looted by British Punitive Expedition, 1897. British Museum (900+), Ethnologisches Museum Berlin, and others.",
+    "source": "Local Bank",
+    "cat": "Artefacts"
+  },
+  {
+    "id": "l007",
+    "title": "Great Zimbabwe: Architectural Documentation",
+    "type": "Architecture",
+    "creator": "Shona builders (Kingdom of Zimbabwe)",
+    "region": "Southern Africa",
+    "country": "Zimbabwe",
+    "community": "Shona",
+    "period": "11th–15th c.",
+    "concepts": [
+      "precolonial urbanism",
+      "indigenous epistemologies",
+      "architectural sovereignty"
+    ],
+    "summary": "The largest precolonial stone structure in sub-Saharan Africa. Colonial authorities suppressed its African origin. Its recovery as a symbol of African civilisation is central to Zimbabwean identity.",
+    "tags": [
+      "Zimbabwe",
+      "architecture",
+      "precolonial",
+      "Shona",
+      "urbanism"
+    ],
+    "rights": "UNESCO — open record",
+    "provenance": "Masvingo Province, Zimbabwe.",
+    "source": "Local Bank",
+    "cat": "Architecture"
+  },
+  {
+    "id": "l008",
+    "title": "Consciencism: Philosophy and Ideology for De-colonization",
+    "type": "Book",
+    "creator": "Kwame Nkrumah",
+    "region": "West Africa",
+    "country": "Ghana",
+    "community": "Pan-African political movement",
+    "period": "1964",
+    "concepts": [
+      "African socialism",
+      "pan-Africanism",
+      "philosophical decolonisation"
+    ],
+    "summary": "Nkrumah's philosophical framework synthesising African communalist tradition, Islam, and Euro-Christian inheritance into a foundation for African socialist politics.",
+    "tags": [
+      "Nkrumah",
+      "Ghana",
+      "pan-Africanism",
+      "philosophy",
+      "socialism"
+    ],
+    "rights": "Rights Reserved",
+    "provenance": "Heinemann, London, 1964.",
+    "source": "Local Bank",
+    "cat": "Books & Texts"
+  },
+  {
+    "id": "l009",
+    "title": "Mau Mau Testimonies: Oral Archive",
+    "type": "Oral History",
+    "creator": "Kenya Human Rights Commission / Kenya National Archives",
+    "region": "East Africa",
+    "country": "Kenya",
+    "community": "Gikuyu / Embu / Meru",
+    "period": "1952–1960",
+    "concepts": [
+      "archival recovery",
+      "reparative history",
+      "colonial violence"
+    ],
+    "summary": "Testimonies from survivors of British colonial detention camps during the Mau Mau uprising — accounts documentary records were designed to erase.",
+    "tags": [
+      "Kenya",
+      "Mau Mau",
+      "oral history",
+      "colonial violence",
+      "East Africa"
+    ],
+    "rights": "Archival — conditional access",
+    "provenance": "Kenya National Archives / KHRC oral testimony collections.",
+    "source": "Local Bank",
+    "cat": "Oral Histories"
+  },
+  {
+    "id": "l010",
+    "title": "Anti-Apartheid Movement Poster Archive",
+    "type": "Poster",
+    "creator": "ANC, PAC, UDF, COSATU",
+    "region": "Southern Africa",
+    "country": "South Africa",
+    "community": "Anti-apartheid movement",
+    "period": "1960–1990",
+    "concepts": [
+      "visual sovereignty",
+      "political graphics",
+      "cultural memory"
+    ],
+    "summary": "Political posters produced by South African liberation movements — a significant archive of decolonial visual culture produced under censorship.",
+    "tags": [
+      "South Africa",
+      "apartheid",
+      "posters",
+      "liberation",
+      "visual culture"
+    ],
+    "rights": "Mixed — movement organisations",
+    "provenance": "South African National Gallery, SOAS Digital Collections, and community archives.",
+    "source": "Local Bank",
+    "cat": "Visual Culture"
+  },
+  {
+    "id": "l011",
+    "title": "Timbuktu Manuscripts: West African Islamic Scholarship",
+    "type": "Archival Document",
+    "creator": "Various Malian and West African scholars",
+    "region": "West Africa / Sahel",
+    "country": "Mali",
+    "community": "Timbuktu scholars / Songhai / Tuareg",
+    "period": "13th–17th c.",
+    "concepts": [
+      "indigenous epistemologies",
+      "Islamic scholarship",
+      "archival recovery"
+    ],
+    "summary": "Approximately 400,000 manuscripts document West African mathematics, astronomy, medicine, jurisprudence, and philosophy — a counter-archive to colonial narratives of a pre-literate Africa.",
+    "tags": [
+      "Mali",
+      "Timbuktu",
+      "manuscripts",
+      "Islam",
+      "precolonial",
+      "scholarship"
+    ],
+    "rights": "Community Custodianship",
+    "provenance": "Ahmed Baba Institute, Timbuktu. Some digitised via Hamburg University.",
+    "source": "Local Bank",
+    "cat": "Archival Documents"
+  },
+  {
+    "id": "l012",
+    "title": "Ndebele Wall Painting: Visual Knowledge Traditions",
+    "type": "Image",
+    "creator": "Ndebele women artists, Mpumalanga",
+    "region": "Southern Africa",
+    "country": "South Africa",
+    "community": "Ndebele",
+    "period": "19th c. — present",
+    "concepts": [
+      "visual sovereignty",
+      "indigenous design",
+      "women's knowledge"
+    ],
+    "summary": "A visual language developed and transmitted by women. Geometric patterns encode social status, identity, and cosmological knowledge — intensified as cultural resistance during apartheid.",
+    "tags": [
+      "Ndebele",
+      "South Africa",
+      "wall painting",
+      "women",
+      "geometric",
+      "design"
+    ],
+    "rights": "Community Custodianship",
+    "provenance": "Mpumalanga Province, South Africa.",
+    "source": "Local Bank",
+    "cat": "Visual Culture"
+  },
+  {
+    "id": "l013",
+    "title": "Return to the Source: Selected Speeches of Amilcar Cabral",
+    "type": "Archival Document",
+    "creator": "Amilcar Cabral",
+    "region": "West Africa",
+    "country": "Guinea-Bissau / Cape Verde",
+    "community": "PAIGC / African liberation movements",
+    "period": "1966–1972",
+    "concepts": [
+      "anti-colonial theory",
+      "cultural identity",
+      "decolonial epistemology"
+    ],
+    "summary": "Cabral's speeches articulate culture as a force of liberation — culture as the foundation of political freedom and the site of decolonisation.",
+    "tags": [
+      "Cabral",
+      "Guinea-Bissau",
+      "liberation",
+      "culture",
+      "political theory"
+    ],
+    "rights": "Rights Reserved",
+    "provenance": "Monthly Review Press, New York, 1973.",
+    "source": "Local Bank",
+    "cat": "Archival Documents"
+  },
+  {
+    "id": "l014",
+    "title": "Ubuntu Philosophy: A Communal Ethics",
+    "type": "Philosophy & Theory",
+    "creator": "Various African philosophy scholars",
+    "region": "Southern / Eastern Africa",
+    "country": "South Africa / Zimbabwe / Tanzania",
+    "community": "Nguni / Bantu language communities",
+    "period": "Pre-colonial — present",
+    "concepts": [
+      "African philosophy",
+      "communalism",
+      "indigenous epistemologies"
+    ],
+    "summary": "Ubuntu — 'I am because we are' — frames communal personhood, ethical reciprocity, and shared humanity across much of sub-Saharan African social thought.",
+    "tags": [
+      "Ubuntu",
+      "philosophy",
+      "ethics",
+      "South Africa",
+      "communalism",
+      "African humanism"
+    ],
+    "rights": "Open — community knowledge",
+    "provenance": "Living tradition.",
+    "source": "Local Bank",
+    "cat": "Philosophy & Theory"
+  },
+  {
+    "id": "l015",
+    "title": "Lamu Old Town: Swahili Coast Architecture",
+    "type": "Architecture",
+    "creator": "Swahili master builders",
+    "region": "East Africa",
+    "country": "Kenya",
+    "community": "Swahili",
+    "period": "14th–19th c.",
+    "concepts": [
+      "precolonial urbanism",
+      "Indian Ocean networks",
+      "architectural sovereignty"
+    ],
+    "summary": "The oldest and best-preserved Swahili settlement in East Africa demonstrates an urban tradition shaped through Indian Ocean trade networks long before European colonialism.",
+    "tags": [
+      "Lamu",
+      "Kenya",
+      "Swahili",
+      "architecture",
+      "Indian Ocean",
+      "heritage"
+    ],
+    "rights": "UNESCO — open record",
+    "provenance": "Lamu County, Kenya. UNESCO World Heritage Site since 2001.",
+    "source": "Local Bank",
+    "cat": "Architecture"
+  },
+  {
+    "id": "l016",
+    "title": "Sankofa Methodology in Design Education",
+    "type": "Philosophy & Theory",
+    "creator": "Yaw Ofosu-Asare",
+    "region": "Africa / Global",
+    "country": "Ghana / Australia",
+    "community": "Design pedagogy",
+    "period": "2020–2024",
+    "concepts": [
+      "Sankofa",
+      "decolonial pedagogy",
+      "African futures",
+      "design education"
+    ],
+    "summary": "Sankofa — 'it is not wrong to go back for what you forgot' — is used here as a methodological framework for recovering precolonial knowledge architectures as generative design tools.",
+    "tags": [
+      "Sankofa",
+      "Ghana",
+      "pedagogy",
+      "design",
+      "decolonisation",
+      "methodology"
+    ],
+    "rights": "Author",
+    "provenance": "Melbourne, Australia.",
+    "source": "Local Bank",
+    "cat": "Philosophy & Theory"
+  },
+  {
+    "id": "l017",
+    "title": "Dialogues of Liberation: Fanon, Cabral, and Nkrumah",
+    "type": "Journal Article",
+    "creator": "Yaw Ofosu-Asare",
+    "region": "Africa / Global",
+    "country": "Ghana / Australia",
+    "community": "African studies / Design research",
+    "period": "2025",
+    "concepts": [
+      "liberation theory",
+      "decolonial epistemology",
+      "African philosophy"
+    ],
+    "summary": "Comparative reading of Fanon, Cabral, and Nkrumah as a unified philosophical project — tracing convergences in their theories of culture, consciousness, and political transformation.",
+    "tags": [
+      "Fanon",
+      "Cabral",
+      "Nkrumah",
+      "liberation",
+      "African philosophy",
+      "decolonisation"
+    ],
+    "rights": "Author",
+    "provenance": "African Identities, 2025.",
+    "source": "Local Bank",
+    "cat": "Books & Texts"
+  },
+  {
+    "id": "l018",
+    "title": "PRAAD: Public Records and Archives Administration",
+    "type": "Institutional Record",
+    "creator": "Government of Ghana",
+    "region": "West Africa",
+    "country": "Ghana",
+    "community": "Ghanaian public institutions",
+    "period": "Colonial era — present",
+    "concepts": [
+      "archival recovery",
+      "institutional memory",
+      "colonial documentation"
+    ],
+    "summary": "The national repository for Ghana's public records includes colonial administrative documents, treaties, maps, photographs, and land records from the Gold Coast era onward.",
+    "tags": [
+      "Ghana",
+      "archives",
+      "PRAAD",
+      "colonial records",
+      "West Africa"
+    ],
+    "rights": "Archival — institutional access",
+    "provenance": "Public Records and Archives Administration Department, Accra, Ghana.",
+    "source": "PRAAD",
+    "cat": "Archival Documents"
+  },
+  {
+    "id": "l019",
+    "title": "Adinkra Symbols: A Visual Philosophy of the Akan",
+    "type": "Visual Culture",
+    "creator": "Akan artisans, Ashanti Region",
+    "region": "West Africa",
+    "country": "Ghana",
+    "community": "Akan",
+    "period": "Pre-colonial — present",
+    "concepts": [
+      "indigenous epistemologies",
+      "visual sovereignty",
+      "African philosophy"
+    ],
+    "summary": "Adinkra symbols encode proverbs, philosophical concepts, and historical events in visual form — a system of pictographic communication used in textiles, pottery, metalwork, and architecture.",
+    "tags": [
+      "Adinkra",
+      "Ghana",
+      "Akan",
+      "philosophy",
+      "visual culture",
+      "symbols"
+    ],
+    "rights": "Community Custodianship",
+    "provenance": "Ntonso and surrounding communities, Ashanti Region, Ghana.",
+    "source": "Local Bank",
+    "cat": "Visual Culture"
+  },
+  {
+    "id": "l020",
+    "title": "Steve Biko: I Write What I Like",
+    "type": "Book",
+    "creator": "Steve Biko",
+    "region": "Southern Africa",
+    "country": "South Africa",
+    "community": "Black Consciousness Movement",
+    "period": "1978",
+    "concepts": [
+      "Black Consciousness",
+      "anti-apartheid",
+      "decolonial epistemology"
+    ],
+    "summary": "Collected writings of Steve Biko — the foundational text of Black Consciousness philosophy in South Africa, arguing for psychological decolonisation as the precondition for liberation.",
+    "tags": [
+      "Biko",
+      "South Africa",
+      "Black Consciousness",
+      "liberation",
+      "philosophy",
+      "anti-apartheid"
+    ],
+    "rights": "Rights Reserved",
+    "provenance": "Bowerdean Press, London, 1978.",
+    "source": "Local Bank",
+    "cat": "Books & Texts"
+  }
+]

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
 import RouteAnalytics from "@/src/components/analytics/RouteAnalytics";
+import JsonLd from "@/src/components/kgo/JsonLd";
+import { organizationJsonLd, websiteJsonLd } from "@/lib/kgo/schema";
 
 function metadataBaseUrl() {
   const raw = (process.env.NEXT_PUBLIC_SITE_URL || "").trim();
@@ -21,13 +23,22 @@ function metadataBaseUrl() {
 
 export const metadata: Metadata = {
   metadataBase: metadataBaseUrl(),
-  title: "Decolonising Archive",
+  title: {
+    default: "Decolonising Archive | ARED",
+    template: "%s | ARED",
+  },
   description:
-    "A growing archive of decolonising knowledge across Africa, the diaspora, and the Global South.",
+    "A public cultural knowledge platform for searching, citing and connecting decolonising knowledge across Africa, the diaspora and the Global South.",
+  alternates: {
+    canonical: "/",
+    types: {
+      "text/plain": [{ url: "/llms.txt", title: "llms.txt" }],
+    },
+  },
   openGraph: {
     title: "Decolonising Archive",
     description:
-      "A growing archive of decolonising knowledge across Africa, the diaspora, and the Global South.",
+      "A public cultural knowledge platform for searching, citing and connecting decolonising knowledge across Africa, the diaspora and the Global South.",
     url: "https://ared.design",
     siteName: "Decolonising Archive",
     images: [
@@ -45,8 +56,19 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Decolonising Archive",
     description:
-      "A growing archive of decolonising knowledge across Africa, the diaspora, and the Global South.",
+      "A public cultural knowledge platform for searching, citing and connecting decolonising knowledge across Africa, the diaspora and the Global South.",
     images: ["/og-image.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 };
 
@@ -57,10 +79,11 @@ export default function RootLayout({
 }>) {
   return (
     <>
-        {children}
-
-        <RouteAnalytics />
-        <Analytics />
+      <JsonLd data={organizationJsonLd()} />
+      <JsonLd data={websiteJsonLd()} />
+      {children}
+      <RouteAnalytics />
+      <Analytics />
     </>
   );
 }

@@ -12,6 +12,10 @@ export default function ArchiveAppPage({ initialMemberSignedIn }: ArchiveAppPage
 
   return (
     <PageShell>
+      <link
+        rel="stylesheet"
+        href="/assets/css/record-detail-editorial.css?v=20260802-kgo-v2"
+      />
       <main
         id="app"
         {...(memberSignedInAttr !== undefined
@@ -28,7 +32,7 @@ export default function ArchiveAppPage({ initialMemberSignedIn }: ArchiveAppPage
 
       <Script
         id="archive-app-script"
-        src="/assets/js/app.js?v=20260616-bdm-zoom-fullscreen"
+        src="/assets/js/app.js?v=20260802-kgo-v2"
         strategy="afterInteractive"
       />
     </PageShell>

@@ -273,6 +273,15 @@ export type ArchiveRecord = {
     libraryOfCongress?: string;
     trove?: string;
     europeana?: string;
+    wikidata?: string;
+    orcid?: string;
+    ror?: string;
+    viaf?: string;
+    gettyAat?: string;
+    geonames?: string;
+    unesco?: string;
+    localContexts?: string;
+    wikipedia?: string;
   };
   rightsStatus: string;
   licence?: string;
@@ -486,6 +495,33 @@ export function normalizeArchiveRecord(input: unknown): ArchiveRecord {
     identifier: text(record.identifier) || text(record.recordIdentifier),
     doi: text(record.doi),
     isbn: text(record.isbn),
+    externalIds: (() => {
+      const raw = (record.externalIds && typeof record.externalIds === "object"
+        ? record.externalIds
+        : {}) as Record<string, unknown>;
+      const pick = (key: string) => {
+        const value = raw[key];
+        return typeof value === "string" && value.trim() ? value.trim() : undefined;
+      };
+      const ids = {
+        openAlex: pick("openAlex"),
+        crossref: pick("crossref"),
+        worldcat: pick("worldcat"),
+        libraryOfCongress: pick("libraryOfCongress"),
+        trove: pick("trove"),
+        europeana: pick("europeana"),
+        wikidata: pick("wikidata"),
+        orcid: pick("orcid"),
+        ror: pick("ror"),
+        viaf: pick("viaf"),
+        gettyAat: pick("gettyAat"),
+        geonames: pick("geonames"),
+        unesco: pick("unesco"),
+        localContexts: pick("localContexts"),
+        wikipedia: pick("wikipedia"),
+      };
+      return Object.values(ids).some(Boolean) ? ids : undefined;
+    })(),
     rightsStatus: RIGHTS_STATUSES.includes(rightsStatus as (typeof RIGHTS_STATUSES)[number]) ? rightsStatus : "Rights Unknown",
     licence: text(record.licence),
     rightsStatementUri: text(record.rightsStatementUri),
