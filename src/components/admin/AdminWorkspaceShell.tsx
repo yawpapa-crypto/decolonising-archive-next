@@ -84,6 +84,29 @@ type Props = {
   unreadNotifications?: number;
 };
 
+function formatAnalyticsTableErrors(tableErrors: AdminWorkspaceSnapshot["tableErrors"]) {
+  const entries = Object.entries(tableErrors).filter(
+    (entry): entry is [string, string] => typeof entry[1] === "string" && entry[1].trim().length > 0,
+  );
+  const grouped = new Map<string, string[]>();
+
+  for (const [table, message] of entries) {
+    const normalizedMessage = message.trim();
+    const tables = grouped.get(normalizedMessage) ?? [];
+    tables.push(table);
+    grouped.set(normalizedMessage, tables);
+  }
+
+  return [...grouped.entries()].map(([message, tables]) => ({
+    message,
+    tables,
+    label:
+      message.toLowerCase().includes("unregistered api key")
+        ? "Supabase analytics credentials are not registered. Update the server-side SUPABASE_SERVICE_ROLE_KEY in the deployment/local environment."
+        : message,
+  }));
+}
+
 function formatDate(value: string | null | undefined) {
   if (!value) return "Never";
   const date = new Date(value);
@@ -125,7 +148,7 @@ export default function AdminWorkspaceShell({
   const [refreshing, setRefreshing] = useState(false);
   const [pending, startTransition] = useTransition();
 
-  const tableErrors = Object.values(snapshot.tableErrors).filter(Boolean);
+  const tableErrors = useMemo(() => formatAnalyticsTableErrors(snapshot.tableErrors), [snapshot.tableErrors]);
 
   const refresh = useCallback(async (range: AdminDateRange) => {
     setRefreshing(true);
@@ -218,7 +241,12 @@ export default function AdminWorkspaceShell({
       {tableErrors.length > 0 ? (
         <section className="admin-status-card is-warning">
           <strong>Some analytics tables could not be read.</strong>
-          <p>{tableErrors.join(" ")}</p>
+          {tableErrors.map((error) => (
+            <p key={`${error.message}:${error.tables.join(",")}`}>
+              {error.label}
+              <span> Affected areas: {error.tables.join(", ")}.</span>
+            </p>
+          ))}
         </section>
       ) : null}
 
