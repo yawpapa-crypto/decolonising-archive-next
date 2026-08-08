@@ -30,6 +30,35 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: "/knowledge-systems",
+        destination: "/knowledge",
+        permanent: true,
+      },
+      {
+        source: "/global-knowledge-systems",
+        destination: "/knowledge",
+        permanent: true,
+      },
+      {
+        source: "/knowledge-systems-registry",
+        destination: "/knowledge",
+        permanent: true,
+      },
+      {
+        source: "/sources/language-centre",
+        destination: "/sources",
+        permanent: true,
+      },
+      {
+        source: "/my",
+        destination: "/my/workbench",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default withSecurityHeaders(nextConfig);

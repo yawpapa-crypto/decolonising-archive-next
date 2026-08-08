@@ -901,12 +901,12 @@ export default function GhanaCollectionClient() {
           )}
 
           {/* Collection essay */}
-          <div className="ghana-essay-section ghana-essay-section--editorial">
+          <div id="collection-essay" className="ghana-essay-section ghana-essay-section--editorial">
             <div>
               <EditorialKicker>Collection essay</EditorialKicker>
               <h2 className="ghana-essay-title">{meta.essay_title}</h2>
               <p className="ghana-essay-excerpt">{meta.essay_excerpt}</p>
-              <a href="#" className="ghana-essay-read-link">
+              <a href="#collection-essay" className="ghana-essay-read-link">
                 Read the essay →
               </a>
             </div>
