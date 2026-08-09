@@ -94,7 +94,8 @@ export async function GET(request: NextRequest) {
 
     const results = [];
     for (const row of data ?? []) {
-      const normalized = normalizeArchiveRecord(row.content) as Record<string, unknown>;
+      const normalized = normalizeArchiveRecord(row.content);
+      if (!normalized.published) continue;
       if (!tokens.length || recordMatchesQuery(normalized, tokens)) {
         results.push(toDiscoverRow(normalized));
       }
