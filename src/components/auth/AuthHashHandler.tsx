@@ -8,6 +8,11 @@ function cleanHashUrl() {
   window.history.replaceState(null, "", cleanUrl);
 }
 
+function recoveryRedirectPath() {
+  const next = new URLSearchParams(window.location.search).get("next");
+  return next === "/reset-password" ? "/reset-password" : "/auth/reset-password";
+}
+
 export default function AuthHashHandler() {
   useEffect(() => {
     const hash = window.location.hash;
@@ -43,7 +48,7 @@ export default function AuthHashHandler() {
         }
 
         if (type === "recovery") {
-          window.location.replace("/auth/reset-password");
+          window.location.replace(recoveryRedirectPath());
           return;
         }
 
