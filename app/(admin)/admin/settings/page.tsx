@@ -90,7 +90,7 @@ export default function AdminSettingsPage() {
       const response = await fetch('/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ settings }),
+        body: JSON.stringify(settings),
       })
 
       const data = await response.json()
