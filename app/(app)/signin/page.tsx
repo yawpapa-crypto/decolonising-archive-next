@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import AuthPageShell from "@/components/auth/AuthPageShell";
 import AuthShell from "@/components/auth/AuthShell";
 import { getCurrentUser } from "@/src/lib/auth";
+import { safeNextPath } from "@/src/lib/security/validate";
 import { requestPasswordReset, signInWithPassword } from "./actions";
 import OAuthButtons from "./OAuthButtons";
 import "@/app/styles/auth-pages.css";
@@ -24,7 +25,7 @@ export default async function SignInPage({
   searchParams: SearchParams;
 }) {
   const sp = await searchParams;
-  const next = sp.next ?? "/workspace";
+  const next = safeNextPath(sp.next);
 
   const user = await getCurrentUser();
   if (user) redirect(next);
