@@ -3,6 +3,9 @@ import { supabase } from "@/src/lib/supabase";
 import { isGuardResponse, requireAdminApi } from "@/src/lib/security/auth-guards";
 
 export async function GET() {
+  const guard = await requireAdminApi();
+  if (isGuardResponse(guard)) return guard;
+
   const { data, error } = await supabase
     .from("settings")
     .select("content")
