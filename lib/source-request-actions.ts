@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/src/lib/supabase/server";
+import { createAdminClient } from "@/src/lib/supabase/admin";
 import { createAdminNotification } from "@/lib/admin-notifications";
 
 export async function submitSourceRequest(formData: FormData): Promise<void> {
@@ -22,7 +23,8 @@ export async function submitSourceRequest(formData: FormData): Promise<void> {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { error } = await supabase.from("source_requests").insert({
+  const admin = createAdminClient();
+  const { error } = await admin.from("source_requests").insert({
     user_id: user?.id ?? null,
     title,
     source_url,
