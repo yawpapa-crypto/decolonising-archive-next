@@ -1,11 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { KnowledgeRecord } from "@/src/lib/knowledge-registry";
 import {
-  KNOWLEDGE_CATEGORIES,
-  KNOWLEDGE_REGIONS,
   getBrowseIndex,
   getRegistryStats,
   slugifyRegistryValue,
@@ -20,6 +18,36 @@ const viewModes: { id: ViewMode; label: string }[] = [
   { id: "map", label: "Map" },
   { id: "relational", label: "Relational" },
 ];
+
+const RESULTS_PER_PAGE = 24;
+
+function normaliseSearchText(value: string) {
+  return value
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase();
+}
+
+function getRecordSearchText(record: KnowledgeRecord) {
+  return normaliseSearchText(
+    [
+      record.title,
+      record.preferredTitle,
+      record.type,
+      record.summary,
+      record.region,
+      record.subregion,
+      ...record.community,
+      ...record.languages,
+      ...record.countries,
+      ...record.categories,
+      ...record.relationships,
+      record.sourceNote,
+    ]
+      .filter(Boolean)
+      .join(" "),
+  );
+}
 
 function statusLabel(status: KnowledgeRecord["verificationStatus"]) {
   if (status === "community-verified") return "Community verified";
@@ -44,37 +72,48 @@ export default function KnowledgeRegistryClient({
   const [region, setRegion] = useState("all");
   const [category, setCategory] = useState("all");
   const [viewMode, setViewMode] = useState<ViewMode>(initialView);
-  const stats = getRegistryStats();
+  const [visibleCount, setVisibleCount] = useState(RESULTS_PER_PAGE);
+  const stats = getRegistryStats(records);
+
+  const filterOptions = useMemo(() => {
+    const toOptions = (values: string[]) =>
+      [...new Set(values.filter(Boolean))].sort((a, b) => a.localeCompare(b));
+
+    return {
+      regions: toOptions(records.flatMap((record) => [record.region, record.subregion ?? ""])),
+      categories: toOptions(records.flatMap((record) => record.categories)),
+    };
+  }, [records]);
 
   const filteredRecords = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
+    const queryTerms = normaliseSearchText(query)
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+
     return records.filter((record) => {
-      const matchesQuery =
-        !normalizedQuery ||
-        [
-          record.title,
-          record.preferredTitle,
-          record.type,
-          record.summary,
-          record.region,
-          record.subregion,
-          ...record.community,
-          ...record.languages,
-          ...record.countries,
-          ...record.categories,
-          ...record.relationships,
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase()
-          .includes(normalizedQuery);
-      const matchesRegion = region === "all" || record.region === region;
+      const searchableText = getRecordSearchText(record);
+      const matchesQuery = queryTerms.every((term) => searchableText.includes(term));
+      const matchesRegion =
+        region === "all" || record.region === region || record.subregion === region;
       const matchesCategory =
         category === "all" || record.categories.includes(category);
 
       return matchesQuery && matchesRegion && matchesCategory;
     });
   }, [category, query, records, region]);
+
+  useEffect(() => {
+    setVisibleCount(RESULTS_PER_PAGE);
+  }, [category, query, region, viewMode]);
+
+  const visibleRecords = filteredRecords.slice(0, visibleCount);
+  const hasActiveFilters = Boolean(query.trim()) || region !== "all" || category !== "all";
+  const clearFilters = () => {
+    setQuery("");
+    setRegion("all");
+    setCategory("all");
+  };
 
   const featuredRecords = records.slice(0, 3);
   const sourceTypes = getBrowseIndex("relationships").slice(0, 7);
@@ -128,7 +167,16 @@ export default function KnowledgeRegistryClient({
               Find knowledge systems by place, practice, language or source.
             </h2>
           </div>
-          <span>{filteredRecords.length} matching records</span>
+          <div className="knowledge-search-panel__status">
+            <span id="knowledge-results-count" aria-live="polite">
+              {filteredRecords.length} matching {filteredRecords.length === 1 ? "record" : "records"}
+            </span>
+            {hasActiveFilters ? (
+              <button type="button" onClick={clearFilters}>
+                Clear filters
+              </button>
+            ) : null}
+          </div>
         </div>
         <div className="knowledge-search-card">
           <label className="knowledge-search-field" htmlFor="knowledge-search">
@@ -139,6 +187,7 @@ export default function KnowledgeRegistryClient({
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Try weaving, navigation, Akan, ceremony, Ghana..."
+              aria-describedby="knowledge-results-count"
             />
           </label>
           <label className="knowledge-filter-field">
@@ -149,7 +198,7 @@ export default function KnowledgeRegistryClient({
               aria-label="Filter by region"
             >
               <option value="all">All regions</option>
-              {KNOWLEDGE_REGIONS.map((item) => (
+              {filterOptions.regions.map((item) => (
                 <option key={item} value={item}>
                   {item}
                 </option>
@@ -164,7 +213,7 @@ export default function KnowledgeRegistryClient({
               aria-label="Filter by category"
             >
               <option value="all">All categories</option>
-              {KNOWLEDGE_CATEGORIES.map((item) => (
+              {filterOptions.categories.map((item) => (
                 <option key={item} value={item}>
                   {item}
                 </option>
@@ -237,6 +286,10 @@ export default function KnowledgeRegistryClient({
               <button
                 key={mode.id}
                 type="button"
+                role="tab"
+                id={`knowledge-view-${mode.id}`}
+                aria-controls="knowledge-results-panel"
+                aria-selected={viewMode === mode.id}
                 className={viewMode === mode.id ? "is-active" : ""}
                 onClick={() => setViewMode(mode.id)}
               >
@@ -245,24 +298,45 @@ export default function KnowledgeRegistryClient({
             ))}
           </div>
         </div>
+        {filteredRecords.length === 0 ? (
+          <KnowledgeEmptyResults hasActiveFilters={hasActiveFilters} onClear={clearFilters} />
+        ) : (
+          <div
+            id="knowledge-results-panel"
+            role="tabpanel"
+            aria-labelledby={`knowledge-view-${viewMode}`}
+          >
         {viewMode === "grid" ? (
           <div className="knowledge-card-grid">
-            {filteredRecords.map((record) => (
+            {visibleRecords.map((record) => (
               <KnowledgeCard key={record.slug} record={record} />
             ))}
           </div>
         ) : null}
         {viewMode === "list" ? (
           <div className="knowledge-list">
-            {filteredRecords.map((record) => (
+            {visibleRecords.map((record) => (
               <KnowledgeListRow key={record.slug} record={record} />
             ))}
           </div>
         ) : null}
         {viewMode === "map" ? <RegistryMap records={filteredRecords} /> : null}
         {viewMode === "relational" ? (
-          <RelationalView records={filteredRecords} />
+          <RelationalView records={visibleRecords} />
         ) : null}
+        {(viewMode === "grid" || viewMode === "list" || viewMode === "relational") &&
+        visibleRecords.length < filteredRecords.length ? (
+          <div className="knowledge-results-more">
+            <p>
+              Showing {visibleRecords.length} of {filteredRecords.length} matching records.
+            </p>
+            <button type="button" onClick={() => setVisibleCount((count) => count + RESULTS_PER_PAGE)}>
+              Load 24 more
+            </button>
+          </div>
+        ) : null}
+          </div>
+        )}
       </section>
 
       <section className="knowledge-limitations">
@@ -278,6 +352,29 @@ export default function KnowledgeRegistryClient({
           correction and fuller source review.
         </p>
       </section>
+    </div>
+  );
+}
+
+function KnowledgeEmptyResults({
+  hasActiveFilters,
+  onClear,
+}: {
+  hasActiveFilters: boolean;
+  onClear: () => void;
+}) {
+  return (
+    <div className="knowledge-empty-results" role="status">
+      <h3>No knowledge systems match this search.</h3>
+      <p>
+        Try a place, community, language or practice name. The registry searches across titles,
+        summaries, regions, categories and relationships.
+      </p>
+      {hasActiveFilters ? (
+        <button type="button" onClick={onClear}>
+          Clear search and filters
+        </button>
+      ) : null}
     </div>
   );
 }
@@ -349,11 +446,24 @@ function KnowledgeListRow({ record }: { record: KnowledgeRecord }) {
 
 function RegistryMap({ records }: { records: KnowledgeRecord[] }) {
   const locatedRecords = records.filter((record) => record.coordinates);
+  const displayedRecords = locatedRecords.slice(0, 80);
+
+  if (locatedRecords.length === 0) {
+    return (
+      <div className="knowledge-empty-results">
+        <h3>No mapped records match this search.</h3>
+        <p>
+          These records may be intentionally non-geographic, or only have a public summary without a
+          location. Try another filter or browse the grid view.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="knowledge-map-panel">
       <div className="knowledge-map-panel__canvas" aria-label="Approximate regional map">
-        {locatedRecords.map((record) => {
+        {displayedRecords.map((record) => {
           const lng = record.coordinates?.lng ?? 0;
           const lat = record.coordinates?.lat ?? 0;
           const left = ((lng + 180) / 360) * 100;
@@ -373,18 +483,29 @@ function RegistryMap({ records }: { records: KnowledgeRecord[] }) {
         })}
       </div>
       <p>
-        Map positions are approximate and intentionally regional. Knowledge
-        systems often move through diaspora, trade, ceremony and language rather
-        than a single fixed point.
+        Showing {displayedRecords.length} of {locatedRecords.length} mapped records. Positions are
+        approximate and intentionally regional: knowledge systems often move through diaspora,
+        trade, ceremony and language rather than a single fixed point.
       </p>
     </div>
   );
 }
 
 function RelationalView({ records }: { records: KnowledgeRecord[] }) {
+  const recordsWithRelationships = records.filter((record) => record.relationships.length > 0);
+
+  if (recordsWithRelationships.length === 0) {
+    return (
+      <div className="knowledge-empty-results">
+        <h3>No relationship pathways match this search.</h3>
+        <p>Try the grid view or broaden the search to see records with published relationship data.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="knowledge-relational-view">
-      {records.map((record) => (
+      {recordsWithRelationships.map((record) => (
         <article key={record.slug} className="knowledge-relation-card">
           <h3>
             <Link href={`/knowledge/${record.slug}`}>{record.title}</Link>

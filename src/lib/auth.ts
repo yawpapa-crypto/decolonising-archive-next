@@ -7,7 +7,11 @@
 // /workspace (signed-in but under-privileged).
 
 import { redirect } from "next/navigation";
-import { createClient, getAuthenticatedUser } from "@/src/lib/supabase/server";
+import {
+  createClient,
+  getAuthenticatedUser,
+  hasSupabaseServerConfig,
+} from "@/src/lib/supabase/server";
 
 export type Role = "member" | "curator" | "admin";
 
@@ -31,11 +35,15 @@ const ROLE_RANK: Record<Role, number> = {
 };
 
 export async function getCurrentUser() {
+  if (!hasSupabaseServerConfig()) return null;
+
   const supabase = await createClient();
   return getAuthenticatedUser(supabase);
 }
 
 export async function getCurrentProfile(): Promise<Profile | null> {
+  if (!hasSupabaseServerConfig()) return null;
+
   const supabase = await createClient();
   const user = await getAuthenticatedUser(supabase);
   if (!user) return null;

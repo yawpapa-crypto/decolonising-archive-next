@@ -617,8 +617,7 @@ export function getRecordsByBrowseValue(kind: BrowseKind, valueSlug: string) {
   });
 }
 
-export function getRegistryStats() {
-  const records = getPublishedKnowledgeRecords();
+export function getRegistryStats(records = getPublishedKnowledgeRecords()) {
   const communities = new Set(records.flatMap((record) => record.community));
   const languages = new Set(records.flatMap((record) => record.languages));
   const sourceLinks = records.reduce((total, record) => total + record.sourceIds.length, 0);
