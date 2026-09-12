@@ -68,7 +68,11 @@ drop policy if exists "workbench_review_extraction_fields: select project member
   on public.workbench_review_extraction_fields;
 drop policy if exists "workbench_review_extraction_fields: insert project members"
   on public.workbench_review_extraction_fields;
+drop policy if exists "workbench_review_extraction_fields: insert project managers"
+  on public.workbench_review_extraction_fields;
 drop policy if exists "workbench_review_extraction_fields: update project members"
+  on public.workbench_review_extraction_fields;
+drop policy if exists "workbench_review_extraction_fields: update project managers"
   on public.workbench_review_extraction_fields;
 
 create policy "workbench_review_extraction_fields: select project members"
@@ -97,9 +101,15 @@ drop policy if exists "workbench_review_extractions: select project members"
   on public.workbench_review_extractions;
 drop policy if exists "workbench_review_extractions: insert project members"
   on public.workbench_review_extractions;
+drop policy if exists "workbench_review_extractions: insert own project contributions"
+  on public.workbench_review_extractions;
 drop policy if exists "workbench_review_extractions: update project members"
   on public.workbench_review_extractions;
+drop policy if exists "workbench_review_extractions: update own project contributions"
+  on public.workbench_review_extractions;
 drop policy if exists "workbench_review_extractions: delete project members"
+  on public.workbench_review_extractions;
+drop policy if exists "workbench_review_extractions: delete own project contributions"
   on public.workbench_review_extractions;
 
 create policy "workbench_review_extractions: select project members"
@@ -168,7 +178,11 @@ drop policy if exists "workbench_review_comments: select project members"
   on public.workbench_review_comments;
 drop policy if exists "workbench_review_comments: insert project members"
   on public.workbench_review_comments;
+drop policy if exists "workbench_review_comments: insert own project comments"
+  on public.workbench_review_comments;
 drop policy if exists "workbench_review_comments: update project members"
+  on public.workbench_review_comments;
+drop policy if exists "workbench_review_comments: update own project comments"
   on public.workbench_review_comments;
 
 create policy "workbench_review_comments: select project members"
