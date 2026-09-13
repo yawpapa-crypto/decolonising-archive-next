@@ -40,6 +40,10 @@ function readLocalBankUncached(): LocalBankRecord[] {
 
 export const readLocalBankRecords = cache(readLocalBankUncached);
 
+export function isPublicArchiveRecord(record: ArchiveRecord): boolean {
+  return record.published === true;
+}
+
 export const getPublicArchiveRecords = cache(async (): Promise<ArchiveRecord[]> => {
   const fromJson = await readRecords();
   const localBank = readLocalBankRecords().map((record) => normalizeArchiveRecord(record));
@@ -48,7 +52,7 @@ export const getPublicArchiveRecords = cache(async (): Promise<ArchiveRecord[]> 
     if (!record?.id) return;
     byId.set(record.id, enrichRecordSameAs(record));
   });
-  return Array.from(byId.values());
+  return Array.from(byId.values()).filter(isPublicArchiveRecord);
 });
 
 export async function getPublicArchiveRecord(id: string): Promise<ArchiveRecord | null> {
