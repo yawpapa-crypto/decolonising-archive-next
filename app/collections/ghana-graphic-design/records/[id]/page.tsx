@@ -10,6 +10,7 @@ import { resolveServerRecordImage } from "@/lib/catalogue/record-image-server";
 import { GHANA_COLLECTION_SLUG } from "@/lib/research/collection-record-research";
 import GhanaCatalogueRecordDetail from "@/app/collections/ghana-graphic-design/GhanaCatalogueRecordDetail";
 import PageShell from "@/src/components/layout/PageShell";
+import JsonLd from "@/src/components/kgo/JsonLd";
 import { GHANA_COLLECTION_TITLE } from "@/lib/data/ghana-subcollections";
 import "@/app/styles/ghana-collection.css";
 import "@/app/styles/research-actions.css";
@@ -54,24 +55,21 @@ export default async function GhanaCatalogueRecordCanonicalPage({ params }: Prop
 
   return (
     <PageShell>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "CreativeWork",
-            "@id": `https://ared.design/collections/${GHANA_COLLECTION_SLUG}/records/${record.id}`,
-            identifier: record.id,
-            name: record.title,
-            description: record.description,
-            creator: record.creatorOrAuthority || undefined,
-            dateCreated: record.dateStart || undefined,
-            isPartOf: {
-              "@type": "Collection",
-              name: GHANA_COLLECTION_TITLE,
-            },
-            url: `https://ared.design/collections/${GHANA_COLLECTION_SLUG}/records/${record.id}`,
-          }),
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "CreativeWork",
+          "@id": `https://ared.design/collections/${GHANA_COLLECTION_SLUG}/records/${record.id}`,
+          identifier: record.id,
+          name: record.title,
+          description: record.description,
+          creator: record.creatorOrAuthority || undefined,
+          dateCreated: record.dateStart || undefined,
+          isPartOf: {
+            "@type": "Collection",
+            name: GHANA_COLLECTION_TITLE,
+          },
+          url: `https://ared.design/collections/${GHANA_COLLECTION_SLUG}/records/${record.id}`,
         }}
       />
       <GhanaCatalogueRecordDetail

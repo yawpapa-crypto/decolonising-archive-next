@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import PageShell from "@/src/components/layout/PageShell";
+import JsonLd from "@/src/components/kgo/JsonLd";
 import {
   CATEGORY_LABELS,
   getGhanaItem,
@@ -72,7 +73,7 @@ export default async function GhanaItemDetailPage({ params }: Props) {
 
   return (
     <PageShell>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <JsonLd data={jsonLd} />
       <main className="ghana-detail-page ghana-detail-page--monochrome">
         <div className="ghana-detail-inner">
           <nav className="ghana-breadcrumb" aria-label="Breadcrumb">
