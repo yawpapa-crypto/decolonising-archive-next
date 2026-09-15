@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/src/lib/supabase/server";
+import { createAdminClient } from "@/src/lib/supabase/admin";
 import { getCurrentProfile, hasRole } from "@/src/lib/auth";
 
 export const runtime = "nodejs";
@@ -45,13 +46,14 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
     );
   }
 
-  const { error: storageError } = await supabase.storage
-    .from("media-library")
-    .remove([mediaItem.file_path]);
+  const { data: mediaLinks, error: mediaLinksError } = await supabase
+    .from("media_links")
+    .select("*")
+    .eq("media_id", id);
 
-  if (storageError) {
+  if (mediaLinksError) {
     return NextResponse.json(
-      { error: "Could not delete file", details: storageError.message },
+      { error: "Could not prepare media deletion", details: mediaLinksError.message },
       { status: 500 },
     );
   }
@@ -59,11 +61,34 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
   const { error: deleteError } = await supabase
     .from("media_library")
     .delete()
-    .eq("id", id);
+    .eq("id", id)
+    .select("id")
+    .single();
 
   if (deleteError) {
     return NextResponse.json(
       { error: "Could not delete media metadata", details: deleteError.message },
+      { status: 500 },
+    );
+  }
+
+  const { error: storageError } = await supabase.storage
+    .from("media-library")
+    .remove([mediaItem.file_path]);
+
+  if (storageError) {
+    const adminClient = createAdminClient();
+    const restoreMedia = await adminClient.from("media_library").insert(mediaItem);
+    if (!restoreMedia.error && mediaLinks?.length) {
+      await adminClient.from("media_links").insert(mediaLinks);
+    }
+
+    return NextResponse.json(
+      {
+        error: "Could not delete file",
+        details: storageError.message,
+        restored: !restoreMedia.error,
+      },
       { status: 500 },
     );
   }
