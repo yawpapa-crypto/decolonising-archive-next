@@ -8,6 +8,7 @@ export default async function WorkbenchInvitePage({
   params: Promise<{ inviteId: string }>;
 }) {
   const { inviteId } = await params;
+  const invitePath = `/my/workbench/invite/${encodeURIComponent(inviteId)}`;
   const supabase = await createClient();
   const {
     data: { user },
@@ -18,7 +19,7 @@ export default async function WorkbenchInvitePage({
       <section className="workbench-invite-page">
         <h1>Project invite</h1>
         <p>Sign in to accept this collaboration invite.</p>
-        <Link href={`/auth/login?next=/my/workbench/invite/${inviteId}`}>Sign in</Link>
+        <Link href={`/auth/sign-in?next=${encodeURIComponent(invitePath)}`}>Sign in</Link>
       </section>
     );
   }
