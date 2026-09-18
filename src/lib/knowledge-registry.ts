@@ -536,7 +536,7 @@ export function getPublishedKnowledgeRecords() {
 }
 
 export function getKnowledgeRecordBySlug(slug: string) {
-  return knowledgeRecords.find((record) => record.slug === slug);
+  return getPublishedKnowledgeRecords().find((record) => record.slug === slug);
 }
 
 export function getKnowledgeSourceBySlug(slug: string) {
@@ -569,7 +569,7 @@ export function labelFromSlug(slug: string) {
   const lookup = [
     ...KNOWLEDGE_REGIONS,
     ...KNOWLEDGE_CATEGORIES,
-    ...knowledgeRecords.flatMap((record) => [
+    ...getPublishedKnowledgeRecords().flatMap((record) => [
       ...record.countries,
       ...record.community,
       ...record.languages,
