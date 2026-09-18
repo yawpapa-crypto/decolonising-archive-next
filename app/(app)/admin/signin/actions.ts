@@ -11,6 +11,10 @@ const ADMIN_EMAILS = [
   "yaw.ofosu-asare@ared.design",
 ].map((email) => email.toLowerCase());
 
+function siteUrl() {
+  return (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/$/, "");
+}
+
 function isAdminEmail(email: string) {
   return ADMIN_EMAILS.includes(email.trim().toLowerCase());
 }
@@ -61,12 +65,8 @@ export async function adminResetPassword(formData: FormData) {
 
   const supabase = await createClient();
 
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    "http://localhost:3000";
-
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${siteUrl}/auth/reset-password`,
+    redirectTo: `${siteUrl()}/auth/confirm?next=/auth/reset-password`,
   });
 
   if (error) {
