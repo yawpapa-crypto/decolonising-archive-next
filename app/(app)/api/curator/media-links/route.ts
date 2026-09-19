@@ -56,15 +56,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unsupported relation type" }, { status: 400 });
   }
 
-  if (relationType === "cover") {
-    await supabase
-      .from("media_links")
-      .delete()
-      .eq("target_type", targetType)
-      .eq("target_id", targetId)
-      .eq("relation_type", "cover");
-  }
-
   const { data, error } = await supabase
     .from("media_links")
     .insert({
@@ -82,6 +73,23 @@ export async function POST(request: NextRequest) {
       { error: "Could not save media link", details: error.message },
       { status: 500 },
     );
+  }
+
+  if (relationType === "cover") {
+    const { error: cleanupError } = await supabase
+      .from("media_links")
+      .delete()
+      .eq("target_type", targetType)
+      .eq("target_id", targetId)
+      .eq("relation_type", "cover")
+      .neq("id", data.id);
+
+    if (cleanupError) {
+      return NextResponse.json(
+        { error: "Media link saved, but old cover links could not be removed", details: cleanupError.message },
+        { status: 500 },
+      );
+    }
   }
 
   return NextResponse.json({ mediaLink: data });
