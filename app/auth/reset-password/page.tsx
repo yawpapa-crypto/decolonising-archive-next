@@ -66,12 +66,6 @@ export default function ResetPasswordPage() {
       return;
     }
 
-    await fetch("/api/ared-field/sync-password", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    }).catch(() => undefined);
-
     setIsSubmitting(false);
     setMessage("Password updated. Redirecting to admin sign in...");
     setTimeout(() => router.push("/admin/signin"), 1200);
