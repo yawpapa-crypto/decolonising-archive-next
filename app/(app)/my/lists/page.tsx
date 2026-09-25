@@ -23,7 +23,7 @@ import PendingSubmitButton from "@/src/components/ui/PendingSubmitButton";
 export default async function MyListsPage() {
   const { profile, readingLists, readingListItems, recordsById } =
     await getMemberWorkspaceData("/my/lists");
-  const displayReadingLists = visibleReadingLists(readingLists, readingListItems);
+  const displayReadingLists = visibleReadingLists(readingLists);
   const visibleReadingListIds = new Set(displayReadingLists.map((list) => list.id));
   const displayReadingListItems = readingListItems.filter((item) =>
     visibleReadingListIds.has(item.reading_list_id),

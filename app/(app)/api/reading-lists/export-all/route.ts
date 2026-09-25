@@ -15,7 +15,6 @@ import {
 } from '@/lib/citations'
 import {
   visibleReadingLists,
-  type ReadingListItemRow,
   type ReadingListRow,
 } from '@/src/lib/member-workspace'
 
@@ -219,7 +218,6 @@ async function getAllReadingListsData() {
 
   const visibleLists = visibleReadingLists(
     readingLists as unknown as ReadingListRow[],
-    (listItems ?? []) as unknown as Pick<ReadingListItemRow, 'reading_list_id' | 'record_id'>[],
   ) as unknown as ReadingList[]
 
   const bundles = visibleLists.map((list) => ({
