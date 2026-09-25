@@ -47,13 +47,6 @@ export type ReadingListItemRow = {
   added_at: string;
 };
 
-function normaliseReadingListText(value: string | null | undefined) {
-  return String(value ?? "")
-    .trim()
-    .replace(/\s+/g, " ")
-    .toLowerCase();
-}
-
 function isFieldTombstoneText(value: string | null | undefined) {
   return /^\[field-tombstone:/i.test(String(value ?? "").trim());
 }
@@ -64,39 +57,8 @@ export function isTombstoneReadingList(list: Pick<ReadingListRow, "title" | "des
 
 export function visibleReadingLists(
   readingLists: ReadingListRow[],
-  readingListItems: Pick<ReadingListItemRow, "reading_list_id" | "record_id">[] = [],
 ) {
-  const recordIdsByListId = new Map<string, string[]>();
-  for (const item of readingListItems) {
-    const current = recordIdsByListId.get(item.reading_list_id) ?? [];
-    current.push(item.record_id);
-    recordIdsByListId.set(item.reading_list_id, current);
-  }
-
-  const seen = new Set<string>();
-  const visible: ReadingListRow[] = [];
-
-  for (const list of readingLists) {
-    if (isTombstoneReadingList(list)) continue;
-
-    const recordFingerprint = Array.from(new Set(recordIdsByListId.get(list.id) ?? []))
-      .sort()
-      .join("|");
-    const fingerprint = [
-      normaliseReadingListText(list.title),
-      normaliseReadingListText(list.description),
-      normaliseReadingListText(list.group_type),
-      normaliseReadingListText(list.group_label),
-      list.is_public ? "public" : "private",
-      recordFingerprint,
-    ].join("::");
-
-    if (seen.has(fingerprint)) continue;
-    seen.add(fingerprint);
-    visible.push(list);
-  }
-
-  return visible;
+  return readingLists.filter((list) => !isTombstoneReadingList(list));
 }
 
 export function formatWorkspaceDate(value: string) {
