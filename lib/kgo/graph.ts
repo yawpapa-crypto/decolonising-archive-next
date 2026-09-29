@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { buildEntityIndex, entityPath, type EntityKind } from "@/lib/kgo/entities";
 import { getPublicArchiveRecords, recordDescription } from "@/lib/kgo/records";
 import { recordSameAsUrls } from "@/lib/kgo/sameAs";
@@ -18,11 +19,11 @@ export type GraphEdge = {
   relation: string;
 };
 
-export async function buildKnowledgeGraph(): Promise<{
+export const buildKnowledgeGraph = cache(async (): Promise<{
   generatedAt: string;
   nodes: GraphNode[];
   edges: GraphEdge[];
-}> {
+}> => {
   const records = await getPublicArchiveRecords();
   const entities = await buildEntityIndex();
   const nodes: GraphNode[] = [
@@ -92,7 +93,7 @@ export async function buildKnowledgeGraph(): Promise<{
     nodes,
     edges,
   };
-}
+});
 
 function turtleEscape(value: string): string {
   return String(value || "")
@@ -101,7 +102,7 @@ function turtleEscape(value: string): string {
     .replace(/\n/g, "\\n");
 }
 
-export async function buildKnowledgeGraphTurtle(): Promise<string> {
+export const buildKnowledgeGraphTurtle = cache(async (): Promise<string> => {
   const graph = await buildKnowledgeGraph();
   const lines = [
     "@prefix schema: <https://schema.org/> .",
@@ -138,4 +139,4 @@ export async function buildKnowledgeGraphTurtle(): Promise<string> {
 
   lines.push("");
   return lines.join("\n");
-}
+});

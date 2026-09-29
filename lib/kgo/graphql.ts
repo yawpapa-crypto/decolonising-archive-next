@@ -1,16 +1,24 @@
 import {
+  BREAK,
   GraphQLInt,
   GraphQLList,
   GraphQLObjectType,
   GraphQLSchema,
   GraphQLString,
+  GraphQLError,
   graphql,
+  parse,
+  visit,
 } from "graphql";
 import { buildEntityIndex, entityPath, type EntityKind } from "@/lib/kgo/entities";
 import { buildKnowledgeGraph } from "@/lib/kgo/graph";
 import { buildProgrammaticHubs } from "@/lib/kgo/programmatic";
 import { getPublicArchiveRecord, getPublicArchiveRecords, recordDescription } from "@/lib/kgo/records";
 import { absoluteUrl } from "@/lib/kgo/site";
+
+const MAX_QUERY_LENGTH = 12_000;
+const MAX_OPERATION_COUNT = 3;
+const MAX_FIELD_NODES = 250;
 
 const RecordType = new GraphQLObjectType({
   name: "Record",
@@ -164,7 +172,53 @@ function mapRecord(record: Awaited<ReturnType<typeof getPublicArchiveRecord>>) {
 
 export const kgoSchema = new GraphQLSchema({ query: QueryType });
 
+function queryLimitError(message: string) {
+  return {
+    errors: [new GraphQLError(message)],
+  };
+}
+
+function validateQueryBudget(query: string) {
+  if (query.length > MAX_QUERY_LENGTH) {
+    return `GraphQL query is too large; limit is ${MAX_QUERY_LENGTH} characters.`;
+  }
+
+  const document = parse(query);
+  let operationCount = 0;
+  let fieldCount = 0;
+
+  visit(document, {
+    OperationDefinition() {
+      operationCount += 1;
+      if (operationCount > MAX_OPERATION_COUNT) return BREAK;
+      return undefined;
+    },
+    Field() {
+      fieldCount += 1;
+      if (fieldCount > MAX_FIELD_NODES) return BREAK;
+      return undefined;
+    },
+  });
+
+  if (operationCount > MAX_OPERATION_COUNT) {
+    return `GraphQL query has too many operations; limit is ${MAX_OPERATION_COUNT}.`;
+  }
+  if (fieldCount > MAX_FIELD_NODES) {
+    return `GraphQL query is too complex; limit is ${MAX_FIELD_NODES} selected fields.`;
+  }
+
+  return null;
+}
+
 export async function runKgoGraphql(query: string, variables?: Record<string, unknown>) {
+  let limitError: string | null = null;
+  try {
+    limitError = validateQueryBudget(query);
+  } catch {
+    // Let graphql() return the normal syntax error shape for malformed documents.
+  }
+  if (limitError) return queryLimitError(limitError);
+
   return graphql({
     schema: kgoSchema,
     source: query,

@@ -4,6 +4,7 @@ import {
   LANGUAGES,
   REGIONS,
 } from "@/lib/archive-metadata";
+import { cache } from "react";
 import { getPublicArchiveRecords } from "@/lib/kgo/records";
 import { entitySameAsUrls } from "@/lib/kgo/sameAs";
 import { slugifyEntity } from "@/lib/kgo/site";
@@ -54,7 +55,7 @@ function uniqueLabels(values: Array<string | undefined | null>): string[] {
   return out;
 }
 
-export async function buildEntityIndex(): Promise<EntityNode[]> {
+export const buildEntityIndex = cache(async (): Promise<EntityNode[]> => {
   const records = await getPublicArchiveRecords();
   const buckets = new Map<string, EntityNode>();
 
@@ -108,7 +109,7 @@ export async function buildEntityIndex(): Promise<EntityNode[]> {
   });
 
   return Array.from(buckets.values()).sort((a, b) => a.label.localeCompare(b.label));
-}
+});
 
 export async function getEntity(kind: EntityKind, slug: string): Promise<EntityNode | null> {
   const index = await buildEntityIndex();
