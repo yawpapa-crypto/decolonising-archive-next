@@ -101,6 +101,18 @@ function turtleEscape(value: string): string {
     .replace(/\n/g, "\\n");
 }
 
+const TURTLE_IRI_UNSAFE = /[\u0000-\u0020<>"{}|^`\\]/;
+
+function turtleIri(value: string): string | null {
+  try {
+    const url = new URL(String(value || "").trim());
+    if (url.protocol !== "http:" && url.protocol !== "https:") return null;
+    return TURTLE_IRI_UNSAFE.test(url.href) ? null : `<${url.href}>`;
+  } catch {
+    return null;
+  }
+}
+
 export async function buildKnowledgeGraphTurtle(): Promise<string> {
   const graph = await buildKnowledgeGraph();
   const lines = [
@@ -113,13 +125,17 @@ export async function buildKnowledgeGraphTurtle(): Promise<string> {
   ];
 
   graph.nodes.forEach((node) => {
-    const iri = `<${node.url}>`;
+    const iri = turtleIri(node.url);
+    if (!iri) return;
+    const sameAs = (node.sameAs || [])
+      .map((href) => turtleIri(href))
+      .filter((href): href is string => Boolean(href));
     const props = [
       `a schema:${node.type === "CreativeWork" ? "CreativeWork" : "Thing"}`,
       `schema:name "${turtleEscape(node.label)}"`,
       node.description ? `schema:description "${turtleEscape(node.description)}"` : "",
       `dcterms:identifier "${turtleEscape(node.id)}"`,
-      ...(node.sameAs || []).map((href) => `owl:sameAs <${href}>`),
+      ...sameAs.map((href) => `owl:sameAs ${href}`),
     ].filter(Boolean);
     props.forEach((prop, index) => {
       const prefix = index === 0 ? `${iri} ` : "  ";
@@ -133,7 +149,10 @@ export async function buildKnowledgeGraphTurtle(): Promise<string> {
     const from = graph.nodes.find((node) => node.id === edge.from);
     const to = graph.nodes.find((node) => node.id === edge.to);
     if (!from || !to) return;
-    lines.push(`<${from.url}> ared:${edge.relation} <${to.url}> .`);
+    const fromIri = turtleIri(from.url);
+    const toIri = turtleIri(to.url);
+    if (!fromIri || !toIri) return;
+    lines.push(`${fromIri} ared:${edge.relation} ${toIri} .`);
   });
 
   lines.push("");

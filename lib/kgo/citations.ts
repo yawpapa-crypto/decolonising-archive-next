@@ -124,6 +124,7 @@ export function toEndNote(record: ArchiveRecord): string {
 /** Zotero RDF (simplified Bibliographic RDF importable by Zotero) */
 export function toZoteroRdf(record: ArchiveRecord): string {
   const { recordUrl, year, creator, title } = citationContext(record);
+  const escapedRecordUrl = escapeXml(recordUrl);
   const itemId = `ared-${record.id}`.replace(/[^a-zA-Z0-9_-]/g, "-");
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rdf:RDF
@@ -133,7 +134,7 @@ export function toZoteroRdf(record: ArchiveRecord): string {
  xmlns:bib="http://purl.org/net/biblio#"
  xmlns:foaf="http://xmlns.com/foaf/0.1/"
  xmlns:z="http://www.zotero.org/namespaces/export#">
-  <bib:Document rdf:about="${recordUrl}">
+  <bib:Document rdf:about="${escapedRecordUrl}">
     <z:itemType>document</z:itemType>
     <dc:title>${escapeXml(title)}</dc:title>
     <bib:authors>
@@ -150,7 +151,7 @@ export function toZoteroRdf(record: ArchiveRecord): string {
     <dc:identifier>ARED:${escapeXml(record.id)}</dc:identifier>
     ${record.doi ? `<dcterms:identifier>DOI:${escapeXml(record.doi)}</dcterms:identifier>` : ""}
     <dc:description>${escapeXml(record.summary || record.description || "")}</dc:description>
-    <dc:identifier rdf:resource="${recordUrl}"/>
+    <dc:identifier rdf:resource="${escapedRecordUrl}"/>
     <z:key>${itemId}</z:key>
   </bib:Document>
 </rdf:RDF>
