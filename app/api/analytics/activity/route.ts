@@ -79,6 +79,7 @@ export async function POST(request: NextRequest) {
       code: payload.errorCode || payload.status,
       metadata: payload.metadata,
       sessionId: payload.sessionId,
+      notifyAdmins: false,
     });
   }
 
