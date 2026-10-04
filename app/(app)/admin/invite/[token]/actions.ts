@@ -48,6 +48,28 @@ export async function acceptAdminInvite(formData: FormData) {
     fail(token, "This invite is locked to a different email address.");
   }
 
+  const reservedAt = new Date().toISOString();
+  const { data: reservedInvite, error: reserveError } = await admin
+    .from("admin_invites")
+    .update({ used_at: reservedAt })
+    .eq("id", invite.id)
+    .is("used_at", null)
+    .is("revoked_at", null)
+    .select("id")
+    .maybeSingle();
+
+  if (reserveError || !reservedInvite) {
+    fail(token, reserveError?.message || "This admin invite has already been used.");
+  }
+
+  const releaseReservation = async () => {
+    await admin
+      .from("admin_invites")
+      .update({ used_at: null, used_by: null })
+      .eq("id", invite.id)
+      .is("used_by", null);
+  };
+
   const { data: created, error: createError } = await admin.auth.admin.createUser({
     email,
     password,
@@ -56,6 +78,7 @@ export async function acceptAdminInvite(formData: FormData) {
   });
 
   if (createError || !created.user) {
+    await releaseReservation();
     fail(token, createError?.message || "Something went wrong. Please try again.");
   }
 
@@ -67,6 +90,11 @@ export async function acceptAdminInvite(formData: FormData) {
   });
 
   if (profileError) {
+    const { error: deleteError } = await admin.auth.admin.deleteUser(created.user.id);
+    if (deleteError) {
+      console.error("[admin-invite] failed to delete user after profile sync failure", deleteError.message);
+    }
+    await releaseReservation();
     fail(token, profileError.message);
   }
 
@@ -74,13 +102,12 @@ export async function acceptAdminInvite(formData: FormData) {
     .from("admin_invites")
     .update({
       used_by: created.user.id,
-      used_at: new Date().toISOString(),
+      used_at: reservedAt,
     })
-    .eq("id", invite.id)
-    .is("used_at", null);
+    .eq("id", invite.id);
 
   if (usedError) {
-    fail(token, usedError.message);
+    console.error("[admin-invite] failed to attach accepted user to invite", usedError.message);
   }
 
   redirect(

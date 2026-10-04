@@ -41,6 +41,7 @@ export type ErrorEventInput = {
   code?: string | null;
   metadata?: JsonRecord | null;
   sessionId?: string | null;
+  notifyAdmins?: boolean;
 };
 
 export type AnalyticsResult<T = null> =
@@ -301,16 +302,18 @@ export async function logErrorEvent(input: ErrorEventInput): Promise<AnalyticsRe
       metadata: sanitizeAnalyticsMetadata(input.metadata),
     });
 
-    // Notify admins of errors — schema errors are urgent
-    const isSchema = input.code === "schema_error" || message.toLowerCase().includes("schema");
-    void createAdminNotification({
-      type: isSchema ? "schema_error" : "app_error_logged",
-      title: isSchema ? "Schema or database error detected" : "Application error logged",
-      body: `[${input.area ?? "app"}] ${message.slice(0, 200)}`,
-      severity: isSchema ? "urgent" : "warning",
-      targetType: "error_log",
-      metadata: { area: input.area ?? null, code: input.code ?? null },
-    });
+    if (input.notifyAdmins !== false) {
+      // Notify admins of trusted server-side errors — schema errors are urgent.
+      const isSchema = input.code === "schema_error" || message.toLowerCase().includes("schema");
+      void createAdminNotification({
+        type: isSchema ? "schema_error" : "app_error_logged",
+        title: isSchema ? "Schema or database error detected" : "Application error logged",
+        body: `[${input.area ?? "app"}] ${message.slice(0, 200)}`,
+        severity: isSchema ? "urgent" : "warning",
+        targetType: "error_log",
+        metadata: { area: input.area ?? null, code: input.code ?? null },
+      });
+    }
 
     return { ok: true, data: null };
   } catch (error) {
