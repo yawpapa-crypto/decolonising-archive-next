@@ -14,6 +14,7 @@ import {
   safeExportFilename,
   type CitationRecord,
 } from '@/lib/citations'
+import { createAdminClient } from '@/src/lib/supabase/admin'
 
 export const runtime = 'nodejs'
 
@@ -176,8 +177,9 @@ async function getReadingListData(listId: string) {
 
   const recordIds = listRecords?.map((item) => item.record_id).filter(Boolean) ?? []
 
+  const recordsClient = createAdminClient()
   const { data: recordsData } = recordIds.length
-    ? await supabase.from('records').select('*').in('id', recordIds)
+    ? await recordsClient.from('records').select('*').in('id', recordIds)
     : { data: [] }
 
   const recordsById = new Map(

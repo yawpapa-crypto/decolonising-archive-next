@@ -18,6 +18,7 @@ import {
   type ReadingListItemRow,
   type ReadingListRow,
 } from '@/src/lib/member-workspace'
+import { createAdminClient } from '@/src/lib/supabase/admin'
 
 export const runtime = 'nodejs'
 
@@ -193,8 +194,9 @@ async function getAllReadingListsData() {
 
   const uniqueRecordIds = [...new Set(recordIds.map(String))]
 
+  const recordsClient = createAdminClient()
   const { data: recordsData } = uniqueRecordIds.length
-    ? await supabase.from('records').select('*').in('id', uniqueRecordIds)
+    ? await recordsClient.from('records').select('*').in('id', uniqueRecordIds)
     : { data: [] }
 
   const recordsById = new Map(
