@@ -15,12 +15,17 @@ type ReadingListItemRow = {
   id: string;
   record_id: string;
   record_title: string | null;
+  record_author: string | null;
   record_source: string | null;
   record_source_url: string | null;
   record_type: string | null;
+  record_year: string | null;
   record_metadata: Record<string, unknown> | null;
   added_at: string;
 };
+
+const PUBLIC_READING_LIST_ITEM_COLUMNS =
+  "id, record_id, record_title, record_author, record_source, record_source_url, record_type, record_year, record_metadata, added_at";
 
 export default async function CommunityReadingListPage({ params }: PageProps) {
   const { id } = await params;
@@ -56,12 +61,8 @@ export default async function CommunityReadingListPage({ params }: PageProps) {
   }
 
   const itemsResult = await supabase
-    .from("reading_list_items")
-    .select(
-      "id, record_id, record_title, record_source, record_source_url, record_type, record_metadata, added_at",
-    )
-    .eq("reading_list_id", id)
-    .order("added_at", { ascending: false });
+    .rpc("public_reading_list_items", { p_reading_list_id: id })
+    .select(PUBLIC_READING_LIST_ITEM_COLUMNS);
   const recordsById = new Map((await readRecords()).map((record) => [record.id, record]));
   const items = (itemsResult.data ?? []) as ReadingListItemRow[];
 
