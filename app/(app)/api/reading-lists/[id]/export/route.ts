@@ -23,6 +23,46 @@ type RouteContext = {
   }>
 }
 
+type ReadingListItemExportRow = Record<string, unknown> & {
+  record_id?: string | null
+}
+
+type ReadingListItemsResult = {
+  data: ReadingListItemExportRow[] | null
+  error: { message: string } | null
+}
+
+const OWNER_READING_LIST_ITEM_COLUMNS = [
+  'id',
+  'reading_list_id',
+  'record_id',
+  'position',
+  'record_title',
+  'record_author',
+  'record_source',
+  'record_source_url',
+  'record_type',
+  'record_year',
+  'record_metadata',
+  'note',
+  'added_at',
+].join(', ')
+
+const PUBLIC_READING_LIST_ITEM_COLUMNS = [
+  'id',
+  'reading_list_id',
+  'record_id',
+  'position',
+  'record_title',
+  'record_author',
+  'record_source',
+  'record_source_url',
+  'record_type',
+  'record_year',
+  'record_metadata',
+  'added_at',
+].join(', ')
+
 async function pdfToBuffer(doc: PDFKit.PDFDocument) {
   return new Promise<Buffer>((resolve, reject) => {
     const chunks: Buffer[] = []
@@ -156,11 +196,24 @@ async function getReadingListData(listId: string) {
     }
   }
 
-  const { data: listRecords, error: recordsError } = await supabase
-    .from('reading_list_items')
-    .select('*')
-    .eq('reading_list_id', listId)
-    .order('position', { ascending: true })
+  let listRecords: ReadingListItemExportRow[] | null = null
+  let recordsError: { message: string } | null = null
+
+  if (isOwner) {
+    const result = await supabase
+      .from('reading_list_items')
+      .select(OWNER_READING_LIST_ITEM_COLUMNS)
+      .eq('reading_list_id', listId)
+      .order('position', { ascending: true }) as ReadingListItemsResult
+    listRecords = result.data
+    recordsError = result.error
+  } else {
+    const result = await supabase
+      .rpc('public_reading_list_items', { p_reading_list_id: listId })
+      .select(PUBLIC_READING_LIST_ITEM_COLUMNS) as unknown as ReadingListItemsResult
+    listRecords = result.data
+    recordsError = result.error
+  }
 
   if (recordsError) {
     return {
@@ -195,7 +248,16 @@ async function getReadingListData(listId: string) {
 
   return {
     user,
-    list,
+    list: isOwner
+      ? list
+      : {
+          id: list.id,
+          title: list.title,
+          description: list.description,
+          is_public: list.is_public,
+          created_at: list.created_at,
+          updated_at: list.updated_at,
+        },
     records,
   }
 }
