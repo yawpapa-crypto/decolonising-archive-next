@@ -142,6 +142,19 @@ export default function HomeMotion() {
             });
           });
 
+          // The invitation's images travel with the scroll, each at its own depth and direction.
+          gsap.utils.toArray<HTMLElement>(".ared-cta__image").forEach((el, i) => {
+            const depth = (0.45 + (i % 4) * 0.3) * amp;
+            const dir = i % 2 ? 1 : -1;
+            gsap.fromTo(el, { y: 90 * depth, x: dir * 14 * depth, rotation: -dir * 3 }, {
+              y: -90 * depth,
+              x: -dir * 14 * depth,
+              rotation: dir * 3,
+              ease: "none",
+              scrollTrigger: { trigger: ".ared-band--cta", start: "top bottom", end: "bottom top", ...scrub },
+            });
+          });
+
           // Pointer depth: the near objects lean a little against the cursor.
           let off = () => {};
           if (wide) {
@@ -153,7 +166,7 @@ export default function HomeMotion() {
               depth: 0.5 + (i % 4) * 0.25,
             }));
             const invitationMove = (e: PointerEvent) => {
-              if (e.pointerType !== "mouse" || !invitation || invitation.dataset.paused === "true") return;
+              if (e.pointerType !== "mouse" || !invitation) return;
               const box = invitation.getBoundingClientRect();
               const x = (e.clientX - box.left) / box.width - 0.5;
               const y = (e.clientY - box.top) / box.height - 0.5;

@@ -18,7 +18,6 @@ export default function HomeFooter() {
         <nav aria-label="Archive">
           <Link href="/explore">Explore</Link>
           <Link href="/for-you">For You</Link>
-          <Link href="/explore">Explore</Link>
           <Link href="/about">About</Link>
         </nav>
         <Link href="/" aria-label="Decolonising Archive home" className="ared-endrow__logo">

@@ -1,5 +1,4 @@
 import FilmPreview from "./FilmPreview";
-import InvitationMotion from "./InvitationMotion";
 import type { Metadata } from "next";
 import Link from "next/link";
 import DonateDialog from "./DonateDialog";
@@ -181,7 +180,6 @@ export default async function HomeNextPage() {
               </div>
               <AppDownload label="On Android? Join the testers" className="ared-cta__android" />
             </div>
-            <InvitationMotion />
           </section>
         </main>
       </ScopeProvider>
