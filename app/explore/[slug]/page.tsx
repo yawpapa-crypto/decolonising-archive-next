@@ -6,6 +6,7 @@ import JsonLd from "@/src/components/kgo/JsonLd";
 import {
   buildProgrammaticHubs,
   getProgrammaticHub,
+  getRelatedProgrammaticHubs,
   recordsForHub,
 } from "@/lib/kgo/programmatic";
 import { getPublicArchiveRecords, recordDescription } from "@/lib/kgo/records";
@@ -53,16 +54,7 @@ export default async function ExploreHubPage({ params }: Props) {
 
   const all = await getPublicArchiveRecords();
   const records = recordsForHub(hub, all);
-  const relatedHubs = (await buildProgrammaticHubs())
-    .filter((item) => item.slug !== hub.slug)
-    .filter((item) => {
-      const shared =
-        (hub.filters.country || []).some((value) => item.filters.country?.includes(value)) ||
-        (hub.filters.region || []).some((value) => item.filters.region?.includes(value)) ||
-        (hub.filters.knowledge || []).some((value) => item.filters.knowledge?.includes(value));
-      return shared;
-    })
-    .slice(0, 12);
+  const relatedHubs = await getRelatedProgrammaticHubs(hub);
 
   return (
     <PageShell>

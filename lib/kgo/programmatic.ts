@@ -28,6 +28,12 @@ export type ProgrammaticHub = {
   recordIds: string[];
 };
 
+export type ProgrammaticHubSummary = Omit<ProgrammaticHub, "recordIds">;
+
+type ProgrammaticHubDefinition = ProgrammaticHubSummary & {
+  matchRecord?: (record: ArchiveRecord) => boolean;
+};
+
 /** Seed countries for programmatic SEO even before catalogue coverage is dense. */
 export const PROGRAMMATIC_COUNTRIES = [
   "Ghana",
@@ -146,22 +152,48 @@ function uniquePlaces(records: ArchiveRecord[], key: "country" | "region"): stri
   return out.sort((a, b) => a.localeCompare(b));
 }
 
-function addHub(
-  map: Map<string, ProgrammaticHub>,
-  hub: Omit<ProgrammaticHub, "recordIds">,
-  records: ArchiveRecord[],
-) {
+function addHub(map: Map<string, ProgrammaticHubDefinition>, hub: ProgrammaticHubDefinition) {
   if (map.has(hub.slug)) return;
-  const matched = records.filter((record) => recordMatches(record, hub.filters));
-  map.set(hub.slug, {
-    ...hub,
+  map.set(hub.slug, hub);
+}
+
+function hubMatches(definition: ProgrammaticHubDefinition, record: ArchiveRecord): boolean {
+  return definition.matchRecord ? definition.matchRecord(record) : recordMatches(record, definition.filters);
+}
+
+function materializeHub(definition: ProgrammaticHubDefinition, records: ArchiveRecord[]): ProgrammaticHub {
+  const matched = records.filter((record) => hubMatches(definition, record));
+  return {
+    slug: definition.slug,
+    title: definition.title,
+    description: definition.description,
+    filters: definition.filters,
     recordIds: matched.map((record) => record.id),
+  };
+}
+
+function toHubSummary(definition: ProgrammaticHubDefinition): ProgrammaticHubSummary {
+  return {
+    slug: definition.slug,
+    title: definition.title,
+    description: definition.description,
+    filters: definition.filters,
+  };
+}
+
+let programmaticHubDefinitionsPromise: Promise<ProgrammaticHubDefinition[]> | null = null;
+let programmaticHubsPromise: Promise<ProgrammaticHub[]> | null = null;
+
+function rememberPromise<T>(promise: Promise<T>, reset: () => void): Promise<T> {
+  return promise.catch((error) => {
+    reset();
+    throw error;
   });
 }
 
-export const buildProgrammaticHubs = cache(async (): Promise<ProgrammaticHub[]> => {
+async function buildProgrammaticHubDefinitionsUncached(): Promise<ProgrammaticHubDefinition[]> {
   const records = await getPublicArchiveRecords();
-  const hubs = new Map<string, ProgrammaticHub>();
+  const hubs = new Map<string, ProgrammaticHubDefinition>();
   const countries = Array.from(
     new Set([...PROGRAMMATIC_COUNTRIES, ...uniquePlaces(records, "country")]),
   ).sort((a, b) => a.localeCompare(b));
@@ -178,7 +210,6 @@ export const buildProgrammaticHubs = cache(async (): Promise<ProgrammaticHub[]> 
         description: `Index of ARED knowledge objects, communities and cultural materials associated with ${country}.`,
         filters: { country: [country] },
       },
-      records,
     );
     addHub(
       hubs,
@@ -188,7 +219,6 @@ export const buildProgrammaticHubs = cache(async (): Promise<ProgrammaticHub[]> 
         description: `Holding institutions, archives and museum-linked records associated with ${country}.`,
         filters: { country: [country], tags: ["museum", "archive", "library", "gallery"] },
       },
-      records,
     );
     addHub(
       hubs,
@@ -198,7 +228,6 @@ export const buildProgrammaticHubs = cache(async (): Promise<ProgrammaticHub[]> 
         description: `Heritage and culturally significant records linked to ${country}.`,
         filters: { country: [country], tags: ["unesco", "heritage", "world heritage", "intangible"] },
       },
-      records,
     );
     addHub(
       hubs,
@@ -208,7 +237,6 @@ export const buildProgrammaticHubs = cache(async (): Promise<ProgrammaticHub[]> 
         description: `Oral history and performance records associated with ${country}.`,
         filters: { country: [country], recordType: ["Oral History", "Performance / Sonic Record"] },
       },
-      records,
     );
     addHub(
       hubs,
@@ -218,7 +246,6 @@ export const buildProgrammaticHubs = cache(async (): Promise<ProgrammaticHub[]> 
         description: `Language-linked records and multilingual materials associated with ${country}.`,
         filters: { country: [country] },
       },
-      records,
     );
   });
 
@@ -231,7 +258,6 @@ export const buildProgrammaticHubs = cache(async (): Promise<ProgrammaticHub[]> 
         description: `ARED records documenting knowledge systems across ${region}.`,
         filters: { region: [region] },
       },
-      records,
     );
     addHub(
       hubs,
@@ -241,7 +267,6 @@ export const buildProgrammaticHubs = cache(async (): Promise<ProgrammaticHub[]> 
         description: `Language-linked records associated with ${region}.`,
         filters: { region: [region] },
       },
-      records,
     );
     addHub(
       hubs,
@@ -251,7 +276,6 @@ export const buildProgrammaticHubs = cache(async (): Promise<ProgrammaticHub[]> 
         description: `Oral history and tradition records connected to ${region}.`,
         filters: { region: [region], recordType: ["Oral History", "Performance / Sonic Record"] },
       },
-      records,
     );
   });
 
@@ -265,7 +289,6 @@ export const buildProgrammaticHubs = cache(async (): Promise<ProgrammaticHub[]> 
           description: `Records and entities classified under ${area} and situated in ${region}.`,
           filters: { knowledge: [area], region: [region] },
         },
-        records,
       );
     });
     countries.forEach((country) => {
@@ -277,7 +300,6 @@ export const buildProgrammaticHubs = cache(async (): Promise<ProgrammaticHub[]> 
           description: `Records and entities classified under ${area} and associated with ${country}.`,
           filters: { knowledge: [area], country: [country] },
         },
-        records,
       );
     });
     communities.forEach((community) => {
@@ -289,7 +311,6 @@ export const buildProgrammaticHubs = cache(async (): Promise<ProgrammaticHub[]> 
           description: `Intersections between ${area} and ${community} knowledge holding.`,
           filters: { knowledge: [area], community: [community] },
         },
-        records,
       );
     });
   });
@@ -304,7 +325,6 @@ export const buildProgrammaticHubs = cache(async (): Promise<ProgrammaticHub[]> 
           description: `Community-linked records connecting ${community} and ${country}.`,
           filters: { community: [community], country: [country] },
         },
-        records,
       );
     });
     regions.forEach((region) => {
@@ -316,7 +336,6 @@ export const buildProgrammaticHubs = cache(async (): Promise<ProgrammaticHub[]> 
           description: `Community-linked records connecting ${community} and ${region}.`,
           filters: { community: [community], region: [region] },
         },
-        records,
       );
     });
   });
@@ -331,7 +350,6 @@ export const buildProgrammaticHubs = cache(async (): Promise<ProgrammaticHub[]> 
           description: `Language-linked materials for ${language} across ${region}.`,
           filters: { language: [language], region: [region] },
         },
-        records,
       );
     });
     countries.forEach((country) => {
@@ -343,7 +361,6 @@ export const buildProgrammaticHubs = cache(async (): Promise<ProgrammaticHub[]> 
           description: `Language-linked materials for ${language} associated with ${country}.`,
           filters: { language: [language], country: [country] },
         },
-        records,
       );
     });
   });
@@ -358,7 +375,6 @@ export const buildProgrammaticHubs = cache(async (): Promise<ProgrammaticHub[]> 
           description: `${recordType} records situated in ${region}.`,
           filters: { recordType: [recordType], region: [region] },
         },
-        records,
       );
     });
     countries.slice(0, 40).forEach((country) => {
@@ -370,28 +386,26 @@ export const buildProgrammaticHubs = cache(async (): Promise<ProgrammaticHub[]> 
           description: `${recordType} records associated with ${country}.`,
           filters: { recordType: [recordType], country: [country] },
         },
-        records,
       );
     });
   });
 
   THEME_BRIDGES.forEach((theme) => {
-    const matched = records.filter((record) => {
-      const bag = [
-        ...(record.knowledgeAreas || []),
-        ...(record.tags || []),
-        ...(record.keywords || []),
-        record.title || "",
-        record.summary || "",
-      ];
-      return includesAny(bag, theme.matchers);
-    });
-    hubs.set(`knowledge-systems-connected-to-${slugifyEntity(theme.label)}`, {
+    addHub(hubs, {
       slug: `knowledge-systems-connected-to-${slugifyEntity(theme.label)}`,
       title: `Knowledge Systems connected to ${theme.label}`,
       description: `Cross-linked ARED records where knowledge systems intersect with ${theme.label.toLowerCase()}.`,
       filters: { tags: theme.matchers },
-      recordIds: matched.map((record) => record.id),
+      matchRecord: (record) => {
+        const bag = [
+          ...(record.knowledgeAreas || []),
+          ...(record.tags || []),
+          ...(record.keywords || []),
+          record.title || "",
+          record.summary || "",
+        ];
+        return includesAny(bag, theme.matchers);
+      },
     });
 
     regions.forEach((region) => {
@@ -403,7 +417,6 @@ export const buildProgrammaticHubs = cache(async (): Promise<ProgrammaticHub[]> 
           description: `Intersections of ${theme.label.toLowerCase()} and knowledge systems across ${region}.`,
           filters: { region: [region], tags: theme.matchers },
         },
-        records,
       );
     });
   });
@@ -417,7 +430,6 @@ export const buildProgrammaticHubs = cache(async (): Promise<ProgrammaticHub[]> 
         "Records and sources that emphasise community stewardship, local knowledge holding and culturally governed access.",
       filters: { knowledge: ["Indigenous Knowledge Systems"] },
     },
-    records,
   );
   addHub(
     hubs,
@@ -427,15 +439,62 @@ export const buildProgrammaticHubs = cache(async (): Promise<ProgrammaticHub[]> 
       description: "Textile knowledge, cloth systems and related archival materials across Africa and the diaspora.",
       filters: { knowledge: ["Textile Knowledge", "Material Culture"] },
     },
-    records,
   );
 
   return Array.from(hubs.values()).sort((a, b) => a.title.localeCompare(b.title));
+}
+
+const getProgrammaticHubDefinitions = cache(async (): Promise<ProgrammaticHubDefinition[]> => {
+  if (!programmaticHubDefinitionsPromise) {
+    programmaticHubDefinitionsPromise = rememberPromise(buildProgrammaticHubDefinitionsUncached(), () => {
+      programmaticHubDefinitionsPromise = null;
+    });
+  }
+  return programmaticHubDefinitionsPromise;
 });
 
-export async function getProgrammaticHub(slug: string): Promise<ProgrammaticHub | null> {
-  const hubs = await buildProgrammaticHubs();
-  return hubs.find((hub) => hub.slug === slug) || null;
+const getProgrammaticHubDefinitionIndex = cache(async (): Promise<Map<string, ProgrammaticHubDefinition>> => {
+  const definitions = await getProgrammaticHubDefinitions();
+  return new Map(definitions.map((definition) => [definition.slug, definition]));
+});
+
+async function buildProgrammaticHubsUncached(): Promise<ProgrammaticHub[]> {
+  const [definitions, records] = await Promise.all([getProgrammaticHubDefinitions(), getPublicArchiveRecords()]);
+  return definitions.map((definition) => materializeHub(definition, records));
+}
+
+export const buildProgrammaticHubs = cache(async (): Promise<ProgrammaticHub[]> => {
+  if (!programmaticHubsPromise) {
+    programmaticHubsPromise = rememberPromise(buildProgrammaticHubsUncached(), () => {
+      programmaticHubsPromise = null;
+    });
+  }
+  return programmaticHubsPromise;
+});
+
+export const getProgrammaticHub = cache(async (slug: string): Promise<ProgrammaticHub | null> => {
+  const definition = (await getProgrammaticHubDefinitionIndex()).get(slug);
+  if (!definition) return null;
+  const records = await getPublicArchiveRecords();
+  return materializeHub(definition, records);
+});
+
+export async function getRelatedProgrammaticHubs(
+  hub: ProgrammaticHubSummary,
+  limit = 12,
+): Promise<ProgrammaticHubSummary[]> {
+  const definitions = await getProgrammaticHubDefinitions();
+  return definitions
+    .filter((item) => item.slug !== hub.slug)
+    .filter((item) => {
+      const shared =
+        (hub.filters.country || []).some((value) => item.filters.country?.includes(value)) ||
+        (hub.filters.region || []).some((value) => item.filters.region?.includes(value)) ||
+        (hub.filters.knowledge || []).some((value) => item.filters.knowledge?.includes(value));
+      return shared;
+    })
+    .slice(0, limit)
+    .map(toHubSummary);
 }
 
 export function recordsForHub(hub: ProgrammaticHub, records: ArchiveRecord[]): ArchiveRecord[] {
