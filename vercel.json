@@ -1,6 +1,20 @@
 {
   "crons": [
-    { "path": "/api/admin/reports/daily",  "schedule": "0 9 * * *" },
-    { "path": "/api/admin/reports/weekly", "schedule": "0 9 * * 1" }
+    {
+      "path": "/api/admin/reports/daily",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/admin/reports/weekly",
+      "schedule": "0 9 * * 1"
+    },
+    {
+      "path": "/api/visual/resolve",
+      "schedule": "30 3 * * *"
+    },
+    {
+      "path": "/api/admin/featured",
+      "schedule": "5 0 * * *"
+    }
   ]
 }

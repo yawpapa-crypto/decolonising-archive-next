@@ -45,3 +45,12 @@ public/assets/js/app.js.backup
 .env.local
 *.bak
 .DS_Store
+
+# local working files (film renders, audits, backups)
+/tmp/
+
+# Local working material — not part of the site (also in .vercelignore)
+/artifacts
+/docs/film
+/archive
+/tmp

@@ -1,0 +1,31 @@
+# Runs the layout and contrast check against every successful Vercel deployment (preview or production).
+# If Vercel Deployment Protection is on, add the repository secret VERCEL_AUTOMATION_BYPASS_SECRET.
+name: Layout audit
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      base:
+        description: "Site URL to check"
+        required: true
+jobs:
+  audit:
+    if: github.event_name == 'workflow_dispatch' || github.event.deployment_status.state == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install --no-save --ignore-scripts playwright-core@1.48.2
+      - name: Check layout and contrast
+        env:
+          BASE: ${{ github.event.inputs.base || github.event.deployment_status.environment_url || github.event.deployment_status.target_url }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: node scripts/audit/layout-check.mjs
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: layout-check
+          path: tmp/audit/layout-check.json

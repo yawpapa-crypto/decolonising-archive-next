@@ -7,7 +7,7 @@ export const SEARCH_MAX_OFFSET = 5000;
 /** Same-origin path only — blocks open redirects. */
 export function safeNextPath(value: string | null | undefined, fallback = "/workspace"): string {
   const v = String(value ?? "").trim();
-  if (v.startsWith("/") && !v.startsWith("//")) return v;
+  if (v.startsWith("/") && !v.startsWith("//") && !/[\\\u0000-\u0020\u007f]/.test(v)) return v;
   return fallback;
 }
 

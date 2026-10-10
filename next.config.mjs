@@ -34,6 +34,7 @@ const securityHeaders = [
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  devIndicators: false,
   turbopack: {
     root: __dirname,
   },
@@ -44,6 +45,16 @@ const nextConfig = {
     "/api/catalogue/record-image": ["./data/catalogue/**/*"],
     "/api/catalogue/stats": ["./data/catalogue/**/*"],
     "/collections/ghana-graphic-design/[id]": ["./data/catalogue/**/*"],
+    "/api/visual/resolve": ["./data/catalogue/cache/**/*"],
+    "/api/v1/heritage": ["./data/unesco/world-heritage.json"],
+    // Featured reads the catalogue at runtime (daily selection + Discover more + admin health).
+    "/api/discovery/[action]": ["./data/catalogue/catalogue-records.json", "./data/catalogue/catalogue-taxonomy.json"],
+    "/api/admin/featured": ["./data/catalogue/catalogue-records.json"],
+  },
+  // Runtime fs reads with dynamic paths (lib/visual/resolve-server.ts) make the tracer include the
+  // whole project; never ship build output, scratch or documentation folders with functions.
+  outputFileTracingExcludes: {
+    "*": [".next/lock", ".next/cache/**", ".next/trace", ".next/trace-build", "tmp/**", "artifacts/**", "docs/**", "archive/**", "lab/**", "infra/**"],
   },
   webpack: (config, { isServer }) => {
     if (isServer) {
@@ -54,6 +65,24 @@ const nextConfig = {
       };
     }
     return config;
+  },
+  async redirects() {
+    return [
+      { source: "/home", destination: "/", permanent: true },
+      // ared.design opens on the current public home. Temporary (307) so it can change without cached redirects.
+      { source: "/", destination: "/home-next", permanent: false },
+      { source: "/discover", destination: "/home-next/for-you", permanent: false },
+      { source: "/for-you", destination: "/home-next/for-you", permanent: false },
+      // The old collection pages are retired. Everything public now lives under /home-next.
+      { source: "/collections", destination: "/home-next/following", permanent: false },
+      { source: "/collections/:slug", destination: "/home-next/c/:slug", permanent: false },
+      { source: "/curated-collections/:id", destination: "/home-next/c/:id", permanent: false },
+      // Retired pages.
+      { source: "/knowledge-graph", destination: "/home-next/explore", permanent: false },
+      { source: "/knowledge-graph/:path*", destination: "/home-next/explore", permanent: false },
+      { source: "/source/r-s-rattray-ashanti-1923-via-internet-archive", destination: "/home-next/explore", permanent: false },
+      { source: "/home-next/community", destination: "https://www.instagram.com/afr_rd_/", permanent: false },
+    ];
   },
   async headers() {
     return [

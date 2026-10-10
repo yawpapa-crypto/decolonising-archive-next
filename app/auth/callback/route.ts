@@ -11,12 +11,12 @@ import { updateLastLogin, notifyAdminOnNewUser } from "@/src/lib/auth-hooks";
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
-  const next = safeNextPath(url.searchParams.get("next"));
+  const next = safeNextPath(url.searchParams.get("next"), "/home-next/for-you");
 
   if (!code) {
     return NextResponse.redirect(
       new URL(
-        `/signin?error=${encodeURIComponent("Missing OAuth code.")}`,
+        `/signin?next=${encodeURIComponent(next)}&error=${encodeURIComponent("Sign-in was cancelled or the link is incomplete. Try again.")}`,
         request.url
       )
     );
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
   if (error) {
     return NextResponse.redirect(
       new URL(
-        `/signin?error=${encodeURIComponent(error.message)}`,
+        `/signin?next=${encodeURIComponent(next)}&error=${encodeURIComponent("This sign-in link has expired. Please try signing in again.")}`,
         request.url
       )
     );

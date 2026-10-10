@@ -1,0 +1,8 @@
+/archive
+/tmp
+/docs/film
+scripts/film/*.log
+/artifacts
+/.next
+node_modules
+.env*.local

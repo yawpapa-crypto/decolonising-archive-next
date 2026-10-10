@@ -1,0 +1,42 @@
+/* Explore feed: same canvas, the images are the interface. Scoped under .ared-home. */
+.ared-explore { max-width: 1280px; margin: 0 auto; padding: 88px 24px 96px; }
+.ared-feedtabs { display: flex; justify-content: center; gap: 4px; margin-bottom: 48px; }
+.ared-feedtabs a { padding: 8px 16px; border-radius: 9999px; font-size: 0.875rem; font-weight: var(--font-weight-medium); color: var(--color-stone); }
+.ared-feedtabs a:hover { color: var(--color-ink-black); }
+.ared-feedtabs a[aria-current="page"] { background: var(--color-ink-black); color: var(--color-linen-canvas); }
+.ared-explore .ared-explore__h { font-size: clamp(22px, 2.4vw, 33px); font-weight: var(--font-weight-w350); letter-spacing: -0.04em; line-height: 1.1; margin: 72px 0 24px; }
+.ared-rail { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 4px; }
+.ared-rail li { flex: 0 0 clamp(160px, 18vw, 240px); aspect-ratio: 4 / 5; scroll-snap-align: start; border-radius: 16px; overflow: hidden; background: #e9e5e1; }
+.ared-rail a { display: block; width: 100%; height: 100%; }
+.ared-rail img, .ared-masonry img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ared-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.ared-chips a { display: block; padding: 9px 16px; border-radius: 9999px; background: var(--color-paper-white); border: 1px solid var(--line); font-size: 0.875rem; color: var(--color-ink-black); }
+.ared-masonry { columns: 4 220px; column-gap: 12px; }
+.ared-masonry li { break-inside: avoid; margin-bottom: 12px; border-radius: 16px; overflow: hidden; background: #e9e5e1; }
+.ared-masonry a { display: block; position: relative; }
+.ared-masonry img { height: auto; min-height: 120px; }
+.ared-masonry span { position: absolute; left: 0; right: 0; bottom: 0; padding: 28px 12px 10px; font-size: 0.8125rem; color: #fff; background: rgba(13,13,13,.45); opacity: 0; transition: opacity .25s; }
+.ared-masonry a:hover span, .ared-masonry a:focus-visible span { opacity: 1; }
+
+/* Sign-up gate */
+.ared-home .sg{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;min-height:0;padding:20px;background:rgba(247,245,243,.55);backdrop-filter:blur(4px) saturate(.95);-webkit-backdrop-filter:blur(4px) saturate(.95);animation:sgin .2s ease both}
+.ared-home .sg .sg-card{width:min(440px,100%);box-sizing:border-box;background:#fff;border:1px solid #e5e1dc;border-radius:16px;padding:40px 36px 32px;text-align:center;color:#0d0d0d;animation:sgup .25s cubic-bezier(.2,.8,.2,1) both}
+.ared-home .sg .sg-k{margin:0 0 14px;font:500 0.75rem/1 var(--font-ared-ui,Inter,sans-serif);letter-spacing:.06em;text-transform:uppercase;color:var(--ared-muted)}
+.ared-home .sg .sg-card h2{margin:0 0 14px;font:300 2.25rem/1.08 var(--font-cosmosoracle-src,Georgia,serif);letter-spacing:-.025em;color:#0d0d0d}
+.ared-home .sg .sg-p{margin:0 auto 28px;max-width:340px;font:400 0.9375rem/1.55 var(--font-ared-ui,Inter,sans-serif);color:#4a4540}
+.ared-home .sg .sg-btn{display:block;padding:15px 20px;border-radius:999px;background:#0d0d0d;color:#f7f5f3;text-decoration:none;font:500 0.9375rem/1 var(--font-ared-ui,Inter,sans-serif);transition:opacity .2s}
+.ared-home .sg .sg-btn:hover{opacity:.86}
+.ared-home .sg .sg-s{margin:20px 0 0;font:400 0.875rem/1.2 var(--font-ared-ui,Inter,sans-serif);color:var(--ared-muted)}
+.ared-home .sg .sg-s a{color:#0d0d0d;text-decoration:underline;text-underline-offset:3px}
+@keyframes sgin{from{opacity:0}to{opacity:1}}
+@keyframes sgup{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+html[data-ared-night="true"] .ared-home .sg{background:rgba(20,19,18,.6)}
+html[data-ared-night="true"] .ared-home .sg .sg-card{background:#1c1b1a;border-color:#33302d;color:#f2efeb}
+html[data-ared-night="true"] .ared-home .sg .sg-card h2,html[data-ared-night="true"] .ared-home .sg .sg-s a{color:#f2efeb}
+html[data-ared-night="true"] .ared-home .sg .sg-btn{background:#f2efeb;color:#0d0d0d}
+.ared-home .sg .sg-card{position:relative}
+.ared-home .sg .sg-x{position:absolute;top:10px;right:14px;width:32px;height:32px;border:0;background:none;font:300 1.5rem/1 Inter,sans-serif;color:var(--ared-muted);cursor:pointer;border-radius:50%}
+.ared-home .sg .sg-later{margin:14px 0 0;border:0;background:none;font:400 0.875rem/1 var(--font-ared-ui,Inter,sans-serif);color:var(--ared-muted);cursor:pointer;padding:6px}
+.ared-home .sg .sg-later:hover{color:#0d0d0d}
+@media(max-width:420px){.ared-home .sg{padding:14px;align-items:flex-end}.ared-home .sg .sg-card{padding:34px 22px 24px;border-radius:16px}.ared-home .sg .sg-card h2{font-size:1.875rem}}
+@media(prefers-reduced-motion:reduce){.ared-home .sg,.ared-home .sg .sg-card{animation:none}}

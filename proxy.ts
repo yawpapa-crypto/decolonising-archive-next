@@ -10,10 +10,18 @@ import { NextResponse } from "next/server";
 import { updateSession } from "@/src/lib/supabase/proxy";
 
 export async function proxy(request: NextRequest) {
-  // Dev and explicit opt-out: never block HTML on Supabase auth refresh.
-  const skipAuthRefresh =
-    process.env.NODE_ENV !== "production" ||
-    process.env.SUPABASE_PROXY_SKIP_AUTH === "1";
+  // Retired Research Bench entry points no longer execute their route handlers.
+  const pathname = request.nextUrl.pathname;
+  if (pathname === "/my/workbench" || pathname.startsWith("/my/workbench/")) {
+    return NextResponse.redirect(new URL("/home-next/library", request.url));
+  }
+  if (pathname === "/api/workbench" || pathname.startsWith("/api/workbench/")) {
+    return NextResponse.json({ error: "Research Bench has been retired." }, { status: 410 });
+  }
+  // Public requests need no refresh. Authenticated development sessions must
+  // refresh too, otherwise returning accounts fail after their token expires.
+  const skipAuthRefresh = process.env.SUPABASE_PROXY_SKIP_AUTH === "1" ||
+    !request.cookies.getAll().some((cookie) => cookie.name.startsWith("sb-"));
 
   if (skipAuthRefresh) {
     return NextResponse.next({ request });

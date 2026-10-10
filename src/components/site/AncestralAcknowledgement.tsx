@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import "./ack.css";
 import { usePathname } from "next/navigation";
 import {
   useCallback,
@@ -42,6 +42,7 @@ function writeInt(key: string, value: number) {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function hasSeenAcknowledgement(): boolean {
   try {
     if (window.localStorage.getItem(SEEN_ONCE_KEY) === "true") return true;
@@ -102,7 +103,7 @@ export default function AncestralAcknowledgementDialog() {
   const close = useCallback(() => {
     markAcknowledgementSeen();
     setOpen(false);
-    window.setTimeout(() => returnFocusRef.current?.focus(), 0);
+    window.setTimeout(() => returnFocusRef.current?.focus({ preventScroll: true }), 0);
   }, []);
 
   // Manual reopen via footer button.
@@ -127,14 +128,16 @@ export default function AncestralAcknowledgementDialog() {
       return;
     }
 
-    if (hasSeenAcknowledgement()) {
-      markAcknowledgementSeen();
-      return;
-    }
-
+    /* One count per browser session. Shown on the first visit and on every 10th visit after. */
+    let counted = false;
+    try { counted = window.sessionStorage.getItem("decolonisingArchive:ackCounted") === "1"; } catch { /* ignore */ }
+    if (counted) return;
+    try { window.sessionStorage.setItem("decolonisingArchive:ackCounted", "1"); } catch { /* ignore */ }
+    const visits = readInt(VISITS_KEY) + 1;
+    writeInt(VISITS_KEY, visits);
     markAcknowledgementSeen();
-    writeInt(VISITS_KEY, 1);
-    writeInt(LAST_SHOWN_KEY, 1);
+    if (visits !== 1 && visits % 10 !== 0) return;
+    writeInt(LAST_SHOWN_KEY, visits);
     returnFocusRef.current = document.activeElement as HTMLElement | null;
     setOpen(true);
   }, []);
@@ -145,7 +148,7 @@ export default function AncestralAcknowledgementDialog() {
     document.body.style.overflow = "hidden";
     // Focus the modal itself rather than the close button — auto-focusing the
     // X showed a focus ring on mount that read as a stray box.
-    window.setTimeout(() => modalRef.current?.focus(), 0);
+    window.setTimeout(() => modalRef.current?.focus({ preventScroll: true }), 0);
     return () => {
       document.body.style.overflow = previousOverflow;
     };
@@ -165,10 +168,10 @@ export default function AncestralAcknowledgementDialog() {
     const active = document.activeElement;
     if (event.shiftKey && active === first) {
       event.preventDefault();
-      last.focus();
+      last.focus({ preventScroll: true });
     } else if (!event.shiftKey && active === last) {
       event.preventDefault();
-      first.focus();
+      first.focus({ preventScroll: true });
     }
   }
 
@@ -180,94 +183,16 @@ export default function AncestralAcknowledgementDialog() {
   if (!open) return null;
 
   return (
-    <div
-      ref={veilRef}
-      className="ancestral-acknowledgement-veil"
-      onKeyDown={onKeyDown}
-      onClick={onVeilClick}
-    >
-      <div
-        ref={modalRef}
-        className="ancestral-acknowledgement-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        tabIndex={-1}
-      >
-        <div className="ancestral-acknowledgement-head">
-          <div className="ancestral-acknowledgement-head-id">
-            <span className="ancestral-acknowledgement-head-dot" aria-hidden="true" />
-            <span>Acknowledgment</span>
-          </div>
-          <button
-            type="button"
-            className="ancestral-acknowledgement-head-close"
-            aria-label="Close acknowledgement"
-            onClick={close}
-          >
-            ✕
-          </button>
-        </div>
-
-        <div className="ancestral-acknowledgement-body">
-          <h2 className="ancestral-acknowledgement-hello" id={titleId}>
-            We enter this space with <em>respect.</em>
-          </h2>
-          <p className="ancestral-acknowledgement-hello-sub">
-            For the lands, waters, skies and Countries from which knowledge
-            comes.
-          </p>
-
-          <div className="ancestral-acknowledgement-stanza">
-            <p className="is-lead">
-              We acknowledge the First Peoples and Custodians of the lands on
-              which this work is made and received. We honour Elders past and
-              present, and the continuing responsibilities carried through
-              Country, story, language, ceremony and care.
-            </p>
-            <p>
-              We also remember the ancestors across Africa and the diaspora —
-              those who poured libation before speaking, those who greeted the
-              earth before beginning, those who knew that knowledge is never
-              separate from spirit, place, body, memory and relation.
-            </p>
-            <p>
-              This archive is not only a record of struggle. It is also a place
-              for beauty, invention, refusal, rhythm, survival, imagination and
-              return. It honours what has been carried through fire, water,
-              migration, silence, song, design and everyday life.
-            </p>
-          </div>
-
-          <div className="ancestral-acknowledgement-refrain-label">
-            A blessing
-          </div>
-          <div className="ancestral-acknowledgement-blessing">
-            <ul>
-              <li>May this space be entered slowly.</li>
-              <li>May the sources gathered here be treated with care.</li>
-              <li>May what has been hidden be met with attention.</li>
-              <li>May what has endured be celebrated.</li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="ancestral-acknowledgement-foot">
-          <button
-            type="button"
-            className="ancestral-acknowledgement-enter"
-            onClick={close}
-          >
-            <span>Enter the archive</span>
-            <span className="ancestral-acknowledgement-enter-arrow" aria-hidden="true" />
-          </button>
-          <Link
-            className="ancestral-acknowledgement-care-link"
-            href="/about"
-          >
-            Cultural care and responsibility
-          </Link>
-        </div>
+    <div ref={veilRef} className="ack-veil" onKeyDown={onKeyDown} onClick={onVeilClick}>
+      <div ref={modalRef} className="ack-box" role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1}>
+        <h2 id={titleId} className="ack-title">Acknowledgement of Country</h2>
+        <p>
+          We acknowledge the Woi Wurrung and Boon Wurrung peoples of the eastern Kulin Nations, the Traditional Custodians
+          of the lands on which we work and live. We recognise the enduring strength, wisdom, and generosity that have
+          continued despite the deep harms of colonisation, and the ways these living knowledges continue to shape and
+          enrich this place.
+        </p>
+        <button type="button" className="ack-close" onClick={close}>Continue</button>
       </div>
     </div>
   );

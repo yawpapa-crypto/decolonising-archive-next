@@ -1,0 +1,13 @@
+import { execSync } from "node:child_process";
+import { existsSync } from "node:fs";
+const t = (c) => { try { return execSync(c, { encoding: "utf8" }).trim(); } catch (e) { return "ERR " + String(e.message).slice(0, 80); } };
+console.log("node", process.version, process.platform, process.arch);
+console.log("chrome", existsSync("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"));
+console.log("ffmpeg", t("command -v ffmpeg || ls /opt/homebrew/bin/ffmpeg"));
+const { chromium } = await import("../../tmp/film-tools/node_modules/playwright-core/index.mjs");
+const b = await chromium.launch({ channel: "chrome", headless: true });
+const p = await b.newPage({ viewport: { width: 1440, height: 1440 } });
+await p.goto("http://localhost:3000/home-next", { waitUntil: "networkidle", timeout: 60000 }).catch((e) => console.log("goto", e.message));
+await p.screenshot({ path: "tmp/film/probe.png" });
+console.log("shot ok", await p.title());
+await b.close();

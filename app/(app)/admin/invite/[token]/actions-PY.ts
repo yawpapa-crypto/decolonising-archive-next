@@ -24,7 +24,7 @@ export async function acceptAdminInvite(formData: FormData) {
 
   if (!token) fail("", "This admin invite is invalid or has expired.");
   if (!email || !password) fail(token, "Something went wrong. Please try again.");
-  if (password.length < 8) fail(token, "Password must be at least 8 characters.");
+  if (password.length < 12) fail(token, "Password must be at least 12 characters.");
   if (password !== confirmPassword) fail(token, "Passwords do not match.");
 
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()) {

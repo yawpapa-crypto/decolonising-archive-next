@@ -1,0 +1,14 @@
+# Classical, locally trained recommenders only. No LLM, no hosted model, no paid service.
+torch>=2.2
+numpy
+scipy
+pandas
+scikit-learn
+pyyaml
+tqdm
+colorlog
+colorama
+tensorboard
+thop
+# RecBole itself: pip install recbole   (or  pip install --no-deps ./RecBole-master  from the unzipped source)
+recbole>=1.2

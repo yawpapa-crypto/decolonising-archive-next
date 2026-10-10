@@ -21,6 +21,7 @@ export default function FeedbackPage() {
           Your feedback is read by the small team building this archive. We cannot always reply
           individually, but every report shapes what we fix and build next.
         </p>
+        <p>Contact us at <a href="mailto:info@yofosuasare.com">info@yofosuasare.com</a>.</p>
         <div style={{ marginTop: "2rem" }}>
           <FeedbackModal />
         </div>

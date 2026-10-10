@@ -1,0 +1,11 @@
+begin;
+create table public.archive_url_health(url text primary key,status integer,content_type text,checked_at timestamptz not null default now());
+create table public.archive_record_exposures(record_id text primary key,last_seen timestamptz not null default now());
+alter table public.archive_url_health enable row level security;
+alter table public.archive_record_exposures enable row level security;
+create policy health_admin on public.archive_url_health for all to authenticated using(exists(select 1 from public.profiles where id=auth.uid() and role='admin')) with check(exists(select 1 from public.profiles where id=auth.uid() and role='admin'));
+create policy exposure_admin on public.archive_record_exposures for select to authenticated using(exists(select 1 from public.profiles where id=auth.uid() and role='admin'));
+grant select,insert,update on public.archive_url_health to authenticated;
+grant select on public.archive_record_exposures to authenticated;
+grant all on public.archive_record_exposures,public.archive_url_health to service_role;
+commit;

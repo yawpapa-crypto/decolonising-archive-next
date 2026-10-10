@@ -1,7 +1,5 @@
-import { buildEntityIndex, entityPath, type EntityKind } from "@/lib/kgo/entities";
-import { getPublicArchiveRecords, recordDescription } from "@/lib/kgo/records";
-import { recordSameAsUrls } from "@/lib/kgo/sameAs";
-import { absoluteUrl, SITE_NAME, SITE_URL, slugifyEntity } from "@/lib/kgo/site";
+import { absoluteUrl } from "@/lib/kgo/site";
+import { publicKnowledgeGraph } from "@/lib/knowledge/server";
 
 export type GraphNode = {
   id: string;
@@ -18,80 +16,10 @@ export type GraphEdge = {
   relation: string;
 };
 
-export async function buildKnowledgeGraph(): Promise<{
-  generatedAt: string;
-  nodes: GraphNode[];
-  edges: GraphEdge[];
-}> {
-  const records = await getPublicArchiveRecords();
-  const entities = await buildEntityIndex();
-  const nodes: GraphNode[] = [
-    {
-      id: "ared:platform",
-      type: "WebSite",
-      label: SITE_NAME,
-      url: SITE_URL,
-      description: "Decolonising Archive knowledge platform",
-    },
-  ];
-  const edges: GraphEdge[] = [];
-  const seenNodes = new Set<string>(["ared:platform"]);
-
-  const addNode = (node: GraphNode) => {
-    if (seenNodes.has(node.id)) return;
-    seenNodes.add(node.id);
-    nodes.push(node);
-  };
-
-  entities.forEach((entity) => {
-    const id = `entity:${entity.kind}:${entity.slug}`;
-    addNode({
-      id,
-      type: entity.kind,
-      label: entity.label,
-      url: absoluteUrl(entityPath(entity.kind, entity.slug)),
-      description: entity.description,
-      sameAs: entity.sameAs,
-    });
-    edges.push({ from: "ared:platform", to: id, relation: "indexes" });
-  });
-
-  records.forEach((record) => {
-    const recordId = `record:${record.id}`;
-    addNode({
-      id: recordId,
-      type: "CreativeWork",
-      label: record.title,
-      url: absoluteUrl(`/records/${record.id}`),
-      description: recordDescription(record),
-      sameAs: recordSameAsUrls(record),
-    });
-    edges.push({ from: "ared:platform", to: recordId, relation: "publishes" });
-
-    const links: Array<[EntityKind, string[]]> = [
-      ["knowledge", record.knowledgeAreas || []],
-      ["community", record.communityOrCulturalGroup || []],
-      ["language", record.language || []],
-      ["region", record.region || []],
-      ["country", record.country || []],
-      ["source", record.sourceName ? [record.sourceName] : []],
-    ];
-
-    links.forEach(([kind, labels]) => {
-      labels.forEach((label) => {
-        const slug = slugifyEntity(label);
-        if (!slug) return;
-        const entityId = `entity:${kind}:${slug}`;
-        edges.push({ from: recordId, to: entityId, relation: `has_${kind}` });
-      });
-    });
-  });
-
-  return {
-    generatedAt: new Date().toISOString(),
-    nodes,
-    edges,
-  };
+export async function buildKnowledgeGraph(): Promise<{generatedAt:string;nodes:GraphNode[];edges:GraphEdge[]}> {
+  const graph=await publicKnowledgeGraph();
+  const type:Record<string,string>={record:"CreativeWork",person:"Person",user:"Person",source:"Organization",collection:"Collection"};
+  return {generatedAt:new Date().toISOString(),nodes:graph.nodes.map(node=>({id:node.id,type:type[node.kind]??"DefinedTerm",label:node.label,url:absoluteUrl(node.url)})),edges:graph.edges};
 }
 
 function turtleEscape(value: string): string {
@@ -115,7 +43,7 @@ export async function buildKnowledgeGraphTurtle(): Promise<string> {
   graph.nodes.forEach((node) => {
     const iri = `<${node.url}>`;
     const props = [
-      `a schema:${node.type === "CreativeWork" ? "CreativeWork" : "Thing"}`,
+      `a schema:${node.type}`,
       `schema:name "${turtleEscape(node.label)}"`,
       node.description ? `schema:description "${turtleEscape(node.description)}"` : "",
       `dcterms:identifier "${turtleEscape(node.id)}"`,
@@ -129,9 +57,10 @@ export async function buildKnowledgeGraphTurtle(): Promise<string> {
     lines.push("");
   });
 
+  const nodesById=new Map(graph.nodes.map(node=>[node.id,node]));
   graph.edges.forEach((edge) => {
-    const from = graph.nodes.find((node) => node.id === edge.from);
-    const to = graph.nodes.find((node) => node.id === edge.to);
+    const from = nodesById.get(edge.from);
+    const to = nodesById.get(edge.to);
     if (!from || !to) return;
     lines.push(`<${from.url}> ared:${edge.relation} <${to.url}> .`);
   });

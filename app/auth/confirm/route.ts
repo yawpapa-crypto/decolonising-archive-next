@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   const code = requestUrl.searchParams.get("code");
   const tokenHash = requestUrl.searchParams.get("token_hash");
   const type = requestUrl.searchParams.get("type");
-  const next = safeNextPath(requestUrl.searchParams.get("next"));
+  const next = safeNextPath(requestUrl.searchParams.get("next"), "/home-next/for-you");
 
   const origin = requestUrl.origin;
   const supabase = await createClient();
@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       return NextResponse.redirect(
-        `${origin}/signin?message=${encodeURIComponent(error.message)}`
+        `${origin}/signin?next=${encodeURIComponent(next)}&error=${encodeURIComponent("This confirmation link has expired or has already been used. Request a new link.")}`
       );
     }
 
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Older / token-hash email links use token_hash + type.
-  if (tokenHash && type) {
+  if (tokenHash && type && ["signup", "magiclink", "recovery", "invite", "email_change", "email"].includes(type)) {
     const { data: otpData, error } = await supabase.auth.verifyOtp({
       token_hash: tokenHash,
       type: type as "signup" | "magiclink" | "recovery" | "invite" | "email_change",
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       return NextResponse.redirect(
-        `${origin}/signin?message=${encodeURIComponent(error.message)}`
+        `${origin}/signin?next=${encodeURIComponent(next)}&error=${encodeURIComponent("This confirmation link has expired or has already been used. Request a new link.")}`
       );
     }
 
@@ -65,6 +65,6 @@ export async function GET(request: NextRequest) {
   }
 
   return NextResponse.redirect(
-    `${origin}/signin?message=${encodeURIComponent("Missing email verification token.")}`
+    `${origin}/signin?next=${encodeURIComponent(next)}&error=${encodeURIComponent("This confirmation link is incomplete. Request a new link.")}`
   );
 }

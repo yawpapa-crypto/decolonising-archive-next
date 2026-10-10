@@ -2324,6 +2324,10 @@ function sortNotes(notes: WorkbenchNoteWithProject[]) {
   });
 }
 
+function editorChain(editor: Editor): ChainedCommands {
+  return editor.chain().focus();
+}
+
 export default function WorkbenchNotesClient(props: {
   notes: WorkbenchNoteWithProject[];
   projects: WorkbenchProjectRow[];
@@ -3107,7 +3111,7 @@ export default function WorkbenchNotesClient(props: {
     for (const node of nodes) {
       if (node.textContent?.trim() === heading.text) {
         node.scrollIntoView({ behavior: "smooth", block: "center" });
-        editorChain(editorInstance).run();
+        editorInstance.chain().focus().run();
         break;
       }
     }
@@ -3585,9 +3589,6 @@ export default function WorkbenchNotesClient(props: {
   }
 
 
-function editorChain(editor: Editor): ChainedCommands {
-  return editor.chain().focus();
-}
 
   function runEditorCommand(command: (editor: Editor) => void) {
     if (!editorInstance || editorInstance.isDestroyed || !canEditSelected) return;

@@ -3,6 +3,7 @@ import path from "node:path";
 import { cache } from "react";
 import { normalizeArchiveRecord, type ArchiveRecord } from "@/lib/archive-metadata";
 import { enrichRecordSameAs } from "@/lib/kgo/sameAs";
+import { loadCatalogueRecords } from "@/lib/catalogue/store";
 import { readRecords } from "@/lib/records";
 
 export type LocalBankRecord = Record<string, unknown> & {
@@ -44,7 +45,12 @@ export const getPublicArchiveRecords = cache(async (): Promise<ArchiveRecord[]> 
   const fromJson = await readRecords();
   const localBank = readLocalBankRecords().map((record) => normalizeArchiveRecord(record));
   const byId = new Map<string, ArchiveRecord>();
-  [...localBank, ...fromJson].forEach((record) => {
+  const catalogue = loadCatalogueRecords().filter(r => r.publicVisibility && !r.communityAuthorityRequired).map(r => ({...normalizeArchiveRecord({
+    id:r.id,title:r.title,description:r.description,creator:r.creatorOrAuthority,period:r.periodLabel ? [r.periodLabel] : [],dateCreated:r.dateStart,
+    region:r.region ? [r.region] : [],knowledgeAreas:r.currentResearchArea ? [r.currentResearchArea] : [],tags:r.tags,
+    sourceName:r.sourceName,sourceUrl:r.sourceUrl,recordType:[r.recordType],published:true,status:"Published",rightsStatus:r.rightsStatus,
+  }),published:true,status:"Published" as const,knowledgeAreas:[] }));
+  [...localBank, ...fromJson, ...catalogue].filter(r=>r.published !== false && r.status !== "Draft").forEach((record) => {
     if (!record?.id) return;
     byId.set(record.id, enrichRecordSameAs(record));
   });

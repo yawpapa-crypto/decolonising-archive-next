@@ -18,7 +18,7 @@ export default async function WorkbenchInvitePage({
       <section className="workbench-invite-page">
         <h1>Project invite</h1>
         <p>Sign in to accept this collaboration invite.</p>
-        <Link href={`/auth/login?next=/my/workbench/invite/${inviteId}`}>Sign in</Link>
+        <Link href={`/signin?next=/my/workbench/invite/${inviteId}`}>Sign in</Link>
       </section>
     );
   }

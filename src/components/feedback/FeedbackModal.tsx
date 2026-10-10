@@ -8,17 +8,27 @@ export default function FeedbackModal() {
   const [success, setSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
   const closeModal = useCallback(() => {
     setOpen(false);
+    triggerRef.current?.focus();
     formRef.current?.reset();
   }, []);
 
   // Close on Escape key
   useEffect(() => {
     if (!open) return;
+    dialogRef.current?.querySelector<HTMLElement>("button, input, select, textarea")?.focus();
     function onKey(e: KeyboardEvent) {
+      if (e.key === "Tab") {
+        const controls = Array.from(dialogRef.current?.querySelectorAll<HTMLElement>('button:not(:disabled), input, select, textarea, a[href]') ?? []);
+        const first = controls[0], last = controls[controls.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+      }
       if (e.key === "Escape") closeModal();
     }
     document.addEventListener("keydown", onKey);
@@ -42,7 +52,8 @@ export default function FeedbackModal() {
     const form = e.currentTarget;
     const formData = new FormData(form);
     if (typeof window !== "undefined") {
-      formData.set("page_url", window.location.href);
+      const about = new URLSearchParams(window.location.search).get("about");
+      formData.set("page_url", about && about.startsWith("/") ? window.location.origin + about : window.location.href);
       formData.set("user_agent", navigator.userAgent.slice(0, 500));
     }
     startTransition(async () => {
@@ -57,12 +68,13 @@ export default function FeedbackModal() {
 
   return (
     <>
-      <button type="button" className="feedback-trigger-btn" onClick={openModal}>
+      <button ref={triggerRef} type="button" className="feedback-trigger-btn" onClick={openModal}>
         Give feedback
       </button>
 
       {open && (
         <div
+          ref={dialogRef}
           className="feedback-modal-backdrop"
           role="dialog"
           aria-modal="true"

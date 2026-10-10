@@ -1,0 +1,5 @@
+import { createAdminClient } from "@/src/lib/supabase/admin";
+import { getPublicArchiveRecords } from "@/lib/kgo/records";
+import { checkOrigin } from "@/lib/knowledge/request";
+/** Aggregate record coverage only: no user, cookie, session, IP or raw query stored. */
+export async function POST(request:Request){const denied=checkOrigin(request);if(denied)return denied;const body=await request.json().catch(()=>null);if(!Array.isArray(body?.ids)||body.ids.length>80)return Response.json({error:'Invalid records.'},{status:400});const allowed=new Set((await getPublicArchiveRecords()).map(r=>r.id));const ids=[...new Set(body.ids.filter((id:unknown):id is string=>typeof id==='string'&&allowed.has(id)))];if(!ids.length)return Response.json({ok:true});const db=createAdminClient();if(!db)return Response.json({error:'Coverage tracking unavailable.'},{status:503});const {error}=await db.from('archive_record_exposures').upsert(ids.map(record_id=>({record_id,last_seen:new Date().toISOString()})));return Response.json({ok:!error},{status:error?503:200});}

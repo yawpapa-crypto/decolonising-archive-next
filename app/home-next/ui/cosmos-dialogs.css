@@ -1,0 +1,110 @@
+/*
+ * One dialog language for ARED, taken from the Cosmos reference: linen wall, paper surfaces,
+ * ink at low opacity for every line, one 16px radius, no shadows, no blur, no bounce.
+ * Chrome stays quiet so the archive material carries the colour.
+ */
+:root{--cz-ink:#0d0d0d;--cz-paper:#fff;--cz-linen:#f7f5f3;--cz-stone:#6e6a69;--cz-pebble:#9a9796;--cz-line:rgba(13,13,13,.12);--cz-line-2:rgba(13,13,13,.06);--cz-r:16px;--cz-sans:var(--font-ared-ui,Inter,system-ui,sans-serif)}
+@keyframes cz-fade{from{opacity:0}to{opacity:1}}
+@keyframes cz-rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* Veils: the linen wall dims; nothing blurs. */
+.pd-veil.pd-veil,.dn-veil.dn-veil,.app-veil.app-veil,.st-veil.st-veil,.ared-home .sg.sg{background:rgba(247,245,243,.82);-webkit-backdrop-filter:none;backdrop-filter:none;animation:cz-fade .16s ease-out both}
+
+/* Surfaces: paper, one hairline, one radius. */
+.pd-box.pd-box,.dn-box.dn-box,.app-box.app-box,.st.st,.ared-home .sg .sg-card.sg-card,.fy-why.fy-why,.fy-cmd__panel.fy-cmd__panel,.ared-langask.ared-langask{background:var(--cz-paper);color:var(--cz-ink);border:1px solid var(--cz-line);border-radius:var(--cz-r);box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;font-family:var(--cz-sans);animation:cz-rise .2s cubic-bezier(.2,.7,.2,1) both}
+.pd-box.pd-box,.dn-box.dn-box,.app-box.app-box{padding:32px 32px 28px}
+.ared-home .sg .sg-card.sg-card{padding:32px;text-align:left}
+
+/* Type: the sans, tight at display sizes, stone for everything secondary. */
+.pd-box h2,.dn-box h2,.app-box h2,.ared-home .sg .sg-card h2,.st h2{font:500 1.625rem/1.1 var(--cz-sans);letter-spacing:-.025em;color:var(--cz-ink)}
+.pd-box p,.dn-box p,.app-box p,.ared-home .sg .sg-card p,.fy-why.fy-why p{color:var(--cz-stone);font-size:0.9375rem;line-height:1.5}
+.pd-eyebrow,.dn-eyebrow,.ared-home .sg .sg-k{font:500 0.8125rem/1 var(--cz-sans)!important;letter-spacing:0!important;text-transform:none!important;color:var(--cz-stone)!important;margin:0 0 14px}
+
+/* Close: a small paper circle with a hairline. */
+.pd-x.pd-x,.dn-x.dn-x,.app-x.app-x,.st-x.st-x,.ared-home .sg .sg-x.sg-x{width:36px;height:36px;display:grid;place-items:center;border:1px solid var(--cz-line);border-radius:999px;background:var(--cz-paper);color:var(--cz-ink);box-shadow:none;cursor:pointer;transition:background .15s}
+.pd-x:hover,.dn-x:hover,.app-x:hover,.st-x:hover,.ared-home .sg .sg-x:hover{background:var(--cz-linen)}
+
+/* Buttons: a filled ink action paired with an outlined one at the same size. */
+.dn-go.dn-go,.ared-home .sg .sg-btn.sg-btn,.st-btn.st-btn:not(.st-btn--ghost),.cz-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:2.75rem;padding:.5rem 22px;border:1px solid var(--cz-ink);border-radius:var(--cz-r);background:var(--cz-ink);color:var(--cz-paper);font:500 0.9375rem/1 var(--cz-sans);letter-spacing:-.005em;box-shadow:none;text-decoration:none;cursor:pointer;transition:opacity .15s}
+.dn-later.dn-later,.ared-home .sg .sg-later.sg-later,.st-btn--ghost.st-btn--ghost,.cz-btn--line{display:inline-flex;align-items:center;justify-content:center;min-height:2.75rem;padding:.5rem 22px;border:1px solid rgba(13,13,13,.15);border-radius:var(--cz-r);background:var(--cz-paper);color:var(--cz-ink);font:500 0.9375rem/1 var(--cz-sans);box-shadow:none;text-decoration:none;cursor:pointer;transition:background .15s}
+.dn-go:hover,.ared-home .sg .sg-btn:hover,.cz-btn:hover{opacity:.86}
+.dn-later:hover,.ared-home .sg .sg-later:hover,.st-btn--ghost:hover,.cz-btn--line:hover{background:var(--cz-linen)}
+
+/* Recommendation note ("Why this?"): a quiet paper card. */
+.fy-why.fy-why{width:300px;padding:20px;gap:10px;z-index:2100}
+.fy-why.fy-why strong{font:500 0.9375rem/1.2 var(--cz-sans);letter-spacing:-.01em}
+.fy-why .fy-feedback button{height:36px;padding:0 14px;border:1px solid rgba(13,13,13,.15);border-radius:var(--cz-r);background:var(--cz-paper);font:500 0.875rem/1 var(--cz-sans);color:var(--cz-ink);cursor:pointer}
+.fy-why .fy-feedback button:hover{background:var(--cz-linen)}
+.fy-why.fy-why .fy-pill--save{height:36px;padding:0 16px;border-radius:var(--cz-r)}
+
+/* Command bar */
+.fy-cmd__panel.fy-cmd__panel li{border-radius:12px}
+.fy-cmd__panel.fy-cmd__panel li.is-on{background:var(--cz-linen)}
+
+/* ---------------------------------------------------------------- collection picker */
+.cz-pick{position:fixed;z-index:2100;width:340px;display:flex;flex-direction:column;max-height:min(460px,calc(100vh - 24px));background:var(--cz-paper);color:var(--cz-ink);border:1px solid var(--cz-line);border-radius:var(--cz-r);font-family:var(--cz-sans);overflow:hidden;animation:cz-rise .18s cubic-bezier(.2,.7,.2,1) both}
+.cz-pick__head{display:flex;align-items:baseline;justify-content:space-between;padding:16px 16px 10px}
+.cz-pick__head strong{font:500 0.9375rem/1.2 var(--cz-sans);letter-spacing:-.01em}
+.cz-pick__head small{font-size:0.8125rem;color:var(--cz-stone);max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cz-pick__search{display:flex;align-items:center;gap:8px;margin:0 12px 6px;padding:0 12px;min-height:2.75rem;border:1px solid var(--cz-line);border-radius:12px;background:var(--cz-linen);color:var(--cz-stone)}
+.cz-pick__search input{flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 0.875rem var(--cz-sans);color:var(--cz-ink)}
+.cz-pick__search:focus-within{border-color:rgba(13,13,13,.35);background:var(--cz-paper)}
+.cz-pick__list{overflow:auto;padding:4px 6px;flex:1}
+.cz-pick__row{width:100%;display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:12px;padding:6px 10px 6px 6px;border:0;border-radius:12px;background:transparent;color:inherit;text-align:left;font:inherit;cursor:pointer;transition:background .12s}
+.cz-pick__row:hover,.cz-pick__row.is-cur{background:var(--cz-linen)}
+.cz-pick__row:focus-visible{outline:2px solid var(--cz-ink);outline-offset:-2px}
+.cz-pick__cover{width:44px;height:44px;border-radius:12px;background:var(--cz-linen) center/cover no-repeat;border:1px solid var(--cz-line-2);display:grid;place-items:center;color:var(--cz-stone)}
+.cz-pick__name{min-width:0}
+.cz-pick__name strong{display:block;font:500 0.875rem/1.25 var(--cz-sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cz-pick__name small{display:block;margin-top:2px;font-size:0.7812rem;color:var(--cz-stone)}
+.cz-pick__state{font:500 0.7812rem/1 var(--cz-sans);color:var(--cz-stone)}
+.cz-pick__row.is-on .cz-pick__state{color:var(--cz-ink)}
+.cz-pick__row[aria-busy="true"] .cz-pick__state{color:var(--cz-pebble)}
+.cz-pick__skel{display:block;height:56px;margin:2px 0;border-radius:12px;background:linear-gradient(90deg,var(--cz-linen),#efece8,var(--cz-linen));background-size:200% 100%;animation:cz-shim 1.2s linear infinite}
+@keyframes cz-shim{to{background-position:-200% 0}}
+.cz-pick__hint{margin:10px 12px;font-size:0.8125rem;line-height:1.45;color:var(--cz-stone)}
+.cz-pick__hint a{color:var(--cz-ink)}
+.cz-pick__err{margin:6px 12px 0;font-size:0.8125rem;color:#9b2c1f}
+.cz-pick__foot{padding:10px 12px 12px;border-top:1px solid var(--cz-line-2)}
+.cz-pick__foot .cz-btn--line{width:100%;min-height:2.75rem;justify-content:flex-start;gap:10px;padding:0 12px;font-size:0.875rem}
+.cz-pick__new{display:flex;gap:8px}
+.cz-pick__new input{flex:1;min-width:0;min-height:2.75rem;padding:0 12px;border:1px solid rgba(13,13,13,.25);border-radius:12px;font:400 0.875rem var(--cz-sans);outline:0;background:var(--cz-paper)}
+.cz-pick__new input:focus{border-color:var(--cz-ink)}
+.cz-pick__new .cz-btn{min-height:2.75rem;padding:0 16px;font-size:0.875rem}
+@media(max-width:560px){.cz-pick{left:8px!important;right:8px;top:auto!important;bottom:8px;width:auto!important;max-height:72vh}}
+
+/* ---------------------------------------------------------------- confirmation */
+.cz-toast{position:fixed;left:50%;bottom:28px;z-index:2200;display:flex;align-items:center;gap:14px;max-width:min(520px,calc(100vw - 24px));padding:10px 10px 10px 16px;background:var(--cz-ink);color:var(--cz-paper);border-radius:var(--cz-r);font:400 0.875rem/1.3 var(--cz-sans);transform:translateX(-50%);animation:cz-toast .22s cubic-bezier(.2,.7,.2,1) both}
+@keyframes cz-toast{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
+.cz-toast b{font-weight:500}
+.cz-toast a,.cz-toast button{height:32px;display:inline-flex;align-items:center;padding:0 12px;border-radius:12px;background:rgba(255,255,255,.12);color:inherit;font:500 0.8125rem/1 var(--cz-sans);text-decoration:none;border:0;cursor:pointer;white-space:nowrap}
+.cz-toast.is-err{background:#fff;color:var(--cz-ink);border:1px solid var(--cz-line)}
+
+/* Dark display mode */
+html[data-ared-night="true"]{--cz-ink:#f5f5f2;--cz-paper:#161616;--cz-linen:#0d0d0d;--cz-stone:#a8a4a2;--cz-line:rgba(255,255,255,.14);--cz-line-2:rgba(255,255,255,.07)}
+html[data-ared-night="true"] .pd-veil.pd-veil,html[data-ared-night="true"] .dn-veil.dn-veil,html[data-ared-night="true"] .app-veil.app-veil,html[data-ared-night="true"] .st-veil.st-veil,html[data-ared-night="true"] .ared-home .sg.sg{background:rgba(13,13,13,.82)}
+html[data-ared-night="true"] .cz-toast{background:#f5f5f2;color:#0d0d0d}
+@media(prefers-reduced-motion:reduce){.cz-pick,.cz-toast,.pd-box,.dn-box,.app-box,.st,.ared-home .sg .sg-card,.fy-why{animation:none!important}}
+.fy-pill:focus-visible{outline:2px solid var(--cz-ink);outline-offset:2px;box-shadow:none}
+.fy-pill:focus:not(:focus-visible){outline:none;box-shadow:none}
+/* Titles win over each dialog's older serif rule. */
+.ared-home .sg .sg-card.sg-card h2,.pd-box.pd-box h2,.dn-box.dn-box h2,.app-box.app-box h2,.st.st h2{font:500 1.625rem/1.1 var(--cz-sans);letter-spacing:-.025em;color:var(--cz-ink)}
+
+/* ---------------------------------------------------------------- the waiting mark */
+.cz-load{display:inline-flex;flex-direction:column;align-items:center;gap:14px;color:var(--cz-ink);font:400 0.875rem/1.3 var(--cz-sans)}
+.cz-load--inline{flex-direction:row;gap:10px;color:var(--cz-stone)}
+.cz-load svg{overflow:visible}
+.cz-load path{stroke-width:2.6;stroke-dasharray:1 1;stroke-dashoffset:1}
+.cz-load--inline path{stroke-width:6}
+.cz-load__heart{animation:cz-draw 2.8s cubic-bezier(.65,0,.35,1) infinite}
+.cz-load__curl{animation:cz-draw 2.8s cubic-bezier(.65,0,.35,1) infinite}
+.cz-load__curl--l{animation-delay:.45s}
+.cz-load__curl--r{animation-delay:.6s}
+.cz-load__stem{animation:cz-draw 2.8s cubic-bezier(.65,0,.35,1) .3s infinite}
+/* draw on, hold for a breath, then the line lets go from its start */
+@keyframes cz-draw{0%{stroke-dashoffset:1}45%{stroke-dashoffset:0}60%{stroke-dashoffset:0}100%{stroke-dashoffset:-1}}
+.cz-load__label{color:var(--cz-stone)}
+.cz-load-page{min-height:calc(100vh - 140px);display:grid;place-items:center;padding:96px 24px}
+@media(prefers-reduced-motion:reduce){.cz-load path{animation:none!important;stroke-dashoffset:0}}
+html[data-ared-calm="true"] .cz-load path{animation:none!important;stroke-dashoffset:0}
+button .cz-load--inline,a .cz-load--inline{color:inherit}

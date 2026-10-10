@@ -44,8 +44,17 @@ export function getAnalyticsSessionId() {
   }
 }
 
+export function analyticsOptedOut() {
+  if (typeof window === "undefined") return true;
+  try {
+    if (window.localStorage.getItem("ared-privacy-optout") === "1") return true;
+  } catch { /* ignore */ }
+  return (navigator as Navigator & { globalPrivacyControl?: boolean }).globalPrivacyControl === true;
+}
+
 export function trackActivity(event: ClientActivityEvent) {
   if (typeof window === "undefined") return;
+  if (analyticsOptedOut()) return;
 
   const payload = {
     ...event,

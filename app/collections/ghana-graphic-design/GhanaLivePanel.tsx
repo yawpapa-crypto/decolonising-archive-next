@@ -112,7 +112,7 @@ const CATEGORY_WIKI_TERMS: Record<string, string> = {
   digital: "digital art design",
 };
 
-function buildQuery(source: Source, title: string, category: string, tags: string[]): string {
+function buildQuery(source: Source, title: string, category: string): string {
   if (source === "crossref" || source === "semantic-scholar") {
     const catWords = category.replace(/-/g, " ");
     return `ghana graphic design ${catWords}`;
@@ -348,7 +348,7 @@ export default function GhanaLivePanel({ itemTitle, itemCategory, itemTags }: Pr
         return { ...prev, [source]: { ...prev[source], loading: true, error: null } };
       });
 
-      const query = buildQuery(source, itemTitle, itemCategory, itemTags);
+      const query = buildQuery(source, itemTitle, itemCategory);
       const endpoint =
         source === "wikimedia"
           ? `/api/search/wikimedia?q=${encodeURIComponent(query)}&limit=12`
@@ -366,7 +366,7 @@ export default function GhanaLivePanel({ itemTitle, itemCategory, itemTags }: Pr
           source === "wikimedia" ? (json.pages ?? []) : (json.results ?? []);
         const error = json.error ? String(json.error) : null;
         setSources((prev) => ({ ...prev, [source]: { data, loading: false, error, loaded: true } }));
-      } catch (err) {
+      } catch {
         setSources((prev) => ({
           ...prev,
           [source]: { data: [], loading: false, error: "Could not load results", loaded: true },

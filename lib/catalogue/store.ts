@@ -155,7 +155,7 @@ export function filterCatalogueRecords(params: CatalogueFilterParams): {
 } {
   const page = Math.max(1, params.page ?? 1);
   const limit = Math.min(100, Math.max(1, params.limit ?? 24));
-  let items = loadCatalogueRecords().filter((r) => r.publicVisibility);
+  let items = loadCatalogueRecords().filter((r) => r.publicVisibility && !r.communityAuthorityRequired);
 
   if (params.q?.trim()) {
     const terms = params.q.trim().toLowerCase().split(/\s+/).filter(Boolean);

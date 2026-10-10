@@ -25,10 +25,10 @@ export const FEATURED_RECORD_IDS = new Set([
 export const EDITORIAL_IMAGE_OVERRIDES: Record<string, string> = {
   "ARED-GH-HIST-00019": "/images/ghana-hero/ghana-flag.svg",
   "ARED-GH-HIST-00020":
-    "https://upload.wikimedia.org/wikipedia/commons/1/19/Coat_of_arms_of_Ghana.svg",
+    "https://upload.wikimedia.org/wikipedia/commons/5/59/Coat_of_arms_of_Ghana.svg",
   "ARED-GH-HIST-00011": "/images/ghana-hero/asafo-flag.svg",
   "ARED-GH-HIST-00007":
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Adinkra_cloth.jpg/440px-Adinkra_cloth.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Ghana_Adinkra_Alphabet_Writing_System.jpg/500px-Ghana_Adinkra_Alphabet_Writing_System.jpg",
 };
 
 export const EDITORIAL_CATEGORIES = GHANA_COLLECTION_FILTER_PILLS.map((pill) => ({

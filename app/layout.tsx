@@ -1,5 +1,7 @@
+import type { Metadata } from "next";
 import "./globals.css";
 import "./styles/platform-ui-consolidation.css";
+import "./styles/site-widgets.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import {
@@ -14,6 +16,9 @@ import WebVitalsReporter from "@/src/components/analytics/WebVitalsReporter";
 import AncestralAcknowledgementDialog from "@/src/components/site/AncestralAcknowledgement";
 import ArchiveGuidePanel from "@/src/components/archive-guide/ArchiveGuidePanel";
 import BrowserEventRejectionGuard from "@/src/components/site/BrowserEventRejectionGuard";
+import PwaRegister from "./home-next/PwaRegister";
+import Floaters from "./home-next/Floaters";
+import AnimatedFavicon from "@/src/components/site/AnimatedFavicon";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,6 +45,15 @@ const acknowledgementSerif = Instrument_Serif({
   display: "swap",
 });
 
+export const metadata: Metadata = {
+  metadataBase: new URL("https://ared.design"),
+  applicationName: "ARED",
+  openGraph: { siteName: "Decolonising Archive", images: [{ url: "/og-image.jpg" }], type: "website" },
+  twitter: { card: "summary_large_image", images: ["/og-image.jpg"] },
+  appleWebApp: { capable: true, title: "ARED", statusBarStyle: "default" },
+  icons: { apple: "/icons/icon-192.png" },
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -52,9 +66,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${acknowledgementSans.variable} ${acknowledgementSerif.variable} min-h-full flex flex-col`}
       >
         <BrowserEventRejectionGuard />
+        <AnimatedFavicon />
         <AuthHashHandler />
         <PlatformActivityTracker />
         {children}
+        <Floaters />
+        <PwaRegister />
         <ArchiveGuidePanel />
         <AncestralAcknowledgementDialog />
         <WebVitalsReporter />

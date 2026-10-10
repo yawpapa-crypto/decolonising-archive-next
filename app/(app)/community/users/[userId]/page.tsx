@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/src/lib/supabase/server";
@@ -59,7 +60,7 @@ export default async function CommunityUserProfilePage({ params }: { params: Par
   const supabase = await createClient();
 
   const { data: profileData, error: profileError } = await supabase
-    .from("profiles")
+    .from("public_profiles")
     .select(
       "id, display_name, full_name, avatar_url, short_bio, affiliation, organisation, website, profile_visibility, created_at",
     )
@@ -110,7 +111,7 @@ export default async function CommunityUserProfilePage({ params }: { params: Par
         <header className="community-profile-header">
           <div className="community-profile-avatar" aria-hidden="true">
             {profile.avatar_url ? (
-              <img src={profile.avatar_url} alt={name} width={64} height={64} />
+              <Image unoptimized src={profile.avatar_url} alt={name} width={64} height={64} />
             ) : (
               <span>{initials(profile)}</span>
             )}

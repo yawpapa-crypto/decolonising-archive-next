@@ -103,7 +103,7 @@ export default async function AdminInvitePage({ params, searchParams }: PageProp
                   name="password"
                   autoComplete="new-password"
                   required
-                  minLength={8}
+                  minLength={12}
                 />
               </label>
               <label className="auth-field">
@@ -113,7 +113,7 @@ export default async function AdminInvitePage({ params, searchParams }: PageProp
                   name="confirm_password"
                   autoComplete="new-password"
                   required
-                  minLength={8}
+                  minLength={12}
                 />
               </label>
               <button type="submit" className="auth-submit">

@@ -5,6 +5,7 @@
 // client-side because it needs a browser redirect with a session-bound
 // PKCE code verifier stored in the browser.
 
+import { safeNextPath } from "@/src/lib/security/validate";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/src/lib/supabase/server";
@@ -23,27 +24,19 @@ function siteUrl() {
 }
 
 function safeNext(value: FormDataEntryValue | null): string {
-  const v = typeof value === "string" ? value : "";
-  // Only allow same-origin paths.
-  if (v.startsWith("/") && !v.startsWith("//")) return v;
-  return "/workspace";
+  return safeNextPath(typeof value === "string" ? value : null, "/home-next/for-you");
 }
 
 function safeStatusPath(value: FormDataEntryValue | null): string {
   const v = typeof value === "string" ? value : "";
-  if (v === "/admin-login") return v;
+  if (v === "/admin-login" || v === "/home-next/settings") return v;
   return "/signin";
 }
 
 function formatSignInError(message: string): string {
-  const m = message.trim();
-  if (m === "Invalid login credentials") {
-    return (
-      "Invalid email or password, or no matching user in this Supabase project. " +
-      "Confirm NEXT_PUBLIC_SUPABASE_URL and publishable key match your project, check the account is not banned (Authentication → Users), or use a email and password."
-    );
-  }
-  return m;
+  return message.trim() === "Invalid login credentials"
+    ? "The email or password is incorrect. Try again or reset your password."
+    : "We couldn’t sign you in. Please try again.";
 }
 
 export async function signInWithPassword(formData: FormData) {
@@ -56,7 +49,7 @@ export async function signInWithPassword(formData: FormData) {
 
   if (!email || !password) {
     redirect(
-      `${statusPath}?error=${encodeURIComponent("Email and password are required.")}`
+      `${statusPath}?next=${encodeURIComponent(next)}&error=${encodeURIComponent("Email and password are required.")}`
     );
   }
 
@@ -65,17 +58,17 @@ export async function signInWithPassword(formData: FormData) {
     !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim()
   ) {
     redirect(
-      `${statusPath}?error=${encodeURIComponent(
-        "Server is missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.",
+      `${statusPath}?next=${encodeURIComponent(next)}&error=${encodeURIComponent(
+        "Accounts are temporarily unavailable. Please try again later.",
       )}`
     );
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password }).catch(() => ({ data: { user: null }, error: { message: "Network unavailable" } }));
 
   if (error) {
-    redirect(`${statusPath}?error=${encodeURIComponent(formatSignInError(error.message))}`);
+    redirect(`${statusPath}?next=${encodeURIComponent(next)}&error=${encodeURIComponent(formatSignInError(error.message))}`);
   }
 
   if (data.user?.id) {
@@ -103,21 +96,22 @@ export async function signInWithPassword(formData: FormData) {
 export async function requestPasswordReset(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const statusPath = safeStatusPath(formData.get("statusPath"));
+  const next = safeNextPath(String(formData.get("next") ?? ""), "/home-next/for-you");
 
   if (!email) {
     redirect(
-      `${statusPath}?error=${encodeURIComponent("Email is required for password recovery.")}`,
+      `${statusPath}?next=${encodeURIComponent(next)}&error=${encodeURIComponent("Email is required for password recovery.")}`,
     );
   }
 
   const supabase = await createClient();
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${siteUrl()}/auth/confirm?next=/auth/reset-password`,
+    redirectTo: `${siteUrl()}/auth/confirm?next=${encodeURIComponent(`/auth/reset-password?next=${encodeURIComponent(next)}`)}`,
   });
 
   if (error) {
-    redirect(`${statusPath}?error=${encodeURIComponent(error.message)}`);
+    redirect(`${statusPath}?next=${encodeURIComponent(next)}&error=${encodeURIComponent("The reset link could not be sent. Please wait a moment and try again.")}`);
   }
 
-  redirect(`${statusPath}?resetSent=1&email=${encodeURIComponent(email)}`);
+  redirect(`${statusPath}?next=${encodeURIComponent(next)}&resetSent=1`);
 }

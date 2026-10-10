@@ -115,7 +115,6 @@ export default function AdminWorkspaceShell({
   adminUserId,
   snapshot: initialSnapshot,
   initialPreferences,
-  unreadNotifications: _unreadNotifications,
 }: Props) {
   const router = useRouter();
   const [snapshot, setSnapshot] = useState(initialSnapshot);

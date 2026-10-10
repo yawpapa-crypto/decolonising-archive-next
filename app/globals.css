@@ -3,10 +3,16 @@
    ========================= */
 
 @import "./styles/african-archives.css";
+/* Secondary text that still clears WCAG AA: 4.9:1 on linen by day, 7:1 on charcoal by night. */
+:root{--ared-muted:#6e6a69}
+/* Night styling covers the archive pages and their floating widgets; sign-in pages stay light. */
+html[data-ared-night="true"] .ared-home,html[data-ared-night="true"] .ds,html[data-ared-night="true"] .nw,html[data-ared-night="true"] .ared-langask{--ared-muted:#a8a4a3}
+/* On sign-in and sign-up, the picture caption and the password field stay on light paper in night mode. */
+html[data-ared-night="true"] .signup-caption,html[data-ared-night="true"] .signup-input{--ared-muted:#6e6a69}
 
 *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0 }
 html { scroll-behavior: smooth; overflow-x: hidden }
-body { font-family: 'Inter', system-ui, sans-serif; font-size: 14px; line-height: 1.6; background: #fff; color: #000; -webkit-font-smoothing: antialiased; overflow-x: hidden }
+body { font-family: 'Inter', system-ui, sans-serif; font-size: 0.875rem; line-height: 1.6; background: #fff; color: #000; -webkit-font-smoothing: antialiased; overflow-x: hidden }
 a { color: inherit; text-decoration: none }
 button, input, select, textarea { font-family: inherit; font-size: inherit }
 img { max-width: 100%; display: block }
@@ -5647,7 +5653,7 @@ footer:not(.site-footer) span, footer:not(.site-footer) a { font-size: 11px; col
   align-items: center;
   gap: 12px;
   margin: 4px 0;
-  color: var(--grey-500);
+  color: var(--ared-muted);
   font-size: 11px;
   letter-spacing: .12em;
   text-transform: uppercase;
@@ -14757,7 +14763,7 @@ button.workspace-link-danger:hover {
 
 
 .workspace-link.is-disabled {
-  color: #777;
+  color: var(--ared-muted);
   cursor: not-allowed;
   text-decoration: none;
 }
@@ -16757,7 +16763,7 @@ footer.site-disclaimer,
   flex-wrap: wrap;
   margin-top: 4px;
   font-size: 11px;
-  color: #777;
+  color: var(--ared-muted);
   letter-spacing: 0.04em;
 }
 .site-disclaimer-meta span { display: inline-flex; }
@@ -27032,7 +27038,7 @@ body.beyond-data-map-is-open {
 }
 
 .beyond-data-cluster-head em {
-  color: #777777;
+  color: var(--ared-muted);
   font-size: 12px;
   font-style: normal;
   font-weight: 650;

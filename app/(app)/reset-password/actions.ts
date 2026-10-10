@@ -7,10 +7,10 @@ export async function updatePassword(formData: FormData) {
   const password = String(formData.get("password") ?? "");
   const confirmPassword = String(formData.get("confirm_password") ?? "");
 
-  if (password.length < 8) {
+  if (password.length < 12) {
     redirect(
       `/reset-password?error=${encodeURIComponent(
-        "Password must be at least 8 characters.",
+        "Password must be at least 12 characters.",
       )}`,
     );
   }

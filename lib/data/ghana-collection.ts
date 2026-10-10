@@ -238,9 +238,9 @@ export const GHANA_COLLECTION_ITEMS: GhanaArchiveItem[] = [
     rights_note:
       "Issued by Government of Ghana 1957. Stamp design is in the public domain in Ghana and internationally.",
     image_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Ghana_independence_stamp_1957.jpg/300px-Ghana_independence_stamp_1957.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Ghana_Independence_overprint_on_Gold_Coast_1s_stamp_1957.jpg/500px-Ghana_Independence_overprint_on_Gold_Coast_1s_stamp_1957.jpg",
     thumbnail_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Ghana_independence_stamp_1957.jpg/150px-Ghana_independence_stamp_1957.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Ghana_Independence_overprint_on_Gold_Coast_1s_stamp_1957.jpg/250px-Ghana_Independence_overprint_on_Gold_Coast_1s_stamp_1957.jpg",
     external_link: "https://commons.wikimedia.org/wiki/Category:Stamps_of_Ghana",
     tags: ["stamp", "independence", "1957", "flag", "black star", "nation building", "philately"],
     curatorial_note:
@@ -272,9 +272,9 @@ export const GHANA_COLLECTION_ITEMS: GhanaArchiveItem[] = [
     rights_note:
       "Image from Wikimedia Commons, CC BY-SA 3.0. Attribution required. Nkrumah portrait photography is in the public domain.",
     image_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Kwame_Nkrumah.jpg/300px-Kwame_Nkrumah.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Kwame_Nkrumah.jpg/500px-Kwame_Nkrumah.jpg",
     thumbnail_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Kwame_Nkrumah.jpg/150px-Kwame_Nkrumah.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Kwame_Nkrumah.jpg/250px-Kwame_Nkrumah.jpg",
     external_link: "https://commons.wikimedia.org/wiki/Kwame_Nkrumah",
     tags: [
       "Nkrumah",
@@ -316,9 +316,9 @@ export const GHANA_COLLECTION_ITEMS: GhanaArchiveItem[] = [
     rights_note:
       "Historical banknote from 1962, reproduction permitted for educational and archival purposes under public domain.",
     image_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Ghana_1_pound_1962.jpg/400px-Ghana_1_pound_1962.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/7/79/1_Ghana_Pound_%281958%29.png",
     thumbnail_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Ghana_1_pound_1962.jpg/200px-Ghana_1_pound_1962.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/1_Ghana_Pound_%281958%29.png/250px-1_Ghana_Pound_%281958%29.png",
     external_link: "https://commons.wikimedia.org/wiki/Category:Banknotes_of_Ghana",
     tags: ["banknote", "currency", "Bank of Ghana", "nation building", "black star", "1962"],
     curatorial_note:
@@ -470,9 +470,9 @@ export const GHANA_COLLECTION_ITEMS: GhanaArchiveItem[] = [
     rights_status: "open_ingest",
     rights_note: "CC BY-SA 4.0 via Wikimedia Commons. Attribution required.",
     image_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Kwame_Nkrumah.jpg/300px-Kwame_Nkrumah.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Kwame_Nkrumah.jpg/500px-Kwame_Nkrumah.jpg",
     thumbnail_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Kwame_Nkrumah.jpg/150px-Kwame_Nkrumah.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Kwame_Nkrumah.jpg/250px-Kwame_Nkrumah.jpg",
     external_link: "https://commons.wikimedia.org/wiki/Kwame_Nkrumah",
     tags: ["Nkrumah", "CPP", "political poster", "propaganda", "independence", "1960s", "Accra"],
     curatorial_note:
@@ -764,9 +764,9 @@ export const GHANA_COLLECTION_ITEMS: GhanaArchiveItem[] = [
     rights_status: "open_ingest",
     rights_note: "CC BY-SA 3.0 via Wikimedia Commons.",
     image_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/GlobechopbarKumasi.jpg/400px-GlobechopbarKumasi.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/A_sign_board_of_a_chop_bar.jpg/500px-A_sign_board_of_a_chop_bar.jpg",
     thumbnail_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/GlobechopbarKumasi.jpg/200px-GlobechopbarKumasi.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/A_sign_board_of_a_chop_bar.jpg/250px-A_sign_board_of_a_chop_bar.jpg",
     external_link: "https://commons.wikimedia.org/wiki/File:GlobechopbarKumasi.jpg",
     tags: [
       "chop bar",
@@ -806,9 +806,9 @@ export const GHANA_COLLECTION_ITEMS: GhanaArchiveItem[] = [
     rights_status: "open_ingest",
     rights_note: "CC BY-SA 2.0 via Wikimedia Commons.",
     image_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Barber_shop_Ghana.jpg/400px-Barber_shop_Ghana.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/A_Ghanaian_Barber_in_his_shop.jpg/500px-A_Ghanaian_Barber_in_his_shop.jpg",
     thumbnail_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Barber_shop_Ghana.jpg/200px-Barber_shop_Ghana.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/A_Ghanaian_Barber_in_his_shop.jpg/250px-A_Ghanaian_Barber_in_his_shop.jpg",
     external_link: "https://commons.wikimedia.org/wiki/Category:Barber_signs_in_Ghana",
     tags: ["barber", "sign painting", "Accra", "haircut", "menu board", "portraits", "1990s"],
     curatorial_note:
@@ -1018,9 +1018,9 @@ export const GHANA_COLLECTION_ITEMS: GhanaArchiveItem[] = [
     rights_note:
       "Archival photograph of historical tin label. CC BY via Openverse.",
     image_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Peak_milk_ghana.jpg/300px-Peak_milk_ghana.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Peak_Milk_01.jpg/500px-Peak_Milk_01.jpg",
     thumbnail_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Peak_milk_ghana.jpg/150px-Peak_milk_ghana.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Peak_Milk_01.jpg/250px-Peak_Milk_01.jpg",
     external_link: "https://openverse.org/search/?q=Peak+milk+Ghana",
     tags: [
       "Peak Milk",
@@ -1131,9 +1131,9 @@ export const GHANA_COLLECTION_ITEMS: GhanaArchiveItem[] = [
     rights_status: "open_ingest",
     rights_note: "National flag design — in the public domain. SVG via Wikimedia Commons.",
     image_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Flag_of_Ghana.svg/400px-Flag_of_Ghana.svg.png",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Flag_of_Ghana.svg/500px-Flag_of_Ghana.svg.png",
     thumbnail_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Flag_of_Ghana.svg/200px-Flag_of_Ghana.svg.png",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Flag_of_Ghana.svg/250px-Flag_of_Ghana.svg.png",
     external_link: "https://commons.wikimedia.org/wiki/File:Flag_of_Ghana.svg",
     tags: ["flag", "Ghana", "1957", "Theodosia Okoh", "black star", "tricolour", "national identity", "independence"],
     curatorial_note:
@@ -1165,9 +1165,9 @@ export const GHANA_COLLECTION_ITEMS: GhanaArchiveItem[] = [
     rights_status: "open_ingest",
     rights_note: "State heraldic design — public domain. SVG via Wikimedia Commons.",
     image_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Coat_of_arms_of_Ghana.svg/300px-Coat_of_arms_of_Ghana.svg.png",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Coat_of_arms_of_Ghana.svg/500px-Coat_of_arms_of_Ghana.svg.png",
     thumbnail_url:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Coat_of_arms_of_Ghana.svg/150px-Coat_of_arms_of_Ghana.svg.png",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Coat_of_arms_of_Ghana.svg/250px-Coat_of_arms_of_Ghana.svg.png",
     external_link: "https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_Ghana.svg",
     tags: ["coat of arms", "heraldry", "Ghana", "1957", "state", "black star", "castle", "cocoa", "national identity"],
     curatorial_note:

@@ -29,7 +29,7 @@ export default function WebVitalsReporter() {
     if (typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
       try {
         const body = JSON.stringify({
-          event: "web_vital",
+          eventType: "web_vital",
           ...payload,
           ts: Date.now(),
         });

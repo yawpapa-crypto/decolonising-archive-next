@@ -62,10 +62,18 @@ function splitCreatorName(name: string) {
   return { last, initials };
 }
 
+/** Group credits ("A & B for X", lists, institutions) are cited verbatim rather than inverted into initials. */
+function isGroupCredit(name: string) {
+  return /[&;]|\band\b|\bfor\b|,.*,/.test(name) || name.trim().split(/\s+/).length > 4;
+}
+
 function apaCitation(input: CollectionRecordResearchInput, canonicalUrl: string, accessed: string) {
-  const author = splitCreatorName(creatorLabel(input));
   const date = dateLabel(input);
-  const yearPart = /^\d{4}/.test(date) ? date.match(/\d{4}/)?.[0] : date;
+  const yearPart = /^\d{4}/.test(date) ? date.match(/\d{4}/)?.[0] : date === "Date unrecorded" ? "n.d." : date;
+  const creator = input.creator?.trim();
+  // APA 7: with no author, the title moves to the author position.
+  if (!creator) return `${input.title}. (${yearPart}). ${institutionPart(input)}. ARED: ${input.collectionTitle}. ${canonicalUrl}. Accessed ${accessed}.`;
+  const author = isGroupCredit(creator) ? { last: creator.replace(/\.$/, ""), initials: "" } : splitCreatorName(creator);
   return `${author.last}${author.initials ? `, ${author.initials}` : ""} (${yearPart}). ${input.title}. ${institutionPart(input)}. ARED: ${input.collectionTitle}. ${canonicalUrl}. Accessed ${accessed}.`;
 }
 

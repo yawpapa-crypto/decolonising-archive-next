@@ -22,6 +22,9 @@ export async function updateSession(request: NextRequest) {
     supabaseUrl,
     supabaseKey,
     {
+      global: {
+        fetch: (input, init) => fetch(input, { ...init, signal: AbortSignal.timeout(AUTH_REFRESH_TIMEOUT_MS) }),
+      },
       cookies: {
         getAll() {
           return request.cookies.getAll();
@@ -41,18 +44,9 @@ export async function updateSession(request: NextRequest) {
 
   // IMPORTANT: do NOT remove this `getUser()` call. It refreshes the session
   // when needed and must come immediately after `createServerClient`.
-  const authRefresh = supabase.auth.getUser().catch((error: unknown) => {
-    if (process.env.NODE_ENV !== "production") {
-      console.warn("[supabase proxy] auth refresh failed", error);
-    }
-    return null;
-  });
-
-  const timeout = new Promise<null>((resolve) => {
-    setTimeout(() => resolve(null), AUTH_REFRESH_TIMEOUT_MS);
-  });
-
-  await Promise.race([authRefresh, timeout]);
+  // Await the bounded request; a Promise.race allowed a late refresh to write
+  // cookies onto a response that had already been returned.
+  await supabase.auth.getUser().catch(() => null);
 
   return supabaseResponse;
 }

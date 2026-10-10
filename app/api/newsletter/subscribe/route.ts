@@ -18,7 +18,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Enter a valid email address." }, { status: 400 });
   }
 
-  const result = await subscribeNewsletter({ email, source: "footer" });
+  const src = typeof body === "object" && body !== null && (body as { source?: unknown }).source === "home" ? "home" : "footer";
+  const result = await subscribeNewsletter({ email, source: src });
 
   if (!result.ok) {
     return NextResponse.json(

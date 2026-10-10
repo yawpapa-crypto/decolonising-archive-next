@@ -357,6 +357,7 @@ export default async function WorkspacePage({
         <header className="member-dashboard-header">
           <div>
             <p className="member-dashboard-eyebrow">Member workspace</p>
+            <Link href="/workspace/fieldnotes">Open private Fieldnotes →</Link>
             <h1>{sectionLabel}</h1>
             <p>
               Save records, rerun searches, build reading lists, and send archive

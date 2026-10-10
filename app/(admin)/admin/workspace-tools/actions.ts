@@ -136,7 +136,7 @@ export async function updateAdminProject(
     due_date?: string | null;
   },
 ): Promise<ActionOk<AdminProject> | ActionErr> {
-  const admin = await requireAdmin();
+  await requireAdmin();
   const supabase = await createClient();
   const row: Record<string, unknown> = {};
   if (patch.title !== undefined) {
@@ -243,7 +243,7 @@ export async function updateAdminKanbanTask(
     project_id?: string | null;
   },
 ): Promise<ActionOk<AdminKanbanTask> | ActionErr> {
-  const admin = await requireAdmin();
+  await requireAdmin();
   const supabase = await createClient();
   const row: Record<string, unknown> = {};
   if (patch.title !== undefined) {
@@ -289,7 +289,7 @@ const KANBAN_STATUSES: AdminKanbanStatus[] = [
 export async function saveAdminKanbanOrder(
   order: Record<AdminKanbanStatus, string[]>,
 ): Promise<ActionOk<void> | ActionErr> {
-  const admin = await requireAdmin();
+  await requireAdmin();
   const supabase = await createClient();
   for (const status of KANBAN_STATUSES) {
     const ids = order[status] ?? [];
@@ -357,7 +357,7 @@ export async function updateAdminCalendarEvent(
     event_type?: string | null;
   },
 ): Promise<ActionOk<AdminCalendarEvent> | ActionErr> {
-  const admin = await requireAdmin();
+  await requireAdmin();
   const supabase = await createClient();
   const row: Record<string, unknown> = {};
   if (patch.title !== undefined) {

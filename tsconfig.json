@@ -44,6 +44,7 @@
   ],
   "exclude": [
     "node_modules",
+    "archive",
     ".next/dev",
     ".next-build",
     "tmp",

@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import ts from 'typescript';
+const js=ts.transpileModule(fs.readFileSync('src/lib/member-workspace.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
+const mod={exports:{}};vm.runInNewContext(js,{module:mod,exports:mod.exports,require:()=>({}),Set,Map,Array,Object,Intl});
+const {visibleReadingLists,isTombstoneReadingList}=mod.exports;
+const list=(id,title='Ghana Graphic Design Leads',description='Actual description')=>({id,title,description,is_public:false,group_type:'theme',group_label:null});
+test('merged and deleted Field lists remain hidden in redesigned collection reads',()=>{const rows=[list('kept'),list('merged',undefined,'[field-tombstone:merged-into:kept]'),list('deleted','Travel','[field-tombstone:deleted]')];assert.deepEqual(Array.from(visibleReadingLists(rows),r=>r.id),['kept']);assert.equal(isTombstoneReadingList(rows[2]),true)});
+test('exact clones collapse, but different content and public state remain distinct',()=>{const rows=[list('one'),list('clone'),list('different'),{...list('public'),is_public:true}];const items=[{reading_list_id:'one',record_id:'A'},{reading_list_id:'clone',record_id:'A'},{reading_list_id:'different',record_id:'B'},{reading_list_id:'public',record_id:'A'}];assert.deepEqual(Array.from(visibleReadingLists(rows,items),r=>r.id),['one','different','public'])});

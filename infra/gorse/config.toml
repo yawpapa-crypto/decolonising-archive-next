@@ -1,0 +1,37 @@
+[database]
+cache_store = "redis://redis:6379"
+data_store = "postgres://gorse:gorse_pass@postgres:5432/gorse?sslmode=disable"
+
+[master]
+port = 8086
+host = "0.0.0.0"
+http_port = 8088
+http_host = "0.0.0.0"
+
+[server]
+api_key = "ared-local-key"
+default_n = 30
+
+[recommend]
+cache_size = 200
+cache_expire = "72h"
+
+[recommend.data_source]
+positive_feedback_types = ["follow", "open", "save", "more"]
+read_feedback_types = ["seen"]
+
+[recommend.popular]
+popular_window = "720h"
+
+[recommend.user_neighbors]
+neighbor_type = "similar"
+
+[recommend.item_neighbors]
+neighbor_type = "similar"
+
+[recommend.collaborative]
+model_fit_period = "60m"
+model_search_period = "180m"
+
+[recommend.replacement]
+enable_replacement = false

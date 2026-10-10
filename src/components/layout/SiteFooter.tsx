@@ -23,9 +23,9 @@ const NAV_GROUPS = [
   {
     label: "Workbench",
     links: [
-      { href: "/my/workbench", label: "My Workbench" },
-      { href: "/my/workbench/notes", label: "Notes" },
-      { href: "/my/workbench/reading-lists", label: "Reading Lists" },
+      { href: "/home-next/elements", label: "My Workbench" },
+      { href: "/home-next/elements", label: "Notes" },
+      { href: "/home-next/elements", label: "Reading Lists" },
     ],
   },
   {

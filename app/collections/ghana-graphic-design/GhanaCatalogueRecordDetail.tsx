@@ -1,3 +1,4 @@
+import SourceLink from "@/components/recommendations/SourceLink";
 import Link from "next/link";
 import type { CatalogueRecord, CatalogueEvidence, CatalogueVerification } from "@/lib/catalogue/types";
 import "@/app/styles/research-actions.css";
@@ -205,14 +206,7 @@ export default function GhanaCatalogueRecordDetail({
 
           <div className="ghana-record-panel-actions">
             {record.sourceUrl && (
-              <a
-                href={record.sourceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="ghana-record-action-link"
-              >
-                Primary source ↗
-              </a>
+              <SourceLink id={record.id} href={record.sourceUrl} className="ghana-record-action-link">Primary source ↗</SourceLink>
             )}
             {record.secondarySourceUrl && (
               <a

@@ -1,3 +1,5 @@
+import Image from "next/image";
+import { editorialPhoto } from "@/lib/media/unsplash";
 import { ReactNode } from "react";
 
 type Props = {
@@ -18,12 +20,14 @@ const COPY = {
   },
 };
 
-export default function AuthShell({ mode, children }: Props) {
+export default async function AuthShell({ mode, children }: Props) {
   const copy = COPY[mode];
+  const photo = await editorialPhoto("Ghana architecture coast");
 
   return (
     <main className="auth-split-page">
-      <aside className="auth-split-visual" aria-hidden="true">
+      <aside className="auth-split-visual">
+        {photo && <Image unoptimized src={photo.src} alt={photo.alt} fill sizes="(max-width: 760px) 100vw, 50vw" className="auth-editorial-photo" />}
         <div className="auth-split-visual-overlay" />
         <div className="auth-split-visual-content">
           <p className="auth-split-brand">Decolonising Archive</p>
@@ -36,6 +40,7 @@ export default function AuthShell({ mode, children }: Props) {
             <li>Workbench notes &amp; community reading</li>
           </ul>
         </div>
+        {photo && <p className="auth-photo-credit">Photo by <a href={photo.credit} target="_blank" rel="noopener noreferrer">{photo.photographer}</a> on <a href="https://unsplash.com/?utm_source=decolonising_archive&utm_medium=referral">Unsplash</a></p>}
       </aside>
       <section className="auth-split-panel">{children}</section>
     </main>

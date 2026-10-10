@@ -1,5 +1,7 @@
 import { ReactNode } from "react";
-import Navbar from "@/src/components/layout/Navbar";
+import { display, ui } from "@/app/home-next/font";
+import "@/app/home-next/home.css";
+import "@/app/home-next/for-you/for-you.css";
 
 type Props = {
   children: ReactNode;
@@ -8,9 +10,8 @@ type Props = {
 /** Auth pages: navbar only — no footer so the split layout can breathe. */
 export default function AuthPageShell({ children }: Props) {
   return (
-    <>
-      <Navbar />
+    <div className={`ared-home ex-ui auth-gallery ${display.variable} ${ui.variable}`}>
       {children}
-    </>
+    </div>
   );
 }

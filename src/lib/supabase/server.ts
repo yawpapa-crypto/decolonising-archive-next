@@ -7,6 +7,7 @@
 
 import { createServerClient } from "@supabase/ssr";
 import type { SupabaseClient, User } from "@supabase/supabase-js";
+import { discoveryAuthContext } from "./request-context";
 import { cookies } from "next/headers";
 
 const GET_USER_TIMEOUT_MS =
@@ -44,6 +45,8 @@ export async function getAuthenticatedUser(
 }
 
 export async function createClient() {
+  const scoped = discoveryAuthContext.getStore();
+  if (scoped) return scoped;
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim();
 

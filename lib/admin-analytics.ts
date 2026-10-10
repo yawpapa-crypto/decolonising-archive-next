@@ -10,6 +10,7 @@ type JsonRecord = Record<string, unknown>;
 
 export type AnalyticsEventInput = {
   eventType: string;
+  userId?: string | null;
   area?: string | null;
   action?: string | null;
   targetType?: string | null;
@@ -33,6 +34,8 @@ export type SearchEventInput = {
   status?: string | null;
   metadata?: JsonRecord | null;
   sessionId?: string | null;
+  /** Known user id (or null for a visitor) when logging outside the request, e.g. from after(). */
+  userId?: string | null;
 };
 
 export type ErrorEventInput = {
@@ -208,7 +211,7 @@ export async function logActivityServer(input: AnalyticsEventInput): Promise<Ana
     const eventType = clampText(input.eventType, 120);
     if (!eventType) return { ok: false, error: "Missing event type", code: "missing_event_type" };
 
-    const userId = await getRequestUserId();
+    const userId = input.userId !== undefined ? input.userId : await getRequestUserId();
     const isSessionStart = eventType === "session_start";
 
     await getSupabase().from("user_activity_events").insert({
@@ -244,9 +247,9 @@ export async function logSearchEvent(input: SearchEventInput): Promise<Analytics
     const query = clampText(input.query, 512);
     if (!query) return { ok: false, error: "Missing search query", code: "missing_query" };
 
-    const userId = await getRequestUserId();
+    const userId = input.userId !== undefined ? input.userId : await getRequestUserId();
 
-    await getSupabase().from("search_events").insert({
+    const { error: insertError } = await getSupabase().from("search_events").insert({
       user_id: userId,
       session_id: clampOptionalText(input.sessionId, 160),
       query,
@@ -258,9 +261,14 @@ export async function logSearchEvent(input: SearchEventInput): Promise<Analytics
       status: clampOptionalText(input.status, 40) ?? "success",
       metadata: sanitizeAnalyticsMetadata(input.metadata),
     });
+    if (insertError) {
+      console.error("[analytics] search_events insert failed:", insertError.message);
+      return { ok: false, error: insertError.message, code: "search_log_failed" };
+    }
 
     await logActivityServer({
       eventType: input.status === "failed" ? "search_failed" : "search_submitted",
+      userId,
       area: "library",
       action: "search",
       query,

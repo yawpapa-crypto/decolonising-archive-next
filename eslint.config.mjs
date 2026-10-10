@@ -22,6 +22,7 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "tmp/**",
+    "archive/**",
     ".next-build/**",
     "app/_payload_disabled/**",
     "app/app.js",

@@ -1,5 +1,12 @@
+import ProposeDialog from "@/app/home-next/contribute/ProposeDialog";
+import CitationTools from "@/components/knowledge/CitationTools";
+import { publicKnowledgeGraph } from "@/lib/knowledge/server";
+import { connectedRecords } from "@/lib/knowledge/model";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import ShareButton from "@/app/home-next/ShareButton";
+import SaveRecordButton from "@/app/home-next/SaveRecordButton";
 import ArchiveAppPage from "@/src/components/archive/ArchiveAppPage";
 import JsonLd from "@/src/components/kgo/JsonLd";
 import { entityPath } from "@/lib/kgo/entities";
@@ -61,24 +68,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function RecordRoutePage({ params }: Props) {
   const { id } = await params;
   const record = await getPublicArchiveRecord(id);
+  if (!record) redirect("/");
   const all = await getPublicArchiveRecords();
-  const related = record
-    ? all
-        .filter((item) => item.id !== record.id)
-        .filter((item) => {
-          const overlap = new Set([
-            ...(record.knowledgeAreas || []),
-            ...(record.tags || []),
-            ...(record.communityOrCulturalGroup || []),
-          ]);
-          return (
-            (item.knowledgeAreas || []).some((value) => overlap.has(value)) ||
-            (item.tags || []).some((value) => overlap.has(value)) ||
-            item.sourceName === record.sourceName
-          );
-        })
-        .slice(0, 6)
-    : [];
+  const connections = connectedRecords(await publicKnowledgeGraph(), record.id, 6);
+  const related = connections.map(c => all.find(r => r.id===c.id)).filter((r):r is NonNullable<typeof r> => Boolean(r));
 
   return (
     <>
@@ -105,6 +98,10 @@ export default async function RecordRoutePage({ params }: Props) {
             <h1 style={{ margin: "0 0 12px", fontSize: "clamp(1.4rem, 3vw, 2rem)", lineHeight: 1.15 }}>
               {record.title}
             </h1>
+            <SaveRecordButton item={{ id: record.id, title: record.title, source: record.sourceName, kind: record.recordType?.[0] || record.type, href: `/records/${encodeURIComponent(record.id)}` }} />
+            <ShareButton url={`/records/${encodeURIComponent(record.id)}`} title={record.title} text={[record.title, record.creator, record.sourceName].filter(Boolean).join(" · ")} style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "10px 18px", borderRadius: 999, border: "1px solid #d8d3cc", background: "#fff", color: "#0d0d0d", font: "inherit", cursor: "pointer", marginLeft: 8 }} />
+            <CitationTools id={record.id} />
+            <ProposeDialog record={record.id}>Propose a correction or connection</ProposeDialog>
             <p style={{ marginBottom: 16, color: "#3f433d", lineHeight: 1.6 }}>{recordDescription(record)}</p>
             <dl style={{ display: "grid", gridTemplateColumns: "160px 1fr", gap: "8px 16px", marginBottom: 20 }}>
               {record.creator ? (
@@ -166,6 +163,10 @@ export default async function RecordRoutePage({ params }: Props) {
               </section>
             ) : null}
 
+            <p style={{ marginTop: 24, fontSize: 14 }}>
+              <Link href={`/feedback?about=${encodeURIComponent(`/records/${record.id}`)}`}>Report a problem with this record</Link>
+            </p>
+
             {related.length ? (
               <section>
                 <h2 style={{ fontSize: 18, marginBottom: 8 }}>Related records</h2>
@@ -173,6 +174,7 @@ export default async function RecordRoutePage({ params }: Props) {
                   {related.map((item) => (
                     <li key={item.id}>
                       <Link href={`/records/${encodeURIComponent(item.id)}`}>{item.title}</Link>
+                      <small style={{display:"block"}}>{connections.find(c=>c.id===item.id)?.reasons.join(" · ")}</small>
                     </li>
                   ))}
                 </ul>

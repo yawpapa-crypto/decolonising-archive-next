@@ -314,21 +314,6 @@ export default function NavbarClient({
                 ) : null}
               </Link>
               <Link
-                href="/my/workbench"
-                className="member-quick-nav-link"
-                aria-label="Archive Workbench"
-                title="Archive Workbench"
-                onClick={handleNavClick}
-              >
-                <Layers
-                  className="member-quick-nav-icon"
-                  size={18}
-                  strokeWidth={2}
-                  aria-hidden
-                />
-                <span className="sr-only">Archive Workbench</span>
-              </Link>
-              <Link
                 href="/workspace?section=notifications"
                 className="member-quick-nav-link"
                 aria-label={notificationsAriaLabel(memberCounts.notificationsCount)}
@@ -392,14 +377,6 @@ export default function NavbarClient({
                           : "Member"}
                     </span>
                   </div>
-                  <Link
-                    href="/my/workbench"
-                    className="nav-avatar-link"
-                    role="menuitem"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Archive Workbench
-                  </Link>
                   <Link
                     href="/workspace"
                     className="nav-avatar-link"
@@ -554,14 +531,6 @@ export default function NavbarClient({
                       : memberCounts.readingListsCount}
                   </span>
                 ) : null}
-              </Link>
-              <Link
-                href="/my/workbench"
-                className="nav-link nav-mobile-member-link"
-                onClick={handleNavClick}
-                aria-label="Archive Workbench"
-              >
-                <span>Workbench</span>
               </Link>
               <Link
                 href="/workspace?section=notifications"

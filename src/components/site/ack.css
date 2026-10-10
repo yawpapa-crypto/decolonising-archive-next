@@ -1,0 +1,7 @@
+.ack-veil{position:fixed;inset:0;z-index:2000;display:grid;place-items:center;padding:20px;background:rgba(255,255,255,.35);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.ack-box{max-width:440px;width:100%;padding:22px 24px 20px;border:1px solid #000;border-radius:4px;background:transparent;color:#000;font-family:var(--font-cosmosoracle-src),Georgia,serif;outline:none}
+.ack-title{margin:0 0 10px;font:500 12px/1.2 var(--font-ared-ui,Inter,system-ui,sans-serif);letter-spacing:.04em;text-transform:uppercase}
+.ack-box p{margin:0 0 18px;font-size:14px;line-height:1.55;font-weight:400}
+.ack-close{height:34px;padding:0 18px;border:1px solid #000;border-radius:9999px;background:transparent;color:#000;font:500 13px var(--font-ared-ui,Inter,system-ui,sans-serif);cursor:pointer;transition:background .2s,color .2s}
+.ack-close:hover,.ack-close:focus-visible{background:#000;color:#fff;outline:none}
+@media(max-width:520px){.ack-box{padding:24px 20px}.ack-box p{font-size:14px}}

@@ -16,6 +16,7 @@ export default function OAuthButtons({ next }: { next: string }) {
   async function signIn(provider: Provider) {
     setPending(provider);
     setError(null);
+    try {
     const supabase = createClient();
     const origin = window.location.origin;
     const { error } = await supabase.auth.signInWithOAuth({
@@ -25,7 +26,11 @@ export default function OAuthButtons({ next }: { next: string }) {
       },
     });
     if (error) {
-      setError(error.message);
+      setError("Couldn’t open sign-in. Please try again.");
+      setPending(null);
+    }
+    } catch {
+      setError("Check your connection and try signing in again.");
       setPending(null);
     }
     // On success the browser is redirected by Supabase; no further action.
@@ -51,7 +56,7 @@ export default function OAuthButtons({ next }: { next: string }) {
         {pending === "github" ? "Redirecting…" : "Continue with GitHub"}
       </button>
 
-      {error ? <p className="auth-error">{error}</p> : null}
+      {error ? <p className="auth-error" role="alert">{error}</p> : null}
     </div>
   );
 }

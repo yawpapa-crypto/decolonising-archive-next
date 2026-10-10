@@ -1,11 +1,13 @@
 import "server-only";
 
-export type NewsletterSource = "signup" | "signin" | "footer";
+export type NewsletterSource = "signup" | "signin" | "footer" | "home" | "android-testers";
 
 export type SubscribeNewsletterInput = {
   email: string;
   firstName?: string | null;
   source: NewsletterSource;
+  /** Name of the env var holding the Brevo list id. Defaults to the newsletter list. */
+  listEnv?: string;
 };
 
 export type SubscribeNewsletterResult = {
@@ -36,7 +38,7 @@ export async function subscribeNewsletter(
     return { ok: false, error: "Valid email is required." };
   }
 
-  const listIdRaw = process.env.BREVO_NEWSLETTER_LIST_ID?.trim();
+  const listIdRaw = process.env[input.listEnv ?? "BREVO_NEWSLETTER_LIST_ID"]?.trim();
   const listId = listIdRaw ? Number(listIdRaw) : NaN;
 
   const body: Record<string, unknown> = {

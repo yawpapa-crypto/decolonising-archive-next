@@ -88,63 +88,14 @@ function isDefaultPlaceholder(card: WorkbenchBoardCard) {
   return match.titles.includes(title) && match.bodies.includes(body);
 }
 
-const FIGMA_DEMO_BY_INDEX: Array<Partial<WorkbenchNote> & { type?: WorkbenchNote["type"] }> = [
-  {
-    type: "question",
-    title: "How did archival practices change during colonial administration?",
-    content: "",
-  },
-  {
-    type: "image",
-    title: "Colonial Archive Building",
-    content: "Photograph from 1890s showing the original archive structure",
-  },
-  {
-    type: "quote",
-    title: "",
-    content:
-      "The archive is not a neutral repository of facts but a site of power and exclusion.",
-    quoteSource: "Ann Laura Stoler, 'Colonial Archives and the Arts of Governance'",
-    sourceCitation: "cited",
-  },
-  {
-    type: "source",
-    title: "Colonial Administration Report 1923",
-    content: "Government of India · 1923 · Official Archive",
-    sourceOrigin: "saved-record",
-  },
-  {
-    type: "task",
-    title: "Verify citation format",
-    content: "Check if all colonial-era sources follow Chicago Manual style.",
-  },
-  {
-    type: "note",
-    title: "What voices are missing from this archive?",
-    content:
-      "Consider whose perspectives are not represented in the official colonial records",
-  },
-];
 
+/** Notes show what the researcher wrote. Invented demo content is never substituted. */
 export function applyNoteDisplayFallback(
   note: WorkbenchNote,
-  card: WorkbenchBoardCard,
-  index: number,
+  _card: WorkbenchBoardCard,
+  _index: number,
 ): WorkbenchNote {
-  if (!isDefaultPlaceholder(card)) return note;
-
-  const demo = FIGMA_DEMO_BY_INDEX[index % FIGMA_DEMO_BY_INDEX.length];
-  if (!demo) return note;
-
-  return {
-    ...note,
-    type: demo.type ?? note.type,
-    title: demo.title ?? note.title,
-    content: demo.content ?? note.content,
-    quoteSource: demo.quoteSource ?? note.quoteSource,
-    sourceCitation: demo.sourceCitation ?? note.sourceCitation,
-    sourceOrigin: demo.sourceOrigin ?? note.sourceOrigin,
-  };
+  return note;
 }
 
 /** Duplicate a card as another type without mutating the original (offset +32px). */

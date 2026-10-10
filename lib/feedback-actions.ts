@@ -57,5 +57,19 @@ export async function submitFeedbackReport(formData: FormData): Promise<Feedback
     metadata: { feedback_type: type, page_url: page_url ?? undefined },
   });
 
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.ADMIN_NOTIFICATIONS_FROM_EMAIL;
+  if (!apiKey || !from) return { ok: false, error: "Your report was saved. Please email info@yofosuasare.com while delivery is unavailable." };
+  try {
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({ from, to: ["info@yofosuasare.com"], subject: `Archive feedback: ${type}`, text: `${message}\n\nPage: ${page_url ?? "Not supplied"}` }),
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!response.ok) throw new Error("Email delivery failed");
+  } catch {
+    return { ok: false, error: "Your report was saved, but email delivery failed. You can also contact info@yofosuasare.com." };
+  }
   return { ok: true };
 }

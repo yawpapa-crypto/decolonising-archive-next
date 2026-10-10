@@ -3,12 +3,6 @@
 import { createClient } from "@/src/lib/supabase/server";
 import { getAuthenticatedUser } from "@/src/lib/supabase/server";
 
-async function getAuthedUserId(): Promise<string | null> {
-  const supabase = await createClient();
-  const user = await getAuthenticatedUser(supabase);
-  return user?.id ?? null;
-}
-
 export async function markBetaNoticeSeen(): Promise<{ ok: boolean }> {
   try {
     const supabase = await createClient();

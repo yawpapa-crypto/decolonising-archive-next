@@ -42,7 +42,7 @@ export default async function ResetPasswordPage({
                 name="password"
                 autoComplete="new-password"
                 required
-                minLength={8}
+                minLength={12}
               />
             </label>
             <label className="auth-field">
@@ -52,7 +52,7 @@ export default async function ResetPasswordPage({
                 name="confirm_password"
                 autoComplete="new-password"
                 required
-                minLength={8}
+                minLength={12}
               />
             </label>
             <button type="submit" className="auth-submit" disabled={!user}>

@@ -10,10 +10,6 @@ function str(row: RawRow, key: string): string | null {
   return typeof v === "string" ? v : null;
 }
 
-function num(row: RawRow, key: string): number {
-  const v = row[key];
-  return typeof v === "number" ? v : 0;
-}
 
 export type AdminUserDetail = {
   profile: RawRow | null;
@@ -158,7 +154,6 @@ export async function getAdminUserDetail(userId: string): Promise<AdminUserDetai
       ? (communityCommentsResult.value.data ?? []).length
       : 0;
 
-  const totalDuration = sessions.reduce((sum, s) => sum + num(s, "duration_seconds"), 0);
 
   return {
     profile,

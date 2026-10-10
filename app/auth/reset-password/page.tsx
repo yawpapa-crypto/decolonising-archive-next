@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { safeNextPath } from "@/src/lib/security/validate";
 import { createClient } from "@/src/lib/supabase/client";
 
 type SupabaseBrowserClient = ReturnType<typeof createClient>;
 
 export default function ResetPasswordPage() {
   const router = useRouter();
-  const [supabase, setSupabase] = useState<SupabaseBrowserClient | null>(null);
+  const supabaseRef = useRef<SupabaseBrowserClient | null>(null);
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -17,11 +18,8 @@ export default function ResetPasswordPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    setSupabase(createClient());
-  }, []);
-
-  useEffect(() => {
-    if (!supabase) return;
+    const supabase = createClient();
+    supabaseRef.current = supabase;
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event) => {
@@ -30,19 +28,20 @@ export default function ResetPasswordPage() {
       }
     });
 
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) setIsReady(true);
-    });
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) setIsReady(true);
+      else setMessage("This recovery link has expired or is incomplete. Request a new link from sign-in.");
+    }).catch(() => setMessage("We couldn’t verify your recovery link. Check your connection and try again."));
 
     return () => subscription.unsubscribe();
-  }, [supabase]);
+  }, []);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setMessage("");
 
-    if (password.length < 8) {
-      setMessage("Please use at least 8 characters.");
+    if (password.length < 12) {
+      setMessage("Please use at least 12 characters.");
       return;
     }
 
@@ -51,14 +50,15 @@ export default function ResetPasswordPage() {
       return;
     }
 
-    if (!supabase) {
+    const supabase = supabaseRef.current;
+    if (!supabase || !isReady) {
       setMessage("Authentication is still loading. Please try again.");
       return;
     }
 
     setIsSubmitting(true);
 
-    const { error } = await supabase.auth.updateUser({ password });
+    const { error } = await supabase.auth.updateUser({ password }).catch(() => ({ error: { message: "Your password could not be updated. Check your connection and try again." } }));
 
     if (error) {
       setIsSubmitting(false);
@@ -66,15 +66,10 @@ export default function ResetPasswordPage() {
       return;
     }
 
-    await fetch("/api/ared-field/sync-password", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    }).catch(() => undefined);
-
-    setIsSubmitting(false);
-    setMessage("Password updated. Redirecting to admin sign in...");
-    setTimeout(() => router.push("/admin/signin"), 1200);
+    setMessage("Password updated. Returning to ARED…");
+    const next = safeNextPath(new URLSearchParams(window.location.search).get("next"), "/home-next/for-you");
+    router.replace(next);
+    router.refresh();
   }
 
   return (
@@ -112,7 +107,7 @@ export default function ResetPasswordPage() {
         </h1>
 
         <p style={{ margin: "0 0 24px", color: "rgba(0,0,0,0.65)", lineHeight: 1.6 }}>
-          Enter a new password for your admin account.
+          Choose a new password for your ARED account.
         </p>
 
         {!isReady && (
@@ -132,6 +127,8 @@ export default function ResetPasswordPage() {
             New password
           </span>
           <input
+            autoComplete="new-password"
+            minLength={12}
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -145,6 +142,8 @@ export default function ResetPasswordPage() {
             Confirm password
           </span>
           <input
+            autoComplete="new-password"
+            minLength={12}
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
@@ -170,7 +169,7 @@ export default function ResetPasswordPage() {
           {isSubmitting ? "Updating..." : "Update password"}
         </button>
 
-        {message && <p style={{ marginTop: 16, fontSize: 14 }}>{message}</p>}
+        {message && <p role="status" aria-live="polite" style={{ marginTop: 16, fontSize: 14 }}>{message}</p>}
       </form>
     </main>
   );

@@ -13,7 +13,12 @@
     "db:migrations:check": "node scripts/check-migration-versions.mjs",
     "db:migrations:lint": "node scripts/check-migrations.js",
     "smoke:test": "node --experimental-specifier-resolution=node scripts/smoke-test-review-api.mjs",
-    "ui:smoke": "node --experimental-specifier-resolution=node scripts/ui-smoke-check.mjs"
+    "ui:smoke": "node --experimental-specifier-resolution=node scripts/ui-smoke-check.mjs",
+    "perf:budget": "node scripts/perf-budget.mjs",
+    "test:safety": "node --test tests/account-safety.test.mjs tests/redirect-security.test.mjs tests/following-rank.test.mjs",
+    "audit:layout": "node scripts/audit/layout-check.mjs",
+    "audit:layout:quick": "AUDIT_QUICK=1 node scripts/audit/layout-check.mjs",
+    "audit:install-hook": "node scripts/audit/install-hook.mjs"
   },
   "dependencies": {
     "@deck.gl/aggregation-layers": "^9.3.2",
@@ -63,6 +68,7 @@
     "fontkit": "^2.0.4",
     "framer-motion": "^12.39.0",
     "graphql": "^17.0.2",
+    "gsap": "^3.15.0",
     "html-to-image": "^1.11.13",
     "lucide-react": "^1.14.0",
     "maplibre-gl": "^5.24.0",
@@ -89,6 +95,7 @@
     "@types/topojson-client": "^3.1.5",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
+    "playwright-core": "1.48.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   },
