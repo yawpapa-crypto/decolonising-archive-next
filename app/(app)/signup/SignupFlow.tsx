@@ -14,14 +14,14 @@ export default function SignupFlow({ next, error }: { next: string; error?: stri
     if (step > 0) return setStep(0);
     // Return to wherever the visitor came from on ARED; otherwise to the archive.
     const sameSite = typeof document !== "undefined" && document.referrer.startsWith(location.origin);
-    if (sameSite && history.length > 1) router.back(); else router.push("/home-next");
+    if (sameSite && history.length > 1) router.back(); else router.push("/");
   };
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const emailInput = useRef<HTMLInputElement>(null);
   return <section className="signup-sequence">
-    <div className="signup-progress"><button type="button" className="signup-back" aria-label={step === 0 ? "Back" : "Back to email"} onClick={goBack}><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg></button><Link href="/home-next" aria-label="ARED home"><AredLogo size={30} /></Link><span className="signup-step">{step + 1} / 2</span></div>
+    <div className="signup-progress"><button type="button" className="signup-back" aria-label={step === 0 ? "Back" : "Back to email"} onClick={goBack}><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg></button><Link href="/" aria-label="ARED home"><AredLogo size={30} /></Link><span className="signup-step">{step + 1} / 2</span></div>
     <div className="signup-stage" key={step}>
       <h1>{onboardingConfig.signup[step].title}</h1>
       <p>{step === 0 ? <>Create an account, or <Link href={`/signin?next=${encodeURIComponent(next)}`}>log in</Link></> : onboardingConfig.signup[1].description}</p>
@@ -36,6 +36,6 @@ export default function SignupFlow({ next, error }: { next: string; error?: stri
         <AuthSubmit disabled={password.length < onboardingConfig.signup[1].minLength} pendingLabel="Creating your account…">Create account</AuthSubmit>
         <p className="signup-terms">Confirm your email, then personalise ARED when you’re ready.</p>
       </form>}
-    </div><Link href="/home-next" className="signup-brand">ARED</Link>
+    </div><Link href="/" className="signup-brand">ARED</Link>
   </section>;
 }

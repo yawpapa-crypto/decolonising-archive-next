@@ -64,7 +64,7 @@ export default function ProfileCollections() {
 
   return <>
     <div className="account-tabs" role="tablist" aria-label="Your archive"><button role="tab" aria-selected={tab === "saved"} onClick={() => setTab("saved")}>Saved records</button><button role="tab" aria-selected={tab === "collections"} onClick={() => setTab("collections")}>Collections {lists.length}</button></div>
-    {tab === "saved" ? <div className="account-empty"><h2>Your saved knowledge</h2><p>Every record you have saved, in one place.</p><div className="account-actions" style={{ justifyContent: "center" }}><Link href="/home-next/elements" className="ared-btn ared-btn--outline">Open saved records</Link></div></div> : <>
+    {tab === "saved" ? <div className="account-empty"><h2>Your saved knowledge</h2><p>Every record you have saved, in one place.</p><div className="account-actions" style={{ justifyContent: "center" }}><Link href="/elements" className="ared-btn ared-btn--outline">Open saved records</Link></div></div> : <>
       <div className="pc-bar">
         <Select compact name="order" label="Order collections" value={order} onChange={(v) => changeOrder(v as Order)} options={[{ value: "latest", label: "Latest" }, { value: "name", label: "Name A to Z" }, { value: "group", label: "Group by name" }]} />
         <SizeControl value={size} onChange={setSize} />
@@ -83,7 +83,7 @@ export default function ProfileCollections() {
             {i === 0 && <button type="button" className="account-collection" style={{ border: 0, background: "transparent", textAlign: "left", cursor: "pointer" }} onClick={() => setCreating(true)}><span className="account-cover">+</span><strong>New collection</strong><small>Group related knowledge</small></button>}
             {s.items.map((l) => (
               <div className="pc-item" key={l.id}>
-                <Link className="account-collection" href={`/home-next/collections/${l.id}`}><span className="account-cover" style={l.cover ? { backgroundImage: `url("${l.cover.replace(/"/g, "%22")}")`, backgroundSize: "cover", backgroundPosition: "center", color: "transparent" } : undefined}>{l.title.slice(0, 1)}</span>{renaming === l.id ? null : <><strong>{l.title}</strong><small>{l.count} {l.count === 1 ? "record" : "records"}</small></>}</Link>
+                <Link className="account-collection" href={`/collections/${l.id}`}><span className="account-cover" style={l.cover ? { backgroundImage: `url("${l.cover.replace(/"/g, "%22")}")`, backgroundSize: "cover", backgroundPosition: "center", color: "transparent" } : undefined}>{l.title.slice(0, 1)}</span>{renaming === l.id ? null : <><strong>{l.title}</strong><small>{l.count} {l.count === 1 ? "record" : "records"}</small></>}</Link>
                 {renaming === l.id && <form className="pc-rename" onSubmit={(e) => rename(l.id, e)}><label className="rg-sr" htmlFor={`r-${l.id}`}>Collection name</label><input id={`r-${l.id}`} value={draft} onChange={(e) => setDraft(e.target.value)} maxLength={120} required autoFocus /><button className="ared-btn ared-btn--primary ared-btn--sm">Save</button><button type="button" className="ared-btn ared-btn--outline ared-btn--sm" onClick={() => setRenaming(null)}>Cancel</button></form>}
                 {renaming !== l.id && (deleting === l.id
                   ? <div className="pc-menu" style={{ opacity: 1 }}><button type="button" onClick={() => remove(l.id)}>Delete</button><button type="button" onClick={() => setDeleting(null)}>Keep</button></div>

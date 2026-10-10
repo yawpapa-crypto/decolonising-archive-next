@@ -24,12 +24,12 @@ function siteUrl() {
 }
 
 function safeNext(value: FormDataEntryValue | null): string {
-  return safeNextPath(typeof value === "string" ? value : null, "/home-next/for-you");
+  return safeNextPath(typeof value === "string" ? value : null, "/for-you");
 }
 
 function safeStatusPath(value: FormDataEntryValue | null): string {
   const v = typeof value === "string" ? value : "";
-  if (v === "/admin-login" || v === "/home-next/settings") return v;
+  if (v === "/admin-login" || v === "/settings") return v;
   return "/signin";
 }
 
@@ -96,7 +96,7 @@ export async function signInWithPassword(formData: FormData) {
 export async function requestPasswordReset(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const statusPath = safeStatusPath(formData.get("statusPath"));
-  const next = safeNextPath(String(formData.get("next") ?? ""), "/home-next/for-you");
+  const next = safeNextPath(String(formData.get("next") ?? ""), "/for-you");
 
   if (!email) {
     redirect(

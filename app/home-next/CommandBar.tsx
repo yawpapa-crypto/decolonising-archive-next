@@ -4,13 +4,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const GO = [
-  { label: "For You", href: "/home-next/for-you" },
-  { label: "Explore", href: "/home-next/explore" },
-  { label: "Saved records", href: "/home-next/elements" },
+  { label: "For You", href: "/for-you" },
+  { label: "Explore", href: "/explore" },
+  { label: "Saved records", href: "/elements" },
   { label: "About", href: "/about" },
-  { label: "Profile", href: "/home-next/profile" },
-  { label: "Settings", href: "/home-next/settings" },
-  { label: "Help center", href: "/home-next/help" },
+  { label: "Profile", href: "/profile" },
+  { label: "Settings", href: "/settings" },
+  { label: "Help center", href: "/help" },
 ];
 const IDEAS = ["goldweights", "kente cloth", "adinkra", "Asante", "Yoruba", "manuscripts", "Benin bronzes", "oral literature", "protest posters", "textiles"];
 
@@ -52,12 +52,12 @@ export default function CommandBar() {
     const low = t.toLowerCase();
     const out: Row[] = [];
     if (t) {
-      out.push({ key: "s", label: `Search Explore for ‘${t}’`, hint: "Enter", href: `/home-next/explore?q=${encodeURIComponent(t)}` });
-      out.push({ key: "l", label: `Search Explore for ‘${t}’`, hint: "Explore", href: `/home-next/explore?q=${encodeURIComponent(t)}` });
+      out.push({ key: "s", label: `Search Explore for ‘${t}’`, hint: "Enter", href: `/explore?q=${encodeURIComponent(t)}` });
+      out.push({ key: "l", label: `Search Explore for ‘${t}’`, hint: "Explore", href: `/explore?q=${encodeURIComponent(t)}` });
     }
     GO.filter((g) => !low || g.label.toLowerCase().includes(low)).forEach((g) => out.push({ key: g.href, label: g.label, hint: "Go to", href: g.href }));
-    IDEAS.filter((s) => low && s.toLowerCase().includes(low) && s.toLowerCase() !== low).slice(0, 4).forEach((s) => out.push({ key: `i-${s}`, label: s, hint: "Search", href: `/home-next/explore?q=${encodeURIComponent(s)}` }));
-    if (!t) IDEAS.slice(0, 5).forEach((s) => out.push({ key: `i-${s}`, label: s, hint: "Try", href: `/home-next/explore?q=${encodeURIComponent(s)}` }));
+    IDEAS.filter((s) => low && s.toLowerCase().includes(low) && s.toLowerCase() !== low).slice(0, 4).forEach((s) => out.push({ key: `i-${s}`, label: s, hint: "Search", href: `/explore?q=${encodeURIComponent(s)}` }));
+    if (!t) IDEAS.slice(0, 5).forEach((s) => out.push({ key: `i-${s}`, label: s, hint: "Try", href: `/explore?q=${encodeURIComponent(s)}` }));
     return out;
   }, [q]);
 

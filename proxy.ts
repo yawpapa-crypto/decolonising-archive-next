@@ -13,7 +13,7 @@ export async function proxy(request: NextRequest) {
   // Retired Research Bench entry points no longer execute their route handlers.
   const pathname = request.nextUrl.pathname;
   if (pathname === "/my/workbench" || pathname.startsWith("/my/workbench/")) {
-    return NextResponse.redirect(new URL("/home-next/library", request.url));
+    return NextResponse.redirect(new URL("/library", request.url));
   }
   if (pathname === "/api/workbench" || pathname.startsWith("/api/workbench/")) {
     return NextResponse.json({ error: "Research Bench has been retired." }, { status: 410 });

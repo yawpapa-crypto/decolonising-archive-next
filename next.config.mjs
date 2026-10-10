@@ -66,22 +66,39 @@ const nextConfig = {
     }
     return config;
   },
+  // Public site: clean addresses (ared.design/, /explore, /for-you, …). The pages live in app/home-next;
+  // these rewrites serve them at the root and take precedence over the retired top-level pages.
+  async rewrites() {
+    const sections = ["c", "contribute", "elements", "explore", "fieldnotes", "following", "for-you", "help", "onboarding", "preferences", "profile", "settings"];
+    return {
+      beforeFiles: [
+        { source: "/", destination: "/home-next" },
+        ...sections.flatMap((s) => [
+          { source: `/${s}`, destination: `/home-next/${s}` },
+          { source: `/${s}/:path*`, destination: `/home-next/${s}/:path*` },
+        ]),
+        // Personal library collections (reading-list UUIDs). Other /collections/<slug> go to curated collections.
+        { source: "/collections/:id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})", destination: "/home-next/collections/:id" },
+      ],
+    };
+  },
   async redirects() {
     return [
       { source: "/home", destination: "/", permanent: true },
-      // ared.design opens on the current public home. Temporary (307) so it can change without cached redirects.
-      { source: "/", destination: "/home-next", permanent: false },
-      { source: "/discover", destination: "/home-next/for-you", permanent: false },
-      { source: "/for-you", destination: "/home-next/for-you", permanent: false },
-      // The old collection pages are retired. Everything public now lives under /home-next.
-      { source: "/collections", destination: "/home-next/following", permanent: false },
-      { source: "/collections/:slug", destination: "/home-next/c/:slug", permanent: false },
-      { source: "/curated-collections/:id", destination: "/home-next/c/:id", permanent: false },
-      // Retired pages.
-      { source: "/knowledge-graph", destination: "/home-next/explore", permanent: false },
-      { source: "/knowledge-graph/:path*", destination: "/home-next/explore", permanent: false },
-      { source: "/source/r-s-rattray-ashanti-1923-via-internet-archive", destination: "/home-next/explore", permanent: false },
+      // Old /home-next addresses → clean addresses (temporary for now; make permanent once settled).
+      { source: "/home-next", destination: "/", permanent: false },
       { source: "/home-next/community", destination: "https://www.instagram.com/afr_rd_/", permanent: false },
+      { source: "/home-next/:path*", destination: "/:path*", permanent: false },
+      { source: "/community", destination: "https://www.instagram.com/afr_rd_/", permanent: false },
+      { source: "/discover", destination: "/for-you", permanent: false },
+      // The old collection pages are retired.
+      { source: "/collections", destination: "/following", permanent: false },
+      { source: "/collections/:slug((?![0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$).*)", destination: "/c/:slug", permanent: false },
+      { source: "/curated-collections/:id", destination: "/c/:id", permanent: false },
+      // Retired pages.
+      { source: "/knowledge-graph", destination: "/explore", permanent: false },
+      { source: "/knowledge-graph/:path*", destination: "/explore", permanent: false },
+      { source: "/source/r-s-rattray-ashanti-1923-via-internet-archive", destination: "/explore", permanent: false },
     ];
   },
   async headers() {

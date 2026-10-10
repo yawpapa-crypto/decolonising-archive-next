@@ -30,14 +30,14 @@ async function Content() {
   const pool = padWithFallbacks(pics, 24);
   const thumbsFor = (i: number) => [0, 1, 2, 3].map((k) => pool[(i * 4 + k * 7) % pool.length]);
   const ared = await aredActivity();
-  const aredSug: Sug = { key: "s-decolonising-archive", name: "Decolonising Archive", handle: "@decolonising-archive", why: `${PUBLIC_COLLECTIONS.length} public collections`, href: "/home-next/following/decolonising-archive", thumbs: PUBLIC_COLLECTIONS.map((c) => c.imageUrl).slice(0, 3), count: "archive" };
+  const aredSug: Sug = { key: "s-decolonising-archive", name: "Decolonising Archive", handle: "@decolonising-archive", why: `${PUBLIC_COLLECTIONS.length} public collections`, href: "/following/decolonising-archive", thumbs: PUBLIC_COLLECTIONS.map((c) => c.imageUrl).slice(0, 3), count: "archive" };
   const colItems: CGItem[] = [
-    ...selection.collections.map((c, i) => ({ key: `db-${c.id}`, href: `/home-next/c/${c.id}`, title: c.title, sub: "Public collection", cover: thumbsFor(i)[0] })),
+    ...selection.collections.map((c, i) => ({ key: `db-${c.id}`, href: `/c/${c.id}`, title: c.title, sub: "Public collection", cover: thumbsFor(i)[0] })),
     ...PUBLIC_COLLECTIONS.map((c) => ({ key: c.id, href: c.href, title: c.title, sub: c.recordCount ?? c.kicker, cover: c.imageUrl })),
   ];
   const sug: Sug[] = [
     ...selection.people.map((p, i) => ({ key: `p-${p.id}`, name: p.name, handle: `@${p.id.slice(0, 8)}`, why: "Member curator", href: `/people/${p.id}`, thumbs: thumbsFor(i), count: "curator", db: { id: p.id, kind: "profile" as const, initial: selection.follows.some((f) => f.profile_id === p.id) } })),
-    ...selection.collections.map((c, i) => ({ key: `c-${c.id}`, name: c.title, handle: "@collection", why: "Public collection", href: `/home-next/c/${c.id}`, thumbs: thumbsFor(i + 3), count: "collection", db: { id: c.id, kind: "collection" as const, initial: selection.follows.some((f) => f.collection_id === c.id) } })),
+    ...selection.collections.map((c, i) => ({ key: `c-${c.id}`, name: c.title, handle: "@collection", why: "Public collection", href: `/c/${c.id}`, thumbs: thumbsFor(i + 3), count: "collection", db: { id: c.id, kind: "collection" as const, initial: selection.follows.some((f) => f.collection_id === c.id) } })),
     aredSug,
   ];
   return (
@@ -74,7 +74,7 @@ async function Content() {
           ))}
           {selection.collections.map((c) => (
             <article key={c.id}>
-              <Link href={`/home-next/c/${c.id}`}>
+              <Link href={`/c/${c.id}`}>
                 <h3>{c.title}</h3>
                 <p>{c.description}</p>
               </Link>

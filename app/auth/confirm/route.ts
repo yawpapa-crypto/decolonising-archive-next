@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   const code = requestUrl.searchParams.get("code");
   const tokenHash = requestUrl.searchParams.get("token_hash");
   const type = requestUrl.searchParams.get("type");
-  const next = safeNextPath(requestUrl.searchParams.get("next"), "/home-next/for-you");
+  const next = safeNextPath(requestUrl.searchParams.get("next"), "/for-you");
 
   const origin = requestUrl.origin;
   const supabase = await createClient();

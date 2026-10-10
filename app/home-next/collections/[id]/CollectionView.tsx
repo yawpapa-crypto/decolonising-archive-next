@@ -40,7 +40,7 @@ export default function CollectionView({ id }: { id: string }) {
   }
   async function del() {
     const r = await fetch(url, { method: "DELETE" }).catch(() => null);
-    if (r?.ok) router.push("/home-next/profile"); else { setErr("Could not delete the collection."); setConfirm(false); }
+    if (r?.ok) router.push("/profile"); else { setErr("Could not delete the collection."); setConfirm(false); }
   }
   async function take(t: Tile) {
     const prev = rows;
@@ -49,10 +49,10 @@ export default function CollectionView({ id }: { id: string }) {
     if (!r?.ok) { setRows(prev); setErr("That record could not be removed."); }
   }
 
-  if (err && !rows) return <><p role="alert" className="rg-err">{err}</p><Link href="/home-next/profile" className="ared-btn ared-btn--outline">Back to collections</Link></>;
+  if (err && !rows) return <><p role="alert" className="rg-err">{err}</p><Link href="/profile" className="ared-btn ared-btn--outline">Back to collections</Link></>;
   return (
     <>
-      <p className="rg-crumb"><Link href="/home-next/profile">Collections</Link></p>
+      <p className="rg-crumb"><Link href="/profile">Collections</Link></p>
       <header className="rg-head">
         <div>
           {editing ? (

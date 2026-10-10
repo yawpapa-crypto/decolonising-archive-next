@@ -68,7 +68,7 @@ export default function PreferencesForm({ groups, initial, migrated }: { groups:
           <b>{state === "done" ? "Saved" : state === "error" ? "Not saved" : `${total} selected`}</b>
           <em>{state === "done" ? "Your next batches will reflect this." : state === "error" ? "Something went wrong. Try again." : dirty ? "Unsaved changes" : "Up to date"}</em>
         </span>
-        <Link href="/home-next/for-you" className="pf-back">Back to For You</Link>
+        <Link href="/for-you" className="pf-back">Back to For You</Link>
         <button type="button" className="pf-save" disabled={!dirty || state === "saving" || !migrated} aria-busy={state === "saving"} onClick={save}>{state === "saving" ? <LineLoader inline size={18} label="Saving" /> : "Save changes"}</button>
       </div>
     </div>

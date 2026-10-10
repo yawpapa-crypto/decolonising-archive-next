@@ -13,7 +13,7 @@ type Dest = { href: string; label: string; current?: boolean };
  * destinations move into an accessible Menu; nothing is duplicated while hidden.
  */
 export default function NavFit({ dests, signedIn = false }: { dests: Dest[]; signedIn?: boolean }) {
-  const back = usePathname() || "/home-next/for-you";
+  const back = usePathname() || "/for-you";
   const ref = useRef<HTMLDivElement>(null);
   const measure = useRef<HTMLSpanElement>(null);
   const [compact, setCompact] = useState(false);
@@ -101,10 +101,10 @@ export default function NavFit({ dests, signedIn = false }: { dests: Dest[]; sig
               {!withTabs && dests.map((d) => (
                 <Link key={d.href} href={d.href} aria-current={d.current ? "page" : undefined} onClick={() => setOpen(false)}>{d.label}</Link>
               ))}
-              <Link href="/home-next/help" onClick={() => setOpen(false)}>Help</Link>
+              <Link href="/help" onClick={() => setOpen(false)}>Help</Link>
               {!signedIn && tight && <>
                 <Link href={`/signin?next=${encodeURIComponent(back)}`} onClick={() => setOpen(false)}>Sign in</Link>
-                <Link href={`/signup?next=${encodeURIComponent("/home-next/onboarding?next=" + encodeURIComponent(back))}`} onClick={() => setOpen(false)}>Create account</Link>
+                <Link href={`/signup?next=${encodeURIComponent("/onboarding?next=" + encodeURIComponent(back))}`} onClick={() => setOpen(false)}>Create account</Link>
               </>}
             </div>
           )}

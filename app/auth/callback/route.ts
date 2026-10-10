@@ -11,7 +11,7 @@ import { updateLastLogin, notifyAdminOnNewUser } from "@/src/lib/auth-hooks";
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
-  const next = safeNextPath(url.searchParams.get("next"), "/home-next/for-you");
+  const next = safeNextPath(url.searchParams.get("next"), "/for-you");
 
   if (!code) {
     return NextResponse.redirect(

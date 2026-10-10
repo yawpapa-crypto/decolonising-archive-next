@@ -36,18 +36,18 @@ const isIiif = (t: CollageTile) => t.src.includes("/full/480,/");
 
 // Routes into the new site: places and knowledge areas browse in Explore; sources feed For You.
 const ROUTES = [
-  { href: "/home-next/explore?q=West%20Africa", label: "By region" },
-  { href: "/home-next/explore", label: "By knowledge area" },
-  { href: "/home-next/for-you", label: "By source" },
+  { href: "/explore?q=West%20Africa", label: "By region" },
+  { href: "/explore", label: "By knowledge area" },
+  { href: "/for-you", label: "By source" },
 ] as const;
 
 const TRY = ["goldweights", "kente", "Asante"] as const;
 
 const BROWSE = [
-  { href: "/home-next/explore?q=West%20Africa", label: "Regions" },
-  { href: "/home-next/explore", label: "Knowledge areas" },
-  { href: "/home-next/for-you", label: "Sources" },
-  { href: "/home-next/explore?q=Indigenous%20communities", label: "Communities" },
+  { href: "/explore?q=West%20Africa", label: "Regions" },
+  { href: "/explore", label: "Knowledge areas" },
+  { href: "/for-you", label: "Sources" },
+  { href: "/explore?q=Indigenous%20communities", label: "Communities" },
   { href: "/how-ared-classifies-records", label: "How records are classified" },
 ] as const;
 
@@ -82,8 +82,8 @@ export default async function HomeNextPage() {
                 Read the world.
               </h1>
               <div className="ared-actions">
-                <Link href="/home-next/explore" className="ared-btn ared-btn--primary">Explore the archive</Link>
-                <Link href="/home-next/fieldnotes" className="ared-btn ared-btn--outline">ARED Field</Link>
+                <Link href="/explore" className="ared-btn ared-btn--primary">Explore the archive</Link>
+                <Link href="/fieldnotes" className="ared-btn ared-btn--outline">ARED Field</Link>
               </div>
               <ScopeToggle />
             </div>
@@ -130,7 +130,7 @@ export default async function HomeNextPage() {
             <p className="ared-try" data-reveal>
               <span>Try</span>
               {TRY.map((q) => (
-                <Link key={q} href={`/home-next/explore?q=${encodeURIComponent(q)}`}>{q}</Link>
+                <Link key={q} href={`/explore?q=${encodeURIComponent(q)}`}>{q}</Link>
               ))}
             </p>
           </section>

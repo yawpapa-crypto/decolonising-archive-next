@@ -20,7 +20,7 @@ export default function CollectionHeader({ title, handle, followers, curator, cu
           )}
         </Link>
       )}
-      <div className="cf-chead__bar">{follow}<ShareButton title={title} /><MoreButton handle={moreKey} kind="collection" canvasHref={`/home-next/c/${moreKey}/canvas`} /></div>
+      <div className="cf-chead__bar">{follow}<ShareButton title={title} /><MoreButton handle={moreKey} kind="collection" canvasHref={`/c/${moreKey}/canvas`} /></div>
     </header>
   );
 }

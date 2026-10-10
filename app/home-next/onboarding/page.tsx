@@ -15,7 +15,7 @@ export const metadata: Metadata = { title: "Welcome | Decolonising Archive", rob
 export const dynamic = "force-dynamic";
 
 export default async function OnboardingPage({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
-  const next = safeNextPath((await searchParams).next, "/home-next/for-you");
+  const next = safeNextPath((await searchParams).next, "/for-you");
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
   const user = data.user;
@@ -33,7 +33,7 @@ export default async function OnboardingPage({ searchParams }: { searchParams: P
         groups={interestGroups()}
         panels={panels}
         initial={{ name: fullName, username: state.username, interests: state.interests, step: state.step, email: String((user as { email?: string }).email ?? ""), age: user.user_metadata?.age }}
-        done={next === "/home-next/for-you" ? "/home-next/for-you?welcome=1" : next}
+        done={next === "/for-you" ? "/for-you?welcome=1" : next}
       />
     </div>
   );

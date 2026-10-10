@@ -586,7 +586,7 @@ export default function ForYouFeed({
       if (!ok) setToast({ text: "Those saves did not go through. Try again.", err: true });
       else setToast({
         text: <>Saved {what} to <b>{list ? list.title : "Saved records"}</b>{failed ? `. ${failed} did not go through.` : ""}</>,
-        href: list ? `/home-next/collections/${list.id}` : "/home-next/elements",
+        href: list ? `/collections/${list.id}` : "/elements",
         err: failed > 0,
       });
     },
@@ -766,8 +766,8 @@ export default function ForYouFeed({
               if (!ok) return;
               if (list) {
                 setLists((ls) => (ls ?? []).map((l) => (l.id === list.id ? { ...l, count: l.count + 1, cover: l.cover || item.image || null } : l)));
-                setToast({ text: <>Added to <b>{list.title}</b></>, href: `/home-next/collections/${list.id}` });
-              } else setToast({ text: <>Saved to <b>Saved records</b></>, href: "/home-next/elements" });
+                setToast({ text: <>Added to <b>{list.title}</b></>, href: `/collections/${list.id}` });
+              } else setToast({ text: <>Saved to <b>Saved records</b></>, href: "/elements" });
             });
           }}
           onCreate={createList}

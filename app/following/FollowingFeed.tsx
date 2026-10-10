@@ -146,7 +146,7 @@ export default function FollowingFeed({
                       : a.action === "published"
                         ? "Published"
                         : "Updated"}{" "}
-                    <Link href={a.collection.href ?? `/home-next/c/${a.collection.id}`}>
+                    <Link href={a.collection.href ?? `/c/${a.collection.id}`}>
                       {a.collection.title}
                     </Link>
                   </p>
@@ -158,7 +158,7 @@ export default function FollowingFeed({
               ) : (
                 <Link
                   className="cf-text-record"
-                  href={a.collection.href ?? `/home-next/c/${a.collection.id}`}
+                  href={a.collection.href ?? `/c/${a.collection.id}`}
                 >
                   <h2>{a.collection.title}</h2>
                   <p>View the public collection and its context.</p>

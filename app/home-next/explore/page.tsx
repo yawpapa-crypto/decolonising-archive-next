@@ -26,12 +26,12 @@ export const dynamic = "force-dynamic";
 
 /** Real destinations that already exist on the site. */
 const SELECTED = [
-  { key: "ghana", title: "Ghana graphic design", sub: "Collection", href: "/home-next/c/ghana-graphic-design" },
-  { key: "african", title: "African archives", sub: "Collection", href: "/home-next/c/african-archives" },
-  { key: "knowledge", title: "Knowledge areas", sub: "Browse by knowledge system", href: "/home-next/explore?q=Indigenous%20knowledge" },
-  { key: "regions", title: "Regions", sub: "Browse by place", href: "/home-next/explore?q=West%20Africa" },
-  { key: "sources", title: "Sources", sub: "Picked for you from every source", href: "/home-next/for-you" },
-  { key: "communities", title: "Communities", sub: "Browse by community", href: "/home-next/explore?q=Indigenous%20communities" },
+  { key: "ghana", title: "Ghana graphic design", sub: "Collection", href: "/c/ghana-graphic-design" },
+  { key: "african", title: "African archives", sub: "Collection", href: "/c/african-archives" },
+  { key: "knowledge", title: "Knowledge areas", sub: "Browse by knowledge system", href: "/explore?q=Indigenous%20knowledge" },
+  { key: "regions", title: "Regions", sub: "Browse by place", href: "/explore?q=West%20Africa" },
+  { key: "sources", title: "Sources", sub: "Picked for you from every source", href: "/for-you" },
+  { key: "communities", title: "Communities", sub: "Browse by community", href: "/explore?q=Indigenous%20communities" },
 ];
 
 const TRY = [
@@ -49,7 +49,7 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
   const image = record ? resolveServerRecordImage(record) : null;
   const initialOpen: DiscoverItem | undefined = record ? {
     id: record.id, kind: record.recordType === "publication" ? "essay" : "object", title: record.title,
-    href: record.sourceUrl && /^https?:\/\//.test(record.sourceUrl) ? record.sourceUrl : `/home-next/explore?record=${encodeURIComponent(record.id)}`,
+    href: record.sourceUrl && /^https?:\/\//.test(record.sourceUrl) ? record.sourceUrl : `/explore?record=${encodeURIComponent(record.id)}`,
     external: Boolean(record.sourceUrl && /^https?:\/\//.test(record.sourceUrl)),
     image: image?.access === "display" ? image.url ?? undefined : undefined,
     authors: record.creatorOrAuthority || undefined, year: record.dateStart ? String(record.dateStart) : undefined,
@@ -91,9 +91,9 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
       <main className="fy fy--ex">
         <h1 className="ared-sr">Explore the archive</h1>
         <nav className="ex-cats" aria-label="Categories">
-          <Link className="ex-chip" href="/home-next/explore" aria-current={q ? undefined : "page"}>Featured</Link>
+          <Link className="ex-chip" href="/explore" aria-current={q ? undefined : "page"}>Featured</Link>
           {cats.map((c) => (
-            <Link key={c} className="ex-chip" href={`/home-next/explore?c=${encodeURIComponent(c)}`} aria-current={q === c ? "page" : undefined}>
+            <Link key={c} className="ex-chip" href={`/explore?c=${encodeURIComponent(c)}`} aria-current={q === c ? "page" : undefined}>
               {c}
             </Link>
           ))}

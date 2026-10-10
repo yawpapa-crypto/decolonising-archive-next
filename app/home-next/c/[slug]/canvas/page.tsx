@@ -27,7 +27,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   return (
     <Shell active="following">
       <Track type="source_open" target={`canvas:${slug}`} />
-      <Canvas items={items} title={title} back={`/home-next/c/${slug}`} storageKey={slug} />
+      <Canvas items={items} title={title} back={`/c/${slug}`} storageKey={slug} />
     </Shell>
   );
 }

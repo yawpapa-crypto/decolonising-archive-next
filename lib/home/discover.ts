@@ -100,7 +100,7 @@ export function catalogueStream(page: number, q: string, perPage: number): Disco
       id: r.id,
       kind: r.recordType === "publication" ? "essay" : "object",
       title: r.title,
-      href: direct ?? `/home-next/explore?record=${encodeURIComponent(r.id)}`,
+      href: direct ?? `/explore?record=${encodeURIComponent(r.id)}`,
       external: Boolean(direct),
       collectionSlug: "ghana-graphic-design",
       image: img.access === "display" ? (img.url ?? undefined) : undefined,

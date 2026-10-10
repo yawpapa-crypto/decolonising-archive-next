@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Decolonising Archive",
     short_name: "ARED",
     description: "Search, cite and connect decolonising knowledge across Africa, the diaspora and the Global South.",
-    start_url: "/home-next/explore",
+    start_url: "/explore",
     scope: "/",
     display: "standalone",
     background_color: "#f7f5f3",

@@ -100,7 +100,7 @@ export default function SearchBox({ variant = "nav" }: { variant?: "nav" | "big"
     input.current?.blur();
     rememberSessionIntent(v);
     recommendationEvent("search", "theme", v);
-    start(() => router.push(`/home-next/explore?q=${encodeURIComponent(v)}`));
+    start(() => router.push(`/explore?q=${encodeURIComponent(v)}`));
   }, [router]);
 
   const forget = (s: string) => { const n = readRecent().filter((x) => x !== s); writeRecent(n); setRecent(n); input.current?.focus(); };
@@ -119,7 +119,7 @@ export default function SearchBox({ variant = "nav" }: { variant?: "nav" | "big"
 
   return (
     <form ref={form} className={(variant === "big" ? "ared-bigsearch " : "ared-search ") + "sb" + (open && rows.length ? " is-open" : "") + (pending ? " is-busy" : "")}
-      action="/home-next/explore" method="get" role="search" onSubmit={(e) => { e.preventDefault(); submit(q); }}>
+      action="/explore" method="get" role="search" onSubmit={(e) => { e.preventDefault(); submit(q); }}>
       <svg className="sb__ico" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d={ICON.search} /></svg>
       <input ref={input} type="text" inputMode="search" enterKeyHint="search" name="q" value={q} autoComplete="off" autoCapitalize="none" spellCheck={false}
         placeholder={variant === "big" ? "Search records, places, makers" : `Try ‘${TRY[ph]}’`} aria-label="Search the archive"

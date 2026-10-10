@@ -30,7 +30,7 @@ export default function CuratorialSuggestions() {
       ))}
       {data.collections.map((c) => (
         <p key={c.id}>
-          <Link href={`/home-next/c/${c.id}`}>{c.title} ↗</Link>
+          <Link href={`/c/${c.id}`}>{c.title} ↗</Link>
           <small>{c.why}</small>
         </p>
       ))}

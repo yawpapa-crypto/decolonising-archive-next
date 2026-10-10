@@ -67,7 +67,7 @@ export default function ResetPasswordPage() {
     }
 
     setMessage("Password updated. Returning to ARED…");
-    const next = safeNextPath(new URLSearchParams(window.location.search).get("next"), "/home-next/for-you");
+    const next = safeNextPath(new URLSearchParams(window.location.search).get("next"), "/for-you");
     router.replace(next);
     router.refresh();
   }

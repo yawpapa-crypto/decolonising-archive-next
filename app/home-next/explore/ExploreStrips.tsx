@@ -180,7 +180,7 @@ export function Trending({ terms }: { terms: Term[] }) {
         {rows.map((r, n) => (
           <div key={n} className="ex-try__row" style={{ paddingLeft: n ? 36 : 0 }}>
             {r.map((t) => (
-              <Link key={t.term} href={`/home-next/explore?q=${encodeURIComponent(t.term)}`} className="ex-pill">
+              <Link key={t.term} href={`/explore?q=${encodeURIComponent(t.term)}`} className="ex-pill">
                 <span className="ex-pill__img" style={{ background: t.image ? `center / cover url(${t.image})` : `color-mix(in srgb, ${t.tint} 35%, #fff)` }} aria-hidden />
                 <span>{t.term}</span>
               </Link>

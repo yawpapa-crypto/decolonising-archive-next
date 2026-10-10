@@ -15,8 +15,8 @@ import "@/app/styles/auth-pages.css";
 export const metadata = { title: "Get started | Decolonising Archive", robots: { index: false, follow: false } };
 export default async function SignUpPage({ searchParams }: { searchParams: Promise<{ next?: string; error?: string; sent?: string; email?: string; updated?: string }> }) {
   const sp = await searchParams;
-  const next = safeNextPath(sp.next, "/home-next/for-you");
-  const onboarding = `/home-next/onboarding?next=${encodeURIComponent(next)}`;
+  const next = safeNextPath(sp.next, "/for-you");
+  const onboarding = `/onboarding?next=${encodeURIComponent(next)}`;
   const user = await getCurrentUser();
   if (user) {
     const supabase = await createClient();

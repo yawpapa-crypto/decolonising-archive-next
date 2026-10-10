@@ -7,7 +7,7 @@ import { publicRecords, type Activity } from "@/lib/following/server";
 import type { DiscoverItem } from "@/lib/home/discover-shared";
 
 export const ARED = { id: "decolonising-archive", handle: "decolonising-archive", name: "Decolonising Archive", bio: "An open-access archive of design knowledge from Africa and the Global South." };
-export const collectionHref = (slug: string) => `/home-next/c/${slug}`;
+export const collectionHref = (slug: string) => `/c/${slug}`;
 
 type Tile = { id: string; src: string; title: string; href: string; source?: string; alt?: string };
 const tileItem = (t: Tile): DiscoverItem => ({ id: t.id, kind: "image", title: t.title, href: t.href, external: t.href.startsWith("http"), image: t.src, alt: t.alt || t.title, source: t.source });
@@ -21,7 +21,7 @@ export async function collectionRecords(slug: string): Promise<DiscoverItem[]> {
 
 /** The archive's own publishing history, as feed events. Real collections, real covers. No invented people. */
 export async function aredActivity(): Promise<Activity[]> {
-  const actor = { id: ARED.id, name: ARED.name, avatar: null, bio: ARED.bio, website: null, href: `/home-next/following/${ARED.handle}` };
+  const actor = { id: ARED.id, name: ARED.name, avatar: null, bio: ARED.bio, website: null, href: `/following/${ARED.handle}` };
   const collage = await getHomeCollage().catch(() => null);
   const live = collage ? (await distinctPictures([...collage.global].filter((t) => t.src).map(tileItem))).slice(0, 12) : [];
   const now = Date.now();

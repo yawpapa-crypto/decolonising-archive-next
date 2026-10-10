@@ -29,7 +29,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
       <Shell active="following">
         <main className="cf-coll">
           <Track type="source_open" target={`collection:${slug}`} />
-          <CollectionHeader title={hub.title} handle={ARED.handle} note={`${items.length} records`} curator={ARED.name} curatorHref={`/home-next/following/${ARED.handle}`} follow={<ProfileFollow id={ARED.handle} />} moreKey={slug} />
+          <CollectionHeader title={hub.title} handle={ARED.handle} note={`${items.length} records`} curator={ARED.name} curatorHref={`/following/${ARED.handle}`} follow={<ProfileFollow id={ARED.handle} />} moreKey={slug} />
           <PublicArchive items={items} tile={300} gap={28} />
         </main>
       </Shell>

@@ -85,7 +85,7 @@ export function hydrate(r: CatalogueRecord): DiscoverItem {
     id: r.id,
     title: r.title,
     kind: r.recordType === "publication" ? "essay" : "object",
-    href: r.sourceUrl && /^https?:\/\//.test(r.sourceUrl) ? r.sourceUrl : `/home-next/explore?record=${encodeURIComponent(r.id)}`,
+    href: r.sourceUrl && /^https?:\/\//.test(r.sourceUrl) ? r.sourceUrl : `/explore?record=${encodeURIComponent(r.id)}`,
     external: Boolean(r.sourceUrl && /^https?:\/\//.test(r.sourceUrl)),
     collectionSlug: "ghana-graphic-design",
     source: r.sourceName || undefined,

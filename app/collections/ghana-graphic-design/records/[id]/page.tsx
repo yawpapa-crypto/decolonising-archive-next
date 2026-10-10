@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const record = catalogueDataExists() ? getCatalogueRecord(id) : null;
   if (!record?.publicVisibility) return { title: "Record not found | ARED" };
 
-  const canonicalPath = `/home-next/explore?record=${encodeURIComponent(record.id)}`;
+  const canonicalPath = `/explore?record=${encodeURIComponent(record.id)}`;
 
   return {
     title: `${record.title} | ${GHANA_COLLECTION_TITLE} | ARED`,
@@ -38,5 +38,5 @@ export default async function GhanaCatalogueRecordCanonicalPage({ params }: Prop
   const { id } = await params;
   const record = catalogueDataExists() ? getCatalogueRecord(id) : null;
   if (!record?.publicVisibility) notFound();
-  redirect(`/home-next/explore?record=${encodeURIComponent(id)}`);
+  redirect(`/explore?record=${encodeURIComponent(id)}`);
 }

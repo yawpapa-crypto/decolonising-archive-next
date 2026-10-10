@@ -113,7 +113,7 @@ export default function SettingsModal({ onClose, host }: { onClose: () => void; 
               <p className="st-k">Email</p><p className="st-v">{f?.email || "…"}</p>
               <p className="st-k">Password</p>
               <p className="st-note">Passwords are changed through a secure link we email you.</p>
-              <Link className="st-btn" href="/home-next/settings#account" onClick={onClose}>Change password</Link>
+              <Link className="st-btn" href="/settings#account" onClick={onClose}>Change password</Link>
               <button type="button" className="st-btn st-btn--ghost" onClick={() => void signOutNow()}>Log out</button>
             </div>
           )}
@@ -140,7 +140,7 @@ export default function SettingsModal({ onClose, host }: { onClose: () => void; 
                 <div><p className="st-k" style={{ margin: 0 }}>Clear this device</p><p className="st-note" style={{ margin: "2px 0 0" }}>Removes display, language and unfinished-save choices stored in this browser. Your account is not affected.</p></div>
                 <button type="button" className="st-btn st-btn--ghost" onClick={clearDevice}>{cleared ? "Cleared" : "Clear"}</button>
               </div>
-              <p className="st-note" style={{ marginTop: 18 }}><Link href="/privacy" onClick={onClose} className="st-link">Privacy policy</Link> · <Link href="/terms" onClick={onClose} className="st-link">Terms</Link> · <Link href="/home-next/help#contact" onClick={onClose} className="st-link">Ask about your data</Link></p>
+              <p className="st-note" style={{ marginTop: 18 }}><Link href="/privacy" onClick={onClose} className="st-link">Privacy policy</Link> · <Link href="/terms" onClick={onClose} className="st-link">Terms</Link> · <Link href="/help#contact" onClick={onClose} className="st-link">Ask about your data</Link></p>
             </div>
           )}
           {tab === "delete" && (
@@ -158,15 +158,15 @@ export default function SettingsModal({ onClose, host }: { onClose: () => void; 
             <div>
               <h2>Interests</h2>
               <p className="st-note">The subjects you choose steer For You. Your saves keep adding to them. Changes apply to new batches.</p>
-              <Link className="st-btn" href="/home-next/preferences" onClick={onClose}>Edit your interests</Link>
+              <Link className="st-btn" href="/preferences" onClick={onClose}>Edit your interests</Link>
             </div>
           )}
           {tab === "help" && (
             <div>
               <h2>Help and contact</h2>
               <p className="st-note">Guides for searching, saving and organising, and a way to reach the team.</p>
-              <Link className="st-btn" href="/home-next/help" onClick={onClose}>Open Help</Link>
-              <Link className="st-btn st-btn--ghost" href="/home-next/help#contact" onClick={onClose}>Contact us</Link>
+              <Link className="st-btn" href="/help" onClick={onClose}>Open Help</Link>
+              <Link className="st-btn st-btn--ghost" href="/help#contact" onClick={onClose}>Contact us</Link>
             </div>
           )}
         </section>

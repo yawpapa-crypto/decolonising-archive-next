@@ -109,7 +109,7 @@ export function SuggestedPanel({ items, signedIn }: { items: Sug[]; signedIn: bo
   const hide = () => { if (timer.current) window.clearTimeout(timer.current); timer.current = window.setTimeout(() => setOpen(null), 220); };
   return (
     <aside className="cs-panel" aria-labelledby="cs-panel-t">
-      <header><h2 id="cs-panel-t">Suggested</h2><Link href="/home-next/explore">See all</Link></header>
+      <header><h2 id="cs-panel-t">Suggested</h2><Link href="/explore">See all</Link></header>
       <ul>
         {items.slice(0, 5).map((s) => (
           <li key={s.key} onMouseEnter={() => show(s.key)} onMouseLeave={hide} onFocus={() => show(s.key)} onBlur={hide}>

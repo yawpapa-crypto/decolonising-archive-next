@@ -281,7 +281,7 @@ export default function OnboardingFlow({ groups, panels, initial, done }: Props)
           </p>
         )}
       </section>
-      <noscript><p>Onboarding needs JavaScript. <Link href="/home-next/for-you">Continue to For You</Link></p></noscript>
+      <noscript><p>Onboarding needs JavaScript. <Link href="/for-you">Continue to For You</Link></p></noscript>
     </div>
   );
 }

@@ -28,7 +28,7 @@ export default function SourceFeed({ groups, fallback }: { groups: SrcGroup[]; f
     for (let k = 0; k * per < Math.min(g.items.length, 40); k++) {
       const items = g.items.slice(k * per, k * per + per);
       if (!items.length) break;
-      out.push({ id: `src-${g.handle}-${k}`, action: "added", occurred_at: new Date(now - (i + k * mine.length) * 3600e3).toISOString(), actor: { id: g.handle, name: g.name, avatar: null, bio: null, website: null, href: `/home-next/following/${g.handle}` }, collection: { id: g.handle, user_id: g.handle, title: g.name, description: null, created_at: "", updated_at: "", href: `/home-next/following/${g.handle}` }, items });
+      out.push({ id: `src-${g.handle}-${k}`, action: "added", occurred_at: new Date(now - (i + k * mine.length) * 3600e3).toISOString(), actor: { id: g.handle, name: g.name, avatar: null, bio: null, website: null, href: `/following/${g.handle}` }, collection: { id: g.handle, user_id: g.handle, title: g.name, description: null, created_at: "", updated_at: "", href: `/following/${g.handle}` }, items });
     }
     return out;
   });

@@ -6,6 +6,6 @@ export const metadata = { title: "Collection | Decolonising Archive", robots: { 
 export default async function CollectionPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const user = await getCurrentUser();
-  if (!user) return <LibraryGate next={`/home-next/collections/${encodeURIComponent(id)}`} title="This collection" body="Collections are kept in a personal library. Sign in to open yours, or create an account to start one." />;
+  if (!user) return <LibraryGate next={`/collections/${encodeURIComponent(id)}`} title="This collection" body="Collections are kept in a personal library. Sign in to open yours, or create an account to start one." />;
   return <AccountShell><main className="account-page"><CollectionView id={id} /></main></AccountShell>;
 }

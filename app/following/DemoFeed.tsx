@@ -46,8 +46,8 @@ export default function DemoFeed({ events, items, sug, interests, debug }: { eve
       const e = r.row.event; const ent = ENTITIES.find((x) => x.id === e.actor)!; const col = COLLECTIONS.find((c) => c.id === e.collection);
       acts.push({
         id: e.id, action: ACTION[e.type] ?? "added", occurred_at: new Date(e.at).toISOString(),
-        actor: { id: ent.id, name: ent.name, avatar: null, bio: ent.blurb, website: null, href: `/home-next/following/${ent.handle}` },
-        collection: { id: col?.id ?? "x", user_id: ent.id, title: col?.title ?? "Collection", description: null, created_at: "", updated_at: "", href: `/home-next/following/${ent.handle}#${col?.id}` },
+        actor: { id: ent.id, name: ent.name, avatar: null, bio: ent.blurb, website: null, href: `/following/${ent.handle}` },
+        collection: { id: col?.id ?? "x", user_id: ent.id, title: col?.title ?? "Collection", description: null, created_at: "", updated_at: "", href: `/following/${ent.handle}#${col?.id}` },
         items: e.itemIds.map((id) => items[id]).filter(Boolean),
         why: r.row.reason, pool: r.row.pool,
       });

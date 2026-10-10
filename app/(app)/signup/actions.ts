@@ -12,7 +12,7 @@ function newsletterOptIn(formData: FormData) {
 }
 
 export async function signUpMember(formData: FormData) {
-  const next = safeNextPath(String(formData.get("next") ?? ""), "/home-next/for-you");
+  const next = safeNextPath(String(formData.get("next") ?? ""), "/for-you");
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
   const profile = parseSignupProfile(formData);
@@ -53,7 +53,7 @@ export async function signUpMember(formData: FormData) {
 }
 
 export async function resendSignupConfirmation(formData: FormData) {
-  const next = safeNextPath(String(formData.get("next") ?? ""), "/home-next/for-you");
+  const next = safeNextPath(String(formData.get("next") ?? ""), "/for-you");
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   if (!email) {
     redirect(`/signup?next=${encodeURIComponent(next)}&error=${encodeURIComponent("Enter your email to resend confirmation.")}`);

@@ -495,7 +495,7 @@ html[data-ared-night="true"] .ared-langask,html[data-ared-night="true"] .ared-di
   html .ared-home .ared-nav__brand{display:inline;font-family:var(--font-ared-ui),system-ui,sans-serif!important;font-weight:600;font-size:1rem;letter-spacing:-.035em}
   html .ared-home .ared-nav__right{grid-column:2;grid-row:1;gap:10px}
   html .ared-home .ared-nav__right .ared-nav__login{display:inline-flex;font-size:0.75rem!important}
-  html .ared-home .ared-nav__right>a[href="/home-next/help"]{display:none}
+  html .ared-home .ared-nav__right>a[href="/help"]{display:none}
   html .ared-home .ared-nav__links{grid-column:1/-1;grid-row:2;display:flex;width:100%;gap:8px;justify-content:space-between;align-items:center;font-size:0.8125rem}
   html .ared-home .ared-nav .ared-nav__links a:nth-child(n){display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:4px 7px;font-family:var(--font-ared-ui),system-ui,sans-serif!important;border-radius:8px;white-space:nowrap}
   html .ared-home .ared-nav__links a[aria-current="page"]{background:color-mix(in srgb,currentColor 7%,transparent);font-weight:600}
@@ -562,7 +562,7 @@ html[data-ared-night="true"] .ared-tabbar{background:rgba(20,20,20,.6)}html[data
   .ared-site-nav{height:64px;min-height:64px}
 }
 @media(max-width:560px){
-  html .ared-home .ared-nav__right>a[href="/home-next/help"],html .ared-home .ared-nav__right .ared-nav__login{display:none}
+  html .ared-home .ared-nav__right>a[href="/help"],html .ared-home .ared-nav__right .ared-nav__login{display:none}
   html .ared-home .ared-nav .ared-search input{font-size:0.8125rem}
 }
 

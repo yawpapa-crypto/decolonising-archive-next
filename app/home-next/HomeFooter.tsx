@@ -4,7 +4,7 @@ import DonateDialog from "./DonateDialog";
 import AredLogo from "./AredLogo";
 
 const GROUPS = [
-  { label: "Platform", links: [["/home-next/explore", "Explore"], ["/home-next/for-you", "For You"], ["/home-next/explore?q=Indigenous%20knowledge", "Knowledge systems"], ["/home-next/explore?q=Indigenous%20communities", "Communities"], ["/about", "About"]] },
+  { label: "Platform", links: [["/explore", "Explore"], ["/for-you", "For You"], ["/explore?q=Indigenous%20knowledge", "Knowledge systems"], ["/explore?q=Indigenous%20communities", "Communities"], ["/about", "About"]] },
   { label: "Community", links: [["https://www.instagram.com/afr_rd_/", "Community"], ["/community-guidelines", "Guidelines"], ["/sources/request", "Suggest a source"], ["/feedback", "Report a concern"]] },
   { label: "Trust and care", links: [["/cultural-care", "Cultural care"], ["/takedown", "Takedown"], ["/privacy", "Privacy"], ["/terms", "Terms"]] },
   { label: "Support", links: [["/partners", "Partner with us"], ["/changelog", "Changelog"]] },
@@ -16,9 +16,9 @@ export default function HomeFooter() {
     <div className="ared-footer" role="contentinfo" aria-label="Site footer">
       <div className="ared-endrow">
         <nav aria-label="Archive">
-          <Link href="/home-next/explore">Explore</Link>
-          <Link href="/home-next/for-you">For You</Link>
-          <Link href="/home-next/explore">Explore</Link>
+          <Link href="/explore">Explore</Link>
+          <Link href="/for-you">For You</Link>
+          <Link href="/explore">Explore</Link>
           <Link href="/about">About</Link>
         </nav>
         <Link href="/" aria-label="Decolonising Archive home" className="ared-endrow__logo">
