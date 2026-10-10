@@ -243,3 +243,5 @@ drop policy if exists visual_assets_read on public.visual_assets;
 create policy visual_assets_read on public.visual_assets for select using (failed_at is null);
 -- Writes are service-role only (no insert/update policy).
 
+
+-- 2026-10-10: all migrations above verified present in production (tables, functions, triggers, grants).
