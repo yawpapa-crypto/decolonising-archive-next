@@ -6,6 +6,10 @@ import { unstable_cache } from "next/cache";
 
 import { GHANA_COLLECTION_ITEMS } from "@/lib/data/ghana-collection";
 import { searchSmithsonianRecords } from "@/lib/search/smithsonian";
+import { commonsStream } from "./providers";
+import { featuredDate, featuredOrder, featuredProviderPage, featuredTopics, unit } from "./featured";
+import { loadCatalogueRecords } from "@/lib/catalogue/store";
+import { allowed, hydrate } from "@/lib/recommendations/catalogue";
 
 /**
  * Image supply for the glocal homepage.
@@ -58,6 +62,39 @@ const AIC_IIIF = "https://www.artic.edu/iiif/2";
 const SENSITIVE = /\b(skull|cranium|crania|skeleton|bones?|remains|mortuary|burial|corpse|mummy|mummies)\b/i;
 const isSensitive = (t: { title?: string; alt?: string }) => SENSITIVE.test(`${t.title ?? ""} ${t.alt ?? ""}`);
 
+/** Wikimedia now only serves standard thumbnail widths; 150px/200px requests return 400. */
+function standardThumb(src: string): string {
+  return src.replace(/(upload\.wikimedia\.org\/wikipedia\/commons\/thumb\/.+?\/)(\d+)px-([^/?]+)/, (_m, head, _w, name) => `${head}500px-${name}`);
+}
+
+const dayNumber = (day: string) => Math.floor(Date.parse(`${day}T00:00:00Z`) / 86_400_000);
+
+/** ARED's own catalogue, live: the day's Featured selection (with images) — changes daily, no repeats with yesterday. */
+function catalogueTiles(day: string): CollageTile[] {
+  const pool = loadCatalogueRecords().filter(allowed);
+  const { main, rest } = featuredOrder(pool.map((r) => ({ id: r.id, region: r.region, periodId: r.periodId, recordType: r.recordType, visualSystemId: r.visualSystemId, institution: r.institutionOrCollection, record: r })), day, { perDay: 24 });
+  return [...main, ...rest].flatMap(({ record }) => {
+    const h = hydrate(record);
+    if (!h.image) return [];
+    return [{
+      id: `ared-cat-${record.id}`, origin: "local" as const, src: standardThumb(h.image), alt: h.title, title: h.title,
+      source: record.institutionOrCollection || record.sourceName || "ARED catalogue", href: `/records/${encodeURIComponent(record.id)}`,
+      licence: record.rightsStatus || "",
+    }];
+  }).slice(0, 30);
+}
+
+/** Live Wikimedia Commons photography of Ghana and West Africa; topics rotate by date, never yesterday's. */
+const COMMONS_TOPICS = ["Accra street", "Kumasi market", "Kente weaving", "Cape Coast Ghana", "Ghana architecture", "Adinkra cloth", "Ghana festival", "Elmina Ghana", "Tamale Ghana", "Bolgatanga basket", "Ghana fishing boats", "Lagos street", "Dakar architecture", "Ouagadougou", "Lome market", "Ghana textile market", "Akwasidae", "Ghana sign painting"];
+async function fetchCommons(day: string): Promise<CollageTile[]> {
+  const topics = featuredTopics(COMMONS_TOPICS, day, 4);
+  const batches = await Promise.allSettled(topics.map((t) => commonsStream(featuredProviderPage(COMMONS_TOPICS, day, t), t, 10)));
+  return batches.flatMap((b) => (b.status === "fulfilled" ? b.value : [])).filter((i) => i.image).map((i) => ({
+    ...i, origin: "local" as const, src: standardThumb(i.image!), alt: i.alt || i.title, title: i.title,
+    source: "Wikimedia Commons", href: i.href || i.originalRecordUrl || "", licence: i.licence || "Wikimedia Commons licence",
+  }));
+}
+
 function localTiles(): CollageTile[] {
   return GHANA_COLLECTION_ITEMS.filter(
     (item) =>
@@ -67,7 +104,7 @@ function localTiles(): CollageTile[] {
   ).map((item): CollageTile => ({
     id: `ared-${item.id}`,
     origin: "local" as const,
-    src: item.thumbnail_url || (item.image_url as string),
+    src: standardThumb(item.thumbnail_url || (item.image_url as string)),
     alt: `${item.title}${item.date_display ? `, ${item.date_display}` : ""}`,
     title: item.title,
     source: item.source_name,
@@ -139,9 +176,10 @@ const AIC_QUERIES = [
   "Senegal Mali",
 ];
 
-async function fetchAic(): Promise<CollageTile[]> {
+async function fetchAic(day = featuredDate()): Promise<CollageTile[]> {
+  const n = dayNumber(day);
   const batches = await Promise.allSettled(
-    AIC_QUERIES.map(async (q) => {
+    featuredTopics(AIC_QUERIES, day, 6).map(async (q, k) => {
       const url = new URL("https://api.artic.edu/api/v1/artworks/search");
       url.searchParams.set("q", q);
       url.searchParams.set("query[term][is_public_domain]", "true");
@@ -150,7 +188,7 @@ async function fetchAic(): Promise<CollageTile[]> {
         "id,title,image_id,artist_title,place_of_origin,date_display",
       );
       url.searchParams.set("limit", "10");
-      url.searchParams.set("page", String(1 + (hourSeed() % 3)));
+      url.searchParams.set("page", String(1 + ((n + k) % 5)));
       const res = await fetch(url, {
         headers: { Accept: "application/json", "AIC-User-Agent": "ared.design (decolonising archive)" },
         signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
@@ -209,8 +247,8 @@ async function fetchSmithsonian(): Promise<CollageTile[]> {
 /* Europeana                                                                */
 /* ----------------------------------------------------------------------- */
 
-async function fetchEuropeana(): Promise<CollageTile[]> {
-  const items = await europeanaStream(1, "(Africa OR Ghana OR Yoruba OR Asante) AND TYPE:IMAGE", 40, true);
+async function fetchEuropeana(day = featuredDate()): Promise<CollageTile[]> {
+  const items = await europeanaStream(1 + (dayNumber(day) % 6), "(Africa OR Ghana OR Yoruba OR Asante) AND TYPE:IMAGE", 40, true);
   // Decorative homepage use stays limited to explicitly open licences.
   return items.filter(i => i.oa === true && i.image).map(i => ({
     ...i, origin: "global" as const, src: i.image!, alt: i.alt || i.title,
@@ -263,29 +301,33 @@ function dedupe(tiles: CollageTile[]): CollageTile[] {
 /** Throw on an outage so Next retains the last successful revalidated result
  * instead of replacing a populated institution pool with an empty array.
  */
-function cachedSource(name: string, load: () => Promise<CollageTile[]>) {
+function cachedSource(name: string, day: string, load: () => Promise<CollageTile[]>) {
+  // Keyed by publication date: a new pool every day; within the day, refreshed hourly.
   return unstable_cache(async () => {
     const tiles = await load();
     if (!tiles.length) throw new Error(`No collage images from ${name}`);
     return tiles;
-  }, ["home-archive-source-v1", name], { revalidate: REVALIDATE_SECONDS });
+  }, ["home-archive-source-v2", name, day], { revalidate: REVALIDATE_SECONDS });
 }
-const cachedAic = cachedSource("aic", fetchAic);
-const cachedSmithsonian = cachedSource("smithsonian", fetchSmithsonian);
-const cachedEuropeana = cachedSource("europeana-v2", fetchEuropeana);
 
 export async function getHomeCollage(): Promise<HomeCollage> {
-  const [aic, smithsonian, europeana, photos] = await Promise.all([
-    cachedAic().catch(() => [] as CollageTile[]),
-    cachedSmithsonian().catch(() => [] as CollageTile[]),
-    cachedEuropeana().catch(() => [] as CollageTile[]),
+  const day = featuredDate();
+  const [aic, smithsonian, europeana, commons, photos] = await Promise.all([
+    cachedSource("aic", day, () => fetchAic(day))().catch(() => [] as CollageTile[]),
+    cachedSource("smithsonian", day, fetchSmithsonian)().catch(() => [] as CollageTile[]),
+    cachedSource("europeana-v2", day, () => fetchEuropeana(day))().catch(() => [] as CollageTile[]),
+    cachedSource("commons", day, () => fetchCommons(day))().catch(() => [] as CollageTile[]),
     photoTiles().catch(() => [] as CollageTile[]),
   ]);
-
+  const seed = Math.floor(unit(`collage:${day}`) * 1e9) + hourSeed();
   const fallback = AIC_FALLBACK.map((f) => aicTile(f.id, f.image, f.title, "Asante, Ghana"));
-  const global = dedupe(interleave(seededShuffle(aic, hourSeed()), seededShuffle(smithsonian, hourSeed()), seededShuffle(europeana, hourSeed()))).filter((t) => !isSensitive(t));
+  const global = dedupe(interleave(seededShuffle(aic, seed), seededShuffle(smithsonian, seed), seededShuffle(europeana, seed))).filter((t) => !isSensitive(t));
 
-  const local = dedupe(seededShuffle([...localTiles(), ...photos].filter((t) => !isSensitive(t)), hourSeed()));
+  // Local = live: today's ARED catalogue selection + live Commons photography, then the fixed Ghana set and editorial photos.
+  const local = dedupe([
+    ...interleave(seededShuffle(catalogueTiles(day), seed), seededShuffle(commons, seed)),
+    ...seededShuffle([...localTiles(), ...photos], seed),
+  ].filter((t) => !isSensitive(t)));
 
   return {
     local,

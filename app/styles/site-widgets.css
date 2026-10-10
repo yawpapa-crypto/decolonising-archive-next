@@ -231,3 +231,6 @@ html[data-ared-night="true"]:has(.ared-home) .sb__rm{color:#8ab4f8}
 @media(max-width:560px){.sb__row{min-height:48px}.sb__rm{padding:10px 6px}}
 /* Home page: bands stack on top of each other, so the band holding an open search must sit above the rest. */
 .ared-band:has(.sb.is-open){z-index:60}
+/* Feed pages: the floating toolbar (Save what's in view, zoom) sits bottom-centre; keep the news pill and
+   Display control above it at every width so they never overlap. Phone widths keep their own rule in home.css. */
+@media (min-width:561px){html body:has(.fy-bar--float) .nw,html body:has(.fy-bar--float) .ds{bottom:calc(96px + env(safe-area-inset-bottom))!important}}
