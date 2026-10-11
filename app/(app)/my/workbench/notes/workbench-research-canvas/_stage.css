@@ -16,6 +16,7 @@
   overflow: hidden;
   cursor: grab;
   overscroll-behavior: none;
+  /* none, not pan-y: a finger drag pans X and Y the way a desktop wheel does. */
   touch-action: none;
   background-color: var(--wrc-canvas-deep);
 }

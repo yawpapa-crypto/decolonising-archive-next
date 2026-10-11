@@ -258,8 +258,8 @@ export function WorkbenchNoteBoardImmersiveView({
       }
     }
 
-    // Dragging empty board pans the canvas.
-    if (event.button === 0) {
+    // Dragging empty board pans both axes, including a one-finger touch.
+    if (event.button === 0 || event.pointerType === "touch" || event.pointerType === "pen") {
       setIsPanning(true);
       setPanStart({
         x: event.clientX - boardState.panX,
