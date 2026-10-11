@@ -404,7 +404,7 @@ export default function ForYouFeed({
     if (canvas && !loading && !failed && next != null && items.length < totalCols * 8) void loadMore();
   }, [canvas, loading, failed, next, items.length, totalCols, loadMore]);
 
-  /* Drag to pan in any direction (touch already pans natively). A drag never counts as a click. */
+  /* Drag to pan in any direction, including one finger. A drag never counts as a click. */
   useEffect(() => {
     const el = fieldRef.current;
     if (!canvas || !el) return;
@@ -412,26 +412,34 @@ export default function ForYouFeed({
     let sy = 0;
     let down = false;
     let moved = false;
+    let active = -1;
     const onDown = (e: PointerEvent) => {
-      if (e.pointerType !== "mouse" || e.button !== 0 || (e.target as HTMLElement).closest("button, input")) return;
+      if (!e.isPrimary || e.button !== 0 || (e.target as HTMLElement).closest("button, input, textarea, select")) return;
       down = true;
       moved = false;
+      active = e.pointerId;
       sx = e.clientX;
       sy = e.clientY;
     };
     const onMove = (e: PointerEvent) => {
-      if (!down) return;
+      if (!down || e.pointerId !== active) return;
       const dx = e.clientX - sx;
       const dy = e.clientY - sy;
       if (!moved && Math.hypot(dx, dy) < 6) return;
-      moved = true;
-      el.classList.add("is-panning");
+      if (!moved) {
+        moved = true;
+        el.classList.add("is-panning");
+        try { el.setPointerCapture(e.pointerId); } catch { /* pointer already released */ }
+      }
       (vpOf(el) ?? window).scrollBy(-dx, -dy);
       sx = e.clientX;
       sy = e.clientY;
+      if (e.cancelable) e.preventDefault();
     };
-    const onUp = () => {
+    const onUp = (e: PointerEvent) => {
+      if (e.pointerId !== active) return;
       down = false;
+      active = -1;
       el.classList.remove("is-panning");
     };
     const onClick = (e: MouseEvent) => {
@@ -444,14 +452,16 @@ export default function ForYouFeed({
     const noDrag = (e: Event) => e.preventDefault();
     el.addEventListener("dragstart", noDrag);
     el.addEventListener("pointerdown", onDown);
-    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointermove", onMove, { passive: false });
     window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
     el.addEventListener("click", onClick, true);
     return () => {
       el.removeEventListener("dragstart", noDrag);
       el.removeEventListener("pointerdown", onDown);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
       el.removeEventListener("click", onClick, true);
     };
   }, [canvas]);
