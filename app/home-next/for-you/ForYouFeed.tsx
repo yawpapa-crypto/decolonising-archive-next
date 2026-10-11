@@ -220,7 +220,9 @@ export default function ForYouFeed({
   }, []);
   const vis = visibleCols(vw, tile);
   const colWidth = Math.floor((vw - PAD * 2 - GAP * (vis - 1)) / vis);
-  const totalCols = vis + extraCols;
+  // Phones get a plain vertical feed: the open canvas (extra columns, sideways pan and drift) is for wider screens.
+  const roam = canvas && vw >= 700;
+  const totalCols = vis + (roam ? extraCols : 0);
 
   const loadMore = useCallback(async () => {
     if (!restored || inFlight.current || next == null) return;
@@ -389,7 +391,7 @@ export default function ForYouFeed({
   /* Canvas: approaching the right edge adds columns, and the new columns are filled straight away. */
   useEffect(() => {
     const el = rightRef.current;
-    if (!canvas || !el) return;
+    if (!roam || !el) return;
     const io = new IntersectionObserver(
       (e) => {
         if (e[0]?.isIntersecting) setExtraCols((c) => Math.min(c + 3, 60));
@@ -398,7 +400,7 @@ export default function ForYouFeed({
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [canvas, totalCols]);
+  }, [roam, totalCols]);
 
   useEffect(() => {
     if (canvas && !loading && !failed && next != null && items.length < totalCols * 8) void loadMore();
@@ -407,7 +409,7 @@ export default function ForYouFeed({
   /* Drag to pan in any direction (touch already pans natively). A drag never counts as a click. */
   useEffect(() => {
     const el = fieldRef.current;
-    if (!canvas || !el) return;
+    if (!roam || !el) return;
     let sx = 0;
     let sy = 0;
     let down = false;
@@ -454,7 +456,7 @@ export default function ForYouFeed({
       window.removeEventListener("pointerup", onUp);
       el.removeEventListener("click", onClick, true);
     };
-  }, [canvas]);
+  }, [roam]);
 
   /* Shuffle: a fresh seed and a fresh first page, same personal signals. */
   const reshuffle = useCallback(async () => {
@@ -511,7 +513,7 @@ export default function ForYouFeed({
       const dt = Math.min(64, now - last);
       last = now;
       const vp = vpOf(fieldRef.current);
-      const dx = vp ? 0.032 * dt : 0;
+      const dx = vp && roam ? 0.032 * dt : 0;
       const dy = (vp ? 0.026 : 0.05) * dt;
       if (vp) vp.scrollBy(dx, dy);
       else window.scrollBy(0, dy);
@@ -524,7 +526,7 @@ export default function ForYouFeed({
       cancelAnimationFrame(raf);
       evs.forEach((e) => window.removeEventListener(e, stop));
     };
-  }, [drift]);
+  }, [drift, roam]);
 
   /* Save everything currently on screen into one place. */
   useEffect(() => {
@@ -733,7 +735,7 @@ export default function ForYouFeed({
           />
         )}
       />
-      {canvas && <div ref={rightRef} aria-hidden className="fy-rsent" />}
+      {roam && <div ref={rightRef} aria-hidden className="fy-rsent" />}
       </div>
 
       {topItem && portalHost && createPortal(
