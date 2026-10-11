@@ -374,10 +374,21 @@ html .ared-home .fy-dock { background: rgba(255,255,255,.9); }
 html[data-ared-night="true"] .ared-home .fy-dock { background: rgba(30,30,32,.92); }
 .fy-t__big[data-clip] { -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 1.4em), transparent); mask-image: linear-gradient(to bottom, #000 calc(100% - 1.4em), transparent); }
 
-/* Free canvas on phones: the global mobile rule `body { touch-action: pan-y !important }` (globals.css)
-   makes iOS refuse sideways swipes inside the canvas. Allow both axes on For You only. */
-@media (max-width: 760px) {
-  html body:has(.fy-vp) { touch-action: auto !important; overscroll-behavior-x: auto !important; }
-  html body .fy-vp { touch-action: pan-x pan-y pinch-zoom !important; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
-  html body .fy-vp .fy-canvas, html body .fy-vp .fy-canvas * { touch-action: pan-x pan-y pinch-zoom; }
+/* Free canvas on phones.
+   globals.css locks `body { touch-action: pan-y }` and `main { overflow-x: clip; max-width: 100% }`.
+   For You is that `main`, so sideways overflow was clipped and a finger could only move up and down.
+   Own the gesture here: the board scrolls on both axes, the same way a mouse drag does. */
+html body:has(main.fy-vp) { touch-action: auto !important; }
+html body main.fy-vp {
+  max-width: none !important;
+  overflow: auto !important;
+  touch-action: none !important;
+  overscroll-behavior: contain !important;
 }
+html body main.fy-vp .fy--canvas,
+html body main.fy-vp .fy-canvas {
+  max-width: none !important;
+  width: max-content;
+}
+html body main.fy-vp .fy-canvas,
+html body main.fy-vp .fy-canvas * { touch-action: none !important; }
