@@ -373,9 +373,3 @@ html .ared-home.ex-ui .fy--ex { padding-top: max(124px, calc(var(--ared-nav-h, 7
 html .ared-home .fy-dock { background: rgba(255,255,255,.9); }
 html[data-ared-night="true"] .ared-home .fy-dock { background: rgba(30,30,32,.92); }
 .fy-t__big[data-clip] { -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 1.4em), transparent); mask-image: linear-gradient(to bottom, #000 calc(100% - 1.4em), transparent); }
-
-/* Phones: a vertical feed only. No sideways scroll, pan or rubber-band. */
-@media (max-width: 699px) {
-  .fy-vp { overflow-x: hidden; overscroll-behavior-x: none; touch-action: pan-y pinch-zoom; }
-  .fy-canvas { width: 100%; cursor: auto; }
-}
