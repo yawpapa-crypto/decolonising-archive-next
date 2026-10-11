@@ -378,7 +378,4 @@ html[data-ared-night="true"] .ared-home .fy-dock { background: rgba(30,30,32,.92
 @media (max-width: 699px) {
   .fy-vp { overflow-x: hidden; overscroll-behavior-x: none; touch-action: pan-y pinch-zoom; }
   .fy-canvas { width: 100%; cursor: auto; }
-  .fy--canvas { width: 100%; min-width: 0; max-width: 100%; box-sizing: border-box; }
-  .fy--canvas .fy-field { width: 100% !important; }
-  .fy--canvas .fy-col { flex: 1 1 0 !important; width: auto !important; min-width: 0; }
 }
