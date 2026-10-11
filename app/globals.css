@@ -22686,6 +22686,16 @@ form.search-save-inline button.search-save-inline-button::after,
   .saved-record-note-input {
     font-size: 16px !important;
   }
+
+  /* Canvas and board pans are two-axis, like a desktop wheel.
+     Body pan-y must not reduce a finger drag to vertical only. */
+  .workbench-research-canvas-viewport,
+  .workbench-note-board-viewport,
+  .workbench-note-canvas-viewport,
+  .workbench-canvas-immersive {
+    touch-action: none !important;
+    overscroll-behavior: none !important;
+  }
 }
 
 /* =========================================================

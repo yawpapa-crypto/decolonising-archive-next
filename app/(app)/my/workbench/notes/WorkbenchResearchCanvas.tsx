@@ -69,6 +69,8 @@ import {
   CANVAS_VIEWPORT_PERSIST_MS,
   clampCanvasZoomPercent,
   displayZoomPercent,
+  freePanPassedSlop,
+  isTouchLikePointer,
   panAroundPointer,
   wheelZoomPercent,
 } from "./workbench-canvas-viewport-motion";
@@ -253,6 +255,13 @@ export default function WorkbenchResearchCanvas({
     endpoint: LineEndpoint;
   } | null>(null);
   const panRef = useRef<{
+    pointerId: number;
+    startPanX: number;
+    startPanY: number;
+    startClientX: number;
+    startClientY: number;
+  } | null>(null);
+  const pendingPanRef = useRef<{
     pointerId: number;
     startPanX: number;
     startPanY: number;
@@ -746,6 +755,7 @@ export default function WorkbenchResearchCanvas({
     const world = screenToWorld(event.clientX, event.clientY);
 
     if (activeTool === "pan" || event.button === 1) {
+      event.preventDefault();
       event.currentTarget.setPointerCapture(event.pointerId);
       panRef.current = {
         pointerId: event.pointerId,
@@ -755,6 +765,25 @@ export default function WorkbenchResearchCanvas({
         startClientY: event.clientY,
       };
       setIsPanning(true);
+      return;
+    }
+
+    // Desktop pans both axes with the wheel. Touch has no wheel, so a drag
+    // on empty canvas does the same — left/right and up/down together.
+    if (
+      event.button === 0 &&
+      activeTool === "select" &&
+      isTouchLikePointer(event.pointerType)
+    ) {
+      event.preventDefault();
+      event.currentTarget.setPointerCapture(event.pointerId);
+      pendingPanRef.current = {
+        pointerId: event.pointerId,
+        startPanX: pan.x,
+        startPanY: pan.y,
+        startClientX: event.clientX,
+        startClientY: event.clientY,
+      };
       return;
     }
 
@@ -791,8 +820,26 @@ export default function WorkbenchResearchCanvas({
   }
 
   function handleViewportPointerMove(event: ReactPointerEvent<HTMLDivElement>) {
+    const pending = pendingPanRef.current;
+    if (pending && pending.pointerId === event.pointerId) {
+      if (
+        !freePanPassedSlop(
+          pending.startClientX,
+          pending.startClientY,
+          event.clientX,
+          event.clientY,
+        )
+      ) {
+        return;
+      }
+      pendingPanRef.current = null;
+      panRef.current = pending;
+      setIsPanning(true);
+    }
+
     const panState = panRef.current;
     if (panState && panState.pointerId === event.pointerId) {
+      event.preventDefault();
       setPan({
         x: panState.startPanX + (event.clientX - panState.startClientX),
         y: panState.startPanY + (event.clientY - panState.startClientY),
@@ -923,6 +970,25 @@ export default function WorkbenchResearchCanvas({
   }
 
   function handleViewportPointerUp(event: ReactPointerEvent<HTMLDivElement>) {
+    const pending = pendingPanRef.current;
+    const pendingWasTap = Boolean(
+      pending &&
+        pending.pointerId === event.pointerId &&
+        !freePanPassedSlop(
+          pending.startClientX,
+          pending.startClientY,
+          event.clientX,
+          event.clientY,
+        ),
+    );
+    if (pending && pending.pointerId === event.pointerId) {
+      pendingPanRef.current = null;
+    }
+    if (pendingWasTap && activeTool === "select") {
+      setSelectedId(null);
+      setConnectorDraft(null);
+    }
+
     const line = lineDrawRef.current;
     if (line && line.pointerId === event.pointerId) {
       const world = screenToWorld(event.clientX, event.clientY);

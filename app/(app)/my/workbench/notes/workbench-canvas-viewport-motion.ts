@@ -102,3 +102,23 @@ export function applyWheelPan(
 export function displayZoomPercent(percent: number): number {
   return Math.round(clampCanvasZoomPercent(percent));
 }
+
+/** Movement before a touch on empty canvas becomes a two-axis pan. */
+export const CANVAS_FREE_PAN_SLOP_PX = 8;
+
+/** Touch and pen have no wheel. A drag stands in for desktop trackpad pan. */
+export function isTouchLikePointer(pointerType: string): boolean {
+  return pointerType === "touch" || pointerType === "pen";
+}
+
+export function freePanPassedSlop(
+  startX: number,
+  startY: number,
+  x: number,
+  y: number,
+  slop = CANVAS_FREE_PAN_SLOP_PX,
+): boolean {
+  const dx = x - startX;
+  const dy = y - startY;
+  return dx * dx + dy * dy >= slop * slop;
+}

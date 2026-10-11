@@ -28657,7 +28657,7 @@ body.workbench-notes-focus-body .workbench-note-board-viewport {
   z-index: 1;
   overflow: hidden;
   overscroll-behavior: none;
-  touch-action: none;
+  touch-action: none !important;
   cursor: grab;
 }
 
