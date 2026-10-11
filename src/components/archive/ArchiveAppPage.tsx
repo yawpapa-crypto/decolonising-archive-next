@@ -1,5 +1,4 @@
 import PageShell from "@/src/components/layout/PageShell";
-import Script from "next/script";
 
 type ArchiveAppPageProps = {
   /** Server-resolved sign-in state for Library advanced search gating. */
@@ -30,11 +29,8 @@ export default function ArchiveAppPage({ initialMemberSignedIn }: ArchiveAppPage
         </div>
       </noscript>
 
-      <Script
-        id="archive-app-script"
-        src="/assets/js/app.js?v=20260802-kgo-v2"
-        strategy="afterInteractive"
-      />
+      {/* next/script afterInteractive only preloads this file and never runs it. */}
+      <script id="archive-app-script" src="/assets/js/app.js?v=20260802-kgo-v2" defer />
     </PageShell>
   );
 }
